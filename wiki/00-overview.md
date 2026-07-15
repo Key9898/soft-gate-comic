@@ -7,14 +7,14 @@ tags: [overview, project]
 
 # Project Overview
 
-**Name:** WebPad
+**Name:** Soft-Gate Comic
 **Type:** Frontend Webtoon Reader Portal (React + Vite)
 **Purpose:** Localization of webtoon reader experience for Myanmar readers with coin purchases and premium unlocking.
 
 ## Quick facts
 
 - **Stack:** React 18.3 + TypeScript 5.5 + Vite 5 + Tailwind CSS v4
-- **API:** Mock by default (types & data in `@webpad/shared` package)
+- **API:** Mock by default (types & data in `@softgate/shared` package)
 - **Testing:** Vitest 4 + Testing Library + jsdom
 - **Quality:** ESLint 9 + Prettier 3 + Husky 9 + lint-staged 15
 - **Hooks:** pre-commit (lint-staged) + pre-push (`npm run check`)
