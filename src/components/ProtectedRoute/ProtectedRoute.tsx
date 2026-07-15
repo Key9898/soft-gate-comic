@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../features/auth/useAuth'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -11,9 +11,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+          <div className="border-primary-200 border-t-primary-600 h-10 w-10 animate-spin rounded-full border-4" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>

@@ -1,38 +1,38 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './hooks/useAuth'
+import { AuthProvider } from './features/auth/useAuth'
 import ProtectedRoute from './components/ProtectedRoute'
 
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
 import ReaderLayout from './layouts/ReaderLayout'
 
-import HomePage from './pages/home/HomePage'
-import CategoriesPage from './pages/categories/CategoriesPage'
-import SearchPage from './pages/search/SearchPage'
-import WebtoonDetailPage from './pages/webtoon/WebtoonDetailPage'
-import ReaderPage from './pages/reader/ReaderPage'
+import HomePage from './features/home/HomePage'
+import CategoriesPage from './features/categories/CategoriesPage'
+import SearchPage from './features/search/SearchPage'
+import WebtoonDetailPage from './features/webtoon/WebtoonDetailPage'
+import ReaderPage from './features/reader/ReaderPage'
 
-import LoginPage from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
-import ResetPasswordPage from './pages/auth/ResetPasswordPage'
+import LoginPage from './features/auth/LoginPage'
+import RegisterPage from './features/auth/RegisterPage'
+import ForgotPasswordPage from './features/auth/ForgotPasswordPage'
+import ResetPasswordPage from './features/auth/ResetPasswordPage'
 
-import ProfilePage from './pages/profile/ProfilePage'
-import LibraryPage from './pages/library/LibraryPage'
-import NotificationsPage from './pages/notifications/NotificationsPage'
-import CoinsPage from './pages/coins/CoinsPage'
+import ProfilePage from './features/profile/ProfilePage'
+import LibraryPage from './features/library/LibraryPage'
+import NotificationsPage from './features/notifications/NotificationsPage'
+import CoinsPage from './features/coins/CoinsPage'
 
-import PrivacyPage from './pages/legal/PrivacyPage'
-import TermsPage from './pages/legal/TermsPage'
-import CookiesPage from './pages/legal/CookiesPage'
-
-import AboutPage from './pages/company/AboutPage'
-import CareersPage from './pages/company/CareersPage'
-import PressPage from './pages/company/PressPage'
-
-import HelpPage from './pages/support/HelpPage'
-import ContactPage from './pages/support/ContactPage'
-import FAQPage from './pages/support/FAQPage'
+import {
+  PrivacyPage,
+  TermsPage,
+  CookiesPage,
+  AboutPage,
+  CareersPage,
+  PressPage,
+  HelpPage,
+  ContactPage,
+  FAQPage,
+} from './features/info'
 
 function App() {
   return (
@@ -111,13 +111,13 @@ function App() {
           <Route
             path="*"
             element={
-              <div className="min-h-screen flex items-center justify-center bg-gray-50">
+              <div className="flex min-h-screen items-center justify-center bg-gray-50">
                 <div className="text-center">
                   <h1 className="text-6xl font-bold text-gray-200">404</h1>
-                  <p className="text-gray-500 mt-4">Page not found</p>
+                  <p className="mt-4 text-gray-500">Page not found</p>
                   <a
                     href="/"
-                    className="inline-block mt-6 px-6 py-2 bg-primary-600 text-white rounded-full hover:bg-primary-700 transition-colors"
+                    className="bg-primary-600 hover:bg-primary-700 mt-6 inline-block rounded-full px-6 py-2 text-white transition-colors"
                   >
                     Go Home
                   </a>

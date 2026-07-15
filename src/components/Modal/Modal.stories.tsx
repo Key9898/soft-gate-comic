@@ -42,7 +42,7 @@ const ModalDemo = ({
       <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title={title} size={size}>
         <p className="text-gray-600">This is a modal dialog. You can put any content here.</p>
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
@@ -107,8 +107,8 @@ const NoTitleModalDemo = () => {
     <div>
       <Button onClick={() => setIsOpen(true)}>Open No Title Modal</Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} size="sm">
-        <p className="text-gray-600 text-center">This modal has no title, just content.</p>
-        <div className="flex justify-center mt-4">
+        <p className="text-center text-gray-600">This modal has no title, just content.</p>
+        <div className="mt-4 flex justify-center">
           <Button onClick={() => setIsOpen(false)}>Close</Button>
         </div>
       </Modal>

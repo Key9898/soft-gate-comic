@@ -69,10 +69,10 @@ const Modal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
-            className={`relative w-full ${sizes[size]} bg-white rounded-2xl shadow-xl overflow-hidden`}
+            className={`relative w-full ${sizes[size]} overflow-hidden rounded-2xl bg-white shadow-xl`}
           >
             {(title || showCloseButton) && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
                 {title && <h2 className="text-lg font-semibold text-gray-900">{title}</h2>}
                 {showCloseButton && (
                   <button
@@ -80,9 +80,9 @@ const Modal = ({
                     title="Close"
                     aria-label="Close modal"
                     onClick={onClose}
-                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                    className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="h-5 w-5" />
                   </button>
                 )}
               </div>

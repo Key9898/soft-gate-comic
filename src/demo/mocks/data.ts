@@ -5,8 +5,8 @@ import {
   mockEpisodes as sharedEpisodes,
   mockComments as sharedComments,
   mockUsers as sharedUsers,
-} from '@webpad/shared'
-import type { Author, Genre, Webtoon, Episode, Comment, User } from '@webpad/shared'
+} from '@softgate/shared'
+import type { Author, Genre, Webtoon, Episode, Comment, User } from '@softgate/shared'
 
 export type { Author, Genre, Webtoon, Episode, Comment, User }
 

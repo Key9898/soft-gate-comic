@@ -5,7 +5,7 @@ import { Menu, X, Search, Bell, User, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '../Button'
 import LanguageSwitcher from '../LanguageSwitcher'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../features/auth/useAuth'
 
 const Navigation = () => {
   const { t } = useTranslation()
@@ -54,15 +54,22 @@ const Navigation = () => {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="sticky top-0 z-40 border-b border-gray-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="text-2xl font-bold text-primary-600">
-              WebPad
+            <Link to="/" className="text-primary-600 flex items-center gap-2 focus:outline-none">
+              <img
+                src="/logo/logo.jpg"
+                alt="Soft-Gate Comic Logo"
+                className="h-8 w-8 rounded-lg object-cover"
+              />
+              <span className="text-lg font-black tracking-tight text-gray-900 dark:text-white">
+                Soft-Gate Comic
+              </span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden items-center gap-6 md:flex">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -70,7 +77,7 @@ const Navigation = () => {
                   className={`text-sm font-medium transition-colors ${
                     isActive(link.path)
                       ? 'text-primary-600'
-                      : 'text-gray-600 hover:text-primary-600'
+                      : 'hover:text-primary-600 text-gray-600'
                   }`}
                 >
                   {link.name}
@@ -80,24 +87,24 @@ const Navigation = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:block relative">
+            <div className="relative hidden sm:block">
               <input
                 type="text"
                 placeholder={t('search.placeholder')}
                 aria-label={t('search.placeholder')}
-                className="w-64 pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all text-sm"
+                className="focus:ring-primary-500 w-64 rounded-full border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2"
               />
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
             </div>
 
             <button
               type="button"
               title={t('search.title')}
               aria-label={t('search.title')}
-              className="sm:hidden p-2 text-gray-600 hover:text-primary-600 transition"
+              className="hover:text-primary-600 p-2 text-gray-600 transition sm:hidden"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
-              <Search className="w-5 h-5" />
+              <Search className="h-5 w-5" />
             </button>
 
             {isAuthenticated && (
@@ -105,36 +112,36 @@ const Navigation = () => {
                 to="/notifications"
                 title={t('nav.notifications')}
                 aria-label={t('nav.notifications')}
-                className="p-2 text-gray-600 hover:text-primary-600 transition relative"
+                className="hover:text-primary-600 relative p-2 text-gray-600 transition"
               >
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
               </Link>
             )}
 
             <LanguageSwitcher />
 
             {isAuthenticated && user ? (
-              <div className="hidden sm:flex items-center gap-2">
+              <div className="hidden items-center gap-2 sm:flex">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 hover:bg-primary-100 transition"
+                  className="bg-primary-50 hover:bg-primary-100 flex items-center gap-2 rounded-full px-3 py-1.5 transition"
                 >
-                  <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">
+                  <div className="bg-primary-600 flex h-6 w-6 items-center justify-center rounded-full">
+                    <span className="text-xs font-bold text-white">
                       {user.displayName.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-sm font-medium text-primary-700">{user.displayName}</span>
+                  <span className="text-primary-700 text-sm font-medium">{user.displayName}</span>
                 </Link>
                 <button
                   type="button"
                   onClick={logout}
-                  className="p-2 text-gray-500 hover:text-red-600 transition"
+                  className="p-2 text-gray-500 transition hover:text-red-600"
                   title={t('nav.logout')}
                   aria-label={t('nav.logout')}
                 >
-                  <LogOut className="w-5 h-5" />
+                  <LogOut className="h-5 w-5" />
                 </button>
               </div>
             ) : (
@@ -149,10 +156,10 @@ const Navigation = () => {
               type="button"
               title={isMenuOpen ? t('common.close') : t('common.viewAll')}
               aria-label={isMenuOpen ? t('common.close') : t('common.viewAll')}
-              className="md:hidden p-2 text-gray-600 hover:text-primary-600 transition"
+              className="hover:text-primary-600 p-2 text-gray-600 transition md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
@@ -163,7 +170,7 @@ const Navigation = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="sm:hidden overflow-hidden"
+              className="overflow-hidden sm:hidden"
             >
               <div className="py-3">
                 <div className="relative">
@@ -171,9 +178,9 @@ const Navigation = () => {
                     type="text"
                     placeholder={t('search.placeholder')}
                     aria-label={t('search.placeholder')}
-                    className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 border-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all text-sm"
+                    className="focus:ring-primary-500 w-full rounded-full border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2"
                   />
-                  <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 </div>
               </div>
             </motion.div>
@@ -187,9 +194,9 @@ const Navigation = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden bg-white border-t border-gray-200"
+            className="overflow-hidden border-t border-gray-200 bg-white md:hidden"
           >
-            <div className="px-4 py-4 space-y-3">
+            <div className="space-y-3 px-4 py-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -198,27 +205,27 @@ const Navigation = () => {
                   className={`block py-2 text-sm font-medium transition-colors ${
                     isActive(link.path)
                       ? 'text-primary-600'
-                      : 'text-gray-600 hover:text-primary-600'
+                      : 'hover:text-primary-600 text-gray-600'
                   }`}
                 >
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-3 border-t border-gray-200">
+              <div className="border-t border-gray-200 pt-3">
                 {isAuthenticated && user ? (
                   <>
                     <Link
                       to="/profile"
                       onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-gray-600 hover:text-primary-600"
+                      className="hover:text-primary-600 flex items-center gap-2 py-2 text-sm font-medium text-gray-600"
                     >
-                      <User className="w-4 h-4" />
+                      <User className="h-4 w-4" />
                       {user.displayName}
                     </Link>
                     <Link
                       to="/library"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block py-2 text-sm font-medium text-gray-600 hover:text-primary-600"
+                      className="hover:text-primary-600 block py-2 text-sm font-medium text-gray-600"
                     >
                       {t('nav.library')}
                     </Link>
@@ -230,7 +237,7 @@ const Navigation = () => {
                       }}
                       className="flex items-center gap-2 py-2 text-sm font-medium text-red-600 hover:text-red-700"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="h-4 w-4" />
                       {t('nav.logout')}
                     </button>
                   </>
@@ -238,7 +245,7 @@ const Navigation = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block py-2 text-sm font-medium text-primary-600"
+                    className="text-primary-600 block py-2 text-sm font-medium"
                   >
                     {t('nav.login')}
                   </Link>

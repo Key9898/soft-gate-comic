@@ -16,10 +16,10 @@ export const ROUTES = {
 } as const
 
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'webpad_auth_token',
-  USER_PREFERENCES: 'webpad_user_preferences',
-  READING_PROGRESS: 'webpad_reading_progress',
-  THEME: 'webpad_theme',
+  AUTH_TOKEN: 'softgate_auth_token',
+  USER_PREFERENCES: 'softgate_user_preferences',
+  READING_PROGRESS: 'softgate_reading_progress',
+  THEME: 'softgate_theme',
 } as const
 
 export const BREAKPOINTS = {

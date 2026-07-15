@@ -1,4 +1,4 @@
-export * from '@webpad/shared'
+export * from '@softgate/shared'
 
 // Add any frontend-specific types here if needed in the future
 export interface Bookmark {

@@ -260,14 +260,14 @@ const Comments = ({
           <div className="flex-shrink-0">
             <div
               className={`${
-                isReply ? 'w-8 h-8' : 'w-10 h-10'
-              } rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center`}
+                isReply ? 'h-8 w-8' : 'h-10 w-10'
+              } from-primary-400 to-primary-600 flex items-center justify-center rounded-full bg-gradient-to-br`}
             >
               {comment.user.avatar ? (
                 <img
                   src={comment.user.avatar}
                   alt={comment.user.displayName}
-                  className="w-full h-full rounded-full object-cover"
+                  className="h-full w-full rounded-full object-cover"
                 />
               ) : (
                 <span className={`${isReply ? 'text-sm' : 'text-base'} font-semibold text-white`}>
@@ -276,9 +276,9 @@ const Comments = ({
               )}
             </div>
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-sm">
+              <span className="text-sm font-semibold text-gray-900">
                 {comment.user.displayName}
               </span>
               <span className="text-xs text-gray-400">{formatTime(comment.createdAt)}</span>
@@ -291,10 +291,10 @@ const Comments = ({
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
                   aria-label="Edit comment"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none text-sm"
+                  className="focus:ring-primary-500 w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:ring-2"
                   rows={2}
                 />
-                <div className="flex gap-2 mt-2">
+                <div className="mt-2 flex gap-2">
                   <Button
                     size="sm"
                     variant="primary"
@@ -315,10 +315,10 @@ const Comments = ({
                 </div>
               </div>
             ) : (
-              <p className="mt-1 text-gray-700 text-sm leading-relaxed">{comment.content}</p>
+              <p className="mt-1 text-sm leading-relaxed text-gray-700">{comment.content}</p>
             )}
 
-            <div className="flex items-center gap-4 mt-2">
+            <div className="mt-2 flex items-center gap-4">
               <button
                 type="button"
                 onClick={() => handleLike(comment.id)}
@@ -327,7 +327,7 @@ const Comments = ({
                   comment.isLiked ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                <Heart className={`w-4 h-4 ${comment.isLiked ? 'fill-current' : ''}`} />
+                <Heart className={`h-4 w-4 ${comment.isLiked ? 'fill-current' : ''}`} />
                 <span>{comment.likeCount > 0 ? comment.likeCount : ''}</span>
               </button>
 
@@ -335,9 +335,9 @@ const Comments = ({
                 <button
                   type="button"
                   onClick={() => setReplyingTo(comment.id)}
-                  className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+                  className="flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  <Reply className="w-4 h-4" />
+                  <Reply className="h-4 w-4" />
                   <span>Reply</span>
                 </button>
               )}
@@ -349,9 +349,9 @@ const Comments = ({
                     title="More options"
                     aria-label="More options"
                     onClick={() => setActiveMenu(activeMenu === comment.id ? null : comment.id)}
-                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="p-1 text-gray-400 transition-colors hover:text-gray-600"
                   >
-                    <MoreHorizontal className="w-4 h-4" />
+                    <MoreHorizontal className="h-4 w-4" />
                   </button>
                   <AnimatePresence>
                     {activeMenu === comment.id && (
@@ -359,7 +359,7 @@ const Comments = ({
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute right-0 mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10"
+                        className="absolute right-0 z-10 mt-1 w-32 rounded-lg border border-gray-100 bg-white py-1 shadow-lg"
                       >
                         <button
                           type="button"
@@ -368,17 +368,17 @@ const Comments = ({
                             setEditContent(comment.content)
                             setActiveMenu(null)
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         >
-                          <Edit3 className="w-4 h-4" />
+                          <Edit3 className="h-4 w-4" />
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDelete(comment.id)}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="h-4 w-4" />
                           Delete
                         </button>
                       </motion.div>
@@ -392,9 +392,9 @@ const Comments = ({
                   type="button"
                   title="Report"
                   aria-label="Report comment"
-                  className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="p-1 text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  <Flag className="w-4 h-4" />
+                  <Flag className="h-4 w-4" />
                 </button>
               )}
             </div>
@@ -413,7 +413,7 @@ const Comments = ({
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder="Write a reply..."
                     aria-label="Write a reply"
-                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                    className="focus:ring-primary-500 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:ring-2"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         handleSubmitReply(comment.id)
@@ -421,7 +421,7 @@ const Comments = ({
                     }}
                   />
                   <Button size="sm" variant="primary" onClick={() => handleSubmitReply(comment.id)}>
-                    <Send className="w-4 h-4" />
+                    <Send className="h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
@@ -431,12 +431,12 @@ const Comments = ({
               <button
                 type="button"
                 onClick={() => toggleReplies(comment.id)}
-                className="flex items-center gap-1 mt-3 text-sm text-primary-600 hover:text-primary-700 font-medium"
+                className="text-primary-600 hover:text-primary-700 mt-3 flex items-center gap-1 text-sm font-medium"
               >
                 {showReplies ? (
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="h-4 w-4" />
                 ) : (
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="h-4 w-4" />
                 )}
                 {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
               </button>
@@ -463,18 +463,18 @@ const Comments = ({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm">
-      <div className="p-4 sm:p-6 border-b border-gray-100">
+    <div className="rounded-2xl bg-white shadow-sm">
+      <div className="border-b border-gray-100 p-4 sm:p-6">
         <div className="flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-gray-600" />
+          <MessageCircle className="h-5 w-5 text-gray-600" />
           <h3 className="text-lg font-semibold text-gray-900">Comments ({comments.length})</h3>
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 border-b border-gray-100">
+      <div className="border-b border-gray-100 p-4 sm:p-6">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+            <div className="from-primary-400 to-primary-600 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br">
               <span className="font-semibold text-white">Y</span>
             </div>
           </div>
@@ -484,12 +484,12 @@ const Comments = ({
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Share your thoughts..."
               aria-label="Write a comment"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              className="focus:ring-primary-500 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 focus:border-transparent focus:ring-2"
               rows={3}
             />
-            <div className="flex justify-end mt-2">
+            <div className="mt-2 flex justify-end">
               <Button variant="primary" onClick={handleSubmitComment} disabled={!newComment.trim()}>
-                <Send className="w-4 h-4 mr-2" />
+                <Send className="mr-2 h-4 w-4" />
                 Post Comment
               </Button>
             </div>
@@ -497,14 +497,14 @@ const Comments = ({
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         {comments.map((comment) => (
           <CommentItem key={comment.id} comment={comment} />
         ))}
 
         {comments.length === 0 && (
-          <div className="text-center py-8">
-            <MessageCircle className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+          <div className="py-8 text-center">
+            <MessageCircle className="mx-auto mb-3 h-12 w-12 text-gray-300" />
             <p className="text-gray-500">No comments yet. Be the first to comment!</p>
           </div>
         )}

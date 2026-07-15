@@ -32,35 +32,40 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="text-2xl font-bold text-primary-400">
-              WebPad
+            <Link to="/" className="text-primary-400 flex items-center gap-2 focus:outline-none">
+              <img
+                src="/logo/logo.jpg"
+                alt="Soft-Gate Comic Logo"
+                className="h-8 w-8 rounded-lg object-cover"
+              />
+              <span className="text-lg font-black tracking-tight text-white">Soft-Gate Comic</span>
             </Link>
-            <p className="mt-4 text-gray-400 text-sm">{t('footer.description')}</p>
-            <div className="flex items-center gap-4 mt-6">
+            <p className="mt-4 text-sm text-gray-400">{t('footer.description')}</p>
+            <div className="mt-6 flex items-center gap-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                  className="p-2 text-gray-400 transition-colors hover:text-white"
                   aria-label={social.label}
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="h-5 w-5" />
                 </a>
               ))}
             </div>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('footer.company')}</h3>
+            <h3 className="mb-4 font-semibold text-white">{t('footer.company')}</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    className="text-sm text-gray-400 transition-colors hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -70,13 +75,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('footer.support')}</h3>
+            <h3 className="mb-4 font-semibold text-white">{t('footer.support')}</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    className="text-sm text-gray-400 transition-colors hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -86,13 +91,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('footer.legal')}</h3>
+            <h3 className="mb-4 font-semibold text-white">{t('footer.legal')}</h3>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
+                    className="text-sm text-gray-400 transition-colors hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -102,8 +107,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-500 text-sm">{t('footer.copyright')}</p>
+        <div className="mt-12 border-t border-gray-800 pt-8 text-center">
+          <p className="text-sm text-gray-500">{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

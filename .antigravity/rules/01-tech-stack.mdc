@@ -1,0 +1,57 @@
+---
+description: Tailwind v4 + TypeScript + React 18 specific patterns. Auto-attached when editing src/ files.
+globs:
+  - "src/**/*.{ts,tsx,css}"
+alwaysApply: false
+---
+
+# Tech stack specifics
+
+## Tailwind CSS v4
+
+- **NO `tailwind.config.js`** — configuration lives in `src/index.css` via `@theme { }` block.
+- Plugin: `@tailwindcss/vite` in `vite.config.ts`. No PostCSS config required.
+- Use `@import 'tailwindcss';` at the top of any CSS entry.
+
+### Custom tokens
+
+```css
+@theme {
+  --color-brand-500: #0ea5e9;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+```
+
+### Dark mode
+
+- `dark:` variant works out of the box (uses `prefers-color-scheme: dark` by default).
+- For class-based toggle: `<html class="dark">` + persist in `localStorage`.
+- Custom dark tokens: define `--color-*-dark` siblings in `@theme`.
+
+## TypeScript
+
+- Strict mode ON (`strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`).
+- Path: `tsconfig.app.json` (for `src/**`) + `tsconfig.node.json` (for `vite.config.ts` / `vitest.config.ts`).
+- `@/` alias maps to `src/` (configured in `tsconfig.app.json` + `vite.config.ts`).
+- Prefer `type` imports for types-only: `import { type Foo } from '...'`.
+
+## React 18
+
+- Use `<StrictMode>` in entry (already set in `src/main.tsx`).
+- Functional components only — no class components.
+- Hooks rules enforced by `eslint-plugin-react-hooks`.
+- Avoid `useEffect` deps with object literals (referential identity changes each render).
+
+## Vitest
+
+- Config: `vitest.config.ts` (separate from vite.config.ts — includes `@tailwindcss/vite` + `@/` alias).
+- Globals enabled (`describe` / `it` / `expect` available without import).
+- Setup file: `src/test/setup.ts` loads `@testing-library/jest-dom/vitest`.
+- Tests live next to source: `src/test/<Name>.test.tsx`.
+- Use `render`, `screen`, `userEvent` from `@testing-library/react`.
+
+## ESLint flat config
+
+- File: `eslint.config.js` (v9 flat config format).
+- Prettier config last in array (disables conflicting stylistic rules).
+- Plugin `react-refresh` warns if you mix component exports with non-component exports.

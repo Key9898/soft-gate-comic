@@ -96,14 +96,14 @@ export const Disabled: Story = {
 
 export const WithLeftIcon: Story = {
   args: {
-    leftIcon: <Download className="w-4 h-4" />,
+    leftIcon: <Download className="h-4 w-4" />,
     children: 'Download',
   },
 }
 
 export const WithRightIcon: Story = {
   args: {
-    rightIcon: <ArrowRight className="w-4 h-4" />,
+    rightIcon: <ArrowRight className="h-4 w-4" />,
     children: 'Continue',
   },
 }

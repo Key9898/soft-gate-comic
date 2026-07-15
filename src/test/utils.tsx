@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from '../hooks/useAuth'
+import { AuthProvider } from '../features/auth/useAuth'
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (

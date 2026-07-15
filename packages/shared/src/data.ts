@@ -688,7 +688,7 @@ export const importFromJSON = (jsonString: string): SharedData => {
   }
 }
 
-export const downloadJSON = (data: SharedData, filename: string = 'webpad-data.json') => {
+export const downloadJSON = (data: SharedData, filename: string = 'softgate-data.json') => {
   const json = exportToJSON(data)
   const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
@@ -700,11 +700,11 @@ export const downloadJSON = (data: SharedData, filename: string = 'webpad-data.j
 }
 
 export const saveToLocalStorage = (data: SharedData) => {
-  localStorage.setItem('webpad-shared-data', exportToJSON(data))
+  localStorage.setItem('softgate-shared-data', exportToJSON(data))
 }
 
 export const loadFromLocalStorage = (): SharedData | null => {
-  const stored = localStorage.getItem('webpad-shared-data')
+  const stored = localStorage.getItem('softgate-shared-data')
   if (stored) {
     try {
       return importFromJSON(stored)

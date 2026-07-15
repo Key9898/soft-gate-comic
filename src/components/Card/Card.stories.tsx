@@ -46,7 +46,7 @@ export const NoPadding: Story = {
   args: {
     padding: 'none',
     children: (
-      <div className="p-4 border-b border-gray-200">
+      <div className="border-b border-gray-200 p-4">
         <h3 className="font-semibold text-gray-900">Card Header</h3>
       </div>
     ),
@@ -56,7 +56,7 @@ export const NoPadding: Story = {
 export const SmallPadding: Story = {
   args: {
     padding: 'sm',
-    children: <p className="text-gray-600 text-sm">Small padding card.</p>,
+    children: <p className="text-sm text-gray-600">Small padding card.</p>,
   },
 }
 
@@ -69,18 +69,18 @@ export const LargePadding: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <Card variant="default">
-        <h3 className="font-semibold text-gray-900 mb-2">Default</h3>
-        <p className="text-gray-600 text-sm">Basic card with shadow</p>
+        <h3 className="mb-2 font-semibold text-gray-900">Default</h3>
+        <p className="text-sm text-gray-600">Basic card with shadow</p>
       </Card>
       <Card variant="hover">
-        <h3 className="font-semibold text-gray-900 mb-2">Hover</h3>
-        <p className="text-gray-600 text-sm">Hover to see effect</p>
+        <h3 className="mb-2 font-semibold text-gray-900">Hover</h3>
+        <p className="text-sm text-gray-600">Hover to see effect</p>
       </Card>
       <Card variant="interactive">
-        <h3 className="font-semibold text-gray-900 mb-2">Interactive</h3>
-        <p className="text-gray-600 text-sm">Click or hover</p>
+        <h3 className="mb-2 font-semibold text-gray-900">Interactive</h3>
+        <p className="text-sm text-gray-600">Click or hover</p>
       </Card>
     </div>
   ),
@@ -88,12 +88,12 @@ export const AllVariants: Story = {
 
 export const WebtoonCard: Story = {
   render: () => (
-    <Card variant="interactive" padding="none" className="overflow-hidden max-w-xs">
-      <div className="aspect-[3/4] bg-gradient-to-br from-primary-400 to-primary-600" />
+    <Card variant="interactive" padding="none" className="max-w-xs overflow-hidden">
+      <div className="from-primary-400 to-primary-600 aspect-[3/4] bg-gradient-to-br" />
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 truncate">Shadow Knight</h3>
+        <h3 className="truncate font-semibold text-gray-900">Shadow Knight</h3>
         <p className="text-sm text-gray-500">Action, Fantasy</p>
-        <div className="flex items-center gap-2 mt-2 text-sm text-gray-400">
+        <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
           <span>1.2M views</span>
         </div>
       </div>

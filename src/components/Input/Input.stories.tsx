@@ -73,14 +73,14 @@ export const WithLeftIcon: Story = {
     label: 'Email Address',
     placeholder: 'you@example.com',
     type: 'email',
-    leftIcon: <Mail className="w-5 h-5" />,
+    leftIcon: <Mail className="h-5 w-5" />,
   },
 }
 
 export const SearchInput: Story = {
   args: {
     placeholder: 'Search webtoons...',
-    leftIcon: <Search className="w-5 h-5" />,
+    leftIcon: <Search className="h-5 w-5" />,
   },
 }
 
@@ -94,12 +94,12 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 max-w-md">
+    <div className="flex max-w-md flex-col gap-4">
       <Input label="Default" placeholder="Default input" />
       <Input
         label="With Left Icon"
         placeholder="Search..."
-        leftIcon={<Search className="w-5 h-5" />}
+        leftIcon={<Search className="h-5 w-5" />}
       />
       <Input label="Password" type="password" placeholder="Enter password" />
       <Input label="With Error" placeholder="Invalid input" error="This field is required" />

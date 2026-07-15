@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://webpad.com/sitemap.xml
+Sitemap: https://softgatecomic.com/sitemap.xml

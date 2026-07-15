@@ -1,0 +1,57 @@
+---
+description: Project overview, entry points, and core commands for this React + Vite + Tailwind v4 frontend. Always attached as base context.
+globs: []
+alwaysApply: true
+---
+
+# Project: WebPad
+
+Webtoon reader portal application designed for Myanmar readers.
+
+## Stack at a glance
+
+- **React 18.3** + **TypeScript 5.5** (strict mode, project refs)
+- **Vite 5** — build tool, dev server
+- **Tailwind CSS v4** — CSS-first config (`@theme` in `src/index.css`), `@tailwindcss/vite` plugin
+- **ESLint 9** + **Prettier 3** + `prettier-plugin-tailwindcss`
+- **Vitest 4** + Testing Library + jsdom + v8 coverage
+- **Husky 9** + **lint-staged 15** — git hooks
+
+## Entry points
+
+- `index.html` → `src/main.tsx` → `<App />` (`src/App.tsx`)
+- `src/index.css` — Tailwind import + design tokens
+- `vite.config.ts` — app build config
+- `vitest.config.ts` — test config (separate file because vitest bundles its own vite)
+
+## Top-level commands
+
+```bash
+npm run dev          # vite dev server (port 5173)
+npm run build        # tsc -b && vite build
+npm run preview      # serve production build
+npm run lint         # eslint .
+npm run lint:fix     # eslint . --fix
+npm run format       # prettier --write (src/ + wiki/)
+npm run format:check # prettier --check
+npm run test         # vitest (watch)
+npm run test:run     # vitest run (single)
+npm run test:ui      # vitest --ui
+npm run check        # lint + format:check + test:run + build  ← runs in pre-push
+```
+
+## Where things live
+
+| Area | Location |
+|---|---|
+| App source | `src/` |
+| Tests | `src/test/` |
+| Wiki (AI knowledge base) | `wiki/` |
+| Project rules (Cursor) | `.cursor/rules/` |
+| Project skills (Cursor) | `.cursor/skills/` |
+| Project skills (Trae) | `.trae/skills/` |
+| Git hooks | `.husky/` |
+
+## Conventions in one line
+
+Strict TS, React 18, Tailwind v4 utility classes, semantic HTML, test colocated under `src/test/`, knowledge persisted in `wiki/`.

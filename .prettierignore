@@ -1,0 +1,9 @@
+dist
+node_modules
+coverage
+docs/sessions
+.cursor
+.antigravity
+.agent
+package-lock.json
+storybook-static
