@@ -76,7 +76,7 @@ const RegisterPage = () => {
       >
         <div className="mb-8 text-center">
           <Link to="/" className="text-primary-600 text-3xl font-bold">
-            WebPad
+            Soft-Gate Comic
           </Link>
           <h1 className="mt-4 text-2xl font-bold text-gray-900">{t('auth.createAccount')}</h1>
           <p className="mt-2 text-gray-600">{t('auth.joinWebpad')}</p>

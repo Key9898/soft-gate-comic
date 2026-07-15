@@ -1014,7 +1014,7 @@ const CoinsPage = () => {
                               <div className="card-front flex flex-col justify-between bg-gradient-to-br from-indigo-700 to-purple-900 text-white">
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs font-bold tracking-widest text-indigo-200">
-                                    WEBPad Pay
+                                    Soft-Gate Pay
                                   </span>
                                   {/* Styled Sim Chip */}
                                   <div className="relative h-7 w-9 overflow-hidden rounded-md border border-amber-300/40 bg-amber-400/80">

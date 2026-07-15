@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
       >
         <div className="mb-8 text-center">
           <Link to="/" className="text-primary-600 text-3xl font-bold">
-            WebPad
+            Soft-Gate Comic
           </Link>
         </div>
 

@@ -37,7 +37,7 @@ const AboutPage = () => {
     {
       year: '2024',
       title: 'Platform Beta Genesis',
-      desc: 'Launched WebPad beta version in Myanmar, partnering with 10 local indie creators to offer original Burmese webtoon chapters.',
+      desc: 'Launched Soft-Gate Comic beta version in Myanmar, partnering with 10 local indie creators to offer original Burmese webtoon chapters.',
       color: 'from-emerald-400 to-teal-600',
     },
     {
@@ -49,7 +49,7 @@ const AboutPage = () => {
     {
       year: '2026',
       title: 'Premium Redevelopment & 1M+ readers',
-      desc: 'Overhaul of WebPad client interface, adding floating label validations, metallic payment gateways, coin animations, and dark-theme controls.',
+      desc: 'Overhaul of Soft-Gate Comic client interface, adding floating label validations, metallic payment gateways, coin animations, and dark-theme controls.',
       color: 'from-primary-400 to-purple-600',
     },
   ]

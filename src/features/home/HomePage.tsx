@@ -265,7 +265,7 @@ const HomePage = () => {
                 {t('home.newReleases')}
               </h2>
               <p className="mt-1 text-xs text-gray-500 sm:text-sm">
-                Latest webtoons added to WebPad
+                Latest webtoons added to Soft-Gate Comic
               </p>
             </div>
             <Link

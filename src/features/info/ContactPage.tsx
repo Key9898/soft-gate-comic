@@ -124,7 +124,7 @@ const ContactPage = () => {
     {
       icon: Mail,
       title: t('contact.email'),
-      value: 'support@webpad.com',
+      value: 'support@softgatecomic.com',
       color: 'bg-white text-emerald-500 border-gray-150/60 dark:bg-gray-900 dark:border-white/5',
       iconColor: 'bg-emerald-50 text-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400',
     },

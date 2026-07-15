@@ -173,7 +173,7 @@ const FAQPage = () => {
                 {t('static.faqTitle')}
               </h1>
               <p className="mt-0.5 text-xs font-bold text-gray-400 dark:text-gray-500">
-                Find answers to commonly asked questions about WebPad.
+                Find answers to commonly asked questions about Soft-Gate Comic.
               </p>
             </div>
           </div>

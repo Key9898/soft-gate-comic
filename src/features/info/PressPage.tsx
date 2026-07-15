@@ -9,17 +9,18 @@ const PressPage = () => {
   const pressReleases = [
     {
       date: 'December 15, 2025',
-      title: 'WebPad Reaches 1 Million Active Readers',
-      summary: 'WebPad celebrates major milestone with growing community of webtoon enthusiasts.',
+      title: 'Soft-Gate Comic Reaches 1 Million Active Readers',
+      summary:
+        'Soft-Gate Comic celebrates major milestone with growing community of webtoon enthusiasts.',
     },
     {
       date: 'November 1, 2025',
-      title: 'WebPad Launches Creator Support Program',
+      title: 'Soft-Gate Comic Launches Creator Support Program',
       summary: 'New initiative provides resources and support for independent webtoon creators.',
     },
     {
       date: 'September 20, 2025',
-      title: 'WebPad Expands to Southeast Asia',
+      title: 'Soft-Gate Comic Expands to Southeast Asia',
       summary: 'Platform now available in Thailand, Vietnam, and Indonesia.',
     },
   ]
@@ -90,7 +91,7 @@ const PressPage = () => {
           <div className="flex flex-col gap-2">
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-gray-500" />
-              press@webpad.com
+              press@softgatecomic.com
             </p>
             <p className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-gray-500" />
