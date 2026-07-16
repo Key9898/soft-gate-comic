@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bookmark,
@@ -21,7 +21,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
-import { mockWebtoons } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 
 type TabType = 'bookmarks' | 'history' | 'likes'
 type ViewMode = 'grid' | 'list'
@@ -38,32 +38,6 @@ interface LibraryItem {
   addedAt: string
   progress: number
 }
-
-const mockLibraryItems: LibraryItem[] = mockWebtoons.slice(0, 6).map((w, i) => ({
-  id: `lib-${i}`,
-  webtoonId: w.id,
-  title: w.title,
-  coverImage: w.coverImage,
-  coverColor: w.coverColor,
-  lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
-  totalEpisodes: w.episodeCount,
-  lastReadAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-  addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  progress: Math.floor(Math.random() * 100),
-}))
-
-const mockHistoryItems: LibraryItem[] = mockWebtoons.slice(2, 8).map((w, i) => ({
-  id: `hist-${i}`,
-  webtoonId: w.id,
-  title: w.title,
-  coverImage: w.coverImage,
-  coverColor: w.coverColor,
-  lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
-  totalEpisodes: w.episodeCount,
-  lastReadAt: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString(),
-  addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  progress: Math.floor(Math.random() * 100),
-}))
 
 const progressWidthClasses: Record<number, string> = {
   0: 'w-0',
@@ -89,14 +63,50 @@ const LibraryPage = () => {
   const lang = i18n.language as 'mm' | 'en'
   const navigate = useNavigate()
 
+  const { webtoons, isLoading } = useData()
+
   const [activeTab, setActiveTab] = useState<TabType>('bookmarks')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [searchQuery, setSearchQuery] = useState('')
 
   // Library Items states to allow actual deletions
-  const [bookmarksList, setBookmarksList] = useState<LibraryItem[]>(mockLibraryItems)
-  const [historyList, setHistoryList] = useState<LibraryItem[]>(mockHistoryItems)
-  const [likesList, setLikesList] = useState<LibraryItem[]>(mockLibraryItems.slice(0, 4))
+  const [bookmarksList, setBookmarksList] = useState<LibraryItem[]>([])
+  const [historyList, setHistoryList] = useState<LibraryItem[]>([])
+  const [likesList, setLikesList] = useState<LibraryItem[]>([])
+
+  useEffect(() => {
+    if (webtoons.length > 0) {
+      const items = webtoons.slice(0, 6).map((w, i) => ({
+        id: `lib-${i}`,
+        webtoonId: w.id,
+        title: w.title,
+        coverImage: w.coverImage,
+        coverColor: w.coverColor,
+        lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
+        totalEpisodes: w.episodeCount,
+        lastReadAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+        addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: Math.floor(Math.random() * 100),
+      }))
+
+      const histItems = webtoons.slice(2, 8).map((w, i) => ({
+        id: `hist-${i}`,
+        webtoonId: w.id,
+        title: w.title,
+        coverImage: w.coverImage,
+        coverColor: w.coverColor,
+        lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
+        totalEpisodes: w.episodeCount,
+        lastReadAt: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString(),
+        addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: Math.floor(Math.random() * 100),
+      }))
+
+      setBookmarksList(items)
+      setHistoryList(histItems)
+      setLikesList(items.slice(0, 4))
+    }
+  }, [webtoons])
 
   // Bulk edit states
   const [isEditMode, setIsEditMode] = useState(false)
@@ -105,6 +115,14 @@ const LibraryPage = () => {
   // Custom modal states for premium feel
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
 
   const getItemsList = () => {
     switch (activeTab) {

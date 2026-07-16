@@ -4,19 +4,29 @@ import { motion } from 'framer-motion'
 import { Search, X, TrendingUp, Clock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Card from '../../components/Card'
-import { mockWebtoons, mockGenres } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 
 const SearchPage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
+
+  const { webtoons, genres, isLoading } = useData()
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q') || ''
   const [searchQuery, setSearchQuery] = useState(query)
 
-  const trendingSearches = mockGenres.slice(1, 6).map((g) => g.name[lang])
-  const recentSearches = mockWebtoons.slice(0, 3).map((w) => w.title[lang])
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
 
-  const searchResults = mockWebtoons.filter(
+  const trendingSearches = genres.slice(1, 6).map((g) => g.name[lang])
+  const recentSearches = webtoons.slice(0, 3).map((w) => w.title[lang])
+
+  const searchResults = webtoons.filter(
     (webtoon) =>
       webtoon.title[lang].toLowerCase().includes(searchQuery.toLowerCase()) ||
       webtoon.author.name[lang].toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -5,7 +5,7 @@ import { motion, useReducedMotion, type MotionProps } from 'framer-motion'
 import { Play, Bookmark, Eye, ChevronRight } from 'lucide-react'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
-import { mockWebtoons, mockGenres } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 import { formatCount } from '../../lib/utils/formatters'
 
 const HomePage = () => {
@@ -13,9 +13,13 @@ const HomePage = () => {
   const lang = i18n.language as 'mm' | 'en'
   const prefersReducedMotion = useReducedMotion()
 
+  const { webtoons, genres, isLoading } = useData()
+
   // Fix 4: Featured webtoon randomization (changes on every visit)
-  const [featuredIndex] = useState(() => Math.floor(Math.random() * mockWebtoons.length))
-  const featuredWebtoon = mockWebtoons[featuredIndex]
+  const [featuredIndex] = useState(() => {
+    return webtoons.length > 0 ? Math.floor(Math.random() * webtoons.length) : 0
+  })
+  const featuredWebtoon = webtoons[featuredIndex] || webtoons[0]
 
   // Fix 5: Genre active state
   const [selectedGenre, setSelectedGenre] = useState('all')
@@ -38,8 +42,16 @@ const HomePage = () => {
     })
   }
 
-  const trendingWebtoons = mockWebtoons.slice(0, 6)
-  const newReleases = mockWebtoons.slice(3, 9)
+  if (isLoading || webtoons.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
+
+  const trendingWebtoons = webtoons.slice(0, 6)
+  const newReleases = webtoons.slice(3, 9)
 
   // Format date for new releases
   const formatReleaseDate = (dateString: string) => {
@@ -163,7 +175,7 @@ const HomePage = () => {
             <span className="hidden font-medium whitespace-nowrap text-gray-500 sm:inline">
               {t('home.genres')}:
             </span>
-            {mockGenres.map((genre) => (
+            {genres.map((genre) => (
               <Link
                 key={genre.id}
                 to={`/categories?genre=${genre.slug}`}

@@ -21,7 +21,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import Modal from '../../components/Modal'
-import { mockWebtoons, mockEpisodes } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 
 const ReaderPage = () => {
   const { t, i18n } = useTranslation()
@@ -29,6 +29,7 @@ const ReaderPage = () => {
   const { webtoonId, episodeNumber } = useParams()
   const navigate = useNavigate()
   const prefersReducedMotion = useReducedMotion()
+  const { webtoons, episodes, isLoading } = useData()
 
   // ── States ─────────────────────────────────────────────────
   const [showHeader, setShowHeader] = useState(true)
@@ -47,13 +48,12 @@ const ReaderPage = () => {
   const lastScrollPos = useRef<number>(0)
 
   // ── Webtoon & Episode Data ────────────────────────────────
-  const webtoon = mockWebtoons.find((w) => w.id === webtoonId) || mockWebtoons[0]
+  const webtoon = webtoons.find((w) => w.id === webtoonId) || webtoons[0]
   const currentEpisode =
-    mockEpisodes.find(
-      (e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber)
-    ) || mockEpisodes[0]
+    episodes.find((e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber)) ||
+    episodes[0]
 
-  const totalEpisodes = mockEpisodes.filter((e) => e.webtoonId === webtoonId).length
+  const totalEpisodes = episodes.filter((e) => e.webtoonId === webtoonId).length
   const hasPrev = Number(episodeNumber) > 1
   const hasNext = Number(episodeNumber) < totalEpisodes
 
@@ -89,6 +89,14 @@ const ReaderPage = () => {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  if (isLoading || !webtoon || !currentEpisode) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-950 text-white">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
 
   // ── Actions ────────────────────────────────────────────────
   const goToEpisode = (num: number) => {

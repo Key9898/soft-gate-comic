@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Eye, TrendingUp, Sparkles, ChevronDown, Check, ListFilter } from 'lucide-react'
 import Card from '../../components/Card'
-import { mockWebtoons, mockGenres } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 import { formatCount } from '../../lib/utils/formatters'
 
 type SortOption = 'popular' | 'new' | 'recentlyUpdated' | 'highestRated'
@@ -12,6 +12,8 @@ type SortOption = 'popular' | 'new' | 'recentlyUpdated' | 'highestRated'
 const CategoriesPage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
+
+  const { webtoons, genres, isLoading } = useData()
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
@@ -46,7 +48,7 @@ const CategoriesPage = () => {
 
   // Get the Myanmar genre name from the selected slug
   const selectedGenreName = useMemo(() => {
-    const genre = mockGenres.find((g) => g.slug === selectedGenre)
+    const genre = genres.find((g) => g.slug === selectedGenre)
     return genre?.name[lang] || ''
   }, [selectedGenre, lang])
 
@@ -73,7 +75,7 @@ const CategoriesPage = () => {
   }
 
   const sortedAndFilteredWebtoons = useMemo(() => {
-    let result = mockWebtoons.filter((webtoon) => {
+    let result = webtoons.filter((webtoon) => {
       const matchesGenre = selectedGenre === 'all' || webtoon.genres.includes(selectedGenreName)
       const matchesSearch =
         webtoon.title[lang].toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -121,6 +123,14 @@ const CategoriesPage = () => {
   const activeSortLabel =
     sortOptions.find((o) => o.value === sortBy)?.label || t('categories.mostPopular')
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-gray-950">
       {/* HEADER SECTION PANEL */}
@@ -147,7 +157,7 @@ const CategoriesPage = () => {
 
           {/* Genre pills list with gliding indicators */}
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            {mockGenres.map((genre) => {
+            {genres.map((genre) => {
               const isActive = selectedGenre === genre.slug
               return (
                 <button

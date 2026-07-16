@@ -19,7 +19,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
-import { mockWebtoons, mockEpisodes } from '../../demo/mocks/data'
+import { useData } from '../../context/DataContext'
 import { formatCount } from '../../lib/utils/formatters'
 
 type EpisodeTab = 'all' | 'free' | 'premium'
@@ -30,6 +30,8 @@ const WebtoonDetailPage = () => {
   const lang = i18n.language as 'mm' | 'en'
   const { id } = useParams()
   const prefersReducedMotion = useReducedMotion()
+
+  const { webtoons, episodes, isLoading } = useData()
   const sortRef = useRef<HTMLDivElement>(null)
 
   // ── State ──────────────────────────────────────────────────
@@ -42,11 +44,11 @@ const WebtoonDetailPage = () => {
   const [showFullDescription, setShowFullDescription] = useState(false)
 
   // ── Data ───────────────────────────────────────────────────
-  const webtoon = mockWebtoons.find((w) => w.id === id) || mockWebtoons[0]
+  const webtoon = webtoons.find((w) => w.id === id) || webtoons[0]
 
   const allEpisodes = useMemo(
-    () => mockEpisodes.filter((e) => e.webtoonId === webtoon.id),
-    [webtoon.id]
+    () => episodes.filter((e) => e.webtoonId === webtoon?.id),
+    [webtoon?.id, episodes]
   )
 
   const readEpisodes = ['1', '2', '3']
@@ -141,9 +143,14 @@ const WebtoonDetailPage = () => {
     },
   ]
 
-  // ═══════════════════════════════════════════════════════════
-  // RENDER
-  // ═══════════════════════════════════════════════════════════
+  if (isLoading || !webtoon) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    )
+  }
+
   return (
     <>
       {/* ═══════ HERO SECTION ═══════ */}
@@ -496,7 +503,7 @@ const WebtoonDetailPage = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-6 text-xl font-bold text-gray-900">{t('home.featured')}</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-6">
-            {mockWebtoons
+            {webtoons
               .filter((w) => w.id !== webtoon.id)
               .slice(0, 6)
               .map((w, index) => (
