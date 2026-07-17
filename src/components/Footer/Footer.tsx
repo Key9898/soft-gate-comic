@@ -35,11 +35,11 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="text-primary-400 flex items-center gap-2 focus:outline-none">
+            <Link to="/" className="text-primary-400 flex items-center gap-3 focus:outline-none">
               <img
                 src="/logo/logo.jpg"
                 alt="Soft-Gate Comic Logo"
-                className="h-8 w-8 rounded-lg object-cover"
+                className="h-10 w-10 rounded-xl object-cover"
               />
               <span className="text-lg font-black tracking-tight text-white">Soft-Gate Comic</span>
             </Link>

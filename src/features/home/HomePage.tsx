@@ -83,7 +83,7 @@ const HomePage = () => {
         className="safe-top relative -mt-16 overflow-hidden bg-cover bg-center pt-16 text-white"
         style={{ backgroundImage: `url('/banner/banner.png')` }}
       >
-        <div className="to-primary-950/65 pointer-events-none absolute inset-0 bg-gradient-to-br from-gray-950/85 via-gray-950/75" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45" />
         <div className="hero-landscape-adjust relative mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8 lg:py-20 xl:py-24">
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             <motion.div

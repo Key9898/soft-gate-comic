@@ -58,15 +58,12 @@ const Navigation = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="text-primary-600 flex items-center gap-2 focus:outline-none">
+            <Link to="/" className="text-primary-600 flex items-center focus:outline-none">
               <img
                 src="/logo/logo.jpg"
                 alt="Soft-Gate Comic Logo"
-                className="h-8 w-8 rounded-lg object-cover"
+                className="h-11 w-11 rounded-xl object-cover shadow-sm"
               />
-              <span className="text-lg font-black tracking-tight text-gray-900 dark:text-white">
-                Soft-Gate Comic
-              </span>
             </Link>
 
             <div className="hidden items-center gap-6 md:flex">
