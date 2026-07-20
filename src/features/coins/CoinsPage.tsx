@@ -58,7 +58,7 @@ const coinPackages: CoinPackage[] = [
     bonus: 200,
     bestValue: true,
     metalClass: 'metal-platinum',
-    glowClass: 'purple-glow',
+    glowClass: 'accent-glow',
   },
   { id: '6', coins: 3000, price: 40000, bonus: 500, metalClass: 'metal-obsidian', glowClass: '' },
 ]
@@ -270,8 +270,8 @@ const CoinsPage = () => {
         .gold-glow {
           box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.35), 0 8px 10px -6px rgba(245, 158, 11, 0.35);
         }
-        .purple-glow {
-          box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.35), 0 8px 10px -6px rgba(168, 85, 247, 0.35);
+        .accent-glow {
+          box-shadow: 0 10px 25px -5px rgba(230, 50, 100, 0.35), 0 8px 10px -6px rgba(230, 50, 100, 0.35);
         }
         .metal-bronze {
           background: linear-gradient(135deg, rgba(146, 64, 14, 0.1) 0%, rgba(120, 53, 4, 0.05) 100%);
@@ -295,18 +295,18 @@ const CoinsPage = () => {
           background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(217, 119, 6, 0.15) 100%);
         }
         .metal-ruby {
-          background: linear-gradient(135deg, rgba(219, 39, 119, 0.1) 0%, rgba(112, 26, 117, 0.05) 100%);
-          border-color: #ec4899;
+          background: linear-gradient(135deg, rgba(230, 50, 100, 0.1) 0%, rgba(190, 40, 80, 0.05) 100%);
+          border-color: #e63264;
         }
         .dark .metal-ruby {
-          background: linear-gradient(135deg, rgba(219, 39, 119, 0.25) 0%, rgba(112, 26, 117, 0.15) 100%);
+          background: linear-gradient(135deg, rgba(230, 50, 100, 0.25) 0%, rgba(190, 40, 80, 0.15) 100%);
         }
         .metal-platinum {
-          background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(79, 70, 229, 0.05) 50%, rgba(124, 58, 237, 0.05) 100%);
-          border-color: #2dd4bf;
+          background: linear-gradient(135deg, rgba(14, 148, 148, 0.1) 0%, rgba(230, 50, 100, 0.05) 100%);
+          border-color: #0e9494;
         }
         .dark .metal-platinum {
-          background: linear-gradient(135deg, rgba(13, 148, 136, 0.2) 0%, rgba(79, 70, 229, 0.2) 50%, rgba(124, 58, 237, 0.2) 100%);
+          background: linear-gradient(135deg, rgba(14, 148, 148, 0.2) 0%, rgba(230, 50, 100, 0.15) 100%);
         }
         .metal-obsidian {
           background: linear-gradient(135deg, rgba(55, 65, 81, 0.15) 0%, rgba(17, 24, 39, 0.1) 50%, rgba(3, 7, 18, 0.05) 100%);
@@ -389,9 +389,9 @@ const CoinsPage = () => {
 
       {/* ═══════ HEADER BALANCE CARD ═══════ */}
       <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="from-primary-600 relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br to-indigo-800 p-6 text-white shadow-xl sm:p-8">
+        <div className="from-primary-600 to-primary-800 relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br p-6 text-white shadow-xl sm:p-8">
           <div className="absolute top-0 right-0 h-48 w-48 rounded-full bg-white/5 blur-2xl" />
-          <div className="absolute bottom-0 left-0 h-36 w-36 rounded-full bg-indigo-500/10 blur-xl" />
+          <div className="bg-accent-500/10 absolute bottom-0 left-0 h-36 w-36 rounded-full blur-xl" />
 
           <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -480,12 +480,12 @@ const CoinsPage = () => {
                     )}
 
                     {pkg.popular && (
-                      <span className="absolute top-0 right-6 rounded-b-xl bg-gradient-to-r from-amber-500 to-orange-600 px-3 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
+                      <span className="from-accent-500 to-accent-700 absolute top-0 right-6 rounded-b-xl bg-gradient-to-r px-3 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
                         {t('coinsPage.popular')}
                       </span>
                     )}
                     {pkg.bestValue && (
-                      <span className="absolute top-0 right-6 rounded-b-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-3 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
+                      <span className="from-accent-600 to-accent-700 absolute top-0 right-6 rounded-b-xl bg-gradient-to-r px-3 py-1 text-[10px] font-black tracking-wider text-white uppercase shadow-sm">
                         {t('coinsPage.bestValue')}
                       </span>
                     )}
@@ -495,9 +495,9 @@ const CoinsPage = () => {
                         <div
                           className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-inner ${
                             pkg.popular
-                              ? 'border border-amber-500/30 bg-amber-500/20 text-amber-500'
+                              ? 'border-accent-500/30 bg-accent-500/20 text-accent-500 border'
                               : pkg.bestValue
-                                ? 'border border-purple-500/30 bg-purple-500/20 text-purple-400'
+                                ? 'border-accent-600/30 bg-accent-600/20 text-accent-600 border'
                                 : 'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-300'
                           }`}
                         >
@@ -660,7 +660,7 @@ const CoinsPage = () => {
                 className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900"
               >
                 {/* Header info */}
-                <div className="from-primary-600 bg-gradient-to-r to-indigo-800 p-6 text-white">
+                <div className="from-primary-600 to-primary-800 bg-gradient-to-r p-6 text-white">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-primary-200 text-[10px] font-black tracking-wider uppercase">
@@ -742,7 +742,7 @@ const CoinsPage = () => {
                             logo: (
                               <svg
                                 viewBox="0 0 24 24"
-                                className="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                                className="text-primary-600 dark:text-primary-400 h-8 w-8"
                               >
                                 <rect
                                   x="3"
@@ -778,7 +778,7 @@ const CoinsPage = () => {
                                 <rect x="18" y="18" width="3" height="3" fill="currentColor" />
                               </svg>
                             ),
-                            hoverClass: 'hover:border-indigo-500 hover:bg-indigo-500/5',
+                            hoverClass: 'hover:border-primary-500 hover:bg-primary-500/5',
                           },
                           {
                             id: 'kbzpay' as PaymentMethod,
@@ -1011,9 +1011,9 @@ const CoinsPage = () => {
                               className={`card-3d-inner ${isCardFlipped ? 'card-3d-flipped' : ''}`}
                             >
                               {/* Card Front face */}
-                              <div className="card-front flex flex-col justify-between bg-gradient-to-br from-indigo-700 to-purple-900 text-white">
+                              <div className="card-front from-primary-700 to-primary-900 flex flex-col justify-between bg-gradient-to-br text-white">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-xs font-bold tracking-widest text-indigo-200">
+                                  <span className="text-primary-200 text-xs font-bold tracking-widest">
                                     Soft-Gate Pay
                                   </span>
                                   {/* Styled Sim Chip */}
@@ -1029,7 +1029,7 @@ const CoinsPage = () => {
 
                                 <div className="flex items-end justify-between">
                                   <div>
-                                    <span className="block text-[8px] font-bold tracking-wider text-indigo-300 uppercase">
+                                    <span className="text-primary-300 block text-[8px] font-bold tracking-wider uppercase">
                                       Cardholder
                                     </span>
                                     <span className="block max-w-[180px] truncate text-xs font-bold uppercase">
@@ -1037,7 +1037,7 @@ const CoinsPage = () => {
                                     </span>
                                   </div>
                                   <div className="text-right">
-                                    <span className="block text-[8px] font-bold tracking-wider text-indigo-300 uppercase">
+                                    <span className="text-primary-300 block text-[8px] font-bold tracking-wider uppercase">
                                       Expiry
                                     </span>
                                     <span className="block font-mono text-xs font-bold">
@@ -1048,10 +1048,10 @@ const CoinsPage = () => {
                               </div>
 
                               {/* Card Back face */}
-                              <div className="card-back flex flex-col justify-between bg-gradient-to-br from-purple-900 to-indigo-950 p-0 py-5 text-white">
+                              <div className="card-back from-primary-900 to-primary-950 flex flex-col justify-between bg-gradient-to-br p-0 py-5 text-white">
                                 <div className="h-10 w-full bg-black/60" />
                                 <div className="px-5">
-                                  <span className="mb-1 block text-[8px] font-bold text-indigo-300 uppercase">
+                                  <span className="text-primary-300 mb-1 block text-[8px] font-bold uppercase">
                                     Authorized Signature
                                   </span>
                                   <div className="flex h-8 w-full items-center rounded-md bg-white pr-3 text-right font-mono text-sm font-bold text-gray-800 italic shadow-inner">
@@ -1060,7 +1060,7 @@ const CoinsPage = () => {
                                   </div>
                                 </div>
                                 <div className="px-5 text-right">
-                                  <span className="text-[9px] font-bold text-indigo-400">
+                                  <span className="text-primary-400 text-[9px] font-bold">
                                     Mastercard / Visa Network
                                   </span>
                                 </div>

@@ -166,7 +166,7 @@ const NotificationsPage = () => {
       case 'system':
         return 'bg-gray-100 text-gray-600'
       case 'promotion':
-        return 'bg-amber-100 text-amber-600'
+        return 'bg-accent-500/10 text-accent-600'
     }
   }
 
@@ -230,7 +230,7 @@ const NotificationsPage = () => {
               >
                 {t('notificationsPage.unread')}
                 {unreadCount > 0 && (
-                  <span className="ml-2 rounded-full bg-red-500 px-1.5 py-0.5 text-xs text-white">
+                  <span className="bg-accent-600 ml-2 rounded-full px-1.5 py-0.5 text-xs text-white">
                     {unreadCount}
                   </span>
                 )}
@@ -277,7 +277,7 @@ const NotificationsPage = () => {
                           </div>
                           <div className="flex flex-shrink-0 items-center gap-2">
                             {!notification.isRead && (
-                              <span className="bg-primary-600 h-2 w-2 rounded-full" />
+                              <span className="bg-accent-600 h-2 w-2 rounded-full" />
                             )}
                             <span className="text-xs text-gray-400">
                               {formatTime(notification.createdAt)}
@@ -293,7 +293,7 @@ const NotificationsPage = () => {
                         )}
                         {notification.type === 'promotion' && (
                           <div className="mt-3">
-                            <Button variant="primary" size="sm">
+                            <Button variant="accent" size="sm">
                               <Gift className="mr-1 h-4 w-4" />
                               {t('coinsPage.bonus')}
                             </Button>

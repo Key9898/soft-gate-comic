@@ -252,7 +252,7 @@ const WeeklyReadingChart = () => {
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   transition={{ type: 'spring', stiffness: 220, damping: 20, delay: index * 0.08 }}
-                  className="from-primary-600 dark:from-primary-500 w-full origin-bottom rounded-t-full bg-gradient-to-t to-indigo-500 shadow-md transition-all group-hover:brightness-110 dark:to-purple-600"
+                  className="from-primary-600 dark:from-primary-500 dark:to-primary-400 to-primary-400 w-full origin-bottom rounded-t-full bg-gradient-to-t shadow-md transition-all group-hover:brightness-110"
                   style={{ height: `${heightPercent}%` }}
                 />
               </div>

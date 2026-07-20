@@ -31,5 +31,5 @@ In the top white sticky navigation bar, the logo image size was set to `h-8 w-8`
 1. **Removed Logo Brand Text**:
    - Removed the `<span>Soft-Gate Comic</span>` element next to the header logo icon, leaving only the clean logo icon as the home navigation anchor.
 2. **Enlarged Logo Images**:
-   - Enlarged the navigation header logo icon size from `h-8 w-8` to `h-11 w-11` (44px) and increased rounding to `rounded-xl` with soft shadows (`shadow-sm`) to ensure the brand mark details are clearly legible.
+   - Enlarged the navigation header logo icon size to `h-11 w-11` (44px) and increased rounding to `rounded-xl` with soft shadows (`shadow-sm`) to ensure the brand mark details are clearly legible.
    - Consistently updated the footer branding logo size to `h-10 w-10` and `rounded-xl` for design uniformity.

@@ -38,6 +38,12 @@ describe('Button', () => {
     expect(button).toHaveClass('bg-red-600')
   })
 
+  it('applies accent variant', () => {
+    render(<Button variant="accent">Accent</Button>)
+    const button = screen.getByRole('button')
+    expect(button).toHaveClass('bg-accent-600')
+  })
+
   it('applies size classes', () => {
     const { rerender } = render(<Button size="sm">Small</Button>)
     expect(screen.getByRole('button')).toHaveClass('px-3', 'py-1.5')

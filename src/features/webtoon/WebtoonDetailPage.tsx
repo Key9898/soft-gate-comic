@@ -442,14 +442,14 @@ const WebtoonDetailPage = () => {
                           isRead
                             ? 'bg-primary-100'
                             : episode.isPremium
-                              ? 'bg-gradient-to-br from-amber-50 to-amber-100'
+                              ? 'from-accent-500/10 to-accent-600/10 bg-gradient-to-br'
                               : 'bg-primary-50'
                         }`}
                       >
                         {isRead ? (
                           <Check className="text-primary-600 h-5 w-5" />
                         ) : episode.isPremium ? (
-                          <Lock className="h-4 w-4 text-amber-500" />
+                          <Lock className="text-accent-600 h-4 w-4" />
                         ) : (
                           <span className="text-primary-700 text-sm font-bold">
                             {episode.episodeNumber}
@@ -471,7 +471,7 @@ const WebtoonDetailPage = () => {
                         {formatCount(episode.viewCount)} {t('webtoonDetail.views')}
                       </span>
                       {episode.isPremium && (
-                        <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-600 ring-1 ring-amber-200/50">
+                        <span className="bg-accent-500/10 text-accent-700 ring-accent-500/20 rounded-full px-2.5 py-1 text-xs font-semibold ring-1">
                           {episode.coinPrice} {t('webtoonDetail.coins')}
                         </span>
                       )}

@@ -23,7 +23,7 @@ const AboutPage = () => {
       icon: Globe,
       value: '50+',
       label: t('about.countries'),
-      color: 'text-purple-500 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/20',
+      color: 'text-accent-600 dark:text-accent-500 bg-accent-500/10 dark:bg-accent-500/20',
     },
     {
       icon: Heart,
@@ -44,13 +44,13 @@ const AboutPage = () => {
       year: '2025',
       title: 'Local Payments & 500K Milestone',
       desc: 'Partnered with KBZPay, WaveMoney, and local banks to integrate MMQR billing. Registered readership grew to over 500,000 active fans.',
-      color: 'from-blue-400 to-indigo-600',
+      color: 'from-cyan-400 to-primary-600',
     },
     {
       year: '2026',
       title: 'Premium Redevelopment & 1M+ readers',
       desc: 'Overhaul of Soft-Gate Comic client interface, adding floating label validations, metallic payment gateways, coin animations, and dark-theme controls.',
-      color: 'from-primary-400 to-purple-600',
+      color: 'from-primary-400 to-accent-600',
     },
   ]
 
@@ -80,15 +80,15 @@ const AboutPage = () => {
       icon: Compass,
       title: t('about.valueInnovation'),
       desc: 'Delivering lightweight mobile client bundles, responsive dark theme models, and coin purchase checkout timelines.',
-      color: 'bg-white text-purple-500 border-gray-100 dark:bg-gray-900 dark:border-white/5',
-      iconColor: 'bg-purple-50 text-purple-500 dark:bg-purple-950/20 dark:text-purple-400',
+      color: 'bg-white text-accent-600 border-gray-100 dark:bg-gray-900 dark:border-white/5',
+      iconColor: 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/20 dark:text-accent-500',
     },
   ]
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-50 pb-20 transition-colors duration-300 dark:bg-gray-950">
       {/* Immersive background soft radial glow overlay */}
-      <div className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.06),transparent_65%)] dark:bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.03),transparent_65%)]" />
+      <div className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top,rgba(14,148,148,0.08),transparent_65%)] dark:bg-[radial-gradient(circle_at_top,rgba(14,148,148,0.04),transparent_65%)]" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 text-left sm:px-6 lg:px-8">
         {/* Back Link */}

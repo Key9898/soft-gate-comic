@@ -19,11 +19,12 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'mm',
-    lng: 'mm',
+    fallbackLng: 'en',
+    lng: 'en',
     defaultNS: 'translation',
     detection: {
-      order: ['localStorage', 'navigator'],
+      // localStorage only — do not auto-switch from browser OS/locale on first visit
+      order: ['localStorage'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
     },

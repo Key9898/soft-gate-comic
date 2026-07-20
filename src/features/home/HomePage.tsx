@@ -328,7 +328,7 @@ const HomePage = () => {
                       ) : (
                         <span className="text-sm text-white/60">Cover</span>
                       )}
-                      <span className="absolute top-2 left-2 rounded-full bg-green-500 px-2 py-0.5 text-xs font-medium text-white">
+                      <span className="bg-accent-600 absolute top-2 left-2 rounded-full px-2 py-0.5 text-xs font-medium text-white">
                         {t('webtoon.new')}
                       </span>
                     </div>

@@ -139,15 +139,15 @@ const ContactPage = () => {
       icon: MapPin,
       title: t('contact.address'),
       value: 'Yangon, Myanmar',
-      color: 'bg-white text-purple-500 border-gray-150/60 dark:bg-gray-900 dark:border-white/5',
-      iconColor: 'bg-purple-50 text-purple-500 dark:bg-purple-950/20 dark:text-purple-400',
+      color: 'bg-white text-accent-600 border-gray-150/60 dark:bg-gray-900 dark:border-white/5',
+      iconColor: 'bg-accent-500/10 text-accent-600 dark:bg-accent-500/20 dark:text-accent-500',
     },
   ]
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gray-50 pb-20 transition-colors duration-300 dark:bg-gray-950">
       {/* Immersive background soft radial glow overlay */}
-      <div className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.06),transparent_65%)] dark:bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.03),transparent_65%)]" />
+      <div className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(circle_at_top,rgba(14,148,148,0.08),transparent_65%)] dark:bg-[radial-gradient(circle_at_top,rgba(14,148,148,0.04),transparent_65%)]" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-8 text-left sm:px-6 lg:px-8">
         {/* Back Link */}

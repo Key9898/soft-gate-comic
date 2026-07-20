@@ -226,7 +226,7 @@ const ReaderPage = () => {
               {/* Progress indicator with a neon glow effect */}
               <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-gray-200/20">
                 <div
-                  className="progress-bar from-primary-500 h-full bg-gradient-to-r to-purple-600 shadow-[0_0_12px_rgba(168,85,247,0.8)]"
+                  className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r shadow-[0_0_12px_rgba(230,50,100,0.55)]"
                   style={{ width: `${readingProgress}%` }}
                   role="progressbar"
                   aria-label={`${t('reader.readingProgress')}: ${Math.round(readingProgress)}%`}
@@ -251,7 +251,7 @@ const ReaderPage = () => {
                   : 'border border-gray-200 bg-gray-100'
               }`}
             >
-              <Lock className="h-10 w-10 animate-pulse text-amber-500" />
+              <Lock className="text-accent-500 h-10 w-10 animate-pulse" />
             </div>
             <h2 className="mb-2 text-2xl font-bold">{t('readerPage.premiumEpisode')}</h2>
             <p className={`mb-8 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -265,49 +265,49 @@ const ReaderPage = () => {
             {[
               {
                 id: 1,
-                gradient: 'from-purple-900 to-indigo-900',
+                gradient: 'from-primary-950 to-cyan-950',
                 text: 'A silent twilight covers the cityscape...',
                 isSpeech: true,
               },
               {
                 id: 2,
-                gradient: 'from-indigo-900 to-blue-900',
+                gradient: 'from-cyan-950 to-teal-950',
                 text: 'Who stands at the gate of shadows?',
                 isSpeech: false,
               },
               {
                 id: 3,
-                gradient: 'from-blue-900 to-cyan-900',
+                gradient: 'from-teal-950 to-primary-900',
                 text: 'Wait! Did you hear that sound?',
                 isSpeech: true,
               },
               {
                 id: 4,
-                gradient: 'from-cyan-950 to-gray-950',
+                gradient: 'from-primary-950 to-gray-950',
                 text: 'The prophecy is coming true.',
                 isSpeech: false,
               },
               {
                 id: 5,
-                gradient: 'from-gray-950 to-purple-950',
+                gradient: 'from-gray-950 to-rose-950',
                 text: 'We must run, before the lock breaks!',
                 isSpeech: true,
               },
               {
                 id: 6,
-                gradient: 'from-purple-950 to-fuchsia-950',
+                gradient: 'from-rose-950 to-pink-950',
                 text: 'Suddenly, a bright spark lights up the sky!',
                 isSpeech: false,
               },
               {
                 id: 7,
-                gradient: 'from-fuchsia-950 to-indigo-950',
+                gradient: 'from-pink-950 to-primary-950',
                 text: 'Everything changes from this moment.',
                 isSpeech: true,
               },
               {
                 id: 8,
-                gradient: 'from-indigo-950 to-gray-900',
+                gradient: 'from-primary-950 to-gray-900',
                 text: 'To be continued...',
                 isSpeech: false,
               },
@@ -366,7 +366,7 @@ const ReaderPage = () => {
               aria-hidden="true"
             />
             <div
-              className="absolute -bottom-12 -left-12 h-36 w-36 rounded-full bg-purple-500/10 blur-2xl"
+              className="bg-accent-500/10 absolute -bottom-12 -left-12 h-36 w-36 rounded-full blur-2xl"
               aria-hidden="true"
             />
 

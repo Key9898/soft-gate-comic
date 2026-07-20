@@ -282,7 +282,7 @@ const CategoriesPage = () => {
                         <span className="text-xs font-bold text-white/60">Cover</span>
                       )}
                       {webtoon.isPremium && (
-                        <span className="absolute top-2 right-2 rounded-full bg-yellow-500 px-2 py-0.5 text-[10px] font-black text-white uppercase shadow-sm">
+                        <span className="bg-accent-600 absolute top-2 right-2 rounded-full px-2 py-0.5 text-[10px] font-black text-white uppercase shadow-sm">
                           {t('webtoon.premium')}
                         </span>
                       )}
