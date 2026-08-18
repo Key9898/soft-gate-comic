@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion, type MotionProps } from 'framer-motion'
 import {
@@ -15,13 +15,21 @@ import {
   Bookmark,
   Lock,
   Sparkles,
-  Volume2,
-  VolumeX,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import Modal from '../../components/Modal'
+import SEO from '../../components/SEO/SEO'
+import { buildArticleJsonLd } from '../../components/SEO/jsonLd'
+import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
+import { useLibrary } from '../../context/LibraryContext'
+import { useWallet } from '../../context/WalletContext'
+import { useEngagement } from '../../context/EngagementContext'
+import { scrollRatioFromMetrics, scrollTopFromRatio } from '../../lib/engagement'
+import useScrollLock from '../../hooks/useScrollLock'
+import ReaderCommentsPanel from './components/ReaderCommentsPanel'
+import ReaderSkeleton from './components/ReaderSkeleton'
 
 const ReaderPage = () => {
   const { t, i18n } = useTranslation()
@@ -30,6 +38,17 @@ const ReaderPage = () => {
   const navigate = useNavigate()
   const prefersReducedMotion = useReducedMotion()
   const { webtoons, episodes, isLoading } = useData()
+  const { isBookmarked, toggleBookmark } = useLibrary()
+  const { isAuthenticated } = useAuth()
+  const { balance, isEpisodeUnlocked, unlockEpisode } = useWallet()
+  const {
+    isLiked,
+    toggleLike,
+    recordHistory,
+    updateReadingProgress,
+    history,
+    isReady: engagementReady,
+  } = useEngagement()
 
   // ── States ─────────────────────────────────────────────────
   const [showHeader, setShowHeader] = useState(true)
@@ -37,32 +56,171 @@ const ReaderPage = () => {
   const [darkMode, setDarkMode] = useState(true) // Default to dark mode for reading
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md')
   const [showComments, setShowComments] = useState(false)
-  const [isLiked, setIsLiked] = useState(false)
-  const [isBookmarked, setIsBookmarked] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
   const [brightness, setBrightness] = useState<number>(0.9) // 0.25 to 1.0
-  const [hasSound, setHasSound] = useState(false)
   const [estMinutesLeft, setEstMinutesLeft] = useState<number>(3)
+  const [totalEstMinutes, setTotalEstMinutes] = useState<number>(1)
+  const [unlockError, setUnlockError] = useState('')
 
   // Last scroll track
   const lastScrollPos = useRef<number>(0)
+  const restoreDoneRef = useRef(false)
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastPersistedRatioRef = useRef<number | null>(null)
+  const historyRef = useRef(history)
+  historyRef.current = history
 
   // ── Webtoon & Episode Data ────────────────────────────────
-  const webtoon = webtoons.find((w) => w.id === webtoonId) || webtoons[0]
-  const currentEpisode =
-    episodes.find((e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber)) ||
-    episodes[0]
+  const webtoon = webtoons.find((w) => w.id === webtoonId)
+  const currentEpisode = episodes.find(
+    (e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber)
+  )
+  const nextEpisode = episodes.find(
+    (e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber) + 1
+  )
 
   const totalEpisodes = episodes.filter((e) => e.webtoonId === webtoonId).length
   const hasPrev = Number(episodeNumber) > 1
   const hasNext = Number(episodeNumber) < totalEpisodes
+  const episodeNum = Number(episodeNumber)
+  const locked =
+    Boolean(currentEpisode?.isPremium) &&
+    Boolean(webtoonId) &&
+    !isEpisodeUnlocked(webtoonId!, episodeNum)
+  const episodeKey = `${webtoonId ?? ''}:${currentEpisode?.episodeNumber ?? episodeNum}`
+
+  const flushReadingProgress = useCallback(() => {
+    if (!isAuthenticated || !webtoonId || !currentEpisode || locked) return
+    if (!restoreDoneRef.current) return
+    const ratio = scrollRatioFromMetrics(
+      window.scrollY,
+      document.documentElement.scrollHeight,
+      window.innerHeight
+    )
+    if (
+      lastPersistedRatioRef.current !== null &&
+      Math.abs(lastPersistedRatioRef.current - ratio) < 0.005
+    ) {
+      return
+    }
+    lastPersistedRatioRef.current = ratio
+    updateReadingProgress(webtoonId, currentEpisode.episodeNumber, ratio)
+  }, [isAuthenticated, webtoonId, currentEpisode, locked, updateReadingProgress])
+
+  const schedulePersist = useCallback(() => {
+    if (persistTimerRef.current) clearTimeout(persistTimerRef.current)
+    persistTimerRef.current = setTimeout(() => {
+      persistTimerRef.current = null
+      flushReadingProgress()
+    }, 1000)
+  }, [flushReadingProgress])
+
+  useEffect(() => {
+    restoreDoneRef.current = false
+    lastPersistedRatioRef.current = null
+    if (persistTimerRef.current) {
+      clearTimeout(persistTimerRef.current)
+      persistTimerRef.current = null
+    }
+  }, [episodeKey])
+
+  useScrollLock(showSettings)
+
+  useEffect(() => {
+    if (!showSettings) return
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowSettings(false)
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [showSettings])
+
+  useEffect(() => {
+    if (!webtoonId || !currentEpisode || locked) return
+    if (!isAuthenticated) return
+    recordHistory(webtoonId, currentEpisode.episodeNumber)
+  }, [webtoonId, currentEpisode, locked, isAuthenticated, recordHistory])
+
+  useEffect(() => {
+    if (!engagementReady || !webtoon || !currentEpisode || !webtoonId) return
+
+    if (locked || !isAuthenticated) {
+      restoreDoneRef.current = true
+      return
+    }
+
+    let cancelled = false
+    const record = historyRef.current.find(
+      (h) => h.webtoonId === webtoonId && h.episodeNumber === currentEpisode.episodeNumber
+    )
+    const ratio = record?.scrollRatio ?? 0
+
+    if (ratio <= 0.02) {
+      restoreDoneRef.current = true
+      return
+    }
+
+    const timeoutId = window.setTimeout(
+      () => {
+        requestAnimationFrame(() => {
+          if (cancelled) return
+          const top = scrollTopFromRatio(
+            ratio,
+            document.documentElement.scrollHeight,
+            window.innerHeight
+          )
+          window.scrollTo({ top, behavior: 'instant' as ScrollBehavior })
+          restoreDoneRef.current = true
+        })
+      },
+      prefersReducedMotion ? 0 : 80
+    )
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
+  }, [
+    engagementReady,
+    episodeKey,
+    locked,
+    isAuthenticated,
+    webtoon,
+    currentEpisode,
+    webtoonId,
+    prefersReducedMotion,
+  ])
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState !== 'hidden') return
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current)
+        persistTimerRef.current = null
+      }
+      flushReadingProgress()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current)
+        persistTimerRef.current = null
+      }
+      flushReadingProgress()
+    }
+  }, [flushReadingProgress, episodeKey])
 
   // ── Scroll Listener & Reader Metrics ──────────────────────
   useEffect(() => {
+    if (!webtoon || !currentEpisode) return
+
     const handleScroll = () => {
       const scrollTop = window.scrollY
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
+      const scrollHeight = document.documentElement.scrollHeight
+      const viewportHeight = window.innerHeight
+      const ratio = scrollRatioFromMetrics(scrollTop, scrollHeight, viewportHeight)
+      const progress = ratio * 100
       setReadingProgress(Math.min(progress, 100))
 
       // Auto-hide bars when scrolling down, show when scrolling up
@@ -77,23 +235,51 @@ const ReaderPage = () => {
       }
 
       // Est remaining reading time calculation
-      const remainingScroll = Math.max(0, docHeight - scrollTop)
+      const remainingScroll = Math.max(0, scrollHeight - viewportHeight - scrollTop)
       // Assuming avg scroll reading speed is 50px per second (3000px per minute)
       const speed = 3000 // pixels per minute
       const minutes = Math.max(1, Math.ceil(remainingScroll / speed))
       setEstMinutesLeft(progress >= 98 ? 0 : minutes)
+      setTotalEstMinutes(Math.max(1, Math.ceil((scrollHeight - viewportHeight) / speed)))
 
       lastScrollPos.current = scrollTop
+
+      if (!locked && isAuthenticated && restoreDoneRef.current) {
+        schedulePersist()
+      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [webtoon, currentEpisode, locked, isAuthenticated, schedulePersist])
 
-  if (isLoading || !webtoon || !currentEpisode) {
+  if (isLoading) {
+    return <ReaderSkeleton />
+  }
+
+  if (!webtoon || !currentEpisode) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-950 text-white">
-        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-white">
+        <div className="max-w-md text-center">
+          <h1 className="text-2xl font-bold">{t('reader.notFound')}</h1>
+          <p className="mt-2 text-white/70">{t('reader.notFoundDesc')}</p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/"
+              className="bg-primary-600 hover:bg-primary-700 rounded-2xl px-5 py-2.5 text-sm font-medium transition"
+            >
+              {t('nav.home')}
+            </Link>
+            {webtoon ? (
+              <Link
+                to={`/webtoon/${webtoon.id}`}
+                className="rounded-2xl border border-white/20 px-5 py-2.5 text-sm font-medium transition hover:bg-white/10"
+              >
+                {t('reader.backToWebtoon')}
+              </Link>
+            ) : null}
+          </div>
+        </div>
       </div>
     )
   }
@@ -120,9 +306,48 @@ const ReaderPage = () => {
   const bgClass = darkMode ? 'bg-gray-950' : 'bg-gray-50'
   const textClass = darkMode ? 'text-gray-100' : 'text-gray-900'
   const cardBgClass = darkMode ? 'bg-gray-900/60 border-white/5' : 'bg-white/80 border-gray-200'
+  const fontClass = fontSize === 'sm' ? 'text-sm' : fontSize === 'lg' ? 'text-lg' : 'text-base'
+  const liked = Boolean(webtoonId && isLiked(webtoonId))
+
+  const handleUnlock = () => {
+    if (!webtoonId || !currentEpisode) return
+    setUnlockError('')
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: `/read/${webtoonId}/${episodeNumber}` } } })
+      return
+    }
+    const result = unlockEpisode(
+      webtoonId,
+      currentEpisode.episodeNumber,
+      currentEpisode.coinPrice,
+      t('readerPage.unlockTxnDesc', {
+        n: currentEpisode.episodeNumber,
+        title: webtoon?.title[lang] ?? webtoonId,
+      })
+    )
+    if (!result.ok) {
+      if (result.reason === 'INSUFFICIENT_COINS') {
+        setUnlockError(t('readerPage.insufficientCoins', { balance }))
+        navigate('/coins')
+      }
+    }
+  }
 
   return (
-    <div className={`min-h-screen ${bgClass} ${textClass} transition-colors duration-300`}>
+    <div
+      className={`min-h-screen ${bgClass} ${textClass} ${fontClass} transition-colors duration-300`}
+    >
+      <SEO
+        title={`${webtoon?.title[lang] ?? ''} — #${episodeNumber} ${currentEpisode?.title[lang] ?? ''}`}
+        description={currentEpisode?.description?.[lang] || webtoon?.description[lang]}
+        url={`https://softgatecomic.com/read/${webtoonId}/${episodeNumber}`}
+        type="article"
+        jsonLd={buildArticleJsonLd({
+          title: `${webtoon?.title[lang] ?? ''} #${episodeNumber}`,
+          description: currentEpisode?.title[lang] || '',
+          url: `https://softgatecomic.com/read/${webtoonId}/${episodeNumber}`,
+        })}
+      />
       {/* Simulated Brightness Overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-[100] bg-black transition-opacity duration-150"
@@ -140,7 +365,7 @@ const ReaderPage = () => {
               { type: 'spring', stiffness: 260, damping: 22 }
             )}
             exit={{ y: -100, opacity: 0 }}
-            className={`fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-top fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)]'
@@ -153,7 +378,7 @@ const ReaderPage = () => {
                     to={`/webtoon/${webtoonId}`}
                     title={t('readerPage.closeReader')}
                     aria-label={t('readerPage.closeReader')}
-                    className={`rounded-xl p-2.5 transition ${
+                    className={`rounded-2xl p-2.5 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
@@ -168,7 +393,7 @@ const ReaderPage = () => {
                     >
                       <span className="font-semibold">{webtoon.title[lang]}</span>
                       <span>•</span>
-                      <span>Ep. {episodeNumber}</span>
+                      <span>{t('readerPage.epShort', { n: episodeNumber })}</span>
                     </p>
                   </div>
                 </div>
@@ -176,7 +401,7 @@ const ReaderPage = () => {
                 <div className="flex items-center gap-1.5">
                   {/* Reading Time Estimator HUD */}
                   <div
-                    className={`hidden rounded-lg px-2.5 py-1.5 text-xs font-semibold sm:block ${
+                    className={`hidden rounded-2xl px-2.5 py-1.5 text-xs font-semibold sm:block ${
                       darkMode ? 'bg-white/5 text-gray-300' : 'bg-gray-100 text-gray-600'
                     }`}
                   >
@@ -187,22 +412,10 @@ const ReaderPage = () => {
 
                   <button
                     type="button"
-                    title="Toggle Music track"
-                    aria-label="Toggle Music track"
-                    onClick={() => setHasSound(!hasSound)}
-                    className={`rounded-xl p-2.5 transition ${
-                      darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
-                    } ${hasSound ? 'text-primary-500' : 'text-gray-400'}`}
-                  >
-                    {hasSound ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-                  </button>
-
-                  <button
-                    type="button"
                     title={t('readerPage.settings')}
                     aria-label={t('readerPage.settings')}
                     onClick={() => setShowSettings(!showSettings)}
-                    className={`rounded-xl p-2.5 transition ${
+                    className={`rounded-2xl p-2.5 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     } ${showSettings ? 'text-primary-500' : ''}`}
                   >
@@ -214,7 +427,7 @@ const ReaderPage = () => {
                     title={t('readerPage.comments')}
                     aria-label={t('readerPage.comments')}
                     onClick={() => setShowComments(true)}
-                    className={`rounded-xl p-2.5 transition ${
+                    className={`rounded-2xl p-2.5 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
@@ -226,7 +439,7 @@ const ReaderPage = () => {
               {/* Progress indicator with a neon glow effect */}
               <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-gray-200/20">
                 <div
-                  className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r shadow-[0_0_12px_rgba(230,50,100,0.55)]"
+                  className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r shadow-[0_0_12px_rgba(238,57,104,0.55)]"
                   style={{ width: `${readingProgress}%` }}
                   role="progressbar"
                   aria-label={`${t('reader.readingProgress')}: ${Math.round(readingProgress)}%`}
@@ -240,12 +453,12 @@ const ReaderPage = () => {
       {/* ═══════ WEBTOON COMIC STRIPS ═══════ */}
       <main
         className="mx-auto max-w-2xl px-0 pt-20 pb-16 sm:px-2 md:pt-24"
-        onClick={() => setShowHeader(!showHeader)} // Margin tap toggles headers
+        onClick={() => setShowHeader(!showHeader)}
       >
-        {currentEpisode.isPremium ? (
+        {locked ? (
           <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
             <div
-              className={`mb-6 flex h-24 w-24 items-center justify-center rounded-full shadow-lg backdrop-blur ${
+              className={`shape-circle mb-6 flex h-24 w-24 items-center justify-center shadow-lg backdrop-blur ${
                 darkMode
                   ? 'border border-white/10 bg-white/5'
                   : 'border border-gray-200 bg-gray-100'
@@ -254,107 +467,51 @@ const ReaderPage = () => {
               <Lock className="text-accent-500 h-10 w-10 animate-pulse" />
             </div>
             <h2 className="mb-2 text-2xl font-bold">{t('readerPage.premiumEpisode')}</h2>
-            <p className={`mb-8 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className={`mb-4 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               {t('readerPage.unlockFor', { coins: currentEpisode.coinPrice })}
             </p>
-            <Button size="lg">{t('readerPage.unlockWithCoins')}</Button>
+            {isAuthenticated && (
+              <p className={`mb-6 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                {t('coinsPage.yourBalance')}: {balance}
+              </p>
+            )}
+            {unlockError ? (
+              <p role="alert" className="mb-3 text-sm font-semibold text-red-500">
+                {unlockError}
+              </p>
+            ) : null}
+            <Button
+              size="lg"
+              onClick={(e) => {
+                e.stopPropagation()
+                handleUnlock()
+              }}
+            >
+              {isAuthenticated ? t('readerPage.unlockWithCoins') : t('readerPage.loginToUnlock')}
+            </Button>
+          </div>
+        ) : currentEpisode.images.length > 0 ? (
+          <div className="flex flex-col gap-0 overflow-hidden shadow-xl sm:rounded-2xl">
+            {currentEpisode.images.map((src, index) => (
+              <img
+                key={`${src}-${index}`}
+                src={src}
+                alt={`${currentEpisode.title[lang]} strip ${index + 1}`}
+                className="block w-full"
+                loading={index < 2 ? 'eager' : 'lazy'}
+              />
+            ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-0 overflow-hidden shadow-xl sm:rounded-2xl">
-            {/* Dynamic Interactive Webtoon Stripes */}
-            {[
-              {
-                id: 1,
-                gradient: 'from-primary-950 to-cyan-950',
-                text: 'A silent twilight covers the cityscape...',
-                isSpeech: true,
-              },
-              {
-                id: 2,
-                gradient: 'from-cyan-950 to-teal-950',
-                text: 'Who stands at the gate of shadows?',
-                isSpeech: false,
-              },
-              {
-                id: 3,
-                gradient: 'from-teal-950 to-primary-900',
-                text: 'Wait! Did you hear that sound?',
-                isSpeech: true,
-              },
-              {
-                id: 4,
-                gradient: 'from-primary-950 to-gray-950',
-                text: 'The prophecy is coming true.',
-                isSpeech: false,
-              },
-              {
-                id: 5,
-                gradient: 'from-gray-950 to-rose-950',
-                text: 'We must run, before the lock breaks!',
-                isSpeech: true,
-              },
-              {
-                id: 6,
-                gradient: 'from-rose-950 to-pink-950',
-                text: 'Suddenly, a bright spark lights up the sky!',
-                isSpeech: false,
-              },
-              {
-                id: 7,
-                gradient: 'from-pink-950 to-primary-950',
-                text: 'Everything changes from this moment.',
-                isSpeech: true,
-              },
-              {
-                id: 8,
-                gradient: 'from-primary-950 to-gray-900',
-                text: 'To be continued...',
-                isSpeech: false,
-              },
-            ].map((panel) => (
-              <div
-                key={panel.id}
-                className={`relative flex aspect-[2/3] w-full flex-col justify-between bg-gradient-to-b ${panel.gradient} border-b border-black/20 p-8 select-none`}
-              >
-                <div className="absolute top-4 right-4 text-xs font-semibold text-white/20">
-                  Panel {panel.id}
-                </div>
-
-                {/* Simulated Comic Bubble elements */}
-                {panel.isSpeech ? (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    viewport={{ once: true, margin: '-10%' }}
-                    className="mx-auto mt-8 max-w-xs rounded-2xl bg-white p-4 shadow-xl ring-2 ring-black"
-                  >
-                    <p className="text-center text-sm font-bold text-gray-950">{panel.text}</p>
-                    <div className="ring-b-2 ring-r-2 absolute bottom-[-10px] left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white ring-black" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true, margin: '-10%' }}
-                    className="mt-auto max-w-sm rounded-lg bg-black/45 p-4 text-center backdrop-blur-xs"
-                  >
-                    <p className="text-xs font-semibold tracking-wider text-white/95 uppercase">
-                      {panel.text}
-                    </p>
-                  </motion.div>
-                )}
-
-                {/* Decorative Comic elements */}
-                <div className="mx-auto flex h-32 w-32 items-center justify-center opacity-30">
-                  <Sparkles className="h-16 w-16 animate-pulse text-white" />
-                </div>
-              </div>
-            ))}
+          <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              {t('readerPage.noImages')}
+            </p>
           </div>
         )}
 
         {/* ═══════ CHAPTER COMPLETE CELEBRATION PORTAL ═══════ */}
-        {!currentEpisode.isPremium && (
+        {!locked && (
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
@@ -362,25 +519,25 @@ const ReaderPage = () => {
             className={`mt-12 rounded-3xl border p-6 text-center sm:p-8 ${cardBgClass} relative overflow-hidden`}
           >
             <div
-              className="bg-primary-500/10 absolute -top-12 -right-12 h-36 w-36 rounded-full blur-2xl"
+              className="bg-primary-500/10 shape-circle absolute -top-12 -right-12 h-36 w-36 blur-2xl"
               aria-hidden="true"
             />
             <div
-              className="bg-accent-500/10 absolute -bottom-12 -left-12 h-36 w-36 rounded-full blur-2xl"
+              className="bg-accent-500/10 shape-circle absolute -bottom-12 -left-12 h-36 w-36 blur-2xl"
               aria-hidden="true"
             />
 
             <div className="relative z-10 flex flex-col items-center">
-              <div className="bg-primary-500/10 text-primary-500 mb-4 animate-bounce rounded-full p-4">
+              <div className="bg-primary-500/10 text-primary-500 mb-4 animate-bounce rounded-2xl p-4">
                 <Sparkles className="h-8 w-8" />
               </div>
-              <h2 className="mb-2 text-xl font-black tracking-tight sm:text-2xl">
+              <h2 className="mb-2 text-xl font-bold tracking-tight sm:text-2xl">
                 {t('readerPage.chapterComplete')}
               </h2>
               <p
                 className={`mb-6 max-w-sm text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
               >
-                {t('readerPage.readingTime')}: 3 mins
+                {t('readerPage.readingTime')}: {t('readerPage.minutes', { mins: totalEstMinutes })}
               </p>
 
               {hasNext ? (
@@ -394,15 +551,19 @@ const ReaderPage = () => {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-xl font-bold text-white">
+                      <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-2xl font-bold text-white">
                         {Number(episodeNumber) + 1}
                       </div>
                       <div className="text-left">
                         <span className="text-primary-500 block text-xs font-semibold">
-                          Episode {Number(episodeNumber) + 1}
+                          {t('readerPage.episodeN', { n: Number(episodeNumber) + 1 })}
                         </span>
-                        <span className="block max-w-[180px] truncate text-sm font-bold text-gray-100">
-                          Chapter Continuation
+                        <span
+                          className={`block max-w-[180px] truncate text-sm font-bold ${
+                            darkMode ? 'text-gray-100' : 'text-gray-900'
+                          }`}
+                        >
+                          {nextEpisode ? nextEpisode.title[lang] : ''}
                         </span>
                       </div>
                     </div>
@@ -419,8 +580,43 @@ const ReaderPage = () => {
                 </div>
               ) : (
                 <p className="text-primary-500 text-sm font-semibold">
-                  You have reached the end of this webtoon!
+                  {t('readerPage.endOfSeries')}
                 </p>
+              )}
+
+              {!isAuthenticated && (
+                <div
+                  className={`mt-6 w-full max-w-md rounded-2xl border p-4 ${
+                    darkMode ? 'border-white/5 bg-white/5' : 'border-gray-100 bg-gray-50'
+                  }`}
+                >
+                  <p
+                    className={`mb-3 text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}
+                  >
+                    {t('readerPage.guestNudge')}
+                  </p>
+                  <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate('/register', {
+                          state: { from: { pathname: `/read/${webtoonId}/${episodeNumber}` } },
+                        })
+                      }}
+                    >
+                      {t('readerPage.createFreeAccount')}
+                    </Button>
+                    <Link
+                      to="/login"
+                      state={{ from: { pathname: `/read/${webtoonId}/${episodeNumber}` } }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-primary-500 hover:text-primary-400 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl px-3 text-sm font-semibold focus-visible:ring-2 focus-visible:outline-none"
+                    >
+                      {t('nav.login')}
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </motion.div>
@@ -437,7 +633,7 @@ const ReaderPage = () => {
               { type: 'spring', stiffness: 260, damping: 22 }
             )}
             exit={{ y: 100, opacity: 0 }}
-            className={`fixed right-0 bottom-0 left-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-bottom fixed right-0 bottom-0 left-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_-8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_-8px_32px_0_rgba(31,38,135,0.08)]'
@@ -451,7 +647,7 @@ const ReaderPage = () => {
                   aria-label={t('reader.previousEpisode')}
                   onClick={() => goToEpisode(Number(episodeNumber) - 1)}
                   disabled={!hasPrev}
-                  className={`flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 transition ${
+                  className={`flex min-h-[44px] items-center gap-2 rounded-2xl px-4 py-2 transition ${
                     hasPrev
                       ? darkMode
                         ? 'hover:bg-white/10'
@@ -466,33 +662,47 @@ const ReaderPage = () => {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    title={isLiked ? t('webtoon.likes') : t('webtoon.likes')}
-                    aria-label={isLiked ? t('webtoon.likes') : t('webtoon.likes')}
-                    onClick={() => setIsLiked(!isLiked)}
-                    className={`flex min-h-[44px] items-center gap-1 rounded-xl px-4 py-2 transition ${
+                    title={t('webtoon.likes')}
+                    aria-label={t('webtoon.likes')}
+                    onClick={() => {
+                      if (webtoonId) toggleLike(webtoonId)
+                    }}
+                    className={`flex min-h-[44px] items-center gap-1 rounded-2xl px-4 py-2 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
-                    } ${isLiked ? 'text-red-500' : ''}`}
+                    } ${liked ? 'text-red-500' : ''}`}
                   >
-                    <Heart className={`h-5 w-5 ${isLiked ? 'animate-pulse fill-current' : ''}`} />
+                    <Heart className={`h-5 w-5 ${liked ? 'animate-pulse fill-current' : ''}`} />
                   </button>
 
                   <button
                     type="button"
-                    title={isBookmarked ? t('webtoonDetail.saved') : t('webtoonDetail.save')}
-                    aria-label={isBookmarked ? t('webtoonDetail.saved') : t('webtoonDetail.save')}
-                    onClick={() => setIsBookmarked(!isBookmarked)}
-                    className={`flex min-h-[44px] items-center gap-1 rounded-xl px-4 py-2 transition ${
+                    title={
+                      webtoonId && isBookmarked(webtoonId)
+                        ? t('webtoonDetail.saved')
+                        : t('webtoonDetail.save')
+                    }
+                    aria-label={
+                      webtoonId && isBookmarked(webtoonId)
+                        ? t('webtoonDetail.saved')
+                        : t('webtoonDetail.save')
+                    }
+                    onClick={() => {
+                      if (webtoonId) toggleBookmark(webtoonId)
+                    }}
+                    className={`flex min-h-[44px] items-center gap-1 rounded-2xl px-4 py-2 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
-                    } ${isBookmarked ? 'text-primary-500' : ''}`}
+                    } ${webtoonId && isBookmarked(webtoonId) ? 'text-primary-500' : ''}`}
                   >
-                    <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
+                    <Bookmark
+                      className={`h-5 w-5 ${webtoonId && isBookmarked(webtoonId) ? 'fill-current' : ''}`}
+                    />
                   </button>
 
                   <Link
                     to={`/webtoon/${webtoonId}`}
                     title={t('readerPage.episodeList')}
                     aria-label={t('readerPage.episodeList')}
-                    className={`flex min-h-[44px] items-center gap-1 rounded-xl px-4 py-2 transition ${
+                    className={`flex min-h-[44px] items-center gap-1 rounded-2xl px-4 py-2 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
@@ -506,7 +716,7 @@ const ReaderPage = () => {
                   aria-label={t('reader.nextEpisode')}
                   onClick={() => goToEpisode(Number(episodeNumber) + 1)}
                   disabled={!hasNext}
-                  className={`flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 transition ${
+                  className={`flex min-h-[44px] items-center gap-2 rounded-2xl px-4 py-2 transition ${
                     hasNext
                       ? darkMode
                         ? 'hover:bg-white/10'
@@ -541,7 +751,7 @@ const ReaderPage = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className={`fixed right-0 bottom-0 left-0 z-50 rounded-t-3xl border-t p-6 shadow-[0_-12px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-colors duration-300 ${
+              className={`safe-bottom fixed right-0 bottom-0 left-0 z-50 rounded-t-3xl border-t p-6 shadow-[0_-12px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl transition-colors duration-300 ${
                 darkMode
                   ? 'border-white/10 bg-gray-950/90 text-white'
                   : 'border-gray-200 bg-white/90 text-gray-900'
@@ -549,18 +759,19 @@ const ReaderPage = () => {
             >
               <div className="mx-auto max-w-md">
                 {/* Drag handle decoration */}
-                <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-gray-400/30" />
+                <div className="mx-auto mb-5 h-1.5 w-12 rounded-2xl bg-gray-400/30" />
 
                 <div className="mb-6 flex items-center justify-between">
                   <h3 className="text-lg font-bold">{t('readerPage.settings')}</h3>
                   <button
                     type="button"
                     onClick={() => setShowSettings(false)}
-                    className={`rounded-full p-1.5 transition ${
+                    aria-label={t('readerPage.settings')}
+                    className={`rounded-2xl p-2 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -574,9 +785,9 @@ const ReaderPage = () => {
                       <button
                         type="button"
                         onClick={() => setDarkMode(false)}
-                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 transition ${
+                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
                           !darkMode
-                            ? 'border-primary-500 bg-primary-600/10 text-primary-500 font-bold'
+                            ? 'border-primary-500 bg-primary-600/10 text-primary-500'
                             : 'border-white/5 bg-white/5 hover:border-white/20'
                         }`}
                       >
@@ -586,9 +797,9 @@ const ReaderPage = () => {
                       <button
                         type="button"
                         onClick={() => setDarkMode(true)}
-                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-2.5 transition ${
+                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
                           darkMode
-                            ? 'border-primary-500 bg-primary-600/10 text-primary-500 font-bold'
+                            ? 'border-primary-500 bg-primary-600/10 text-primary-500'
                             : 'border-white/5 bg-white/5 hover:border-white/20'
                         }`}
                       >
@@ -617,7 +828,9 @@ const ReaderPage = () => {
                         step="0.05"
                         value={brightness}
                         onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                        className="accent-primary-500 h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+                        className={`accent-primary-500 h-1.5 w-full cursor-pointer appearance-none rounded-2xl ${
+                          darkMode ? 'bg-gray-700' : 'bg-gray-200'
+                        }`}
                         aria-label={t('readerPage.brightness')}
                       />
                       <Sun className="h-5 w-5 text-gray-300" />
@@ -635,19 +848,19 @@ const ReaderPage = () => {
                           type="button"
                           key={size}
                           onClick={() => setFontSize(size)}
-                          className={`min-h-[44px] flex-1 rounded-xl border px-3 py-2.5 transition ${
+                          className={`min-h-[44px] flex-1 rounded-2xl border px-3 py-2.5 font-semibold transition ${
                             fontSize === size
-                              ? 'border-primary-500 bg-primary-600/10 text-primary-500 font-bold'
+                              ? 'border-primary-500 bg-primary-600/10 text-primary-500'
                               : 'border-white/5 bg-white/5 hover:border-white/20'
                           }`}
                         >
                           <Type className="mx-auto h-4 w-4" />
                           <span className="mt-1 block text-xs">
                             {size === 'sm'
-                              ? t('categories.all')
+                              ? t('legal.sizeSmall')
                               : size === 'md'
-                                ? 'Medium'
-                                : 'Large'}
+                                ? t('legal.sizeMedium')
+                                : t('legal.sizeLarge')}
                           </span>
                         </button>
                       ))}
@@ -667,58 +880,7 @@ const ReaderPage = () => {
         title={t('readerPage.comments')}
         size="md"
       >
-        <div className="space-y-4">
-          <div className="flex gap-3">
-            <div className="bg-primary-100 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
-              <span className="text-primary-700 text-sm font-bold">U</span>
-            </div>
-            <div className="flex-1">
-              <textarea
-                placeholder={t('comments.placeholder')}
-                aria-label={t('comments.placeholder')}
-                className="focus:ring-primary-500 focus:border-primary-500 w-full resize-none rounded-lg border border-gray-300 px-4 py-3 focus:ring-2"
-                rows={3}
-              />
-              <div className="mt-2 flex justify-end">
-                <Button size="sm">{t('comments.post')}</Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4 border-t border-gray-200 pt-4">
-            <div className="flex gap-3">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100">
-                <span className="text-sm font-bold text-gray-600">B</span>
-              </div>
-              <div className="flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="font-medium text-gray-900">Book Lover</span>
-                  <span className="text-xs text-gray-400">2 {t('notificationsPage.hoursAgo')}</span>
-                </div>
-                <p className="text-sm text-gray-600">This is amazing! I love the story so far.</p>
-                <button type="button" className="hover:text-primary-600 mt-1 text-xs text-gray-500">
-                  {t('comments.reply')}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100">
-                <span className="text-sm font-bold text-gray-600">W</span>
-              </div>
-              <div className="flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="font-medium text-gray-900">Webtoon Fan</span>
-                  <span className="text-xs text-gray-400">5 {t('notificationsPage.hoursAgo')}</span>
-                </div>
-                <p className="text-sm text-gray-600">The art style is incredible!</p>
-                <button type="button" className="hover:text-primary-600 mt-1 text-xs text-gray-500">
-                  {t('comments.reply')}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ReaderCommentsPanel webtoonId={webtoonId!} episodeNumber={episodeNum} />
       </Modal>
     </div>
   )

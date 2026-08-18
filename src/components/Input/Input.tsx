@@ -1,6 +1,7 @@
 import { forwardRef, type InputHTMLAttributes } from 'react'
 import { AlertCircle, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -15,12 +16,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     { className = '', label, error, hint, leftIcon, rightIcon, type = 'text', id, ...props },
     ref
   ) => {
+    const { t } = useTranslation()
     const [showPassword, setShowPassword] = useState(false)
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
     const isPassword = type === 'password'
 
     const baseStyles =
-      'w-full px-4 py-2.5 rounded-lg border bg-white transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0'
+      'w-full px-4 py-2.5 rounded-2xl border bg-white transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0'
 
     const stateStyles = error
       ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
@@ -51,9 +53,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <Eye className="h-5 w-5" aria-hidden="true" />
+              )}
             </button>
           )}
           {rightIcon && !isPassword && (
@@ -63,8 +70,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && (
-          <div className="mt-1.5 flex items-center gap-1.5 text-red-500">
-            <AlertCircle className="h-4 w-4" />
+          <div role="alert" className="mt-1.5 flex items-center gap-1.5 text-red-500">
+            <AlertCircle className="h-4 w-4" aria-hidden="true" />
             <span className="text-sm">{error}</span>
           </div>
         )}

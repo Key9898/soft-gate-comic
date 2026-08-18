@@ -34,6 +34,11 @@ Runs `npm run check` — full project validation:
 
 > If any step fails, push is **blocked**.
 
+### Line endings
+
+- Root [`.gitattributes`](../.gitattributes): `* text=auto eol=lf` so checkout matches Prettier `"endOfLine": "lf"`.
+- On Windows, avoid relying on system `core.autocrlf=true` alone — without `.gitattributes`, Prettier can fail many files and husky reports `failed to push some refs` even when the branch is ahead.
+
 ## Standard flow
 
 ```bash
@@ -66,11 +71,11 @@ New team members: `git clone && npm install` → hooks ready.
 | **`wiki/`**          | Committed knowledge — phase index, PM tracker, conventions, API contract | Yes |
 | **`docs/sessions/`** | Gitignored daily evidence — detailed session notes by date               | No  |
 
-**Start here for phase history:**
+**Start here for SoftGate Comic phase history:**
 
-1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — Impl 1–83 + [Doc Phases 33–34](architecture/implementation-phases.md#documentation-phase-33)
-2. [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable rows 1–98
-3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (Jul 6 = Impl 1–20, Jul 7 = Impl 21–43 + Doc 33, Jul 8 = Impl 44–71 + Doc 34 + Impl 73–77, Jul 9 = Impl 78–80, Jul 10 = Impl 81–83)
+1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–98 (**next: 99**)
+2. [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
+3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (`phases: [N]`)
 
 ### Session file naming
 

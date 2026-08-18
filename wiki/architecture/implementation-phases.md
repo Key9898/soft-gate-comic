@@ -1,1523 +1,966 @@
 ---
-title: Implementation Phases 1–83
+title: SoftGate Comic — Implementation Phases
 type: architecture
-date: 2026-07-10
-tags: [phases, qa, frontend, edc, immersive]
+date: 2026-08-10
+tags: [phases, softgate, comic, frontend]
 ---
 
-# Implementation Phases 1–83
+# SoftGate Comic — Implementation Phases
 
-Master record of all frontend implementation work on branch `kokey` through Impl Phase 89.
-PM tracker (Airtable rows 1–91): [pm-tracker-airtable.md](../references/pm-tracker-airtable.md).
+Master Impl index for the **SoftGate Comic** webtoon reader portal (`src/` as it ships today).
+
+**Next Impl number to use: `99`.**
+
+Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
 ## Who reads this
 
-| Audience  | Use                                                                                             |
-| --------- | ----------------------------------------------------------------------------------------------- |
-| Teammates | What shipped, in what order, which files                                                        |
-| QA        | What to verify per phase; consolidated checklist below                                          |
-| AI agents | Do not redo rejected approaches — see [what-not-to-redo.md](../conventions/what-not-to-redo.md) |
+| Audience  | Use                                                    |
+| --------- | ------------------------------------------------------ |
+| Teammates | What shipped, in what order, which notes               |
+| QA        | What to verify per Impl                                |
+| AI agents | Append the next Impl here; do not reuse legacy numbers |
 
 ## Status legend
 
-- **Done** — implemented and in codebase
-- **QA Pass** — manual verification passed
-- **QA Fixed** — failed initially, fixed in later phase
+- **Done** — implemented in SoftGate Comic codebase
+- **Partial** — shipped with known follow-ups
 
 ## Quick index
 
-| Impl                              | Airtable # | Date       | Title                           |
-| --------------------------------- | ---------- | ---------- | ------------------------------- |
-| [1](#impl-phase-1)                | 3          | 2026-07-06 | Zustand & design tokens         |
-| [2](#impl-phase-2)                | 4          | 2026-07-06 | Split layout & localization     |
-| [3](#impl-phase-3)                | 5          | 2026-07-06 | Showroom & detail modal         |
-| [4](#impl-phase-4)                | 6          | 2026-07-06 | Avatar & chat interface         |
-| [5](#impl-phase-5)                | 7          | 2026-07-06 | UI polish & testing             |
-| [6](#impl-phase-6)                | 8          | 2026-07-06 | Layout, scroll & theme          |
-| [7](#impl-phase-7)                | 9          | 2026-07-06 | Verification & manual QA        |
-| [8](#impl-phase-8)                | 10         | 2026-07-06 | CategoryTabs & ProductCard      |
-| [9](#impl-phase-9)                | 11         | 2026-07-06 | Modal layout enhancements       |
-| [10](#impl-phase-10)              | 12         | 2026-07-06 | Component unit tests            |
-| [11](#impl-phase-11)              | 13         | 2026-07-06 | Category scroll & modal z-index |
-| [12](#impl-phase-12)              | 14         | 2026-07-06 | Final tests & build             |
-| [13](#impl-phase-13)              | 15         | 2026-07-06 | Bento grid & scroll arrow       |
-| [14](#impl-phase-14)              | 16         | 2026-07-06 | Production build check          |
-| [15](#impl-phase-15)              | 17         | 2026-07-06 | HeaderToolbar redesign          |
-| [16](#impl-phase-16)              | 18         | 2026-07-06 | Header toolbar tests            |
-| [17](#impl-phase-17)              | 19         | 2026-07-06 | Individual product cards        |
-| [18](#impl-phase-18)              | 20         | 2026-07-06 | ProductCard test updates        |
-| [19](#impl-phase-19)              | 21         | 2026-07-06 | Image well refinements          |
-| [20](#impl-phase-20)              | 22         | 2026-07-06 | Light theme default             |
-| [21](#impl-phase-21)              | 23         | 2026-07-07 | API contract & types            |
-| [22](#impl-phase-22)              | 24         | 2026-07-07 | Single source products          |
-| [23](#impl-phase-23)              | 25         | 2026-07-07 | Avatar & video slots            |
-| [24](#impl-phase-24)              | 26         | 2026-07-07 | Media wiring & autoplay         |
-| [25](#impl-phase-25)              | 27         | 2026-07-07 | Showroom loading & mobile UX    |
-| [26](#impl-phase-26)              | 28         | 2026-07-07 | Release & documentation         |
-| [27](#impl-phase-27)              | 29         | 2026-07-07 | Dark surface foundation         |
-| [28](#impl-phase-28)              | 30         | 2026-07-07 | Dark contrast                   |
-| [29](#impl-phase-29)              | 31         | 2026-07-07 | Modal close UX                  |
-| [30](#impl-phase-30)              | 32         | 2026-07-07 | Myanmar layout & i18n           |
-| [31](#impl-phase-31)              | 33         | 2026-07-07 | Tests & QA gate                 |
-| [32](#impl-phase-32)              | 34         | 2026-07-07 | Token & toolbar dark fix        |
-| [34](#impl-phase-34)              | 36         | 2026-07-07 | API client & avatar integration |
-| [Doc 33](#documentation-phase-33) | 35         | 2026-07-07 | Wiki, PM tracker & sessions     |
+| Impl | Date       | Title                                           | Note                                                                                                      |
+| ---- | ---------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1    | 2026-07-13 | Project restructure & Tailwind v4 layout        | [2026-07-13-project-restructure.md](../notes/2026-07-13-project-restructure.md)                           |
+| 2    | 2026-07-15 | SoftGate Comic rebrand & git/Vercel handover    | [2026-07-15-softgate-rebrand-handover.md](../notes/2026-07-15-softgate-rebrand-handover.md)               |
+| 3    | 2026-07-17 | Hero banner overlay readability                 | [2026-07-17-hero-banner-overlay-readability.md](../notes/2026-07-17-hero-banner-overlay-readability.md)   |
+| 4    | 2026-07-20 | Brand theme (tokens → accent → cleanup → QA)    | [2026-07-20-brand-theme-color-palette.md](../notes/2026-07-20-brand-theme-color-palette.md)               |
+| 5    | 2026-07-20 | Default EN + force light theme                  | [2026-07-20-default-en-force-light.md](../notes/2026-07-20-default-en-force-light.md)                     |
+| 6    | 2026-08-10 | Company scaffolding standards                   | [2026-08-10-company-structure-alignment.md](../notes/2026-08-10-company-structure-alignment.md)           |
+| 7    | 2026-08-10 | SoftGate Comic brand rename + SVG logo          | [2026-08-10-softgate-brand-rename-svg-logo.md](../notes/2026-08-10-softgate-brand-rename-svg-logo.md)     |
+| 8    | 2026-08-10 | Portal SEO + in-app search                      | [2026-08-10-seo-and-in-app-search.md](../notes/2026-08-10-seo-and-in-app-search.md)                       |
+| 9    | 2026-08-11 | Logo theme token polish                         | [2026-08-11-logo-theme-token-polish.md](../notes/2026-08-11-logo-theme-token-polish.md)                   |
+| 10   | 2026-08-11 | Soft-Expressive border radius normalize         | [2026-08-11-soft-expressive-radius.md](../notes/2026-08-11-soft-expressive-radius.md)                     |
+| 11   | 2026-08-11 | Categories Phase A (filter + genres + status)   | [2026-08-11-categories-phase-a.md](../notes/2026-08-11-categories-phase-a.md)                             |
+| 12   | 2026-08-11 | Typography stack + bold-flicker stabilize       | [2026-08-11-typography-stabilize.md](../notes/2026-08-11-typography-stabilize.md)                         |
+| 13   | 2026-08-11 | Discovery pipelines — UI truth                  | [2026-08-11-discovery-ui-truth.md](../notes/2026-08-11-discovery-ui-truth.md)                             |
+| 14   | 2026-08-11 | Discovery pipelines — data integrity            | [2026-08-11-discovery-data-integrity.md](../notes/2026-08-11-discovery-data-integrity.md)                 |
+| 15   | 2026-08-11 | Discovery pipelines — CTA honesty               | [2026-08-11-discovery-cta-honesty.md](../notes/2026-08-11-discovery-cta-honesty.md)                       |
+| 16   | 2026-08-11 | Book covers — Hero 3D + Apple spine             | [2026-08-11-book-cover-presentation.md](../notes/2026-08-11-book-cover-presentation.md)                   |
+| 17   | 2026-08-11 | Info page headers + breadcrumbs                 | [2026-08-11-info-page-headers.md](../notes/2026-08-11-info-page-headers.md)                               |
+| 18   | 2026-08-11 | HeroBook3D UX harden                            | [2026-08-11-herobook3d-ux-harden.md](../notes/2026-08-11-herobook3d-ux-harden.md)                         |
+| 19   | 2026-08-11 | Structure hygiene (layers, AuthContext)         | [2026-08-11-structure-hygiene.md](../notes/2026-08-11-structure-hygiene.md)                               |
+| 20   | 2026-08-11 | Profile feature components extract              | [2026-08-11-profile-components-extract.md](../notes/2026-08-11-profile-components-extract.md)             |
+| 21   | 2026-08-11 | Library feature components extract              | [2026-08-11-library-components-extract.md](../notes/2026-08-11-library-components-extract.md)             |
+| 22   | 2026-08-11 | Coins presentational extract                    | [2026-08-11-coins-components-extract.md](../notes/2026-08-11-coins-components-extract.md)                 |
+| 23   | 2026-08-11 | Reader comments panel extract                   | [2026-08-11-reader-comments-extract.md](../notes/2026-08-11-reader-comments-extract.md)                   |
+| 24   | 2026-08-11 | Categories genre strip scroll affordance        | [2026-08-11-categories-genre-scroll.md](../notes/2026-08-11-categories-genre-scroll.md)                   |
+| 25   | 2026-08-11 | Library bookmark wiring + Home Save CTA         | [2026-08-11-library-bookmark-wiring.md](../notes/2026-08-11-library-bookmark-wiring.md)                   |
+| 26   | 2026-08-11 | Categories genre reserved chevron + status      | [2026-08-11-categories-genre-rail-slot.md](../notes/2026-08-11-categories-genre-rail-slot.md)             |
+| 27   | 2026-08-11 | Client auth honesty (Register/Profile/Logout)   | [2026-08-11-client-auth-honesty.md](../notes/2026-08-11-client-auth-honesty.md)                           |
+| 28   | 2026-08-11 | Wallet + Demo top-up                            | [2026-08-11-client-wallet-demo-topup.md](../notes/2026-08-11-client-wallet-demo-topup.md)                 |
+| 29   | 2026-08-11 | Premium unlock debit + persist                  | [2026-08-11-premium-unlock-wallet.md](../notes/2026-08-11-premium-unlock-wallet.md)                       |
+| 30   | 2026-08-11 | Episode images + Reader render                  | [2026-08-11-episode-media-reader.md](../notes/2026-08-11-episode-media-reader.md)                         |
+| 31   | 2026-08-11 | Reading history + Detail read badges            | [2026-08-11-reading-history-badges.md](../notes/2026-08-11-reading-history-badges.md)                     |
+| 32   | 2026-08-11 | Likes store ↔ Library Likes                     | [2026-08-11-likes-store-library.md](../notes/2026-08-11-likes-store-library.md)                           |
+| 33   | 2026-08-11 | Profile Auth + derived stats                    | [2026-08-11-profile-auth-derived-stats.md](../notes/2026-08-11-profile-auth-derived-stats.md)             |
+| 34   | 2026-08-11 | Share + Comments client-wire                    | [2026-08-11-share-comments-client-wire.md](../notes/2026-08-11-share-comments-client-wire.md)             |
+| 35   | 2026-08-11 | Notifications store + nav honesty               | [2026-08-11-notifications-honesty.md](../notes/2026-08-11-notifications-honesty.md)                       |
+| 36   | 2026-08-11 | Dead chrome + Reader polish + 404               | [2026-08-11-dead-chrome-reader-polish.md](../notes/2026-08-11-dead-chrome-reader-polish.md)               |
+| 37   | 2026-08-11 | Marketing / Home honesty                        | [2026-08-11-marketing-home-honesty.md](../notes/2026-08-11-marketing-home-honesty.md)                     |
+| 38   | 2026-08-11 | Mock-honest roadmap close                       | [2026-08-11-mock-honest-roadmap-close.md](../notes/2026-08-11-mock-honest-roadmap-close.md)               |
+| 39   | 2026-08-11 | Home UI polish (calm hero + rhythm)             | [2026-08-11-home-ui-polish.md](../notes/2026-08-11-home-ui-polish.md)                                     |
+| 40   | 2026-08-11 | Home Continue Reading episode rail              | [2026-08-11-home-continue-episode-rail.md](../notes/2026-08-11-home-continue-episode-rail.md)             |
+| 41   | 2026-08-11 | Reading scroll-depth resume                     | [2026-08-11-reading-scroll-resume.md](../notes/2026-08-11-reading-scroll-resume.md)                       |
+| 42   | 2026-08-11 | HeroBook3D reliable 3D + reference tilt         | [2026-08-11-herobook3d-tilt-fix.md](../notes/2026-08-11-herobook3d-tilt-fix.md)                           |
+| 43   | 2026-08-11 | Home Genres reserved chevron                    | [2026-08-11-home-genres-chevron.md](../notes/2026-08-11-home-genres-chevron.md)                           |
+| 44   | 2026-08-11 | HeroBook3D open fix (flatten + reduced)         | [2026-08-11-herobook3d-open-fix.md](../notes/2026-08-11-herobook3d-open-fix.md)                           |
+| 45   | 2026-08-11 | HeroBook3D real hinge + size + reduced fade     | [2026-08-11-herobook3d-hinge-size.md](../notes/2026-08-11-herobook3d-hinge-size.md)                       |
+| 46   | 2026-08-11 | static HeroBook + hero mid-align                | [2026-08-11-herobook3d-static-mid-align.md](../notes/2026-08-11-herobook3d-static-mid-align.md)           |
+| 47   | 2026-08-11 | Hide page scrollbar + ScrollToTop               | [2026-08-11-scroll-chrome-scroll-to-top.md](../notes/2026-08-11-scroll-chrome-scroll-to-top.md)           |
+| 48   | 2026-08-11 | Home hero optical vertical center               | [2026-08-11-hero-optical-vertical-center.md](../notes/2026-08-11-hero-optical-vertical-center.md)         |
+| 49   | 2026-08-11 | Hero Spotlight carousel (Trending 5)            | [2026-08-11-hero-spotlight-carousel.md](../notes/2026-08-11-hero-spotlight-carousel.md)                   |
+| 50   | 2026-08-11 | About i18n missing keys fix                     | [2026-08-11-about-i18n-missing-keys.md](../notes/2026-08-11-about-i18n-missing-keys.md)                   |
+| 51   | 2026-08-11 | HeroBook3D fore-edge pose tune                  | [2026-08-11-herobook3d-fore-edge-pose.md](../notes/2026-08-11-herobook3d-fore-edge-pose.md)               |
+| 52   | 2026-08-11 | HeroBook3D unflatten + thick fore-edge          | [2026-08-11-herobook3d-unflatten-fore-edge.md](../notes/2026-08-11-herobook3d-unflatten-fore-edge.md)     |
+| 53   | 2026-08-11 | About Our Story split + book visual             | [2026-08-11-about-story-split-narrative.md](../notes/2026-08-11-about-story-split-narrative.md)           |
+| 54   | 2026-08-11 | HeroBook3D static pose always-on                | [2026-08-11-herobook3d-static-pose-always-on.md](../notes/2026-08-11-herobook3d-static-pose-always-on.md) |
+| 55   | 2026-08-13 | About Mission & Vision + UI/UX polish           | [2026-08-13-about-mission-vision-polish.md](../notes/2026-08-13-about-mission-vision-polish.md)           |
+| 56   | 2026-08-13 | Careers → Creators (Publish with Us) pivot      | [2026-08-13-creators-page-pivot.md](../notes/2026-08-13-creators-page-pivot.md)                           |
+| 57   | 2026-08-13 | Press kit page + chrome alignment               | [2026-08-13-press-kit-chrome-align.md](../notes/2026-08-13-press-kit-chrome-align.md)                     |
+| 58   | 2026-08-13 | Support & recovery pages (FAQ/Help/404/Contact) | [2026-08-13-support-pages-revamp.md](../notes/2026-08-13-support-pages-revamp.md)                         |
+| 59   | 2026-08-13 | Legal shared shell + chrome fixes               | [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md)                           |
+| 60   | 2026-08-13 | Legal content honesty (webtoon-standard)        | [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md)                       |
+| 61   | 2026-08-13 | App pages shell alignment (Profile/Notif/Coins) | [2026-08-13-app-shell-alignment.md](../notes/2026-08-13-app-shell-alignment.md)                           |
+| 62   | 2026-08-13 | Broken flows fix (i18n/Comments/Auth chrome)    | [2026-08-13-broken-flows-fix.md](../notes/2026-08-13-broken-flows-fix.md)                                 |
+| 63   | 2026-08-13 | Data correctness (read set/unlock/likes)        | [2026-08-13-read-tracking-unlock-likes.md](../notes/2026-08-13-read-tracking-unlock-likes.md)             |
+| 64   | 2026-08-13 | Polish sweep (tokens/a11y/honesty/dead code)    | [2026-08-13-polish-sweep.md](../notes/2026-08-13-polish-sweep.md)                                         |
+| 65   | 2026-08-13 | Cross-tab sync (storage events)                 | [2026-08-13-cross-tab-sync.md](../notes/2026-08-13-cross-tab-sync.md)                                     |
+| 66   | 2026-08-13 | Account data migration + delete cascade         | [2026-08-13-account-data-migration.md](../notes/2026-08-13-account-data-migration.md)                     |
+| 67   | 2026-08-13 | Reader guest conversion nudges                  | [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md)                           |
+| 68   | 2026-08-13 | Skeleton loading states + Home empty state      | [2026-08-13-skeleton-loading-states.md](../notes/2026-08-13-skeleton-loading-states.md)                   |
+| 69   | 2026-08-13 | Reader celebration truth (title/time/i18n)      | [2026-08-13-reader-celebration-truth.md](../notes/2026-08-13-reader-celebration-truth.md)                 |
+| 70   | 2026-08-13 | Dialog a11y system (APG + lock + trap)          | [2026-08-13-dialog-a11y-system.md](../notes/2026-08-13-dialog-a11y-system.md)                             |
+| 71   | 2026-08-13 | Coins checkout honesty + i18n copy              | [2026-08-13-coins-honesty-i18n.md](../notes/2026-08-13-coins-honesty-i18n.md)                             |
+| 72   | 2026-08-13 | Coins wizard shell (scroll/dialog/dark strip)   | [2026-08-13-coins-wizard-shell.md](../notes/2026-08-13-coins-wizard-shell.md)                             |
+| 73   | 2026-08-13 | Chrome polish (safe-area/targets/nav/CTA)       | [2026-08-13-chrome-polish-safe-area.md](../notes/2026-08-13-chrome-polish-safe-area.md)                   |
+| 74   | 2026-08-13 | Mechanical theme sweep (dark/2xs/sepia/wash)    | [2026-08-13-theme-mechanical-sweep.md](../notes/2026-08-13-theme-mechanical-sweep.md)                     |
+| 75   | 2026-08-13 | i18n sweep (dates/chart honesty/strings)        | [2026-08-13-i18n-sweep.md](../notes/2026-08-13-i18n-sweep.md)                                             |
+| 76   | 2026-08-13 | A11y structural (h1/keyboard/live/labels)       | [2026-08-13-a11y-structural.md](../notes/2026-08-13-a11y-structural.md)                                   |
+| 77   | 2026-08-13 | Responsive header + overflow hardening          | [2026-08-13-responsive-header-hardening.md](../notes/2026-08-13-responsive-header-hardening.md)           |
+| 78   | 2026-08-14 | HeroBook3D Home size + thickness + top poke     | [2026-08-14-herobook3d-home-size-thickness.md](../notes/2026-08-14-herobook3d-home-size-thickness.md)     |
+| 79   | 2026-08-14 | HeroBook3D fore-edge vertical page lines        | [2026-08-14-herobook3d-fore-edge-vertical.md](../notes/2026-08-14-herobook3d-fore-edge-vertical.md)       |
+| 80   | 2026-08-14 | Home hero pair lg:mt-10 nudge                   | [2026-08-14-hero-pair-mt-nudge.md](../notes/2026-08-14-hero-pair-mt-nudge.md)                             |
+| 81   | 2026-08-14 | Home hero row mt-12 + book mt-4                 | [2026-08-14-hero-row-mt12-book-mt4.md](../notes/2026-08-14-hero-row-mt12-book-mt4.md)                     |
+| 82   | 2026-08-17 | Hero title/deck line rules + overflow           | [2026-08-17-hero-copy-line-rules.md](../notes/2026-08-17-hero-copy-line-rules.md)                         |
+| 83   | 2026-08-17 | Home hero book enter from under copy            | [2026-08-17-hero-book-enter.md](../notes/2026-08-17-hero-book-enter.md)                                   |
+| 84   | 2026-08-17 | Force Home book enter for all visitors          | [2026-08-17-hero-book-enter-forced.md](../notes/2026-08-17-hero-book-enter-forced.md)                     |
+| 85   | 2026-08-17 | About Our Story uses Home HeroBook3D            | [2026-08-17-about-story-herobook3d.md](../notes/2026-08-17-about-story-herobook3d.md)                     |
+| 86   | 2026-08-17 | Hero book enter from under copy                 | [2026-08-17-hero-book-enter-from-copy.md](../notes/2026-08-17-hero-book-enter-from-copy.md)               |
+| 87   | 2026-08-17 | Our Story readable book                         | [2026-08-17-about-story-book.md](../notes/2026-08-17-about-story-book.md)                                 |
+| 88   | 2026-08-17 | Hero book hover straighten then lift            | [2026-08-17-herobook-hover-straighten-lift.md](../notes/2026-08-17-herobook-hover-straighten-lift.md)     |
+| 89   | 2026-08-17 | Our Story open-book shell                       | [2026-08-17-about-story-open-shell.md](../notes/2026-08-17-about-story-open-shell.md)                     |
+| 90   | 2026-08-17 | Force hero book hover for all visitors          | [2026-08-17-hero-book-hover-forced.md](../notes/2026-08-17-hero-book-hover-forced.md)                     |
+| 91   | 2026-08-17 | Our Story shell + cover + on-page turns         | [2026-08-17-about-story-shell-fix.md](../notes/2026-08-17-about-story-shell-fix.md)                       |
+| 92   | 2026-08-17 | Hero book hover come-forward not lift           | [2026-08-17-herobook-hover-come-forward.md](../notes/2026-08-17-herobook-hover-come-forward.md)           |
+| 93   | 2026-08-17 | Our Story 3D valley + page turn                 | [2026-08-17-about-story-page-turn.md](../notes/2026-08-17-about-story-page-turn.md)                       |
+| 94   | 2026-08-17 | Our Story episode reader                        | [2026-08-17-about-story-episode-reader.md](../notes/2026-08-17-about-story-episode-reader.md)             |
+| 95   | 2026-08-17 | Our Story reader pane is white                  | [2026-08-17-about-story-reader-white-pane.md](../notes/2026-08-17-about-story-reader-white-pane.md)       |
+| 96   | 2026-08-17 | Catalog tile honesty                            | [2026-08-17-catalog-tile-honesty.md](../notes/2026-08-17-catalog-tile-honesty.md)                         |
+| 97   | 2026-08-17 | Mock calendar stays in 2026                     | [2026-08-17-mock-calendar-2026.md](../notes/2026-08-17-mock-calendar-2026.md)                             |
+| 98   | 2026-08-17 | Stale catalog localStorage froze 2023 dates     | [2026-08-17-stale-catalog-localstorage.md](../notes/2026-08-17-stale-catalog-localstorage.md)             |
 
 ---
 
-## Impl Phase 1 {#impl-phase-1}
+## Impl Phase 1 — Project restructure & Tailwind v4 (2026-07-13)
 
-**Airtable row 3** | **Done** | 2026-07-06
+**Status:** Done
 
-Setup Zustand store & design tokens.
+Company frontend scaffolding alignment for SoftGate Comic: Tailwind v4 `@theme`, feature folders under `src/features/`, tests under `src/test/`, Cursor rules + wiki.
 
-- Installed `zustand`; created `commerceStore.ts`
-- EDC brand tokens in `src/index.css` `@theme`
-- `productCatalog.ts` from `public/productsImages/` assets
-- Mock API adapter layer (`src/lib/api/`)
-- `.env.example` for `VITE_USE_MOCK_API`
-
-**Key files:** `src/stores/commerceStore.ts`, `src/index.css`, `src/data/productCatalog.ts`, `src/lib/api/`
-
 ---
 
-## Impl Phase 2 {#impl-phase-2}
+## Impl Phase 2 — SoftGate Comic rebrand & git/Vercel handover (2026-07-15)
 
-**Airtable row 4** | **Done** | 2026-07-06
+**Status:** Done
 
-Main split-screen layout & localization.
+Human-facing / platform branding migration and repo remotes/handover for SoftGate Comic (display name later tightened in Impl 7).
 
-- `CommerceLayout`: desktop 42%/58% split; mobile tab navigation
-- `AvatarPanel`, `ChatPanel`, `ShowroomPanel` scaffold
-- EN/MM i18n (`src/lib/i18n/locales/`), `LanguageToggle`
-
-**Key files:** `src/layouts/CommerceLayout.tsx`, `src/lib/i18n/`, `src/components/LanguageToggle.tsx`
-
 ---
-
-## Impl Phase 3 {#impl-phase-3}
 
-**Airtable row 5** | **Done** | 2026-07-06
+## Impl Phase 3 — Hero banner overlay readability (2026-07-17)
 
-Showroom panel & detail modal.
+**Status:** Done
 
-- `CategoryTabs`, `ProductCard`, `ShowroomPanel`
-- `ProductDetailModal` via Catalyst `Dialog`
-- Mock products API wired through store
+Homepage hero overlay lightened; nav logo sizing; redundant text label removed next to logo.
 
-**Key files:** `src/features/showroom/`, `src/lib/api/mock/products.ts`
-
 ---
-
-## Impl Phase 4 {#impl-phase-4}
 
-**Airtable row 6** | **Done** | 2026-07-06
+## Impl Phase 4 — Brand theme (2026-07-20)
 
-Avatar video player & chat interface.
+**Status:** Done
 
-- Avatar scenario placeholders (5 scenarios)
-- `ChatInput`, `ChatMessageList`, `QuickResponseChips`
-- Mock chat API with product highlight support
+Same-day sub-steps (not separate master Impls):
 
-**Key files:** `src/features/chat/`, `src/features/avatar/`, `src/lib/api/mock/chat.ts`
+1. Token-only primary/accent calibration to logo hex
+2. Selective accent on badges / notification dots / promo
+3. Leftover indigo/purple → primary/accent
+4. Visual QA + `npm run check`
 
 ---
 
-## Impl Phase 5 {#impl-phase-5}
+## Impl Phase 5 — Default EN + force light theme (2026-07-20)
 
-**Airtable row 7** | **Done** | 2026-07-06
+**Status:** Done
 
-UI polish, testing & clean up.
+Default language English; portal light-only via `@custom-variant dark` (no OS auto-dark).
 
-- UI transition animations (Framer Motion on cards)
-- Initial test suite; demo Catalyst files removed from app entry
-- Chat textarea visible text color fix; auto-grow textarea
-
-**Key files:** `src/features/chat/ChatInput.tsx`, `src/test/App.test.tsx`
-
 ---
-
-## Impl Phase 6 {#impl-phase-6}
 
-**Airtable row 8** | **Done** | 2026-07-06
+## Impl Phase 6 — Company scaffolding standards (2026-08-10)
 
-UI layout, scrolling & theme optimizations.
+**Status:** Done
 
-- `CommerceLayout`: `h-dvh overflow-hidden` — internal scroll only
-- Chat: auto-grow textarea, fixed message list scroll, `scrollbar-subtle`
-- Dark mode: `@custom-variant dark`, `theme.ts`, `ThemeToggle`
-- Viewport-fit showroom grid (`showroomGrid.ts`)
-- Modal internal scroll; body overflow hidden when open
+`docs/` gitignore, `.gitattributes` LF, root `AGENTS.md`, `lint:fix` / `test:ui`, wiki folder-map/README refresh.
 
-**Key files:** `src/layouts/CommerceLayout.tsx`, `src/index.css`, `src/lib/theme.ts`, `src/features/showroom/showroomGrid.ts`
-
 ---
-
-## Impl Phase 7 {#impl-phase-7}
 
-**Airtable row 9** | **Done** | 2026-07-06
+## Impl Phase 7 — SoftGate Comic brand rename + SVG logo (2026-08-10)
 
-Frontend verification & manual QA.
+**Status:** Done
 
-- `npm run check` PASS (39 tests at session end)
-- Manual QA: viewports, scroll, dark mode, showroom grid
+Display brand **SoftGate Comic** / **SoftGate Pay**; in-app `/logo/logo.svg` + `object-contain`; OG still JPG.
 
 ---
 
-## Impl Phase 8 {#impl-phase-8}
+## Impl Phase 8 — Portal SEO + in-app search (2026-08-10)
 
-**Airtable row 10** | **Done** | 2026-07-06
+**Status:** Done
 
-CategoryTabs & ProductCard refinements.
+Client SEO via `react-helmet-async` + `<SEO />`; hardened static `robots.txt` / `sitemap.xml`; mock search library; Nav autocomplete; SearchPage tabs/filters/recent searches.
 
-- Segmented category bar; sticky All Products + divider
-- Horizontal scroll zone; navy active pill
-- ProductCard: white mat, `object-contain`, hidden grid description
+Conventions: [portal-seo.md](../conventions/portal-seo.md), [in-app-search.md](../conventions/in-app-search.md).
 
-**Key files:** `src/features/showroom/CategoryTabs.tsx`, `ProductCard.tsx`
-
 ---
-
-## Impl Phase 9 {#impl-phase-9}
-
-**Airtable row 11** | **Done** | 2026-07-06
 
-ProductDetailModal layout enhancements.
+## Impl Phase 9 — Logo theme token polish (2026-08-11)
 
-- Wider column gaps (`lg:gap-10`, `xl:gap-12`)
-- Hero image `object-contain` in white mat; spec column padding
+**Status:** Done
 
-**Key files:** `src/features/showroom/ProductDetailModal.tsx`
+Live SVG anchors (`#69c9ca` / `#ee3968` / `#ef4124`) + CTA `#0e9494`; new `spark-*`; Coins Best Value heat; brand convention Do/Don't.
 
 ---
 
-## Impl Phase 10 {#impl-phase-10}
+## Impl Phase 10 — Soft-Expressive border radius normalize (2026-08-11)
 
-**Airtable row 12** | **Done** | 2026-07-06
+**Status:** Done
 
-Component unit testing.
+Banned `rounded-full` and subtle `sm`/`md`/`lg`/`xl` on SoftGate controls. Controls + cards + search + CTAs → `rounded-2xl` (16px); modals / marketing shells → `rounded-3xl` (24px); circular geometry → `.shape-circle`.
 
-- `categoryTabs.test.tsx`, `productCard.test.tsx`, `productDetailModal.test.tsx`
+Convention: [border-radius.md](../conventions/border-radius.md). ADR: [002-soft-expressive-radius.md](../decisions/002-soft-expressive-radius.md).
 
 ---
 
-## Impl Phase 11 {#impl-phase-11}
+## Impl Phase 11 — Categories Phase A (2026-08-11)
 
-**Airtable row 13** | **Done** | 2026-07-06
+**Status:** Done
 
-CategoryTabs scroll polish & modal backdrop fix.
+Bilingual/slug genre match (EN empty bug fix); six WEBTOON-gap genres; status chips; `/categories/:slug` sync.
 
-- `rounded-xl` bar, `scrollbar-none`, `isolate` + `z-[1]` (not `z-10`)
-- `dialog.tsx`: `z-50` — modal covers category bar
+Convention: [categories-browse.md](../conventions/categories-browse.md).
 
-**Key files:** `CategoryTabs.tsx`, `src/components/catalyst/dialog.tsx`
-
 ---
 
-## Impl Phase 12 {#impl-phase-12}
+## Impl Phase 12 — Typography stack + bold-flicker stabilize (2026-08-11)
 
-**Airtable row 14** | **Done** | 2026-07-06
+**Status:** Done
 
-Final test updates & build check.
+Wired Inter + Noto Sans Myanmar; banned `font-black` / `font-extrabold`; selection states keep constant weight; removed unloaded serif toggles on Privacy/Terms/Cookies.
 
-- CategoryTabs + modal z-index tests; ResizeObserver guarded in jsdom
-- `npm run check` deployment validation
+Convention: [typography.md](../conventions/typography.md). ADR: [003-softgate-type-stack.md](../decisions/003-softgate-type-stack.md).
 
 ---
-
-## Impl Phase 13 {#impl-phase-13}
 
-**Airtable row 15** | **Done** | 2026-07-06
+## Impl Phase 13 — Discovery pipelines — UI truth (2026-08-11)
 
-Bento grid layout & category switch controls.
+**Status:** Done
 
-- Typographic `|` divider; right chevron scroll (`scrollCategoriesNext` i18n)
-- Bento grid shell attempted — **reverted in Impl 17–18** (see [what-not-to-redo.md](../conventions/what-not-to-redo.md))
+Reader resource not-found (no wrong-content fallback); EN genre labels via `resolveGenreLabel`; Categories bilingual search; Search trending → `/categories/:slug`; Search status/genre/sort URL sync.
 
-**Key files:** `CategoryTabs.tsx`, `ShowroomPanel.tsx` (bento reverted later)
+Note: plan batches labeled 12/13/14 mapped to SoftGate Impl **13/14/15** because Impl 12 was already used for typography.
 
 ---
 
-## Impl Phase 14 {#impl-phase-14}
+## Impl Phase 14 — Discovery pipelines — data integrity (2026-08-11)
 
-**Airtable row 16** | **Done** | 2026-07-06
+**Status:** Done
 
-Final testing & production build check.
+Mock episodes for all titles; derived genre counts; localStorage schemaVersion; related-by-genre.
 
-- categoryTabs & productCard unit test updates
-- `npm run check` final validation
+Convention: [discovery-honesty.md](../conventions/discovery-honesty.md).
 
 ---
 
-## Impl Phase 15 {#impl-phase-15}
+## Impl Phase 15 — Discovery pipelines — CTA honesty (2026-08-11)
 
-**Airtable row 17** | **Done** | 2026-07-06
+**Status:** Done
 
-HeaderToolbar design & premium controls.
+Author → search works-by-author; hide dead Library CTA; social `#` retained.
 
-- `HeaderToolbar.tsx`: unified `rounded-xl ring-1` shell
-- `ThemeSwitch`: Headless.Switch, sun/moon thumb, EDC navy track
-- `LanguageSegment`: Framer `layoutId="lang-pill"` sliding pill
-- `headerControlsLabel` i18n
-
-**Key files:** `HeaderToolbar.tsx`, `ThemeToggle.tsx`, `LanguageToggle.tsx`
-
 ---
 
-## Impl Phase 16 {#impl-phase-16}
+## Impl Phase 16 — Book covers — Hero 3D + Apple spine (2026-08-11)
 
-**Airtable row 18** | **Done** | 2026-07-06
+**Status:** Done
 
-Header toolbar testing & QA.
+`BookCard` hardcover grids + `HeroBook3D` (open + page leaf). Soft-Expressive radius exception for `.book-media`.
 
-- `headerToolbar.test.tsx`; App theme test uses `getByRole('switch')`
-- `npm run check`
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [004-book-media-presentation.md](../decisions/004-book-media-presentation.md).
 
 ---
-
-## Impl Phase 17 {#impl-phase-17}
 
-**Airtable row 19** | **Done** | 2026-07-06
+## Impl Phase 17 — Info page headers + breadcrumbs (2026-08-11)
 
-Showroom grid & ProductCard redesign.
+**Status:** Done
 
-- **Reverted** bento grid (`gap-px`, outer ring shell)
-- `ShowroomPanel`: `gap-2 lg:gap-3` — 6 separate bordered cards
+Removed fake Back→Home on all nine info pages. Shared `Breadcrumb` + `PageHeader` with Company / Support / Legal tiers; `src/lib/info/pageMeta.ts` as route map.
 
-**Key files:** `ShowroomPanel.tsx`, `ProductCard.tsx`
+Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
 
 ---
 
-## Impl Phase 18 {#impl-phase-18}
+## Impl Phase 18 — HeroBook3D UX harden (2026-08-11)
 
-**Airtable row 20** | **Done** | 2026-07-06
+**Status:** Done
 
-ProductCard test updates & verification.
+Backdrop-only overflow clip; cover Link CTA; focus-within close; touch sticky open.
 
-- Tests assert no `gap-px` bento shell
-- `npm run check`
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
 ---
 
-## Impl Phase 19 {#impl-phase-19}
+## Impl Phase 19 — Structure hygiene (2026-08-11)
 
-**Airtable row 21** | **Done** | 2026-07-06
+**Status:** Done
 
-ProductCard image well refinements.
+Deleted dead `constants/` + `types/`; removed orphan Card/Comments; SEO + SearchAutocomplete barrels; auth → `context/AuthContext` with `features/auth/useAuth` re-export stub.
 
-- `ring-1` → `border`; inset image well `overflow-hidden rounded-lg`
-- Highlight: `border-edc-red border-2`
-- Unit test updates
+Convention: [source-layering-and-imports.md](../conventions/source-layering-and-imports.md).
 
-**Key files:** `ProductCard.tsx`, `productCard.test.tsx`
-
 ---
-
-## Impl Phase 20 {#impl-phase-20}
 
-**Airtable row 22** | **Done** | 2026-07-06
+## Impl Phase 20 — Profile feature components extract (2026-08-11)
 
-Theme fallbacks & session documentation.
+**Status:** Done
 
-- `getPreferredTheme()`: **light** when no `localStorage` (no OS `prefers-color-scheme`)
-- `docs/sessions/2026-07-06-session-summary.md` created
-- `src/test/theme.test.ts` added
-- See also [light-theme-default.md](../notes/2026-07-06-light-theme-default.md)
+Moved `FloatingInput`, `WeeklyReadingChart`, `AchievementsBadgeCenter` to `features/profile/components/` (presentational only).
 
-**Key files:** `src/lib/theme.ts`, `src/test/theme.test.ts`
-
 ---
-
-## Impl Phase 21 {#impl-phase-21}
-
-**Airtable row 23** | **Done** | 2026-07-07
 
-ChatResponse/AvatarMedia types & API contracts.
+## Impl Phase 21 — Library feature components extract (2026-08-11)
 
-- Extended `ChatResponse` (`videoUrl`, `avatarUrl`, `audioUrl`)
-- `AvatarMedia` type; store fields `avatarMedia`, `productsLoadStatus`, `productsError`
-- [api-contract.md](../references/api-contract.md) for backend
+**Status:** Done
 
-**Key files:** `src/types/`, `src/stores/commerceStore.ts`, `wiki/references/api-contract.md`
+Extracted `LibraryEmptyState` + `LibraryDeleteConfirmDialog` under `features/library/components/`.
 
 ---
 
-## Impl Phase 22 {#impl-phase-22}
+## Impl Phase 22 — Coins presentational extract (2026-08-11)
 
-**Airtable row 24** | **Done** | 2026-07-07
+**Status:** Done
 
-Single source `store.products`.
+Moved package/transaction data + `CoinPackageCard` + `TransactionHistoryRow`. Payment wizard left in page.
 
-- `CategoryTabs` + `ProductDetailModal` use `store.products`
-- `src/lib/products.ts` helpers
-- `loadProducts` loading/error states + tests
-
-**Key files:** `src/lib/products.ts`, `CategoryTabs.tsx`, `ProductDetailModal.tsx`
-
 ---
 
-## Impl Phase 23 {#impl-phase-23}
+## Impl Phase 23 — Reader comments panel extract (2026-08-11)
 
-**Airtable row 25** | **Done** | 2026-07-07
+**Status:** Done
 
-AvatarDisplay & AvatarVideoPlayer refactor.
+`ReaderCommentsPanel` under `features/reader/components/`; Modal chrome stays on `ReaderPage`.
 
-- Static avatar slot + video-only slot
-- `avatarAssets.ts`, `videoAssets.ts`, `resolveAvatarMedia.ts`
-
-**Key files:** `src/features/avatar/`, `src/config/`
-
 ---
-
-## Impl Phase 24 {#impl-phase-24}
 
-**Airtable row 26** | **Done** | 2026-07-07
+## Impl Phase 24 — Categories genre strip scroll affordance (2026-08-11)
 
-Store media wiring & video autoplay.
+**Status:** Done
 
-- `sendMessage` / `setLocale` update `avatarMedia`
-- Mock chat returns `videoUrl`; muted video autoplay on source change
+Categories genre pills: single-row `overflow-x-auto` with hidden scrollbar (`scrollbar-hide`) and scroll-aware right chevron + fade via `useOverflowScrollX`. No genre data changes; Home/status out of scope.
 
-**Key files:** `src/stores/commerceStore.ts`, `src/lib/api/mock/chat.ts`
+Convention: [categories-browse.md](../conventions/categories-browse.md).
 
 ---
 
-## Impl Phase 25 {#impl-phase-25}
+## Impl Phase 25 — Library bookmark wiring + Home Save CTA (2026-08-11)
 
-**Airtable row 27** | **Done** | 2026-07-07
+**Status:** Done
 
-Showroom loading states & mobile UX.
+Client-persisted bookmarks (`softgate_library_v1` per user id) via `src/lib/library` + `LibraryContext`. Home / Detail / Reader Save share one store; Library bookmarks tab is honest. History/likes later wired via engagement (Impl 31–32+); Continue + scroll resume Impl 40–41. Guest Save → login with return `from`.
 
-- Loading skeleton, error retry, empty state
-- Modal gallery section; gutter products in catalog
-- Product highlight → mobile showroom tab + `scrollIntoView`
+Convention: [library-bookmarks.md](../conventions/library-bookmarks.md).
 
-**Key files:** `ShowroomPanel.tsx`, `ProductDetailModal.tsx`, `ProductCard.tsx`
-
 ---
 
-## Impl Phase 26 {#impl-phase-26}
+## Impl Phase 26 — Categories genre reserved chevron + status size (2026-08-11)
 
-**Airtable row 28** | **Done** | 2026-07-07
+**Status:** Done
 
-Project final release & documentation.
+Genre strip chevron moved from absolute overlay to a reserved right flex slot; status chips share genre `min-h`/`padding` (`rounded-2xl` unchanged).
 
-- `public/avatar/`, `public/videos/` gitkeep folders
-- README, wiki overview, `.env.example` updated
-- `npm run check` (48 tests at phase end)
+Convention: [categories-browse.md](../conventions/categories-browse.md).
 
 ---
-
-## Impl Phase 27 {#impl-phase-27}
 
-**Airtable row 29** | **Done** | 2026-07-07
+## Impl Phase 27 — Client auth honesty (2026-08-11)
 
-Dark surface foundation.
+**Status:** Done
 
-- Page canvas: `dark:bg-edc-slate-800`; panels: `dark:bg-edc-slate-700`
-- Modal: `dialog.tsx` EDC tokens (not `zinc-900`)
-- See [dark-mode-surfaces.md](../conventions/dark-mode-surfaces.md)
+Browser-local accounts (`softgate_accounts_v1`) + session; Register creates session; Login validates password; Profile uses Auth; OAuth removed; Forgot/Reset unavailable-honest.
 
-**Key files:** `CommerceLayout.tsx`, `index.css`, `dialog.tsx`, `AvatarDisplay.tsx`, `ProductCard.tsx`, `CategoryTabs.tsx`, `HeaderToolbar.tsx`, `ChatInput.tsx`
+Convention: [client-auth.md](../conventions/client-auth.md).
 
 ---
 
-## Impl Phase 28 {#impl-phase-28}
+## Impl Phase 28 — Wallet + Demo top-up (2026-08-11)
 
-**Airtable row 30** | **Done** | 2026-07-07
+**Status:** Done
 
-Dark contrast adjustments.
+`softgate_wallet_v1` + `WalletContext`; Coins Buy = Demo top-up (seed 150). Convention: [client-wallet.md](../conventions/client-wallet.md).
 
-- Category arrow: `dark:text-edc-slate-100`
-- Badge zinc variant; EDC CTA buttons (`edc-navy` / `dark:edc-blue`)
-- Muted text: `dark:text-slate-300` sweep
-
-**Key files:** `CategoryTabs.tsx`, `badge.tsx`, `ChatInput.tsx`, `ProductDetailModal.tsx`
-
 ---
-
-## Impl Phase 29 {#impl-phase-29}
 
-**Airtable row 31** | **Done** | 2026-07-07 | **QA Pass**
+## Impl Phase 29 — Premium unlock debit + persist (2026-08-11)
 
-Product modal close UX.
+**Status:** Done
 
-- Header × button (`aria-label` close)
-- Footer `outline` close button
-- Advantage labels: `line-clamp-2`
+Reader unlock debits wallet, persists `unlockedEpisodeKeys`, guest → login `from`.
 
-**Key files:** `ProductDetailModal.tsx`
-
 ---
-
-## Impl Phase 30 {#impl-phase-30}
 
-**Airtable row 32** | **Done** | 2026-07-07
+## Impl Phase 30 — Episode images + Reader render (2026-08-11)
 
-Myanmar layout & i18n optimizations.
+**Status:** Done
 
-- `ShowroomPanel`: `min-w-0` + `flex-1 truncate` on subtitle
-- `CategoryTabs`: `min-h-9`, tab `py-1.5` for long MM labels
-- Shortened strings in `my.ts`
+Shared episode `images` filled; schema v4; Reader honest empty when missing.
 
-**Key files:** `ShowroomPanel.tsx`, `CategoryTabs.tsx`, `src/lib/i18n/locales/my.ts`
-
 ---
 
-## Impl Phase 31 {#impl-phase-31}
+## Impl Phase 31 — Reading history + Detail read badges (2026-08-11)
 
-**Airtable row 33** | **Done** | 2026-07-07
+**Status:** Done
 
-Tests & QA checklist validation.
+`softgate_engage_v1` history; Library History + Detail read marks. Convention: [library-engagement.md](../conventions/library-engagement.md).
 
-- `productDetailModal.test.tsx`: close button assertions
-- `categoryTabs.test.tsx`: arrow contrast class
-- `npm run check` PASS — **50 tests**
-
 ---
-
-## Impl Phase 32 {#impl-phase-32}
 
-**Airtable row 34** | **Done** | 2026-07-07 | **QA Fixed**
+## Impl Phase 32 — Likes store ↔ Library Likes (2026-08-11)
 
-Category inactive text & toolbar dark mode fix.
+**Status:** Done
 
-- Root cause: `edc-slate-300/400/500` not in `@theme` — classes had no effect
-- Inactive tabs: `dark:text-slate-200`; active: `dark:bg-edc-blue`
-- Toolbar: `dark:bg-edc-slate-800`, theme/language `edc-blue` accent
-- See [edc-slate-tokens.md](../conventions/edc-slate-tokens.md)
+Reader heart ↔ Library Likes via engagement `likedWebtoonIds`.
 
-**Key files:** `CategoryTabs.tsx`, `HeaderToolbar.tsx`, `ThemeToggle.tsx`, `LanguageToggle.tsx`
-
 ---
-
-## Impl Phase 34 {#impl-phase-34}
 
-**Airtable row 36** | **Done** | 2026-07-07
+## Impl Phase 33 — Profile Auth + derived stats (2026-08-11)
 
-API Client, Chat Streaming & Avatar Playback Integration.
+**Status:** Done
 
-- `src/lib/api/http/base.ts` — `resolveApiUrl`, `apiFetch`, `ApiError`; production `VITE_API_BASE_URL`
-- Extended `ChatRequest` (`sessionId`, `history`) and `ChatResponse` (`sessionId`, `audioUrl`)
-- Optional streaming: `chatStream.ts` + `appendAvatarReplyDelta` + `isStreaming` chat UI
-- `public/avatar/manifest.json` + `avatarManifest.ts` — designer drop-in registry
-- `useAvatarPlayback` — unmute after interaction; separate `<audio>` for `audioUrl`
-- `resolveAssetUrl` — CDN prefix for product images
-- `npm run check` PASS — **64 tests**
+Profile stats from Auth + Library + engagement + wallet; avatar dataURL.
 
-**Key files:** `src/lib/api/http/`, `commerceStore.ts`, `avatarManifest.ts`, `useAvatarPlayback.ts`, `resolveAssetUrl.ts`, [api-contract.md](../references/api-contract.md), [avatar-manifest.md](../references/avatar-manifest.md)
-
 ---
-
-## Impl Phase 35 {#impl-phase-35}
-
-**Airtable row 37** | **Done** | 2026-07-07
 
-Immersive opening canvas — sticky virtual background, avatar descend, greeting bubble, advisor corner.
+## Impl Phase 34 — Share + Comments client-wire (2026-08-11)
 
-- `UiPhase` in `commerceStore` (`landing` → `descend` → `greeting` → `advisor` → `showroom`)
-- `src/features/immersive/` — `VirtualBackground`, `AvatarCompanion`, `SpeechBubble`, `motionVariants`, `useOpeningSequence`
-- `ImmersiveLayout` replaces `CommerceLayout` in `App.tsx`
-- `FloatingControls` (theme + language), floating `ChatInput` after advisor phase
-- Placeholder assets under `public/immersive/`
+**Status:** Done
 
-**Key files:** `src/layouts/ImmersiveLayout.tsx`, `src/features/immersive/*`, `src/types/ui.ts`, `commerceStore.ts`
+Web Share + clipboard; `softgate_comments_v1` into shared `Comments`. Convention: [client-comments-notifications.md](../conventions/client-comments-notifications.md).
 
 ---
 
-## Impl Phase 36 {#impl-phase-36}
+## Impl Phase 35 — Notifications store + nav honesty (2026-08-11)
 
-**Airtable row 38** | **Done** | 2026-07-07
+**Status:** Done
 
-Advisor companion + Fast Questions.
+Client notifications + mark-read; nav unread dot; CTAs to real routes.
 
-- `FastQuestionsRail` — glass pills anchored near avatar head (replaces in-layout `QuickResponseChips` on main path)
-- `AvatarVideoPlayer` logic integrated in `AvatarCompanion` (welcome video on greeting)
-- `SpeechBubble` syncs with latest avatar message + streaming indicator
-
-**Key files:** `FastQuestionsRail.tsx`, `AvatarCompanion.tsx`, `ImmersiveLayout.tsx`
-
 ---
 
-## Impl Phase 37 {#impl-phase-37}
+## Impl Phase 36 — Dead chrome + Reader polish + 404 (2026-08-11)
 
-**Airtable row 39** | **Done** | 2026-07-07
+**Status:** Done
 
-Modern virtual showroom overlay.
+Hide dead Library Filter/Sort + remember-me; Reader fontSize; invalid id not-found.
 
-- `VirtualShowroom` — glass bottom/side panel, category pills, staggered product grid
-- Reveals when `uiPhase === 'showroom'` (highlights or recommendation/category chat)
-- `ProductDetailModal` embedded in showroom overlay
-
-**Key files:** `VirtualShowroom.tsx`, `motionVariants.ts` (`showroomVariants`)
-
 ---
-
-## Impl Phase 38 {#impl-phase-38}
 
-**Airtable row 40** | **Done** | 2026-07-07
+## Impl Phase 37 — Marketing / Home honesty (2026-08-11)
 
-Mobile polish, cleanup, conventions.
+**Status:** Done
 
-- Responsive avatar scale (`sm:` breakpoints), showroom `max-h` sheet on mobile
-- `CommerceLayout.tsx` deleted
-- `prefers-reduced-motion` shortcuts in opening sequence
-- [immersive-ui.md](../conventions/immersive-ui.md) convention doc
-- `npm run check` PASS
+Info/Footer/Home discovery copy and sorts aligned to mock catalog honesty.
 
-**Key files:** `ImmersiveLayout.tsx`, `AvatarCompanion.tsx`, `wiki/conventions/immersive-ui.md`
-
 ---
-
-## Impl Phase 39 {#impl-phase-39}
 
-**Airtable row 41** | **Done** | 2026-07-07
+## Impl Phase 38 — Mock-honest roadmap close (2026-08-11)
 
-Immersive canvas polish & centered showroom.
+**Status:** Done
 
-- Renamed `virtual-bg.webp` → `.jpg`; updated `IMMERSIVE_ASSETS` config
-- Removed floating center SVG logo from `VirtualBackground.tsx`
-- Polished `AvatarCompanion` sizing, transparent styling, bubble/chip offsets
-- Removed `ChatInput` from `ImmersiveLayout` (Fast Questions only)
-- Refactored `FloatingControls` & `LanguageSegment` for vertical stack layout
-- Repositioned `VirtualShowroom` to centered glass modal overlay (all breakpoints)
-- Updated `App.test.tsx`; `npm run check` PASS; [immersive-ui.md](../conventions/immersive-ui.md) updated
+Forgot/Reset unavailable confirmed; client mock-honest wiring (27–38) complete. Backend next (out of scope).
 
-**Key files:** `VirtualBackground.tsx`, `ImmersiveLayout.tsx`, `FloatingControls.tsx`, `VirtualShowroom.tsx`, `src/types/ui.ts`
-
 ---
-
-## Impl Phase 40 {#impl-phase-40}
-
-**Airtable row 42** | **Done** | 2026-07-07
 
-Avatar scaling & greeting sequence integration.
+## Impl Phase 39 — Home UI polish (2026-08-11)
 
-- `getManifestVideoExplicit` + PNG-only greeting fallback (no SVG poster)
-- Removed advisor scale shrink; larger avatar frame; layout offset adjustments
-- `completeGreetingAndOpenShowroom` store trigger + i18n wiring
-- Comic `SummarySpeechBubble` with custom tail (left/top directions)
-- Compact EN/MM `LanguageSegment` within `FloatingControls` only
-- Unit tests, wiki conventions, `npm run check` PASS
+**Status:** Done
 
-**Key files:** `commerceStore.ts`, `SummarySpeechBubble.tsx`, `avatarManifest.ts`, `AvatarCompanion.tsx`
+Calm hero (title + deck + Start Reading + Save); roomier hero / tighter shelf rhythm. No Continue logic.
 
 ---
 
-## Impl Phase 41 {#impl-phase-41}
+## Impl Phase 40 — Home Continue episode rail (2026-08-11)
 
-**Airtable row 43** | **Done** | 2026-07-07
+**Status:** Done
 
-AdvisorDock setup & FloatingControls redesign.
+Auth Continue Reading rail from engagement history; shared progress helpers; `primary-600` under-cover bar; reserved chevron.
 
-- `AdvisorDock` — avatar motion, larger frames, vertical Fast-Q column
-- `showroomRevealStage` in store + `useShowroomRevealSequence` hook
-- Chip stagger & slide animations; `FastQuestionsRail` / `VirtualShowroom` right dock
-- `FloatingControls` redesign: `ControlPill`, `LocaleToggleButton`, Login/Logout stub, Mute
-- `isAvatarMuted` wired to `useAvatarPlayback`; mute disabled when no audio source
-- App/store/reveal-sequence unit tests; wiki logs; `npm run check` PASS
-
-**Key files:** `AdvisorDock.tsx`, `useShowroomRevealSequence.ts`, `FloatingControls.tsx`, `commerceStore.ts`
-
 ---
 
-## Impl Phase 42 {#impl-phase-42}
+## Impl Phase 41 — Reading scroll-depth resume (2026-08-11)
 
-**Airtable row 44** | **Done** | 2026-07-07
+**Status:** Done
 
-Unified `useImmersiveSequence` hook & animation timings.
+`HistoryRecord.scrollRatio` schema v2; Reader throttled persist + restore; blended progress on Home/Library shelves.
 
-- `ImmersiveStep` enum + `motionTiming` constants in store/types
-- Unified `useImmersiveSequence` chain replacing older sequence hooks
-- Fade-in avatar for `AdvisorDock`; `SpeechBubbleAnchor` tuning; step-gated visibility
-- `FloatingControls` delayed until correct sequence step + slide-left entrance
-- `VirtualShowroom` reverted to centered, height-auto, content-fit panel with fade entrance
-- `motionVariants` updates; `ImmersiveLayout` wiring; unit tests; `npm run check` PASS
-
-**Key files:** `useImmersiveSequence.ts`, `motionTiming.ts`, `ImmersiveLayout.tsx`, `motionVariants.ts`, `types/ui.ts`
-
 ---
-
-## Impl Phase 43 {#impl-phase-43}
 
-**Airtable row 45** | **Done** | 2026-07-07
+## Impl Phase 42 — HeroBook3D reliable 3D + reference tilt (2026-08-11)
 
-Callback-driven immersive sequences & AdvisorDock DOM refactoring.
+**Status:** Done
 
-- `avatarLayout.ts` constants; `greetingExit` sequence step; `motionTiming` updates
-- `SpeechBubbleAnchor` absolute positioning + `AnimatePresence` enter/exit
-- `AdvisorDock` single fixed `motion.div` with animated coordinates (no center/corner DOM swap)
-- `useImmersiveSequence` callback-driven advance + `ImmersiveSequenceContext`
-- `ImmersiveLayout` provides context; smooth corner transition without `GREETING_HOLD_MS`
-- Unit tests (`greetingExit` step); wiki logs; `npm run check` PASS
+Unflattened Home/Detail wrappers (no Framer transform ancestors). Cover/leaf/shell = CSS class-driven 3D; floating three-quarter tilt + separate float shadow; no `:hover` shell fight.
 
-**Key files:** `avatarLayout.ts`, `AdvisorDock.tsx`, `ImmersiveSequenceContext.tsx`, `useImmersiveSequence.ts`
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
 ---
 
-## Impl Phase 44 {#impl-phase-44}
+## Impl Phase 43 — Home Genres reserved chevron (2026-08-11)
 
-**Airtable row 46** | **Done** | 2026-07-08
+**Status:** Done
 
-STEMWerlz UI layout integration & showroom refactoring.
+Home `Genres:` strip matches Categories Impl 26: `useOverflowScrollX` + reserved right chevron (not overlay). Separate hook instance from Continue rail.
 
-- Glass utility classes in `index.css` + `glassStyles.ts` with dark variants
-- `ShowroomHeroCard`, `ShowroomProductRail`, `ShowroomChrome`; rewrite `VirtualShowroom` layout
-- `ShowroomAnchorContext` — `heroRef`, `ResizeObserver`, media query hooks
-- Extended `avatarLayout` & `motionVariants` for dock positioning + bubble placement to main card
-- `FastQuestionsRail` moved from `AdvisorDock` to `ShowroomChrome` bottom rail (horizontal)
-- Gate `showroomPanel` → `ready` on panel & avatar dock callbacks; mobile auto-skip in sequence
-- `AdvisorPromptsDock`; hero expand/collapse; `ProductSpecSheet` (deprecate `ProductDetailModal` on main path)
-- Selected-card active indicators; `AnimatePresence` crossfades; tests; wiki; `npm run check` PASS
-
-**Key files:** `VirtualShowroom.tsx`, `ShowroomHeroCard.tsx`, `ShowroomProductRail.tsx`, `ShowroomAnchorContext.tsx`, `ProductSpecSheet.tsx`, `glassStyles.ts`
-
 ---
 
-## Impl Phase 46 {#impl-phase-46}
+## Impl Phase 44 — HeroBook3D open fix (flatten + reduced) (2026-08-11)
 
-**Airtable row 48** | **Done** | 2026-07-08
+**Status:** Done
 
-SpeechBubble CTAs, typewriter effects & refactoring.
+Killed `.hero-book-spread { overflow: hidden }` flatten; single DOM tree; reduced motion = 2D cover `translateX` slide (no flat `book-media` lift-only path).
 
-- `BubbleCta` types, `useAvatarBubbleState` hook, store CTA execution logic
-- `SummarySpeechBubble` (SVG), `ThinkingBubble` (SVG), `TypewriterText`, `BubbleCtaButton`
-- Bubble placements in showroom zones; layout height scroll/max-h cleanup
-- CTA consumption across `AdvisorDock`, `ImmersiveLayout`, `VirtualShowroom`
-- Mock API CTA payloads; unit/integration tests; wiki logs; `npm run check` PASS
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
-**Note:** PM Phase 45 was skipped in the tracker (44 → 46).
-
-**Key files:** `types/chat.ts`, `useAvatarBubbleState.ts`, `SummarySpeechBubble.tsx`, `commerceStore.ts`, `lib/api/mock/chat.ts`
-
 ---
-
-## Impl Phase 47 {#impl-phase-47}
 
-**Airtable row 49** | **Done** | 2026-07-08
+## Impl Phase 45 — HeroBook3D real hinge + size + reduced fade (2026-08-11)
 
-`cornerHold` sequence step & consolidated `AvatarBubbleLayer`.
+**Status:** Done
 
-- `cornerHold` step; reorder `useImmersiveSequence` (catalog before chips); avatar moves 2200ms
-- Catalog CTA `enterShowroom` + `openShowroomFromCorner`; defer `VirtualShowroom` display
-- Removed redundant `ShowroomBubbleLayer`; scale-aware `AvatarBubbleLayer` on `AdvisorDock`
-- Gate `catalogBubble` on typewriter completion; trigger product intro appropriately
-- Sequence/CTA unit tests; [immersive-ui.md](../conventions/immersive-ui.md); `npm run check` PASS
+Full motion gated under `prefers-reduced-motion: no-preference` with hardcover `rotateY(-155deg)` hinge. Reduced = opacity cross-fade (no `translateX` fake-open). Hero wrappers bumped (`w-56` → `xl:w-96`); scene padding tightened.
 
-**Key files:** `useImmersiveSequence.ts`, `commerceStore.ts`, `AvatarBubbleLayer.tsx`, `AdvisorDock.tsx`
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
 ---
 
-## Impl Phase 48 {#impl-phase-48}
+## Impl Phase 46 — static HeroBook + hero mid-align (2026-08-11)
 
-**Airtable row 50** | **Done** | 2026-07-08
+**Status:** Done
 
-Typewriter gating, CTA link restyling & offset alignment.
+Retired open/hinge/fade interaction. HeroBook3D is a static three-quarter hardcover Link with CSS hover lift only. Home hero row uses `lg:items-center`. Size wrappers unchanged.
 
-- Gate `greetingBubble` on typewriter completion; wire `catalogBubble` triggers in `AdvisorDock`
-- `BubbleCtaButton` restyled to colored underlined text link
-- `getBubbleShoulderInsetPx` in `avatarLayout`; negative margin offsets for positioning
-- Freeze `dockRect` in `ShowroomAnchorContext`; expand showroom bubble widths outside hero
-- `avatarLayout` unit tests; wiki logs; `npm run check` PASS
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
-**Key files:** `avatarLayout.ts`, `BubbleCtaButton.tsx`, `ShowroomAnchorContext.tsx`, `AdvisorDock.tsx`
-
 ---
-
-## Impl Phase 49 {#impl-phase-49}
 
-**Airtable row 51** | **Done** | 2026-07-08
+## Impl Phase 47 — Hide page scrollbar + ScrollToTop (2026-08-11)
 
-SVG speech bubble tuning & re-entrance prevention.
+**Status:** Done
 
-- `fastQuestions` step handling; stable summary keys in `AvatarBubbleLayer` (skip re-entrance loops)
-- Recalibrated `SummarySpeechBubble` SVG path coordinates (straighten left edge, lower tail)
-- Increased `SHOWROOM_DOCK_BUBBLE_WIDTH_PX`; `instantText` rendering on swap
-- Unit tests; wiki logs; `npm run check` PASS
+Document scrollbar hidden on `html` (scroll kept). `ScrollToTop` FAB in MainLayout only; Reader/Auth excluded. Convention: [portal-scroll-chrome.md](../conventions/portal-scroll-chrome.md).
 
-**Key files:** `SummarySpeechBubble.tsx`, `AvatarBubbleLayer.tsx`, `avatarLayout.ts`
-
 ---
 
-## Impl Phase 50 {#impl-phase-50}
+## Impl Phase 48 — Home hero optical vertical center (2026-08-11)
 
-**Airtable row 52** | **Done** | 2026-07-08
+**Status:** Done
 
-Unified speech bubble dimensions & spacing polish.
+Home hero mid-band: `min-h` + `flex justify-center` shell; sibling `lg:items-center` kept; equal `.hero-book-scene` padding; Home book `lg:translate-y-2` optical nudge. Not 100vh (SoftGate logo clash). Detail unchanged.
 
-- `SPEECH_BUBBLE_WIDTH/HEIGHT` getters in `avatarLayout`; unified sizes globally
-- `SummarySpeechBubble` SVG paths — compound bottom-left tail, fixed heights, text paddings
-- Removed redundant showroom-only width/height overrides in `AdvisorDock`
-- `AdvisorPromptsDock` min-height constraint; softened motion timings (no double-entrance glitches)
-- Unit tests; wiki logs; `npm run check` PASS
+Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
-**Key files:** `avatarLayout.ts`, `SummarySpeechBubble.tsx`, `AdvisorPromptsDock.tsx`
-
 ---
-
-## Impl Phase 51 {#impl-phase-51}
 
-**Airtable row 53** | **Done** | 2026-07-08
+## Impl Phase 49 — Hero Spotlight carousel (Trending 5) (2026-08-11)
 
-SVG speech bubble asset loading & showroom CTA visibility.
+**Status:** Done
 
-- `speechBubble` in `IMMERSIVE_ASSETS` typings (`src/types/ui.ts`)
-- `SummarySpeechBubble` loads static `speech-bubble.svg` + inset text padding
-- `SPEECH_BUBBLE_CONTENT_INSET` in `avatarLayout.ts`
-- `ThinkingBubble` standardized width/height wrapper
-- Hide `enterShowroom` CTA when `immersiveStep >= showroomPanel`
-- Unit tests; wiki conventions; `npm run check` PASS
+Home hero Trending-top-5 rotator: static banner; CTA-aligned dots + right-only next; 5s autoplay loop; pause hover/focus; reduced-motion off autoplay. Convention: [hero-spotlight.md](../conventions/hero-spotlight.md).
 
-**Key files:** `SummarySpeechBubble.tsx`, `avatarLayout.ts`, `types/ui.ts`, `public/immersive/speech-bubble.svg`
-
 ---
-
-## Impl Phase 52 {#impl-phase-52}
 
-**Airtable row 54** | **Done** | 2026-07-08
+## Impl Phase 50 — About i18n missing keys fix (2026-08-11)
 
-Percentage-based responsive speech bubble insets.
+**Status:** Done
 
-- `SPEECH_BUBBLE_HEIGHT_PX` 1:1 with width; ViewBox constants
-- `getSpeechBubbleContentInset` — percentage-based responsive paddings
-- `SummarySpeechBubble` word-wrapping fixes (`min-w-0`, `break-words`)
-- Unit tests; wiki logs; `npm run check` PASS
+Filled missing `about.*` stats/milestone keys (and related Careers/Press/Help keys) in EN/MM with mock-honest copy. About stats no longer render raw i18n keys.
 
-**Key files:** `avatarLayout.ts`, `SummarySpeechBubble.tsx`
-
 ---
-
-## Impl Phase 53 {#impl-phase-53}
-
-**Airtable row 55** | **Done** | 2026-07-08
 
-Speech bubble CTA delayed reveal animation.
+## Impl Phase 51 — HeroBook3D fore-edge pose tune (2026-08-11)
 
-- `BUBBLE_CTA_FADE_MS` + `bubbleCtaRevealVariants` in motion config
-- `SummarySpeechBubble` split text/CTA layouts; `ctaVisible` fade after typewriter completes
-- Removed `mt-2` from `BubbleCtaButton` for parent CTA slot alignment
-- Unit tests (delayed vs instant CTA); wiki logs; `npm run check` PASS
+**Status:** Done
 
-**Key files:** `SummarySpeechBubble.tsx`, `motionVariants.ts`, `BubbleCtaButton.tsx`
+Static closed hardcover CSS tune: milder three-quarter pose + visible right fore-edge page stack (22px, `left: 100%` + `rotateY(90deg)`, horizontal paper lines). No open/hinge. Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
 ---
 
-## Impl Phase 54 {#impl-phase-54}
+## Impl Phase 52 — HeroBook3D unflatten + thick fore-edge (2026-08-11)
 
-**Airtable row 56** | **Done** | 2026-07-08
+**Status:** Done
 
-Grouped speech bubble layout & instant product intro.
+Removed Framer `motion.div` around Home `HeroBook3D` (title/CTA fade only). Thickened fore-edge via `--hero-book-thickness: 48px`, yaw `-42deg`, `perspective: 1000px`. Conventions: [book-cover-presentation.md](../conventions/book-cover-presentation.md), [hero-spotlight.md](../conventions/hero-spotlight.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
-- Rebalanced `SPEECH_BUBBLE_INK_INSET_VIEWBOX` vertical offsets in `avatarLayout`
-- `SummarySpeechBubble` grouped center layout with inline CTA below text
-- `openShowroomFromCorner` calls `showProductIntro` immediately
-- `VirtualShowroom` `handleSelectProduct` triggers `showProductIntro` at showroom steps
-- Unit tests; wiki logs; `npm run check` PASS
-
-**Key files:** `SummarySpeechBubble.tsx`, `commerceStore.ts`, `VirtualShowroom.tsx`
-
 ---
-
-## Impl Phase 55 {#impl-phase-55}
 
-**Airtable row 57** | **Done** | 2026-07-08
+## Impl Phase 53 — About Our Story split + book visual (2026-08-11)
 
-SVG clip path recalculation & spacing tuning.
+**Status:** Done
 
-- `SPEECH_BUBBLE_INK_INSET_VIEWBOX` from SVG clip path coordinates (38/90/337.5/285)
-- Vertically center left-aligned text in ink box; `mt-2` for CTA
-- `showProductIntro` without default CTAs; strip `expandHero` from bubble resolver
-- Unit tests; wiki logs; `npm run check` PASS
+Replaced fake 2024–2026 timeline with 2026-honest three-paragraph Our Story (`Flag` / `Users` / `Beaker` Lucide rows) + decorative SoftGate hardcover SVG. Note: [2026-08-11-about-story-split-narrative.md](../notes/2026-08-11-about-story-split-narrative.md).
 
-**Key files:** `avatarLayout.ts`, `SummarySpeechBubble.tsx`, `useAvatarBubbleState.ts`
-
 ---
-
-## Impl Phase 56 {#impl-phase-56}
-
-**Airtable row 58** | **Done** | 2026-07-08
 
-Phased staggered fade transitions & spacing cleanup.
+## Impl Phase 54 — HeroBook3D static pose always-on (2026-08-11)
 
-- `SummarySpeechBubble` explicit ink bounds + `w-full justify-center` alignment
-- Inner `px-2 py-2` safe padding; CTA styling rules
-- Phased fade animation (avatar out → snap coordinates → avatar in → bubble fade-in)
-- Showroom transition unit tests; wiki logs; manual QA on greeting/corner/dock
-- `npm run check` PASS
+**Status:** Done
 
-**Key files:** `SummarySpeechBubble.tsx`, `AdvisorDock.tsx`, `motionVariants.ts`
+Static hardcover pose + fore-edge always applied (not gated by reduced-motion). Reduced-motion only disables hover lift. Home optical nudge `lg:mt-2` (no transform ancestor). Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
 ---
 
-## Impl Phase 57 {#impl-phase-57}
+## Impl Phase 55 — About Mission & Vision + UI/UX polish (2026-08-13)
 
-**Airtable row 59** | **Done** | 2026-07-08
+**Status:** Done
 
-SVG asset export & showroom size compensation.
+Rendered Mission + new honest Vision as a two-card split (`Target` / `Telescope`); fixed five hardcoded English strings; honesty rewrite of values copy; reduced-motion guards, semantic heading/section fixes, uniform primary icon wells; Organization JSON-LD; new AboutPage smoke test + IntersectionObserver class mock in test setup. Note: [2026-08-13-about-mission-vision-polish.md](../notes/2026-08-13-about-mission-vision-polish.md).
 
-- Verified exported SVG viewBox 375×375; `public/immersive/speech-bubble.svg`
-- Precise coordinates `{37.8, 37.5, 108.3, 151.9}` in `avatarLayout.ts`
-- `getShowroomCompensatedBubbleSizePx()` for showroom dock bubble bounds
-- Text padding `px-2 py-2` → `px-1 py-1` in `SummarySpeechBubble`
-- Unit tests; [immersive-ui.md](../conventions/immersive-ui.md); manual QA all 6 product intro bubbles
-- `npm run check` PASS
-
-**Key files:** `avatarLayout.ts`, `SummarySpeechBubble.tsx`, `public/immersive/speech-bubble.svg`
-
 ---
 
-## Impl Phase 58 {#impl-phase-58}
+## Impl Phase 56 — Careers → Creators (Publish with Us) pivot (2026-08-13)
 
-**Airtable row 60** | **Done** | 2026-07-08
+**Status:** Done
 
-Dynamic speech bubble fontSize compensation & font parity.
+Careers page (empty "not hiring" card) replaced by creator-acquisition page `CreatorsPage.tsx` at `/creators`: masthead hero, 3-step How it works, format checklist, What we look for, single Contact CTA (hover + focus-visible) with legal note. `max-w-7xl` shell + left-aligned `max-w-3xl` text columns. Route/pageMeta/Footer/sitemap renamed; `careers.*` i18n deleted, `creators.*` added (EN/MM); About CTA → `/creators`. Note: [2026-08-13-creators-page-pivot.md](../notes/2026-08-13-creators-page-pivot.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
 
-- `getShowroomCompensatedFontSizePx()` + `getBubbleAvatarGapPx()` in `avatarLayout`
-- Pass `isShowroomDock` & dynamic `fontSize` through `AvatarBubbleLayer` to CTA buttons
-- Unified bubble copy `text-base` (16px) across breakpoints
-- Unit tests; wiki conventions; visual QA greeting/corner/showroom typography
-- `npm run check` PASS
-
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`, `SummarySpeechBubble.tsx`
-
 ---
-
-## Impl Phase 59 {#impl-phase-59}
 
-**Airtable row 61** | **Done** | 2026-07-08
+## Impl Phase 57 — Press kit page + chrome alignment (2026-08-13)
 
-Height-aware speech bubble vertical alignment.
+**Status:** Done
 
-- Tail tip SVG coordinate constants; `getBubbleWrapperTopPx` helpers
-- `AvatarBubbleLayer` height-aware dynamic offsets (`getBubbleWrapperTopPx(bubbleHeight)`)
-- Unit tests for tail offsets & wrapper top; wiki conventions
-- Visual QA all sequence steps; `npm run check` PASS
+Press rebuilt from empty state to press-kit hub: boilerplate, real logo downloads (`/logo/*` only, no fake ZIP/PDF), honest fact sheet `dl` grid, media contact CTA (Button-primary states, `min-h-11`, `translate="no"` email). Masthead + radial wash + `max-w-7xl` shell (Container standard). New `press.*` EN/MM keys, dead keys removed; new `PressPage.test.tsx` (5 cases). Note: [2026-08-13-press-kit-chrome-align.md](../notes/2026-08-13-press-kit-chrome-align.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
 
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`
-
 ---
-
-## Impl Phase 60 {#impl-phase-60}
 
-**Airtable row 62** | **Done** | 2026-07-08
+## Impl Phase 58 — Support & recovery pages (FAQ/Help/404/Contact) (2026-08-13)
 
-Ratio-based speech bubble coordinates & 2D tail alignment.
+**Status:** Done
 
-- Dynamic frame-height ratios; `getBubbleWrapperMarginLeftPx` helpers
-- 2D vector tail anchors in `AvatarBubbleLayer`; `overflow-visible` on `AdvisorDock` wrapper
-- `avatarLayout` unit tests; [immersive-ui.md](../conventions/immersive-ui.md)
-- Visual QA vector coordinates; `npm run check` PASS
+FAQ: 7xl shell + `max-w-3xl` column, hardcoded strings → `faq.*` i18n (search, All FAQs, feedback widget, empty state + Contact link), `type="search"` + `aria-label`, honesty rewrite `a5`/`a8` (demo-only reset + top-up), new webtoon Q&A `q12–q14` (premium unlock, Continue Reading, publish → Creators). Help: 7xl shell, focus-visible topic cards, Popular Articles (FAQ question links) + Need More Help CTA using previously dead keys; leftover dead keys deleted. 404: new `NotFoundPage.tsx` inside MainLayout (nav/footer preserved), i18n `notFound.*`, SEO `noindex`, `Link` recovery actions (Home / Search / Categories / Library / Contact). Contact: 7xl shell, validation + form/success copy → `contact.errors.*` + honest mailto copy. 4 new test suites (19 cases). Note: [2026-08-13-support-pages-revamp.md](../notes/2026-08-13-support-pages-revamp.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
 
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`, `AdvisorDock.tsx`
-
 ---
-
-## Impl Phase 61 {#impl-phase-61}
-
-**Airtable row 63** | **Done** | 2026-07-08
 
-Clamped speech bubble viewport boundaries & spacing polish.
+## Impl Phase 59 — Legal shared shell + chrome fixes (2026-08-13)
 
-- `getBubbleBesideHeadTopPx`, `getClampedBubbleWrapperTopPx` in `avatarLayout`
-- Wire `dockTopPx`, clamped top, gap `marginLeft` across `AvatarBubbleLayer` & `AdvisorDock`
-- Unit tests; wiki conventions for conversational beside placement
-- Visual QA — no top clipping on viewports; `npm run check` PASS
+**Status:** Done
 
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`, `AdvisorDock.tsx`
+Privacy/Terms/Cookies de-cloned into shared `LegalTocSidebar` (anchor links + scroll-spy + reduced-motion + mobile collapse), `ReadabilityControls` (44px labeled buttons, contrast radiogroup), `useLegalReadability` (persisted), `useScrollSpy`. Dead classes removed (`prose*`, `border-gray-150`, `text-xs.5`), `scroll-mt-24` headings, sidebar `lg:top-20`, localized last-updated date, `legal.*` chrome keys EN/MM. Note: [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md). Convention: [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
-## Impl Phase 62 {#impl-phase-62}
+## Impl Phase 60 — Legal content honesty (webtoon-standard) (2026-08-13)
 
-**Airtable row 64** | **Done** | 2026-07-08
+**Status:** Done
 
-Showroom category navigation & back chips.
+Terms gained webtoon-industry sections (eligibility 13+, coins no-ownership/no-real-value/demo-simulated, user comments license, anti-piracy prohibited items). Privacy rewritten around localStorage truth (nothing sent to servers; reading-activity + children sections). Cookies became honest Cookies & Local Storage policy (no tracking cookies; real storage table; analytics/marketing: none). Page-specific SEO descriptions; `LegalPages.test.tsx`. Note: [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md).
 
-- `ShowroomProductRail` `w-fit`; centered rail wrapper in `VirtualShowroom`
-- Back chip loads full category catalog when `activeCategoryId` set
-- `categoryBack` i18n (EN + Myanmar) in locale files
-- `ShowroomProductRail` unit tests; wiki docs; `npm run check` PASS
-
-**Key files:** `ShowroomProductRail.tsx`, `VirtualShowroom.tsx`, `lib/i18n/locales/en.ts`, `my.ts`
-
 ---
 
-## Impl Phase 63 {#impl-phase-63}
+## Impl Phase 61 — App pages shell alignment (Profile/Notif/Coins) (2026-08-13)
 
-**Airtable row 65** | **Done** | 2026-07-08
+**Status:** Done
 
-Combined floating ControlPill & custom theme toggles.
+App task pages aligned to the `max-w-7xl` shell so left edges match the Navigation logo and Footer: Profile `max-w-6xl` → `max-w-7xl` (`lg:grid-cols-4` grid fills it), Notifications 7xl shell + left-aligned `max-w-3xl` inner column, Coins 7xl shell + left-aligned `max-w-4xl` inner column (fixed confetti/wizard modal/snackbar untouched). Fixed pre-existing raw i18n keys the new tests caught: `profilePage.localStatsNote` + `common.demo` added EN/MM. 3 new smoke suites (9 cases) assert shell + inner column classes; ProfilePage seeds `softgate_user` session. Reader + Auth documented as intentional exclusions. Note: [2026-08-13-app-shell-alignment.md](../notes/2026-08-13-app-shell-alignment.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
 
-- `FloatingControlButton` — `size-10` bounds, EDC glassmorphic hover labels
-- `ThemeIconButton`; Auth, Locale, Mute as icon-only wrappers
-- Unified `ControlPill` stack (Login → Locale → Theme → Mute)
-- `FloatingControls` / `ControlPill` unit tests; wiki notes; `npm run check` PASS
-
-**Key files:** `FloatingControlButton.tsx`, `ControlPill.tsx`, `FloatingControls.tsx`, `ThemeIconButton.tsx`
-
 ---
-
-## Impl Phase 64 {#impl-phase-64}
 
-**Airtable row 66** | **Done** | 2026-07-08
+## Impl Phase 62 — Broken flows fix (i18n/Comments/Auth chrome) (2026-08-13)
 
-Floating ControlPill spacing & icon polish.
+**Status:** Done
 
-- `FLOATING_CONTROL_SIZE` → `size-11`; labels `text-sm`; export icon dimensions
-- `LanguageIcon` replaces `GlobeIcon`; all control icons `size-6`
-- `ControlPill` padding offsets; mute disabled contrast styling
-- Unit test assertions; wiki logs; `npm run check` PASS
+Deep-scan breakage batch. (A) 2 wrong i18n keys re-pointed, 7 missing keys added EN/MM (`comments.loginToComment`, `profilePage.avatarFailed`, `readerPage.insufficientCoins`/`read`, `webtoonDetail.linkCopied`/`notFound`/`notFoundDesc`), dead "Open Wallet App Deep Link" button removed, `faq.a5` rewritten to match the no-email-reset reality, unused `auth.forgotPasswordDesc` deleted, Login ↔ Register links forward `state.from`. (B) Comments now persist reply/edit: `parentId?` on `StoredComment` (schema v1 kept) + `addReply`/`updateComment` + cascade delete; `Comments.tsx` rewritten controlled (module-scope `CommentItem` → focus-loss fixed, ghost comment gone, Report button removed, full i18n EN/MM, `.shape-circle`/`rounded-2xl`); `ReaderCommentsPanel` tree-groups storage and drops the `key` remount hack; 6-case test suite. (C) Auth double chrome removed: `AuthLayout` brand h1→p + `text-gray-550` fix; 4 auth pages lost their own full-screen wrapper + duplicate brand block. Note: [2026-08-13-broken-flows-fix.md](../notes/2026-08-13-broken-flows-fix.md). Convention: [client-comments-notifications.md](../conventions/client-comments-notifications.md).
 
-**Key files:** `FloatingControls.tsx`, `ControlPill.tsx`, `LocaleToggleButton.tsx`
-
 ---
-
-## Impl Phase 65 {#impl-phase-65}
 
-**Airtable row 67** | **Done** | 2026-07-08
+## Impl Phase 63 — Data correctness (read set / unlock / likes) (2026-08-13)
 
-Speech bubble speaking top & avatar spacing nudge.
+**Status:** Done
 
-- `BUBBLE_SPEAKING_TOP_PX` & `BUBBLE_AVATAR_GAP_PX` in `avatarLayout`
-- `avatarLayout.test.ts` expectations updated (64/12/48 values)
-- [immersive-ui.md](../conventions/immersive-ui.md) head placement docs
-- Visual QA greeting/corner/showroom; `npm run check` PASS
+Three latent data bugs fixed. (A) Read tracking: `HistoryRecord.readEpisodeNumbers?: number[]` additive (schema v2 kept), storage sanitize (finite/>0/dedupe/sort, legacy fallback `[episodeNumber]`), `recordHistory`/`updateReadingProgress` union the set, `EngagementContext.readEpisodeNumbers` returns the stored set instead of a 1..N loop, ProfilePage `episodesRead` counts the set — jumping into ep 3 no longer marks 1–2 read or inflates stats. (B) Detail unlock: `WebtoonDetailPage` episode rows compute `locked = isPremium && !isEpisodeUnlocked(...)` via `useWallet`, so purchased premium episodes stop showing the Lock icon; new `WebtoonDetailUnlock.test.tsx`. (C) Per-user comment likes: `StoredComment.isLiked` → `likedByUserIds?: string[]`, `toggleCommentLike(episodeKey, commentId, userId)` toggles membership with `likeCount = likedByUserIds.length` (legacy fake counts reset — accepted), panel derives viewer `isLiked`/count, like button disabled when logged out. Tests +7 (lib set semantics, unlock icon, per-user like remount, disabled state). Note: [2026-08-13-read-tracking-unlock-likes.md](../notes/2026-08-13-read-tracking-unlock-likes.md). Conventions: [continue-reading.md](../conventions/continue-reading.md), [client-comments-notifications.md](../conventions/client-comments-notifications.md).
 
-**Key files:** `avatarLayout.ts`, `avatarLayout.test.ts`
-
 ---
-
-## Impl Phase 66 {#impl-phase-66}
-
-**Airtable row 68** | **Done** | 2026-07-08
 
-Shoulder tail-anchoring & alignment fix.
+## Impl Phase 64 — Polish sweep (tokens/a11y/honesty/dead code) (2026-08-13)
 
-- Shoulder tail-anchor constants; rewrite `getBubbleWrapperTopPx` & `getBubbleWrapperMarginLeftPx`
-- `AvatarBubbleLayer` passes exact bubble dimensions; removed viewport clamping
-- `avatarLayout.test.ts` tail-anchoring expectations
-- Wiki logs; `npm run check` PASS
+**Status:** Done
 
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`
+(A) `--text-2xs` (0.6875rem/1rem) defined in `@theme` so the 7 existing `text-2xs` usages render; `border-gray-150/60` → `border-gray-200/60` + `dark:text-gray-505` → `dark:text-gray-500` on Contact; NotFound `font-black` → `font-bold` (type stack ban). (B) a11y: `Button` defaults `type="button"` (override allowed, test added); focus-visible ring pattern (`focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:outline-none`, white ring on dark Footer) added across Navigation (logo, nav links, icon buttons, profile pill, mobile drawer), Footer links, LanguageSwitcher. (C) Honesty: `home.joinDescription` EN/MM and 4 `index.html` meta/JSON-LD spots dropped "thousands of readers" claims. (D) Dead exports removed after grep sweep: engagement `getEngagement`, `episodeProgressPercent`, `clamp01` (internal now), `readEpisodeNumbersForWebtoon`; comments `COMMENTS_SCHEMA_VERSION` re-export; unused `comments.replies` key EN/MM. Note: [2026-08-13-polish-sweep.md](../notes/2026-08-13-polish-sweep.md). Convention: [typography.md](../conventions/typography.md).
 
 ---
 
-## Impl Phase 67 {#impl-phase-67}
+## Impl Phase 65 — Cross-tab sync (storage events) (2026-08-13)
 
-**Airtable row 69** | **Done** | 2026-07-08
+**Status:** Done
 
-Shoulder-based 2D tail anchoring ratio tuning.
+New `src/hooks/useStorageSync.ts` (`useStorageSync(keys, onChange)` — matches `e.key === null` for `clear()` or listed keys; `storage` never fires in the writing tab, so no double updates). Wired: `AuthContext` → `softgate_user` (`setUser(readSession())`; downstream contexts reload via existing `userId` effects; `softgate_accounts_v1` deliberately unsubscribed since session key is always rewritten), `EngagementContext` → `softgate_engage_v1` + `softgate_notifications_v1`, `WalletContext` → `softgate_wallet_v1`, `LibraryContext` → `softgate_library_v1` (all three had their load effects extracted into `refresh` callbacks), `ReaderCommentsPanel` → `softgate_comments_v1`. New `CrossTabSync.test.tsx` (5 cases incl. unrelated-key negative; jsdom needs manual `StorageEvent` dispatch). Note: [2026-08-13-cross-tab-sync.md](../notes/2026-08-13-cross-tab-sync.md). Conventions: [client-auth.md](../conventions/client-auth.md), [client-wallet.md](../conventions/client-wallet.md), [client-comments-notifications.md](../conventions/client-comments-notifications.md).
 
-- `getAvatarShoulderTailAnchorXPx`; Y-axis ratio 0.43 for mouth alignment
-- `getBubbleWrapperMarginLeftPx` shoulder-based horizontal anchors (-96 / -117 offsets)
-- `avatarLayout.test.ts`; [immersive-ui.md](../conventions/immersive-ui.md) 2D tail anchors
-- `npm run check` PASS
-
-**Key files:** `avatarLayout.ts`, `AvatarBubbleLayer.tsx`
-
 ---
 
-## Impl Phase 68 {#impl-phase-68}
+## Impl Phase 66 — Account data migration + delete cascade (2026-08-13)
 
-**Airtable row 70** | **Done** | 2026-07-08
+**Status:** Done
 
-Hero card expansion & avatar auto-fade choreography.
+`user.id` is an email hash, so an email change mints a new id and previously orphaned all per-user data. New `src/lib/account/` (`migrate.ts` + barrel): `migrateUserData(oldId, newId)` moves the 4 `byUserId` stores (engagement/wallet/library/notifications — migrated data overwrites any stale entry under the new id, e.g. an auto-seeded wallet) and rewrites comment authorship (`userId` + `user.id`) plus `likedByUserIds` old→new with dedupe (likeCount preserved); `deleteUserData(userId)` clears the 4 stores and cascade-deletes the user's comments + replies to them (Impl 62 semantics), strips their likes elsewhere (`likeCount = length`), and drops empty episode keys. `AuthContext.updateProfile` calls `migrateUserData` in the email-change branch before `deleteAccountByEmail`; `deleteAccount` calls `deleteUserData` after password verify. Same-tab contexts reload via existing `userId` effects; cross-tab via Impl 65 listeners. New `accountDataMigration.test.ts` (6 cases: store move, comment rewrite, collision overwrite, delete cascade, no-op guards, AuthContext integration). Note: [2026-08-13-account-data-migration.md](../notes/2026-08-13-account-data-migration.md). Convention: [client-auth.md](../conventions/client-auth.md).
 
-- `heroExpanded` / `setHeroExpanded` in `ShowroomAnchorContext`; `VirtualShowroom` toggles
-- `AdvisorDock` fades avatar + bubble when `heroExpanded`; restore on collapse
-- `.scrollbar-hint` CSS + `ShowroomHeroCard` scroll viewport with `pr-4`
-- `ThemeToggle` Heroicons 24 solid sun/moon icons
-- `VirtualShowroom.test.tsx`; wiki notes; `npm run check` PASS
-
-**Key files:** `ShowroomAnchorContext.tsx`, `AdvisorDock.tsx`, `ShowroomHeroCard.tsx`, `index.css`, `ThemeIconButton.tsx`
-
 ---
-
-## Impl Phase 69 {#impl-phase-69}
 
-**Airtable row 71** | **Done** | 2026-07-08
+## Impl Phase 67 — Reader guest conversion nudges (2026-08-13)
 
-Transition gating & scrollbar styling polish.
+**Status:** Done
 
-- Reserve static CTA layouts in `SummarySpeechBubble`; `scrollbar-none` on ink scroller
-- `catalogBubbleVisibility.ts` — gate bubble to `showroomDockPhase === 'ready'` on desktop; `instantExit` on transitions
-- `index.css` — hide native scrollbar buttons/corners for `.scrollbar-hint`
-- Wiki logs; `npm run check` PASS
+WEBTOON-style guest conversion in the reader after a guest-access audit (industry research: WEBTOON/Naver/Tapas/Lezhin/Manta). Premium locked screen is guest-aware ("Log in to unlock" label, balance line hidden for guests); Chapter Complete portal gains a guest sign-up nudge (register Button + login Link, both carrying `state.from` back to the episode). 3 new `readerPage.*` keys EN/MM; `ReaderGuestNudge.test.tsx` (4 cases). New convention: [guest-access.md](../conventions/guest-access.md) (full guest policy matrix). Note: [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md).
 
-**Key files:** `SummarySpeechBubble.tsx`, `catalogBubbleVisibility.ts`, `AdvisorDock.tsx`, `index.css`
-
 ---
-
-## Impl Phase 70 {#impl-phase-70}
 
-**Airtable row 72** | **Done** | 2026-07-08
+## Impl Phase 68 — Skeleton loading states + Home empty state (2026-08-13)
 
-Real-time i18n speech bubble re-localization.
+**Status:** Done
 
-- `bubbleCopy` on `ChatMessage` types; tag scripted dialogue in `commerceStore`
-- `relocalizeBubbleMessages.ts` wired into `setLocale`
-- `SummarySpeechBubble` resets `revealedCopyKey` on `copyKey` change
-- Unit tests (`relocalizeBubbleMessages.test.ts`, `commerceStore.test.ts`); wiki notes
-- `npm run check` PASS — **125 tests**
+Replaced the 7 copy-pasted full-screen spinners with layout-mirroring skeletons (research-backed: skeletons for predictable content layouts, 200ms delay guard against mock-mode flash, `role="status"` + `aria-busy`). New `Skeleton` primitive (`src/components/Skeleton/`) + 6 feature skeletons; ProtectedRoute now renders a quiet shell (auth resolves in one frame — no loader per <100ms rule). HomePage's conflated `isLoading || webtoons.length === 0` split into skeleton vs `HomeEmptyState` (was an infinite spinner when data was legitimately empty). Reduced-motion CSS now disables pulse/spin. New convention: [loading-states.md](../conventions/loading-states.md). Note: [2026-08-13-skeleton-loading-states.md](../notes/2026-08-13-skeleton-loading-states.md).
 
-**Key files:** `types/chat.ts`, `commerceStore.ts`, `relocalizeBubbleMessages.ts`, `SummarySpeechBubble.tsx`
-
 ---
-
-## Impl Phase 71 {#impl-phase-71}
-
-**Airtable row 73** | **Done** | 2026-07-08
 
-Instant i18n swapping & typewriter replay prevention.
+## Impl Phase 69 — Reader celebration truth (2026-08-13)
 
-- `hasPresentedCopyRef` + `showInstant` in `SummarySpeechBubble` for locale swaps
-- Unit test: text changes do not replay typewriter after first presentation
-- Wiki locale guidelines updated
-- `npm run check` PASS — **126 tests**
+**Status:** Done
 
-**Key files:** `SummarySpeechBubble.tsx`, `wiki/conventions/immersive-ui.md`
+Chapter Complete portal honesty fixes (Batch 1 of the six-batch audit overhaul). Real next-episode title via `nextEpisode` lookup replaces hardcoded "Chapter Continuation" (contrast bug fixed: fixed `text-gray-100` → darkMode ternary); reading time now computed from measured `scrollHeight` (`totalEstMinutes`, same 3000px/min model as the HUD) instead of hardcoded "3 mins"; hardcoded "Episode {n}", header "Ep. {n}" and the end-of-series line moved to i18n (`readerPage.episodeN/epShort/minutes/endOfSeries` EN+MM). New `ReaderCelebration.test.tsx` (3 cases). Note: [2026-08-13-reader-celebration-truth.md](../notes/2026-08-13-reader-celebration-truth.md).
 
 ---
 
-## Impl Phase 73 {#impl-phase-73}
+## Impl Phase 70 — Dialog a11y system (2026-08-13)
 
-**Airtable row 75** | **Done** | 2026-07-08
+**Status:** Done
 
-Corner chips, locale toggle & hero scroll — combined bugfix batch (post-71).
+ARIA APG modal-dialog pattern across all overlay surfaces via two new shared hooks: `useScrollLock` (iOS-proof `position: fixed` body lock storing/restoring `scrollY` — replaces `overflow: hidden`) and `useFocusTrap` (initial focus, Tab/Shift+Tab cycle, trigger-focus restore; capture-phase). `Modal.tsx` gains `role="dialog"`/`aria-modal`/`aria-labelledby` + internal content scroll (`max-h-[calc(85dvh-4rem)] overflow-y-auto overscroll-contain`); `LibraryDeleteConfirmDialog` gains dialog semantics + Escape + Cancel initial focus; Reader settings sheet gains Escape + scroll lock + labeled 44px-friendly close button. Native `<dialog>` migration stays parked. New `ModalA11y.test.tsx` (7 cases). Note: [2026-08-13-dialog-a11y-system.md](../notes/2026-08-13-dialog-a11y-system.md).
 
-- **Roofing fast chip:** `isCornerPhase()` in `types/ui.ts`; `applyChatResponse` routes corner recommendations through `openShowroomFromCorner` (avatar dock choreography) instead of `highlightProducts` + `skipToImmersiveReady`; legacy `highlightProducts` CTA in `executeBubbleCta` also routes to `openShowroomFromCorner` when in corner phase
-- **Chip locale:** `bubbleCopy` kinds `chipCompany` | `chipThanks` | `chipRoofing`; i18n strings in `en.ts` / `my.ts`; mock chat uses shared relocalize helpers; `relocalizeBubbleMessages` updates chip reply text + CTA labels on `setLocale`
-- **Hero scroll:** `.scrollbar-glass` in `index.css` (transparent track, hover thumb); `ShowroomHeroCard` expanded panel + bottom fade mask
-- Unit tests: `commerceStore.test.ts`, `relocalizeBubbleMessages.test.ts`, `ShowroomHeroCard.test.tsx`
-- `npm run check` PASS — **134 tests**
-
-**Key files:** `types/ui.ts`, `types/chat.ts`, `commerceStore.ts`, `relocalizeBubbleMessages.ts`, `mock/chat.ts`, `index.css`, `ShowroomHeroCard.tsx`
-
 ---
 
-## Impl Phase 74 {#impl-phase-74}
+## Impl Phase 71 — Coins checkout honesty + i18n copy (2026-08-13)
 
-**Airtable row 76** | **Done** | 2026-07-09
+**Status:** Done
 
-Hero scroll minimal-native + company chip EN/MM parity (follow-up to Impl 73).
+Copy-only honesty pass on the Coins demo checkout: persistent `demoCheckoutNote` banner inside the wizard (visible on method + detail steps), fake "Transaction Merchant ID TXN-8472910-MM" → "Demo transaction ID DEMO-TXN-8472910" (copy button kept), 23 new `coinsPage.*` EN+MM keys (method descs, backToMethods, totalPrice, payAmount, perCoin, phone errors, card-art strings), `formatPrice` locale-aware (`my-MM` for mm). No flow changes. New `CoinsCheckout.test.tsx` (5 cases). Note: [2026-08-13-coins-honesty-i18n.md](../notes/2026-08-13-coins-honesty-i18n.md).
 
-- **Hero scroll:** `.scrollbar-minimal` replaces `.scrollbar-glass` — 4px thumb, transparent track, no arrow buttons, `scrollbar-gutter: auto`; `ShowroomHeroCard` expanded panel
-- **Company chip copy:** EN `chipReplyCompany` aligned to MM (single sentence); CTA label **"Read more about EDC"** / **"EDC အကြောင်း ပိုမိုဖတ်ရန်"**
-- **Bubble layout:** CTA pinned outside ink scroll region in `SummarySpeechBubble` — EN CTA no longer clipped
-- **Disabled CTA:** `BubbleCta.disabled`; company chip mock returns `disabled: true`; greyed non-clickable button
-- Unit tests: `ShowroomHeroCard.test.tsx`, `SummarySpeechBubble.test.tsx`, `commerceStore.test.ts`, `relocalizeBubbleMessages.test.ts`
-- `npm run check` PASS — **135 tests**
-
-**Key files:** `index.css`, `ShowroomHeroCard.tsx`, `SummarySpeechBubble.tsx`, `BubbleCtaButton.tsx`, `types/chat.ts`, `en.ts`, `mock/chat.ts`
-
 ---
-
-## Impl Phase 75 {#impl-phase-75}
 
-**Airtable row 77** | **Done** | 2026-07-09
+## Impl Phase 72 — Coins wizard shell + cleanup (2026-08-13)
 
-BubbleCtaButton export hotfix — white-screen regression after Phase 74.
+**Status:** Done
 
-- **Root cause:** `BubbleCtaButton` imported `useCommerceStore` but export/name mismatch broke Vite HMR graph (`does not provide an export named 'BubbleCtaButton'`)
-- **Fix:** Remove store from leaf; add `onExecute` callback prop; wire via `SummarySpeechBubble` (interim — store still in bubble until Impl 76)
-- **Dev recovery:** delete `node_modules/.vite`, restart `npm run dev`
-- `npm run check` PASS — **135 tests**
+Wizard panel becomes a real modal dialog: `flex max-h-[85dvh] flex-col` with `flex-1 overflow-y-auto overscroll-contain` content (mobile card/QR sheets no longer overflow), `role="dialog"` + `aria-modal` + `aria-labelledby`, `useScrollLock`/`useFocusTrap` (Impl 70 hooks), Escape-to-close guarded by `isProcessing`. Dead theme code deleted: 6 `.dark .metal-*` CSS rules + ~63 never-firing `dark:` utilities; `text-[10px]` ×8 → `text-2xs` (card-art `text-[8px]/[9px]` kept). `sr-only` h1 added. `CoinsCheckout.test.tsx` +3 cases. Note: [2026-08-13-coins-wizard-shell.md](../notes/2026-08-13-coins-wizard-shell.md).
 
-**Key files:** `BubbleCtaButton.tsx`, `SummarySpeechBubble.tsx`
-
 ---
-
-## Impl Phase 76 {#impl-phase-76}
 
-**Airtable row 78** | **Done** | 2026-07-09
+## Impl Phase 73 — Chrome polish: safe areas, targets, nav, CTAs (2026-08-13)
 
-Bubble vertical center + typewriter restore (Canva-aligned; post-Phase 74 regression fix).
+**Status:** Done
 
-- **Dual ink layout:** Mode A (`!showCtaSlot`) — `justify-center` + inner `shrink-0`; Mode B (`showCtaSlot`) — `flex-1` text at ink top + pinned CTA
-- **Typewriter contract:** `hasPresentedRef` + `presentedCopyKeyRef`; ref set only when typewriter actually finishes (not on instant locale swap); mount `useEffect` bug removed
-- **Store boundary:** `useCommerceStore` moved `SummarySpeechBubble` → `AvatarBubbleLayer` (`onExecuteCta` prop)
-- Regression tests: first-mount animation, mid-rerender survival, layout class assertions
-- `npm run check` PASS — **137 tests**
+`viewport-fit=cover` added (prerequisite for all `env(safe-area-inset-*)`); `safe-top` wired on Navigation + Reader header, `safe-bottom` on Reader footer + settings sheet, floating pills offset via `bottom-[calc(1.5rem+env(safe-area-inset-bottom))]`. 44px minimum targets on primary chrome (nav icon buttons, mobile menu rows, Modal close). LanguageSwitcher label `hidden sm:inline` (Globe-only on mobile). Authenticated nav gains Library + Coins shortcuts (desktop icons next to bell, mobile menu row). CTA honesty: Home banner is auth-aware (`browseNow` → /categories for members), Notifications row link label "Home" → "View". New `NavChrome.test.tsx` (8 cases). Note: [2026-08-13-chrome-polish-safe-area.md](../notes/2026-08-13-chrome-polish-safe-area.md).
 
-**Key files:** `SummarySpeechBubble.tsx`, `AvatarBubbleLayer.tsx`, `SummarySpeechBubble.test.tsx`, `immersive-ui.md`
-
 ---
-
-## Impl Phase 77 {#impl-phase-77}
-
-**Airtable row 79** | **Done** | 2026-07-09
 
-Floating control hover labels — sticky-after-click fix + Motion reveal.
+## Impl Phase 74 — Mechanical theme sweep (2026-08-13)
 
-- **Bug:** `group-focus-within` kept glass labels visible after click until blur elsewhere
-- **Fix:** hover-only via Motion `whileHover` on `FloatingControlButton`; removed CSS `group-focus-within` / `group-hover` show-hide
-- **Motion:** `floatingLabelVariants` — label slides outward from button (`x: 10 → 0`) + fade/scale (~220ms in / ~180ms out); `getFloatingLabelVariants()` respects `prefers-reduced-motion`
-- Tests: FloatingControls hover-only contract; motionVariants `floatingLabelVariants` x/opacity
-- `npm run check` PASS
+**Status:** Done
 
-**Key files:** `FloatingControlButton.tsx`, `motionVariants.ts`, `motionTiming.ts`, `FloatingControls.test.tsx`, `immersive-ui.md`
+Zero-visual-change cleanup: ~250 legacy `dark:` classes stripped from 22 portal files (grep-verified: only the Skeleton tone TS key remains); Reader brightness-slider track converted to a real `darkMode` ternary; `text-[10px]` → `text-2xs` repo-wide; radius drift fixed (WebtoonDetailSkeleton badge, SkeletonText, Press tag); legal sepia hexes → `--color-sepia-*` token classes; `.radial-wash-primary` utility replaces 4 hand-written masthead gradients; [brand-color-tokens.md](../conventions/brand-color-tokens.md) codifies the semantic palette (emerald/amber/sky/red + gamification rainbow + vendor hexes + sepia). 233/233 tests green with zero test edits. Note: [2026-08-13-theme-mechanical-sweep.md](../notes/2026-08-13-theme-mechanical-sweep.md).
 
 ---
 
-## Impl Phase 78 {#impl-phase-78}
+## Impl Phase 75 — i18n sweep (2026-08-13)
 
-**Airtable row 80** | **Done** | 2026-07-09
+**Status:** Done
 
-Floating control labels — sticky accumulation fix + Clip Path Text Reveal.
+Remaining hardcoded English routed through i18next en+mm: Home relative release dates, Profile achievements (5 badges) + weekly chart (now honest — real episodes-read counts instead of `× 5` fake minutes; localized `Intl` weekday names), Library view toggles / `Ep. n/total` / empty + delete-dialog strings, Auth tagline, Modal close, BookCard/HeroBook3D cover fallbacks, Reader font-size labels (fixed "Small" mis-wired to "All") + wallet unlock txn description (`title[lang]`), notification seed messages via `i18n.t()` at creation, locale-aware `toLocaleDateString` fallbacks (Comments/Notifications) and `formatDate` mm→my-MM mapping. Gotcha: legacy duplicate `profilePage.weeklyActivity` key shadowed the new value (JSON last-one-wins) — reused legacy keys instead; dupe scan clean. New `I18nSweep.test.tsx` (4 mm/en spot checks); suite 237. Note: [2026-08-13-i18n-sweep.md](../notes/2026-08-13-i18n-sweep.md).
 
-- **Bug:** after hover leave, toolbar `animate="visible"` re-applied shared `hidden`/`visible` keys → labels stuck and accumulated across controls
-- **Fix:** rename variants to `labelHidden` / `labelVisible`; plain `div` + pointer enter/leave → `animate` (no `whileHover` on shared keys)
-- **Motion:** clip-path wipe `inset(0 0 0 100%)` → `inset(0 0 0 0)` from button edge outward left; opacity + small `x`; `FLOATING_LABEL_MS` 360 / exit 240; reduced-motion skips wipe
-- Tests: leave clears `data-hovered`; no A+B accumulation; clipPath contract; **142 tests**
-- `npm run check` PASS
-
-**Key files:** `FloatingControlButton.tsx`, `motionVariants.ts`, `motionTiming.ts`, `FloatingControls.test.tsx`, `immersive-ui.md`
-
 ---
 
-## Impl Phase 79 {#impl-phase-79}
+## Impl Phase 76 — A11y structural (2026-08-13)
 
-**Airtable row 81** | **Done** | 2026-07-09
+**Status:** Done
 
-Immersive scenario video wiring — play current `journeyState` clip (not welcome-only).
+Structural accessibility across the portal: heading hierarchy fixed (Profile display-name h2→h1, Search sr-only h1, LibraryEmptyState h3→h2), Library card divs + Notifications rows keyboard-operable (`role="button"` + `tabIndex` + Enter/Space + focus-visible ring — nested interactive children rule out `<button>`), async feedback announced (`role="status"` on Library/Coins toasts + Profile save line; `role="alert"` on Reader unlock error + form field errors), FloatingInput/Contact fields get real `useId` label wiring + `aria-invalid`/`aria-describedby`, password eye toggles labeled via new `auth.showPassword`/`hidePassword` keys (en+mm), decorative lucide icons `aria-hidden` across 10 files. New `A11yStructure.test.tsx` (6 cases; jsdom gotcha: AnimatePresence `mode="wait"` delays Library card mount — tests must `waitFor`). Suite 243. Note: [2026-08-13-a11y-structural.md](../notes/2026-08-13-a11y-structural.md).
 
-- **Bug:** `AdvisorDock` hard-wired `getManifestVideoExplicit('welcome')` + `uiPhase === 'greeting'` gate → company / category / recommendation / closing never played after designer fills manifest
-- **Fix:** `resolveImmersiveVideoSrc(scenario, locale, mediaVideoSrc)` — HTTPS API/CDN override, else explicit manifest; ignore relative convention paths (no 404 video when assets missing)
-- **UI:** `showVideo = Boolean(videoSrc)`; follows `useAvatarScenario().journeyState`; portrait when URL undefined
-- Tests: `resolveImmersiveVideoSrc` + `AdvisorDock.video.test.tsx`; `npm run check` PASS
-
-**Key files:** `avatarManifest.ts`, `AdvisorDock.tsx`, `avatarManifest.test.ts`, `AdvisorDock.video.test.tsx`, `immersive-ui.md`
-
 ---
-
-## Impl Phase 80 {#impl-phase-80}
 
-**Airtable row 82** | **Done** | 2026-07-09
+## Impl Phase 77 — Responsive header + overflow hardening (2026-08-13)
 
-Always typewriter bubble copy — Fast Q + showroom product intros.
+**Status:** Done
 
-- **Bug:** sticky `hasPresentedRef` made chip replies instant after catalog intro; AdvisorDock `instantText={showroomPanel+}` forced all dock product copy instant
-- **Fix:** `showInstant = Boolean(instantText)` only; remount `TypewriterText` with `key={copyKey}`; reset CTA on copy change; remove AdvisorDock catalog `instantText`
-- **Contract:** every new `copyKey` typewrites (including locale swap); `instantText` prop = explicit override only; reduced motion still instant in `TypewriterText`
-- Tests: copy-change + catalog→company chip sequence typewrite; `npm run check` PASS
+Tablet-band header crowding fixed with a measured breakpoint ladder: member cluster `sm:` → `lg:`, desktop search box → `xl:` (narrowed to `w-56`) with the 44px toggle below it, language label → `xl:inline`, hamburger conditional (`lg:hidden` members / `md:hidden` guests) with the menu panel sharing the conditional and its duplicated nav links `md:hidden`. Measuring the row (`clientWidth - leftGroup - rightGroup`, not `scrollWidth`) exposed two live defects: the nav logo had no `shrink-0` and was silently rendering at **35px instead of 58px on every `mm` desktop** because a replaced element absorbed the width deficit; and `scrollbar-none` on the Library tab rail was a no-op (no such utility in Tailwind v4 — it is `scrollbar-hide`). Budget recovered with `lg:gap-2`, `w-56`, and a `max-w-[10ch]` name cap → worst case +28px at 1024, +47px at 1280 (member + `mm`). Safety nets: `min-w-0` on the profile `Link` only (never the icon cluster — that would silently clip icons under the guard), `truncate`, `shrink-0`, `whitespace-nowrap`, `wrap-anywhere` on comment bodies. Disclosure semantics: `aria-expanded` + `aria-controls` on hamburger + search toggle, constant `nav.menu` key (en+mm) replacing the `viewAll`/`close` ternary. Page guard `html, body { overflow-x: clip }` (never `hidden` — it kills the sticky nav), verified live against sticky nav, ScrollToTop, Modal, Reader footer + settings sheet, and scroll-lock restore. New `ResponsiveChrome.test.tsx` (13 cases incl. an anti-regression guard for the `min-w-0` mistake). Suite 256. Note: [2026-08-13-responsive-header-hardening.md](../notes/2026-08-13-responsive-header-hardening.md).
 
-**Key files:** `SummarySpeechBubble.tsx`, `AdvisorDock.tsx`, `SummarySpeechBubble.test.tsx`, `immersive-ui.md`
-
 ---
-
-## Impl Phase 81 {#impl-phase-81}
 
-**Airtable row 83** | **Done** | 2026-07-10
+## Impl Phase 78 — HeroBook3D Home size + thickness + top poke (2026-08-14)
 
-3D Virtual Space — Phase 1 Lobby (Samara-like feel, not clone).
+**Status:** Done
 
-- **Stack:** `three` + `@react-three/fiber@8` + `@react-three/drei@9` (React 18 peer-compatible)
-- **Default stage:** code-built warm-timber lobby (PBR floor/walls/counter/logo/door) + fixed cinematic camera + stand-in `AvatarPresenter`
-- **QA:** `?mood=gallery` → clean gallery materials; `?legacy=1` → prior 2D immersive (video avatar + VirtualShowroom)
-- **UI:** world-space Fast Questions (`Html`); screen-space bubbles + chat + FloatingControls; no VirtualShowroom on default path
-- **Out of scope:** door open, product room, Designer GLB clips, click-to-move
-- Tests: `lobby3d.test.ts`, `LobbyImmersiveShell.test.tsx`, App lobby assertions; **155** tests; `npm run check` PASS
+Home `HeroBook3D` one step smaller (`xl:w-80`), shared thickness `32px`, milder `rotateX(6deg)`, extra scene top padding, hover lift `-3px`. No `overflow: hidden` (preserve-3d). Detail width unchanged. Note: [2026-08-14-herobook3d-home-size-thickness.md](../notes/2026-08-14-herobook3d-home-size-thickness.md). Convention: [book-cover-presentation.md](../conventions/book-cover-presentation.md). ADR: [005-herobook3d-ux.md](../decisions/005-herobook3d-ux.md).
 
-**Key files:** `src/features/lobby3d/*`, `ImmersiveLayout.tsx`, `immersive-ui.md`
-
 ---
-
-## Impl Phase 82 {#impl-phase-82}
-
-**Airtable row 84** | **Done** | 2026-07-10
 
-Lobby layout pass — brand wall, far-right door, counter Fast Q, side panels.
+## Impl Phase 79 — HeroBook3D fore-edge vertical page lines (2026-08-14)
 
-- **Logo:** removed counter plaque; large clean mark on warm timber **back feature wall** (alpha + anisotropy + backlight)
-- **Door:** far-right corridor, visible only; emissive pulse on Enter Showroom
-- **Fast Q:** Company / Support / Enter Showroom on **counter-face 3D panels** + stagger motion; legacy 2D keeps Company / Roofing / Thanks
-- **Sides:** left Company + right Support wall plaques
-- Enter Showroom → `openShowroomFromCorner` + door pulse; **no** VirtualShowroom on 3D path
-- Tests: **157**; `npm run check` PASS
+**Status:** Done
 
-**Key files:** `LobbyEnvironment.tsx`, `ReceptionCounter.tsx`, `PortalDoor.tsx`, `FastQuestionsWorld.tsx`, `LobbySidePanels.tsx`, `getFastQuestionChips.ts`, i18n locales
+`.hero-book-pages` grain `to bottom` → `to right` so stacked sheets read as vertical edges on the right fore-edge. Pose/thickness/overflow unchanged. Note: [2026-08-14-herobook3d-fore-edge-vertical.md](../notes/2026-08-14-herobook3d-fore-edge-vertical.md).
 
 ---
 
-## Impl Phase 83 {#impl-phase-83}
+## Impl Phase 80 — Home hero pair lg:mt-10 nudge (2026-08-14)
 
-**Airtable row 85** | **Done** | 2026-07-10
+**Status:** Done
 
-Lobby-native sequence + logo fix + side zone relayout.
+Home title+book row `lg:mt-10`; book wrapper `lg:mt-2` removed so the pair drops together 40px. `lg:items-center` and hero `min-h` unchanged. Note: [2026-08-14-hero-pair-mt-nudge.md](../notes/2026-08-14-hero-pair-mt-nudge.md).
 
-- **Sequence:** `useLobbySequence` — logo beat → greeting → Fast Q → controls (skip corner/catalog); legacy path unchanged
-- **Controls gate:** `sequenceVariant: 'lobby'` so Fast Q step does not show FloatingControls early
-- **Logo:** `meshBasicMaterial` + forward z + no aggressive alphaTest
-- **Guidance:** `lobbyFastQHint` bubble without View-products CTA
-- **Zones:** left Company/Support bay; right Products destination plaque (visual only)
-- Tests: **158**; `npm run check` PASS
-
-**Key files:** `useLobbySequence.ts`, `LobbyAdvisorChrome.tsx`, `LobbyEnvironment.tsx`, `LobbySidePanels.tsx`, `ImmersiveSequenceContext.tsx`, `FloatingControls.tsx`
-
 ---
 
-## Impl Phase 84 {#impl-phase-84}
+## Impl Phase 81 — Home hero row mt-12 + book mt-4 (2026-08-14)
 
-**Airtable row 86** | **Done** | 2026-07-10
+**Status:** Done
 
-Camera-to-zone cinematic focus on the 3D lobby.
+Row `lg:mt-12` (text) + book wrapper `lg:mt-4` (book 64px total). `lg:items-center` kept. Note: [2026-08-14-hero-row-mt12-book-mt4.md](../notes/2026-08-14-hero-row-mt12-book-mt4.md).
 
-- **Presets:** `counter` / `infoBay` / `products` in `lobbyLayout.ts`
-- **API:** `focusZone` + auto-return (~900ms ease + 2.8s hold) via `LobbySceneContext`
-- **Camera:** entrance dolly then position+lookAt lerp; reduced-motion snaps
-- **Triggers:** Company/Support → left bay; Enter Showroom / Products plaque → right; door pulse unchanged; no VirtualShowroom
-- Tests: **163**; `npm run check` PASS
-
-**Key files:** `LobbyCamera.tsx`, `LobbySceneContext.tsx`, `lobbyLayout.ts`, `FastQuestionsWorld.tsx`, `LobbySidePanels.tsx`
-
 ---
-
-## Impl Phase 85 {#impl-phase-85}
 
-**Airtable row 87** | **Done** | 2026-07-10
+## Impl Phase 82 — Hero title/deck line rules + overflow (2026-08-17)
 
-Lobby Pass 85 Foundation (A1–A5).
+**Status:** Done
 
-- **Logo:** client PNG flush on timber; gray backing removed; soft uplights
-- **Sequence:** logo-only `background` beat → avatar → greeting → hold → Fast Q
-- **Fast Q:** vertical timber plaques on counter; no glass/cream ghost bleed
-- **Camera:** reframed `infoBay` / `products` for room + door context
-- **Bubble:** `LobbyFocusContext` shell-level; hide off-counter; strip followUp Read-more on lobby
-- Out of scope: avatar travel, slide door, mood UI
-- Tests: **164**; `npm run check` PASS
+Hero catalog title/deck display lock: title `line-clamp-2 lg:line-clamp-1`, deck `line-clamp-2` + `min-h-2lh`. Overflow ellipsizes; full copy on webtoon detail. Text column `min-w-0`. Note: [2026-08-17-hero-copy-line-rules.md](../notes/2026-08-17-hero-copy-line-rules.md).
 
-**Key files:** `LobbyEnvironment.tsx`, `useLobbySequence.ts`, `LobbyFocusContext.tsx`, `FastQuestionsWorld.tsx`, `LobbyAdvisorChrome.tsx`, `lobbyLayout.ts`
-
 ---
-
-## Impl Phase 86 {#impl-phase-86}
 
-**Airtable row 88** | **Done** | 2026-07-10
+## Impl Phase 83 — Home hero book enter from under copy (2026-08-17)
 
-Pass 86 — Guide avatar (zone travel + choice chips).
+**Status:** Done
 
-- Avatar lerps with `cameraZone` (`AVATAR_ZONE_POS`)
-- No timed auto-return; `zoneGuidePhase` idle/explaining/choosing
-- Bubble visible at all zones with CSS offsets; choice chips after explain
-- i18n: back / products / company-support / products arrive hint
-- Out of scope: slide door, mood UI, decorated props
-- Tests: **164**; `npm run check` PASS
+Home-only CSS `translate` enter on `.hero-book-enter` (book slides out from behind title/deck). Copy stays opacity fade. Detail unchanged. Note: [2026-08-17-hero-book-enter.md](../notes/2026-08-17-hero-book-enter.md).
 
-**Key files:** `AvatarPresenter.tsx`, `LobbyFocusContext.tsx`, `LobbyAdvisorChrome.tsx`, `LobbyZoneChoiceChips.tsx`, `lobbyLayout.ts`
-
 ---
-
-## Impl Phase 87 {#impl-phase-87}
-
-**Airtable row 89** | **Done** | 2026-07-10
 
-Pass 87 — Showroom dressing (C1–C3).
+## Impl Phase 84 — Force Home book enter for all visitors (2026-08-17)
 
-- Left wall: Company + Support **vignettes** with timber alcove + primitive props; timber hit labels
-- Right: commercial **double slide door** (aluminum frame + frosted glass); Products plaque **beside** door
-- Door pulse foreshadow only — no leaf open / no VirtualShowroom
-- Atmosphere: softer light, baseboards, counter toe-kick / under-glow
-- Out of scope: mood UI (Pass 88), avatar/choice logic, Designer GLB
-- Tests: **165**; `npm run check` PASS
+**Status:** Done
 
-**Key files:** `LobbySidePanels.tsx`, `PortalDoor.tsx`, `LobbyEnvironment.tsx`, `ReceptionCounter.tsx`, `lobbyLayout.ts`
+Book enter animation is not gated on `prefers-reduced-motion`. Hover lift still is. Note: [2026-08-17-hero-book-enter-forced.md](../notes/2026-08-17-hero-book-enter-forced.md).
 
 ---
 
-## Impl Phase 88 {#impl-phase-88}
+## Impl Phase 85 — About Our Story uses Home HeroBook3D (2026-08-17)
 
-**Airtable row 90** | **Done** | 2026-07-10
+**Status:** Done
 
-Pass 88 — Mood + chrome (D1–D2 + #3).
+About Our Story decorative book replaced the flat `story-book.svg` shell with the same static `HeroBook3D` hardcover as Home (Home size ladder, no `hero-book-enter`). Cover face is wordless `public/about/story-cover.svg` (brand teal + abstract shapes; not a catalog cover). `HeroBook3D` `href`/`ctaLabel` are optional together so About is not a fake Link; Home/Detail CTAs unchanged. About page-root `overflow-hidden` moved to the masthead wash clipper so 3D is not flattened. Note: [2026-08-17-about-story-herobook3d.md](../notes/2026-08-17-about-story-herobook3d.md).
 
-- FloatingControls: lobby mood toggle `warmTimber` ↔ `cleanGallery`; light/dark removed on lobby path (kept on legacy)
-- Live `lobbyMood` in store; `?mood=gallery` seeds once
-- Stronger HUD glass; diegetic Products plaque label; primary/secondary choice chips
-- Out of scope: door open, VirtualShowroom, Designer GLB
-- Tests: **169**; `npm run check` PASS
-
-**Key files:** `commerceStore.ts`, `FloatingControls.tsx`, `LobbyMoodToggleButton.tsx`, `LobbySidePanels.tsx`, `LobbyZoneChoiceChips.tsx`, `index.css`
-
 ---
 
-## Impl Phase 89 {#impl-phase-89}
+## Impl Phase 86 — Hero book enter from under copy (2026-08-17)
 
-**Airtable row 91** | **Done** | 2026-07-10
+**Status:** Done
 
-Lobby QA bugfix (Pass 85–88 follow-up).
+Home book enter starts under title/deck via layout-relative `translate` (`calc(100% - 100cqi)` at `lg+`; self-height + gap below). Copy is not faded. Note: [2026-08-17-hero-book-enter-from-copy.md](../notes/2026-08-17-hero-book-enter-from-copy.md).
 
-- Enter Showroom foreshadow: `focusZone` + `pulseDoor` + `showLobbyProductsArriveHint` (no `openShowroomFromCorner` / silent `showroomPanel`)
-- Zone thinking bubble visible (`showHint` allows `mode === 'thinking'`)
-- Products arrive hint **appends** messages; Fast Q hint still replaces
-- Mood warm icon = timber bars (not sun)
-- Tests: **172**; `npm run check` PASS
-
-**Key files:** `FastQuestionsWorld.tsx`, `LobbyAdvisorChrome.tsx`, `commerceStore.ts`, `LobbyMoodToggleButton.tsx`
-
 ---
-
-## Impl Phase 90 {#impl-phase-90}
 
-**Airtable row 92** | **Done** | 2026-07-10
+## Impl Phase 87 — Our Story readable book (2026-08-17)
 
-Lobby white-screen fix (Vite HMR + React context).
+**Status:** Done
 
-- Root cause: HMR re-ran `createContext()` in `LobbySceneContext` while some consumers kept the old context → `useLobbyScene` null → ErrorBoundary / WebGL context lost
-- Fix: `import.meta.hot.accept` → full `window.location.reload()` on `LobbySceneContext` + `LobbyFocusContext`
-- `StandInHumanoid` theme from zustand `lobbyMood` + `getLobbyTheme` (no scene context)
-- Verified: post-fix logs show store theme path; no `useLobbyScene NULL`
+About Our Story is an open-spread `StoryBook` with a non-wrapping pager. Chapter copy lives in `@softgate/shared` `mockStoryChapters` (not `SharedData`; schema stays 4). Chapter 1 verso is a flat `story-cover.svg` plate — `HeroBook3D` removed from About. No 3D flip. Note: [2026-08-17-about-story-book.md](../notes/2026-08-17-about-story-book.md).
 
-**Key files:** `LobbySceneContext.tsx`, `LobbyFocusContext.tsx`, `StandInHumanoid.tsx`
-
 ---
-
-## Impl Phase 91 {#impl-phase-91}
 
-**Airtable row 93** | **Done** | 2026-07-10
+## Impl Phase 88 — Hero book hover straighten then lift (2026-08-17)
 
-Lobby logo sharpness, opening timing, diegetic spot fixtures.
+**Status:** Done
 
-- SVG → 2048 canvas bake for wall logo (no fake 3D letters); static plane
-- Dolly **800 ms** + start z **5.9**; logo beat **2800 ms**; `initialize` keeps `background` (legacy kicks `avatarFadeIn`)
-- Remove counter front under-glow (Fast Q hotspot)
-- Five warm-brass counter-rear spot fixtures aiming logo; remove invisible logo pointLights
+Home/Detail `HeroBook3D` hover is sequential: face-on identity rotate, then `translate: 0 -0.75rem`. Mouse-out reverses. Home enter blocks pointer-events for 0.8s. Note: [2026-08-17-herobook-hover-straighten-lift.md](../notes/2026-08-17-herobook-hover-straighten-lift.md).
 
-**Key files:** `loadLobbyLogoTexture.ts`, `LobbyEnvironment.tsx`, `LogoSpotFixtures.tsx`, `ReceptionCounter.tsx`, `lobbyLayout.ts`, `commerceStore.ts`, `useImmersiveSequence.ts`
-
 ---
-
-## Impl Phase 92 {#impl-phase-92}
-
-**Airtable row 94** | **Done** | 2026-07-10
 
-Lobby sequence pacing + Fast Q polish.
+## Impl Phase 89 — Our Story open-book shell (2026-08-17)
 
-- Slower post-avatar lobby timing (`LOBBY_AVATAR_FADE_MS` 1800, greeting hold 1400, chip stagger/fade, controls 1200, typewriter 34ms/char)
-- Fast Q plaque + label opacity-synced entrance (no text-only rise); wider one-line company label
-- Fast Q + chat stay mounted through `controlsIn` (`isLobbyFastQSurfaceVisible` / `isLobbyChatVisible`)
-- Avatar waist framing deferred (designer GLB)
+**Status:** Done
 
-**Key files:** `lobbyLayout.ts`, `FastQuestionsWorld.tsx`, `LobbyAdvisorChrome.tsx`, `ImmersiveSequenceContext.tsx`, `TypewriterText.tsx`, `motionTiming.ts`
+Replaced the Impl 87 white-card + footer pager with a CSS 3D always-open hardcover volume (feathered gutter, spine, fore-edge, page-edge turns). No 180° flip. Numbered **89** because 88 was Home/Detail hover straighten. Note: [2026-08-17-about-story-open-shell.md](../notes/2026-08-17-about-story-open-shell.md).
 
 ---
 
-## Impl Phase 93 {#impl-phase-93}
+## Impl Phase 90 — Force hero book hover for all visitors (2026-08-17)
 
-**Airtable row 95** | **Done** | 2026-07-10
+**Status:** Done
 
-Lobby Fast Q reveal beats + logo panel soft edge.
+Ungated Impl 88 straighten-then-lift from `prefers-reduced-motion`; removed reduce `transition: none` on `.hero-book` / shadow; dropped `hero-book-enter-hit` so Home hover can fire. Standing rule: product motion we add is forced. Note: [2026-08-17-hero-book-hover-forced.md](../notes/2026-08-17-hero-book-hover-forced.md). Convention: [forced-product-motion.md](../conventions/forced-product-motion.md).
 
-- Beats: plaques → labels+hint → chat → controls (`lobbyFastQBeat`; greeting no longer fires hint early)
-- Soft contact strips + timber panel inset for logo wall edge
-- Avatar waist still deferred (designer GLB)
-
-**Key files:** `commerceStore.ts`, `useLobbySequence.ts`, `FastQuestionsWorld.tsx`, `LobbyAdvisorChrome.tsx`, `LobbyEnvironment.tsx`, `lobbyLayout.ts`
-
 ---
 
-## Impl Phase 94 {#impl-phase-94}
+## Impl Phase 91 — Our Story shell + cover + on-page turns (2026-08-17)
 
-**Airtable row 96** | **Done** | 2026-07-13
+**Status:** Done
 
-Welcome bubble cold-load ordering bugfix — gate opening sequence on 3D scene readiness.
+Contained the chapter-1 cover plate (no intrinsic-size overflow, no leaf `rotateY`), redrew `story-cover.svg` as a webtoon cover, and moved Prev/Next onto visible circular chips on the recto. Note: [2026-08-17-about-story-shell-fix.md](../notes/2026-08-17-about-story-shell-fix.md).
 
-- Bug: on cold/slow load the welcome bubble rendered before the 3D lobby + logo (worse under `prefers-reduced-motion`, where beat timers collapse to 0ms). Confirmed with `performance.now()` runtime logs: `welcomeBubbleVisible` fired before `onCreated`/`logoBaked` every run.
-- Fix: wire the previously-unused `onSceneReady`; `LobbyImmersiveShell` holds `sceneReady` and gates `useLobbySequence({ sceneReady })`; `LobbyScene` fires `onReady` from a one-shot `useFrame` only after the first painted frame **and** the logo bake resolves.
-- Safety caps: `LOBBY_SCENE_READY_SAFETY_MS` (4000), `LOBBY_LOGO_READY_SAFETY_MS` (2500) so the gate can never hang.
-- Verified order: `onCreated → logoBaked → sceneReady → backgroundBeatStart → greetingReached → welcomeBubbleVisible`. Type-check clean; `useLobbySequence` tests 5/5.
-
-**Key files:** `LobbyImmersiveShell.tsx`, `useLobbySequence.ts`, `LobbyCanvas.tsx`, `lobbyLayout.ts`
-
 ---
 
-## Impl Phase 95 {#impl-phase-95}
+## Impl Phase 92 — Hero book hover come-forward not lift (2026-08-17)
 
-**Airtable row 97** | **Done** | 2026-07-13
+**Status:** Done
 
-Lobby opening choreography restore — decouple staged reveal from `prefers-reduced-motion`.
+Second hover beat is camera-forward `translate: 0 0 2rem` on `.hero-book`, not screen-up `0 -0.75rem`. Straighten-then-move delays unchanged. Forced for every visitor. Note: [2026-08-17-herobook-hover-come-forward.md](../notes/2026-08-17-herobook-hover-come-forward.md).
 
-- Bug: with Windows Animation effects / `prefers-reduced-motion: reduce`, the lobby opening felt rushed ("အလောတကြီး") — logo, avatar, welcome bubble, Fast Q plaques, chat, and controls appeared together instead of staged over ~10s.
-- Root cause (3 layers): (1) **`commerceStore.initialize()`** jumped straight to `immersiveStep: 'ready'` after `loadProducts()` — entire sequence bypassed (critical, missed in prior beat-timer fix); (2) beat timers had collapsed to 0ms under reduced motion (Impl 38 shortcut); (3) camera entrance dolly + opening typewriter skipped under reduced motion.
-- Fix: remove init fast-path; add `lobbyChoreography.ts` with `lobbyOpeningBeatMs()` guard on all opening beats; always run entrance camera dolly; `TypewriterText.forceAnimate` for lobby opening steps via `AvatarBubbleLayer`; 3D avatar opacity fade during `avatarFadeIn` beat (`LOBBY_AVATAR_FADE_MS`).
-- Regression tests: `commerceStore.initialize.test.ts` (reduced motion → stays `background`); `useLobbySequence` reduced-motion timer tests; `lobbyChoreography.test.ts`.
-- Verified: `npx tsc -b` clean; **185** tests pass (was 180).
+---
 
-**Key files:** `commerceStore.ts`, `lobbyChoreography.ts`, `useLobbySequence.ts`, `LobbyAdvisorChrome.tsx`, `FastQuestionsWorld.tsx`, `LobbyCanvas.tsx`, `LobbyCamera.tsx`, `AvatarPresenter.tsx`, `TypewriterText.tsx`, `AvatarBubbleLayer.tsx`
+## Impl Phase 93 — Our Story 3D valley + page turn (2026-08-17)
 
----
+**Status:** Done
 
-## Impl Phase 96 {#impl-phase-96}
+Restored desk-tilt + leaf `rotateY` valley (clip on inner paper, never on the 3D parent). Next/prev run a CSS 3D `rotateY(±180deg)` sheet hinged at the spine. No new libraries. Note: [2026-08-17-about-story-page-turn.md](../notes/2026-08-17-about-story-page-turn.md).
 
-**Airtable row 98** | **Done** | 2026-07-13
+---
 
-Side panel label gating — counter-first focal, zone-focus reveal.
+## Impl Phase 94 — Our Story episode reader (2026-08-17)
 
-- Bug: at counter home camera, left Company/Support and right Products Html labels peeked at frame edges with unreadable partial text ("Pro…"), competing with counter Fast Q plaques + hint bubble.
-- Fix: `shouldShowSidePanelLabels()` in `lobbyChoreography.ts` — hide Html labels during opening beats and at `cameraZone === 'counter'`; reveal only when camera focuses `infoBay` or `products`. 3D alcove geometry (silhouette) stays visible for spatial depth.
-- Tests: visibility matrix in `lobbyChoreography.test.ts` (6 tests total in file).
-- Verified: `npx tsc -b` clean; **189** tests pass.
+**Status:** Done
 
-**Key files:** `lobbyChoreography.ts`, `LobbySidePanels.tsx`, `wiki/conventions/immersive-ui.md`
+Replaced the 3D Our Story volume in place with a two-pane episode reader (rail + cream pane + optional splash). Deleted every `.story-book-*` rule. Chapter copy unchanged; optional `coverImage` on origin only. Note: [2026-08-17-about-story-episode-reader.md](../notes/2026-08-17-about-story-episode-reader.md).
 
 ---
 
-## Consolidated manual QA (2026-07-07)
+## Impl Phase 95 — Our Story reader pane is white (2026-08-17)
 
-| Check                                               | Result               |
-| --------------------------------------------------- | -------------------- |
-| Dark canvas vs panels (not black wall)              | Pass                 |
-| EN/MM text, buttons, chips, arrow (no hover needed) | Pass (after Impl 32) |
-| Category inactive tab labels readable               | QA Fixed (Impl 32)   |
-| Toolbar bg/ring matches dark header                 | QA Fixed (Impl 32)   |
-| Modal × + footer close                              | Pass                 |
-| Light theme regression                              | Pass                 |
-| Category scroll arrow on overflow                   | Pass                 |
+**Status:** Done
 
-## Related conventions
+Dropped cream `#f7f4ee` on `.story-reader-pane`. Rail and pane are one white panel; splash supplies color. Note: [2026-08-17-about-story-reader-white-pane.md](../notes/2026-08-17-about-story-reader-white-pane.md).
 
-- [edc-slate-tokens.md](../conventions/edc-slate-tokens.md)
-- [dark-mode-surfaces.md](../conventions/dark-mode-surfaces.md)
-- [what-not-to-redo.md](../conventions/what-not-to-redo.md)
-- [immersive-ui.md](../conventions/immersive-ui.md)
+---
 
-## Documentation Phase 33 {#documentation-phase-33}
+## Impl Phase 96 — Catalog tile honesty (2026-08-17)
 
-**Airtable row 35** | **Done** | 2026-07-07
+**Status:** Done
 
-Architecture wiki, PM tracker mapping, and session summaries — committed knowledge base for teammates, QA, and AI agents. No application source changes.
+Catalog titles follow cover lettering; discovery tiles share Title / Description / Category / Views / `createdAt` date; New = top 6 published by release date with `primary-600` badge on every catalog surface. Schema 5. Note: [2026-08-17-catalog-tile-honesty.md](../notes/2026-08-17-catalog-tile-honesty.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
 
-- Created `wiki/architecture/implementation-phases.md` — full Impl Phases 1–32 with key files, QA notes, anchors
-- Created `wiki/references/pm-tracker-airtable.md` — 35 Airtable rows mapped to Impl 1–32 + Doc 33
-- Added convention docs: `edc-slate-tokens.md`, `dark-mode-surfaces.md`, `what-not-to-redo.md`
-- Slimmed `wiki/notes/2026-07-07-phase-32-dark-token-fix.md` → pointer to conventions + master doc
-- Split session logs by date: Jul 6 (Impl 1–20), Jul 7 (Impl 21–32 + Doc 33)
-- Updated wiki index: `README.md`, `00-overview.md`, `02-workflow.md` (dual-track convention)
+---
 
-**Key files:** `wiki/architecture/implementation-phases.md`, `wiki/references/pm-tracker-airtable.md`, `wiki/conventions/*.md`, `docs/sessions/2026-07-06-session-summary.md`, `docs/sessions/2026-07-07-session-summary.md`
+## Impl Phase 97 — Mock calendar stays in 2026 (2026-08-17)
 
----
+**Status:** Done
 
-## Documentation Phase 34 {#documentation-phase-34}
+Episode and mock-user dates moved into 2026 inside each series window. No published date after 2026-08-17. Schema 6. Note: [2026-08-17-mock-calendar-2026.md](../notes/2026-08-17-mock-calendar-2026.md).
 
-**Airtable row 74** | **Done** | 2026-07-08
+---
 
-Immersive product scenarios architectural documentation (user PM Phase 72). No application source changes.
+## Impl Phase 98 — Stale catalog localStorage (2026-08-17)
 
-- Created `docs/immersive-product-scenarios.md` — Scenario 1/2/3 definitions, gap analysis, phased roadmap A/B/C, mermaid flowcharts
-- Product direction: guided funnel (Scenario 1) vs conversational commerce (Scenario 2) vs mobile layout variants (Scenario 3)
-- Documents technical debt: `highlightProducts` / `skipToImmersiveReady` bypass `showroomPanel` choreography
-- Cross-links to `wiki/conventions/immersive-ui.md`, `commerceStore.ts`, `useImmersiveSequence.ts`
+**Status:** Done
 
-**Key files:** `docs/immersive-product-scenarios.md` (gitignored local reference)
+Non-empty `softgate-shared-data` catalogs are re-seeded from current mock on load so 2023/2024 tile dates cannot survive a matching schema. Detail + episode rows show `formatCatalogDate`. Schema 7. Note: [2026-08-17-stale-catalog-localstorage.md](../notes/2026-08-17-stale-catalog-localstorage.md).
 
 ---
 
-## Local session evidence
+## How to append
 
-| Date       | Phases                         | File                                          |
-| ---------- | ------------------------------ | --------------------------------------------- |
-| 2026-07-06 | Impl 1–20                      | `docs/sessions/2026-07-06-session-summary.md` |
-| 2026-07-07 | Impl 21–43, Doc 33             | `docs/sessions/2026-07-07-session-summary.md` |
-| 2026-07-08 | Impl 44–71, Doc 34, Impl 73–77 | `docs/sessions/2026-07-08-session-summary.md` |
-| 2026-07-09 | Impl 78–80                     | `docs/sessions/2026-07-09-session-summary.md` |
-| 2026-07-10 | Impl 81–89                     | `docs/sessions/2026-07-10-session-summary.md` |
+1. Take **next free Impl** (currently **99**).
+2. Add a row to Quick index + a `## Impl Phase N` section here.
+3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
+4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

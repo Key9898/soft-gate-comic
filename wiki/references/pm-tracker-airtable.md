@@ -1,14 +1,19 @@
 ---
-title: Airtable PM Tracker — EDC Thailand AI Commerce
+title: Airtable PM Tracker — LEGACY immersive / commerce POC
 type: reference
-date: 2026-07-10
-tags: [pm, airtable, qa, phases]
+date: 2026-08-10
+tags: [pm, airtable, qa, phases, legacy]
 ---
 
-# Airtable PM Tracker
+# Airtable PM Tracker (legacy)
 
-Project management phase list for **EDC Thailand AI Commerce Frontend POC**.  
-Canonical implementation detail: [implementation-phases.md](../architecture/implementation-phases.md).
+> **LEGACY.** Rows below map the older immersive / commerce frontend POC — **not** SoftGate Comic Impl 1+.
+>
+> SoftGate Comic master index: [implementation-phases.md](../architecture/implementation-phases.md) (next Impl **50**).
+> Legacy phase narrative: [implementation-phases-legacy.md](../architecture/implementation-phases-legacy.md).
+
+Project management phase list for the prior frontend POC.  
+Canonical SoftGate Comic implementation detail: [implementation-phases.md](../architecture/implementation-phases.md).
 
 ## Numbering
 

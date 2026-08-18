@@ -1,0 +1,6 @@
+export { escapeRegExp, matchesQuery } from './escapeRegExp'
+export { searchWebtoons, type SearchWebtoonsFilters, type WebtoonSortBy } from './searchWebtoons'
+export { searchAuthors } from './searchAuthors'
+export { searchEpisodes, type EpisodeSearchHit } from './searchEpisodes'
+export { getSearchSuggestions, type SearchSuggestion, type SuggestionKind } from './suggestions'
+export { getRecentSearches, addRecentSearch, clearRecentSearches } from './recentSearches'

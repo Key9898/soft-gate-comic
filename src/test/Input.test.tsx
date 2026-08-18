@@ -31,14 +31,13 @@ describe('Input', () => {
 
   it('toggles password visibility', () => {
     render(<Input label="Password" type="password" />)
-    const input = screen.getByLabelText(/password/i) as HTMLInputElement
+    const input = screen.getByLabelText(/^password$/i) as HTMLInputElement
     expect(input.type).toBe('password')
 
-    const toggleButton = screen.getByRole('button', { name: '' })
-    fireEvent.click(toggleButton)
+    fireEvent.click(screen.getByRole('button', { name: /show password/i }))
     expect(input.type).toBe('text')
 
-    fireEvent.click(toggleButton)
+    fireEvent.click(screen.getByRole('button', { name: /hide password/i }))
     expect(input.type).toBe('password')
   })
 

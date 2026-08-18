@@ -1,16 +1,28 @@
 import { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from '../features/auth/useAuth'
+import { HelmetProvider } from 'react-helmet-async'
+import { AuthProvider } from '../context/AuthContext'
 import { DataProvider } from '../context/DataContext'
+import { LibraryProvider } from '../context/LibraryContext'
+import { WalletProvider } from '../context/WalletContext'
+import { EngagementProvider } from '../context/EngagementContext'
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <DataProvider>
-      <BrowserRouter>
-        <AuthProvider>{children}</AuthProvider>
-      </BrowserRouter>
-    </DataProvider>
+    <HelmetProvider>
+      <DataProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <LibraryProvider>
+              <WalletProvider>
+                <EngagementProvider>{children}</EngagementProvider>
+              </WalletProvider>
+            </LibraryProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </DataProvider>
+    </HelmetProvider>
   )
 }
 

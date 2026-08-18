@@ -1,18 +1,23 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useId } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Menu, X, Search, Bell, User, LogOut } from 'lucide-react'
+import { Menu, X, Search, Bell, BookMarked, Coins, User, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '../Button'
 import LanguageSwitcher from '../LanguageSwitcher'
-import { useAuth } from '../../features/auth/useAuth'
+import SearchAutocomplete from '../SearchAutocomplete'
+import { useAuth } from '../../context/AuthContext'
+import { useEngagement } from '../../context/EngagementContext'
 
 const Navigation = () => {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout } = useAuth()
+  const { unreadNotificationCount } = useEngagement()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const location = useLocation()
+  const menuId = useId()
+  const searchPanelId = useId()
 
   const navLinks = useMemo(
     () => [
@@ -54,15 +59,18 @@ const Navigation = () => {
   }
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-gray-200 bg-white">
+    <nav className="safe-top sticky top-0 z-40 border-b border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="text-primary-600 flex items-center focus:outline-none">
+            <Link
+              to="/"
+              className="text-primary-600 focus-visible:ring-primary-500 flex items-center rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+            >
               <img
-                src="/logo/logo.jpg"
-                alt="Soft-Gate Comic Logo"
-                className="h-11 w-11 rounded-xl object-cover shadow-sm"
+                src="/logo/logo.svg"
+                alt="SoftGate Comic Logo"
+                className="h-11 w-auto shrink-0 object-contain"
               />
             </Link>
 
@@ -71,7 +79,7 @@ const Navigation = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`focus-visible:ring-primary-500 rounded-2xl text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none ${
                     isActive(link.path)
                       ? 'text-primary-600'
                       : 'hover:text-primary-600 text-gray-600'
@@ -83,62 +91,78 @@ const Navigation = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative hidden sm:block">
-              <input
-                type="text"
-                placeholder={t('search.placeholder')}
-                aria-label={t('search.placeholder')}
-                className="focus:ring-primary-500 w-64 rounded-full border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2"
-              />
-              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            </div>
+          <div className="flex items-center gap-3 lg:gap-2">
+            <SearchAutocomplete className="hidden xl:block" />
 
             <button
               type="button"
               title={t('search.title')}
               aria-label={t('search.title')}
-              className="hover:text-primary-600 p-2 text-gray-600 transition sm:hidden"
+              aria-expanded={isSearchOpen}
+              aria-controls={isSearchOpen ? searchPanelId : undefined}
+              className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none xl:hidden"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-5 w-5" aria-hidden="true" />
             </button>
 
             {isAuthenticated && (
-              <Link
-                to="/notifications"
-                title={t('nav.notifications')}
-                aria-label={t('nav.notifications')}
-                className="hover:text-primary-600 relative p-2 text-gray-600 transition"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="bg-accent-600 absolute top-1 right-1 h-2 w-2 rounded-full" />
-              </Link>
+              <>
+                <Link
+                  to="/library"
+                  title={t('nav.library')}
+                  aria-label={t('nav.library')}
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none lg:flex"
+                >
+                  <BookMarked className="h-5 w-5" aria-hidden="true" />
+                </Link>
+                <Link
+                  to="/coins"
+                  title={t('nav.coins')}
+                  aria-label={t('nav.coins')}
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none lg:flex"
+                >
+                  <Coins className="h-5 w-5" aria-hidden="true" />
+                </Link>
+                <Link
+                  to="/notifications"
+                  title={t('nav.notifications')}
+                  aria-label={t('nav.notifications')}
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 relative flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  <Bell className="h-5 w-5" aria-hidden="true" />
+                  {unreadNotificationCount > 0 ? (
+                    <span className="bg-accent-600 shape-circle absolute top-1 right-1 h-2 w-2" />
+                  ) : null}
+                </Link>
+              </>
             )}
 
             <LanguageSwitcher />
 
             {isAuthenticated && user ? (
-              <div className="hidden items-center gap-2 sm:flex">
+              <div className="hidden items-center gap-2 lg:flex">
                 <Link
                   to="/profile"
-                  className="bg-primary-50 hover:bg-primary-100 flex items-center gap-2 rounded-full px-3 py-1.5 transition"
+                  className="bg-primary-50 hover:bg-primary-100 focus-visible:ring-primary-500 flex min-w-0 items-center gap-2 rounded-2xl px-3 py-1.5 transition focus-visible:ring-2 focus-visible:outline-none"
                 >
-                  <div className="bg-primary-600 flex h-6 w-6 items-center justify-center rounded-full">
+                  <div className="bg-primary-600 shape-circle flex h-6 w-6 shrink-0 items-center justify-center">
                     <span className="text-xs font-bold text-white">
                       {user.displayName.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-primary-700 text-sm font-medium">{user.displayName}</span>
+                  <span className="text-primary-700 max-w-[10ch] truncate text-sm font-medium">
+                    {user.displayName}
+                  </span>
                 </Link>
                 <button
                   type="button"
                   onClick={logout}
-                  className="p-2 text-gray-500 transition hover:text-red-600"
+                  className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-500 transition hover:text-red-600 focus-visible:ring-2 focus-visible:outline-none"
                   title={t('nav.logout')}
                   aria-label={t('nav.logout')}
                 >
-                  <LogOut className="h-5 w-5" />
+                  <LogOut className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             ) : (
@@ -151,12 +175,20 @@ const Navigation = () => {
 
             <button
               type="button"
-              title={isMenuOpen ? t('common.close') : t('common.viewAll')}
-              aria-label={isMenuOpen ? t('common.close') : t('common.viewAll')}
-              className="hover:text-primary-600 p-2 text-gray-600 transition md:hidden"
+              title={t('nav.menu')}
+              aria-label={t('nav.menu')}
+              aria-expanded={isMenuOpen}
+              aria-controls={isMenuOpen ? menuId : undefined}
+              className={`hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none ${
+                isAuthenticated ? 'lg:hidden' : 'md:hidden'
+              }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? (
+                <X className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <Menu className="h-5 w-5" aria-hidden="true" />
+              )}
             </button>
           </div>
         </div>
@@ -164,21 +196,18 @@ const Navigation = () => {
         <AnimatePresence>
           {isSearchOpen && (
             <motion.div
+              id={searchPanelId}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden sm:hidden"
+              className="overflow-hidden xl:hidden"
             >
               <div className="py-3">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={t('search.placeholder')}
-                    aria-label={t('search.placeholder')}
-                    className="focus:ring-primary-500 w-full rounded-full border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2"
-                  />
-                  <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                </div>
+                <SearchAutocomplete
+                  autoFocus
+                  className="w-full"
+                  inputClassName="focus:ring-primary-500 w-full rounded-2xl border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2"
+                />
               </div>
             </motion.div>
           )}
@@ -188,43 +217,55 @@ const Navigation = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
+            id={menuId}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-gray-200 bg-white md:hidden"
+            className={`overflow-hidden border-t border-gray-200 bg-white ${
+              isAuthenticated ? 'lg:hidden' : 'md:hidden'
+            }`}
           >
             <div className="space-y-3 px-4 py-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`block py-2 text-sm font-medium transition-colors ${
-                    isActive(link.path)
-                      ? 'text-primary-600'
-                      : 'hover:text-primary-600 text-gray-600'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              <div className="space-y-3 md:hidden">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+                      isActive(link.path)
+                        ? 'text-primary-600'
+                        : 'hover:text-primary-600 text-gray-600'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
               <div className="border-t border-gray-200 pt-3">
                 {isAuthenticated && user ? (
                   <>
                     <Link
                       to="/profile"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 flex items-center gap-2 py-2 text-sm font-medium text-gray-600"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
                     >
-                      <User className="h-4 w-4" />
+                      <User className="h-4 w-4" aria-hidden="true" />
                       {user.displayName}
                     </Link>
                     <Link
                       to="/library"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 block py-2 text-sm font-medium text-gray-600"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
                     >
                       {t('nav.library')}
+                    </Link>
+                    <Link
+                      to="/coins"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
+                    >
+                      {t('nav.coins')}
                     </Link>
                     <button
                       type="button"
@@ -232,9 +273,9 @@ const Navigation = () => {
                         logout()
                         setIsMenuOpen(false)
                       }}
-                      className="flex items-center gap-2 py-2 text-sm font-medium text-red-600 hover:text-red-700"
+                      className="focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-red-600 hover:text-red-700 focus-visible:ring-2 focus-visible:outline-none"
                     >
-                      <LogOut className="h-4 w-4" />
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
                       {t('nav.logout')}
                     </button>
                   </>
@@ -242,7 +283,7 @@ const Navigation = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-primary-600 block py-2 text-sm font-medium"
+                    className="text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
                   >
                     {t('nav.login')}
                   </Link>

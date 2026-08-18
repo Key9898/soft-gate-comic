@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import ProtectedRoute from './ProtectedRoute'
-import { AuthProvider } from '../../features/auth/useAuth'
+import { AuthProvider } from '../../context/AuthContext'
 
 const meta = {
   title: 'Components/ProtectedRoute',

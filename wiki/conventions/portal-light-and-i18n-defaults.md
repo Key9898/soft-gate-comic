@@ -25,4 +25,4 @@ tags: [i18n, theme, light-mode, tailwind]
 
 - Re-enable `navigator` in i18n detection without an explicit product decision.
 - Remove `@custom-variant dark` without replacing it with another force-light strategy.
-- Confuse EDC-era [dark-mode-surfaces.md](dark-mode-surfaces.md) (legacy immersive) with current Soft-Gate portal rules.
+- Confuse EDC-era [dark-mode-surfaces.md](dark-mode-surfaces.md) (legacy immersive) with current SoftGate portal rules.

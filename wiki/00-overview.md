@@ -1,15 +1,15 @@
 ---
 title: Project Overview
 type: reference
-date: 2026-07-06
+date: 2026-08-10
 tags: [overview, project]
 ---
 
 # Project Overview
 
-**Name:** Soft-Gate Comic
-**Type:** Frontend Webtoon Reader Portal (React + Vite)
-**Purpose:** Localization of webtoon reader experience for Myanmar readers with coin purchases and premium unlocking.
+**Name:** SoftGate Comic  
+**Type:** Frontend Webtoon Reader Portal (React + Vite)  
+**Purpose:** Webtoon reader experience for Myanmar readers with coin purchases and premium unlocking.
 
 ## Quick facts
 
@@ -18,6 +18,7 @@ tags: [overview, project]
 - **Testing:** Vitest 4 + Testing Library + jsdom
 - **Quality:** ESLint 9 + Prettier 3 + Husky 9 + lint-staged 15
 - **Hooks:** pre-commit (lint-staged) + pre-push (`npm run check`)
+- **i18n:** English default + Myanmar (`en` / `mm`); portal light-only
 
 ## Top-level commands
 
@@ -38,16 +39,18 @@ npm run check        # lint + format:check + test:run + build  ← pre-push runs
 
 ## Entry points
 
-- `index.html` → `/src/main.tsx` → `<App />` → `<ImmersiveLayout />`
-- `src/index.css` — Tailwind v4 import + `@theme` design tokens (EDC brand colors)
-- `wiki/references/api-contract.md` — frontend ↔ backend API contract
+- `index.html` → `/src/main.tsx` → `<App />` → layouts (`MainLayout` / `AuthLayout` / `ReaderLayout`)
+- `src/index.css` — Tailwind v4 import + `@theme` brand tokens (`primary-*` / `accent-*`)
+- In-app logo: `public/logo/logo.svg`
 
-## Documentation (phases & QA)
+## Documentation (Impl & QA)
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **Implementation Phases 1–71** + [Documentation Phases 33–34](architecture/implementation-phases.md#documentation-phase-33)
-- [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM rows 1–74
-- [references/api-contract.md](references/api-contract.md) — API contract v2 (session, history, streaming, CDN)
-- [references/avatar-manifest.md](references/avatar-manifest.md) — designer avatar manifest
-- [conventions/immersive-ui.md](conventions/immersive-ui.md) — immersive layout, choreography, speech bubbles
-- [conventions/](conventions/) — dark mode tokens, what-not-to-redo
-- Local product scenarios (gitignored): `docs/immersive-product-scenarios.md` — Scenario 1/2/3 direction
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–98** (next: **99**)
+- [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
+- [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — historical Airtable rows (legacy-era)
+- [conventions/brand-color-tokens.md](conventions/brand-color-tokens.md)
+- [conventions/portal-light-and-i18n-defaults.md](conventions/portal-light-and-i18n-defaults.md)
+- [conventions/border-radius.md](conventions/border-radius.md)
+- [conventions/typography.md](conventions/typography.md)
+- [conventions/info-page-chrome.md](conventions/info-page-chrome.md)
+- Agent contract: [`AGENTS.md`](../AGENTS.md)

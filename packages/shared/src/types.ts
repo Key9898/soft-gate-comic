@@ -191,6 +191,15 @@ export interface ScheduledEpisode {
   status: 'scheduled' | 'published' | 'draft'
 }
 
+export interface StoryChapter {
+  id: string
+  sortOrder: number
+  published: boolean
+  title: BilingualText
+  body: BilingualText
+  coverImage?: string
+}
+
 export interface SharedData {
   dashboardStats: DashboardStats
   revenueData: RevenueData[]

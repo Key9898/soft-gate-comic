@@ -19,6 +19,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       leftIcon,
       rightIcon,
       disabled,
+      type = 'button',
       children,
       ...props
     },
@@ -43,14 +44,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm rounded-lg gap-1.5',
-      md: 'px-4 py-2 text-sm rounded-full gap-2',
-      lg: 'px-6 py-3 text-base rounded-full gap-2',
+      sm: 'px-3 py-1.5 text-sm rounded-2xl gap-1.5',
+      md: 'px-4 py-2 text-sm rounded-2xl gap-2',
+      lg: 'px-6 py-3 text-base rounded-2xl gap-2',
     }
 
     return (
       <button
         ref={ref}
+        type={type}
         className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
         disabled={disabled || isLoading}
         {...props}

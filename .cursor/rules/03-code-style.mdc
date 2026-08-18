@@ -11,7 +11,8 @@ alwaysApply: false
 
 - 2-space indentation
 - Single quotes for strings, double for JSX attributes
-- Trailing commas (all)
+- No semicolons (`semi: false` in `.prettierrc.json`)
+- Trailing commas (`es5` — objects/arrays; not function params)
 - 100-char line width
 - LF line endings
 - `prettier-plugin-tailwindcss` sorts Tailwind classes — let it run.

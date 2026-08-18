@@ -61,6 +61,7 @@ export const Default: Story = {
       },
     ],
     currentUserId: '1',
+    currentUserName: 'You',
   },
 }
 
@@ -68,6 +69,7 @@ export const EmptyComments: Story = {
   args: {
     comments: [],
     currentUserId: '1',
+    currentUserName: 'You',
   },
 }
 
@@ -130,6 +132,7 @@ export const WithManyReplies: Story = {
       },
     ],
     currentUserId: '1',
+    currentUserName: 'You',
   },
 }
 
@@ -152,5 +155,6 @@ export const OwnComments: Story = {
       },
     ],
     currentUserId: '1',
+    currentUserName: 'You',
   },
 }

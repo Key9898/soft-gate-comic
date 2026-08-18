@@ -2,31 +2,26 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ArrowLeft,
-  ChevronDown,
-  Search,
-  ThumbsUp,
-  ThumbsDown,
-  CheckCircle2,
-  HelpCircle,
-} from 'lucide-react'
+import { ChevronDown, Search, ThumbsUp, ThumbsDown, CheckCircle2 } from 'lucide-react'
+import SEO from '../../components/SEO/SEO'
+import Breadcrumb from '../../components/Breadcrumb'
+import PageHeader from '../../components/PageHeader'
+import { getInfoPageMeta } from '../../lib/info/pageMeta'
 
 // ═══════════════ SUB-COMPONENT: FAQ ACCORDION ITEM ═══════════════
 const FAQItem = ({ q, a }: { q: string; a: string }) => {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [vote, setVote] = useState<'yes' | 'no' | null>(null)
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 dark:border-white/5 dark:bg-gray-900">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
+        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-gray-50"
       >
-        <span className="pr-4 text-sm font-bold text-gray-950 sm:text-base dark:text-white">
-          {q}
-        </span>
+        <span className="pr-4 text-sm font-bold text-gray-950 sm:text-base">{q}</span>
         <ChevronDown
           className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${
             isOpen ? 'text-primary-500 rotate-180' : ''
@@ -44,15 +39,13 @@ const FAQItem = ({ q, a }: { q: string; a: string }) => {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="border-t border-gray-100 px-4.5 py-4 dark:border-white/5">
-              <p className="text-xs leading-relaxed font-bold text-gray-600 sm:text-sm dark:text-gray-400">
-                {a}
-              </p>
+            <div className="border-t border-gray-100 px-4.5 py-4">
+              <p className="text-xs leading-relaxed font-bold text-gray-600 sm:text-sm">{a}</p>
 
               {/* Thumbs Feedback Widget */}
-              <div className="mt-4 flex items-center justify-between border-t border-gray-50 pt-3.5 dark:border-white/5">
-                <span className="text-[10px] font-black tracking-wider text-gray-400 uppercase dark:text-gray-500">
-                  Was this helpful?
+              <div className="mt-4 flex items-center justify-between border-t border-gray-50 pt-3.5">
+                <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+                  {t('faq.wasHelpful')}
                 </span>
 
                 <div className="flex items-center gap-2">
@@ -61,28 +54,28 @@ const FAQItem = ({ q, a }: { q: string; a: string }) => {
                       <button
                         type="button"
                         onClick={() => setVote('yes')}
-                        className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-[10px] font-bold text-gray-600 transition-all hover:bg-emerald-50 hover:text-emerald-600 dark:border-white/5 dark:text-gray-400 dark:hover:bg-emerald-950/20"
+                        className="text-2xs flex items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-bold text-gray-600 transition-all hover:bg-emerald-50 hover:text-emerald-600"
                       >
-                        <ThumbsUp className="h-3 w-3" />
-                        Yes
+                        <ThumbsUp className="h-3 w-3" aria-hidden="true" />
+                        {t('faq.yes')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setVote('no')}
-                        className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-[10px] font-bold text-gray-600 transition-all hover:bg-red-50 hover:text-red-600 dark:border-white/5 dark:text-gray-400 dark:hover:bg-red-950/20"
+                        className="text-2xs flex items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-bold text-gray-600 transition-all hover:bg-red-50 hover:text-red-600"
                       >
                         <ThumbsDown className="h-3 w-3" />
-                        No
+                        {t('faq.no')}
                       </button>
                     </>
                   ) : (
                     <motion.div
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 dark:text-emerald-400"
+                      className="text-2xs flex items-center gap-1.5 font-bold text-emerald-600"
                     >
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Thanks for your feedback!
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      {t('faq.feedbackThanks')}
                     </motion.div>
                   )}
                 </div>
@@ -98,6 +91,7 @@ const FAQItem = ({ q, a }: { q: string; a: string }) => {
 // ═══════════════ MAIN FAQ PAGE ═══════════════
 const FAQPage = () => {
   const { t } = useTranslation()
+  const page = getInfoPageMeta('faq', t)
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
 
@@ -135,6 +129,9 @@ const FAQPage = () => {
       questions: [
         { q: t('faq.q10'), a: t('faq.a10') },
         { q: t('faq.q11'), a: t('faq.a11') },
+        { q: t('faq.q12'), a: t('faq.a12') },
+        { q: t('faq.q13'), a: t('faq.a13') },
+        { q: t('faq.q14'), a: t('faq.a14') },
       ],
     },
   ]
@@ -153,47 +150,36 @@ const FAQPage = () => {
     .filter((cat) => cat.questions.length > 0)
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12 transition-colors duration-300 dark:bg-gray-950">
-      <div className="mx-auto max-w-4xl px-4 py-8 text-left sm:px-6 lg:px-8">
-        <Link
-          to="/"
-          className="hover:text-primary-600 mb-6 inline-flex items-center gap-2 text-xs font-black tracking-wider text-gray-500 uppercase transition-colors dark:text-gray-400"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t('common.back')}
-        </Link>
-
-        <div className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8 dark:border-white/5 dark:bg-gray-900">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="bg-primary-50 dark:bg-primary-950/20 flex h-12 w-12 items-center justify-center rounded-2xl">
-              <HelpCircle className="text-primary-500 h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-black text-gray-900 sm:text-2xl dark:text-white">
-                {t('static.faqTitle')}
-              </h1>
-              <p className="mt-0.5 text-xs font-bold text-gray-400 dark:text-gray-500">
-                Find answers to commonly asked questions about Soft-Gate Comic.
-              </p>
-            </div>
-          </div>
-
-          {/* Interactive Live Search Input */}
-          <div className="relative mb-6">
+    <div className="min-h-screen bg-gray-50 pb-12 transition-colors duration-300">
+      <SEO
+        title={t('footer.faq')}
+        description={t('faq.intro')}
+        url="https://softgatecomic.com/faq"
+      />
+      <div className="mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
+        <Breadcrumb items={page.breadcrumbs} className="mb-6" />
+        <PageHeader variant="compact" eyebrow={page.eyebrow} title={page.title} deck={page.deck}>
+          <div className="relative max-w-3xl">
             <input
-              type="text"
-              placeholder="Search questions or answers..."
+              type="search"
+              aria-label={t('faq.searchPlaceholder')}
+              placeholder={t('faq.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="focus:ring-primary-500 dark:focus:ring-primary-500 w-full rounded-2xl border-none bg-gray-100 py-3.5 pr-4 pl-11 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2 dark:bg-white/5 dark:text-white dark:focus:bg-gray-900"
+              className="focus:ring-primary-500 w-full rounded-2xl border-none bg-gray-100 py-3.5 pr-4 pl-11 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
             />
-            <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+            <Search
+              className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400"
+              aria-hidden="true"
+            />
           </div>
+        </PageHeader>
 
+        <div className="max-w-3xl rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
           {/* Category Tabs Pill Grid with Gliding indicator */}
           <div className="mb-8 flex flex-wrap gap-2.5">
             {[
-              { id: 'all', label: 'All FAQs' },
+              { id: 'all', label: t('faq.all') },
               { id: 'general', label: t('faq.general') },
               { id: 'account', label: t('faq.account') },
               { id: 'payments', label: t('faq.payments') },
@@ -205,17 +191,15 @@ const FAQPage = () => {
                   key={cat.id}
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`relative flex min-h-[38px] items-center justify-center rounded-full px-4 py-2 text-xs font-black tracking-wider uppercase transition-all ${
-                    isActive
-                      ? 'text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10'
+                  className={`relative flex min-h-[38px] items-center justify-center rounded-2xl px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all ${
+                    isActive ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   <span className="relative z-10">{cat.label}</span>
                   {isActive && (
                     <motion.div
                       layoutId="activeFaqCategoryBackground"
-                      className="bg-primary-600 dark:bg-primary-500 absolute inset-0 rounded-full"
+                      className="bg-primary-600 absolute inset-0 rounded-2xl"
                       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -228,7 +212,7 @@ const FAQPage = () => {
           <div className="space-y-6">
             {filteredFAQ.map((cat) => (
               <div key={cat.id} className="space-y-3">
-                <h3 className="text-primary-500 dark:text-primary-400 pl-1.5 text-sm font-black tracking-wider uppercase">
+                <h3 className="text-primary-500 pl-1.5 text-sm font-bold tracking-wider uppercase">
                   {cat.category}
                 </h3>
                 <div className="space-y-2">
@@ -241,8 +225,15 @@ const FAQPage = () => {
 
             {filteredFAQ.length === 0 && (
               <div className="py-12 text-center">
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400">
-                  No questions match your search query. Try another term!
+                <p className="text-sm font-bold text-gray-500">{t('faq.noResults')}</p>
+                <p className="mt-2 text-xs font-medium text-gray-400">
+                  {t('faq.noResultsDesc')}{' '}
+                  <Link
+                    to="/contact"
+                    className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                  >
+                    {t('footer.contact')}
+                  </Link>
                 </p>
               </div>
             )}

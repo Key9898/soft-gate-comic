@@ -4,7 +4,7 @@ globs: []
 alwaysApply: true
 ---
 
-# Project: Soft-Gate Comic
+# Project: SoftGate Comic
 
 Webtoon reader portal application designed for Myanmar readers.
 
@@ -54,4 +54,4 @@ npm run check        # lint + format:check + test:run + build  ← runs in pre-p
 
 ## Conventions in one line
 
-Strict TS, React 18, Tailwind v4 utility classes, semantic HTML, test colocated under `src/test/`, knowledge persisted in `wiki/`.
+Strict TS, React 18, Tailwind v4 utility classes, semantic HTML, test colocated under `src/test/`, knowledge persisted in `wiki/`. Product motion we add is forced for every visitor (do not gate HeroBook3D enter/hover on `prefers-reduced-motion`) — `wiki/conventions/forced-product-motion.md`.

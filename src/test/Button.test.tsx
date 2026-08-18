@@ -95,8 +95,25 @@ describe('Button', () => {
     expect(screen.getByTestId('right-icon')).toBeInTheDocument()
   })
 
+  it('applies Soft-Expressive radius on all sizes', () => {
+    const { rerender } = render(<Button size="sm">Small</Button>)
+    expect(screen.getByRole('button')).toHaveClass('rounded-2xl')
+    rerender(<Button size="md">Medium</Button>)
+    expect(screen.getByRole('button')).toHaveClass('rounded-2xl')
+    rerender(<Button size="lg">Large</Button>)
+    expect(screen.getByRole('button')).toHaveClass('rounded-2xl')
+  })
+
   it('applies custom className', () => {
     render(<Button className="custom-class">Custom</Button>)
     expect(screen.getByRole('button')).toHaveClass('custom-class')
+  })
+
+  it('defaults to type="button" and allows override', () => {
+    const { rerender } = render(<Button>Default</Button>)
+    expect(screen.getByRole('button')).toHaveAttribute('type', 'button')
+
+    rerender(<Button type="submit">Submit</Button>)
+    expect(screen.getByRole('button')).toHaveAttribute('type', 'submit')
   })
 })

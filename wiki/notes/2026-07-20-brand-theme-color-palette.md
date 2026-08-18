@@ -1,25 +1,26 @@
 ---
-title: Brand logo theme color palette (Phase 1 token calibration)
+title: Impl 4 — Brand logo theme color palette
 type: note
 date: 2026-07-20
-tags: [brand, theme, tailwind, colors, logo]
+tags: [brand, theme, tailwind, colors, logo, impl-4]
+impl: 4
 ---
 
-# Brand Logo Theme Color Palette
+# Impl 4 — Brand Logo Theme Color Palette
 
 ## Context
 
-Portal UI must match the live brand mark used in the app: [`public/logo/logo.jpg`](../../public/logo/logo.jpg) (Navigation, Footer, AuthLayout). Earlier the same day, purple primary was replaced with a generic teal scale. **Phase 1** calibrates `@theme` tokens to **sampled logo hex anchors** only — no component class changes.
+Portal UI must match the live brand mark used in the app: [`public/logo/logo.svg`](../../public/logo/logo.svg) (Navigation, Footer, AuthLayout; JPG kept for OG). Earlier the same day, purple primary was replaced with a generic teal scale. **Phase 1** calibrates `@theme` tokens to **sampled logo hex anchors** only — no component class changes.
 
 ## Logo color anchors (sampled)
 
-| Role                    | Sample hex | RGB                |
-| ----------------------- | ---------- | ------------------ |
-| Letter fill (SOFT GATE) | `#64c8c8`  | `rgb(100 200 200)` |
-| Burst / starburst       | `#e63264`  | `rgb(230 50 100)`  |
-| Hot pink highlight      | `#fa326e`  | `rgb(250 50 110)`  |
-| Ink / outline           | `#000000`  | black              |
-| Ground                  | `#ffffff`  | white              |
+| Role                   | Sample hex | RGB                |
+| ---------------------- | ---------- | ------------------ |
+| Letter fill (SoftGate) | `#64c8c8`  | `rgb(100 200 200)` |
+| Burst / starburst      | `#e63264`  | `rgb(230 50 100)`  |
+| Hot pink highlight     | `#fa326e`  | `rgb(250 50 110)`  |
+| Ink / outline          | `#000000`  | black              |
+| Ground                 | `#ffffff`  | white              |
 
 ## Phase 1 action (`src/index.css` `@theme`)
 
@@ -67,4 +68,4 @@ Also: `Button` gained `variant="accent"`; `.tag-accent` utility in `index.css`.
 ## Related
 
 - Convention: [brand-color-tokens.md](../conventions/brand-color-tokens.md)
-- Asset: `public/logo/logo.jpg` (active); `logo-v2.jpg` unused in `src/`
+- Asset: `public/logo/logo.svg` (in-app); `logo.jpg` for OG/Twitter; `logo-v2.jpg` unused in `src/`

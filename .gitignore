@@ -55,3 +55,6 @@ Desktop.ini
 
 # Storybook
 storybook-static
+
+# Local session / reference docs (not for version control)
+docs/

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bookmark,
@@ -7,8 +7,6 @@ import {
   Grid3X3,
   List,
   Search,
-  Filter,
-  SortAsc,
   Trash2,
   Play,
   Check,
@@ -16,12 +14,19 @@ import {
   CheckSquare,
   Square,
   ChevronRight,
-  AlertTriangle,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
+import BookCard from '../../components/BookCard'
+import SEO from '../../components/SEO/SEO'
 import { useData } from '../../context/DataContext'
+import { useLibrary } from '../../context/LibraryContext'
+import { useEngagement } from '../../context/EngagementContext'
+import { blendedProgressPercent } from '../../lib/engagement'
+import LibraryEmptyState from './components/LibraryEmptyState'
+import LibraryDeleteConfirmDialog from './components/LibraryDeleteConfirmDialog'
+import LibraryPageSkeleton from './components/LibraryPageSkeleton'
 
 type TabType = 'bookmarks' | 'history' | 'likes'
 type ViewMode = 'grid' | 'list'
@@ -64,49 +69,76 @@ const LibraryPage = () => {
   const navigate = useNavigate()
 
   const { webtoons, isLoading } = useData()
+  const { bookmarks, removeBookmarks } = useLibrary()
+  const { history, likedWebtoonIds, removeHistory, removeLikes } = useEngagement()
 
   const [activeTab, setActiveTab] = useState<TabType>('bookmarks')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Library Items states to allow actual deletions
-  const [bookmarksList, setBookmarksList] = useState<LibraryItem[]>([])
-  const [historyList, setHistoryList] = useState<LibraryItem[]>([])
-  const [likesList, setLikesList] = useState<LibraryItem[]>([])
-
-  useEffect(() => {
-    if (webtoons.length > 0) {
-      const items = webtoons.slice(0, 6).map((w, i) => ({
-        id: `lib-${i}`,
+  const bookmarksList = useMemo(() => {
+    const byId = new Map(webtoons.map((w) => [w.id, w]))
+    const items: LibraryItem[] = []
+    for (const record of bookmarks) {
+      const w = byId.get(record.webtoonId)
+      if (!w) continue
+      items.push({
+        id: w.id,
         webtoonId: w.id,
         title: w.title,
         coverImage: w.coverImage,
         coverColor: w.coverColor,
-        lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
         totalEpisodes: w.episodeCount,
-        lastReadAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-        addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        progress: Math.floor(Math.random() * 100),
-      }))
-
-      const histItems = webtoons.slice(2, 8).map((w, i) => ({
-        id: `hist-${i}`,
-        webtoonId: w.id,
-        title: w.title,
-        coverImage: w.coverImage,
-        coverColor: w.coverColor,
-        lastReadEpisode: Math.floor(Math.random() * w.episodeCount),
-        totalEpisodes: w.episodeCount,
-        lastReadAt: new Date(Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000).toISOString(),
-        addedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        progress: Math.floor(Math.random() * 100),
-      }))
-
-      setBookmarksList(items)
-      setHistoryList(histItems)
-      setLikesList(items.slice(0, 4))
+        addedAt: record.addedAt,
+        progress: 0,
+      })
     }
-  }, [webtoons])
+    return items
+  }, [bookmarks, webtoons])
+
+  const historyList = useMemo(() => {
+    const byId = new Map(webtoons.map((w) => [w.id, w]))
+    const items: LibraryItem[] = []
+    for (const record of history) {
+      const w = byId.get(record.webtoonId)
+      if (!w) continue
+      const scrollRatio = record.scrollRatio ?? 0
+      const progress = blendedProgressPercent(record.episodeNumber, w.episodeCount, scrollRatio)
+      items.push({
+        id: w.id,
+        webtoonId: w.id,
+        title: w.title,
+        coverImage: w.coverImage,
+        coverColor: w.coverColor,
+        lastReadEpisode: record.episodeNumber,
+        totalEpisodes: w.episodeCount,
+        lastReadAt: record.lastReadAt,
+        addedAt: record.lastReadAt,
+        progress,
+      })
+    }
+    return items
+  }, [history, webtoons])
+
+  const likesList = useMemo(() => {
+    const byId = new Map(webtoons.map((w) => [w.id, w]))
+    const items: LibraryItem[] = []
+    for (const webtoonId of likedWebtoonIds) {
+      const w = byId.get(webtoonId)
+      if (!w) continue
+      items.push({
+        id: w.id,
+        webtoonId: w.id,
+        title: w.title,
+        coverImage: w.coverImage,
+        coverColor: w.coverColor,
+        totalEpisodes: w.episodeCount,
+        addedAt: new Date().toISOString(),
+        progress: 0,
+      })
+    }
+    return items
+  }, [likedWebtoonIds, webtoons])
 
   // Bulk edit states
   const [isEditMode, setIsEditMode] = useState(false)
@@ -117,11 +149,7 @@ const LibraryPage = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false)
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
-      </div>
-    )
+    return <LibraryPageSkeleton />
   }
 
   const getItemsList = () => {
@@ -197,11 +225,11 @@ const LibraryPage = () => {
 
   const confirmDelete = () => {
     if (activeTab === 'bookmarks') {
-      setBookmarksList((prev) => prev.filter((item) => !selectedItems.includes(item.id)))
+      removeBookmarks(selectedItems)
     } else if (activeTab === 'history') {
-      setHistoryList((prev) => prev.filter((item) => !selectedItems.includes(item.id)))
+      removeHistory(selectedItems)
     } else if (activeTab === 'likes') {
-      setLikesList((prev) => prev.filter((item) => !selectedItems.includes(item.id)))
+      removeLikes(selectedItems)
     }
 
     setSelectedItems([])
@@ -231,17 +259,16 @@ const LibraryPage = () => {
   const isAllSelected = items.length > 0 && items.every((item) => selectedItems.includes(item.id))
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 transition-colors duration-300 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-50 pb-24 transition-colors duration-300">
+      <SEO title={t('libraryPage.title')} noindex />
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* HEADER */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {t('libraryPage.title')}
             </h1>
-            <p className="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-              {t('libraryPage.subtitle')}
-            </p>
+            <p className="mt-1 text-sm font-medium text-gray-500">{t('libraryPage.subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -251,35 +278,19 @@ const LibraryPage = () => {
                 setIsEditMode(!isEditMode)
                 setSelectedItems([])
               }}
-              className={`gap-2 ${isEditMode ? 'bg-primary-50 border-primary-300 text-primary-600 dark:bg-primary-950/20 dark:border-primary-800' : ''}`}
+              className={`gap-2 ${isEditMode ? 'bg-primary-50 border-primary-300 text-primary-600' : ''}`}
             >
               <Edit3 className="h-4 w-4" />
               <span>{isEditMode ? t('libraryPage.exitEdit') : t('libraryPage.editMode')}</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 dark:border-white/10 dark:text-white"
-            >
-              <Filter className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('libraryPage.filter')}</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 dark:border-white/10 dark:text-white"
-            >
-              <SortAsc className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('libraryPage.sort')}</span>
             </Button>
           </div>
         </div>
 
         {/* SEARCH & VIEWS */}
-        <div className="mb-6 rounded-3xl border bg-white shadow-sm dark:border-white/5 dark:bg-gray-900">
-          <div className="flex flex-col border-b border-gray-100 sm:flex-row sm:items-center dark:border-white/5">
+        <div className="mb-6 rounded-3xl border bg-white shadow-sm">
+          <div className="flex flex-col border-b border-gray-100 sm:flex-row sm:items-center">
             {/* TABS WITH SMOOTH SPRING UNDERLINE */}
-            <div className="flex scrollbar-none overflow-x-auto">
+            <div className="scrollbar-hide flex overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   type="button"
@@ -290,20 +301,18 @@ const LibraryPage = () => {
                     setIsEditMode(false)
                   }}
                   className={`relative flex min-h-[44px] items-center gap-2 px-6 py-4 whitespace-nowrap transition-colors focus:outline-none ${
-                    activeTab === tab.id
-                      ? 'text-primary-600 dark:text-primary-500'
-                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                    activeTab === tab.id ? 'text-primary-600' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
                   <tab.icon className="h-4.5 w-4.5" />
                   <span className="text-sm font-bold">{tab.label}</span>
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold dark:bg-white/10">
+                  <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-bold">
                     {tab.count}
                   </span>
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="activeTabUnderline"
-                      className="bg-primary-600 dark:bg-primary-500 absolute right-0 bottom-0 left-0 h-0.5"
+                      className="bg-primary-600 absolute right-0 bottom-0 left-0 h-0.5"
                       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -311,32 +320,32 @@ const LibraryPage = () => {
               ))}
             </div>
             {/* VIEW GRID/LIST TOGGLE */}
-            <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-2 sm:ml-auto sm:border-0 dark:border-white/5">
+            <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-2 sm:ml-auto sm:border-0">
               <button
                 type="button"
-                title="Grid view"
-                aria-label="Grid view"
+                title={t('libraryPage.gridView')}
+                aria-label={t('libraryPage.gridView')}
                 onClick={() => setViewMode('grid')}
-                className={`rounded-xl p-2 transition-colors ${
+                className={`rounded-2xl p-2 transition-colors ${
                   viewMode === 'grid'
-                    ? 'bg-primary-50 dark:bg-primary-950/20 text-primary-600 dark:text-primary-400'
-                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                <Grid3X3 className="h-5 w-5" />
+                <Grid3X3 className="h-5 w-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
-                title="List view"
-                aria-label="List view"
+                title={t('libraryPage.listView')}
+                aria-label={t('libraryPage.listView')}
                 onClick={() => setViewMode('list')}
-                className={`rounded-xl p-2 transition-colors ${
+                className={`rounded-2xl p-2 transition-colors ${
                   viewMode === 'list'
-                    ? 'bg-primary-50 dark:bg-primary-950/20 text-primary-600 dark:text-primary-400'
-                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                    ? 'bg-primary-50 text-primary-600'
+                    : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                <List className="h-5 w-5" />
+                <List className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -344,14 +353,17 @@ const LibraryPage = () => {
           {/* SEARCH FIELD */}
           <div className="p-4">
             <div className="relative">
-              <Search className="absolute top-1/2 left-4.5 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <Search
+                className="absolute top-1/2 left-4.5 h-5 w-5 -translate-y-1/2 text-gray-400"
+                aria-hidden="true"
+              />
               <input
                 type="text"
                 placeholder={t('libraryPage.searchPlaceholder')}
                 aria-label={t('libraryPage.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-2xl border border-gray-200 py-3 pr-4 pl-12 text-sm font-medium transition focus:ring-1 dark:border-white/10 dark:bg-gray-800 dark:text-white"
+                className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-2xl border border-gray-200 py-3 pr-4 pl-12 text-sm font-medium transition focus:ring-1"
               />
             </div>
           </div>
@@ -359,10 +371,10 @@ const LibraryPage = () => {
 
         {/* BULK EDIT SUB-BAR IF ANY COMPONENT IS ACTIVE IN DESKTOP */}
         {isEditMode && items.length > 0 && (
-          <div className="bg-primary-50/50 dark:bg-primary-950/10 border-primary-100/30 mb-4 flex items-center justify-between rounded-2xl border px-5 py-3">
+          <div className="bg-primary-50/50 border-primary-100/30 mb-4 flex items-center justify-between rounded-2xl border px-5 py-3">
             <button
               onClick={handleSelectAll}
-              className="text-primary-600 dark:text-primary-400 flex items-center gap-2 text-xs font-bold transition hover:opacity-80"
+              className="text-primary-600 flex items-center gap-2 text-xs font-bold transition hover:opacity-80"
             >
               {isAllSelected ? (
                 <>
@@ -376,7 +388,7 @@ const LibraryPage = () => {
                 </>
               )}
             </button>
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+            <span className="text-xs font-bold text-gray-500">
               {t('libraryPage.itemsSelected', { count: selectedItems.length })}
             </span>
           </div>
@@ -398,79 +410,57 @@ const LibraryPage = () => {
                   return (
                     <div
                       key={item.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => handleCardClick(item)}
-                      className={`group relative flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm transition-all duration-300 dark:border-white/5 dark:bg-gray-900 ${
-                        isEditMode ? 'cursor-pointer select-none' : ''
-                      } ${isSelected ? 'border-primary-500 ring-primary-500/20 ring-2' : ''}`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          handleCardClick(item)
+                        }
+                      }}
+                      className={`group focus-visible:ring-primary-500 relative flex flex-col transition-all duration-300 focus-visible:ring-2 focus-visible:outline-none ${
+                        isEditMode ? 'cursor-pointer select-none' : 'cursor-pointer'
+                      } ${isSelected ? 'ring-primary-500/30 rounded-[3px] ring-2 ring-offset-4' : ''}`}
                     >
-                      {/* Checkbox HUD Overlay */}
                       {isEditMode && (
-                        <div className="absolute top-3.5 left-3.5 z-20">
+                        <div className="absolute top-2 left-2 z-20">
                           <div
-                            className={`flex h-6.5 w-6.5 items-center justify-center rounded-full border-2 shadow-md transition-all ${
+                            className={`shape-circle flex h-6.5 w-6.5 items-center justify-center border-2 shadow-md transition-all ${
                               isSelected
                                 ? 'border-primary-600 bg-primary-600 text-white'
                                 : 'border-white bg-black/45 text-transparent'
                             }`}
                           >
-                            {isSelected && <Check className="h-3.5 w-3.5 stroke-[3.5]" />}
+                            {isSelected && (
+                              <Check className="h-3.5 w-3.5 stroke-[3.5]" aria-hidden="true" />
+                            )}
                           </div>
                         </div>
                       )}
 
-                      {/* Image/Cover container */}
-                      <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                        {item.coverImage ? (
-                          <img
-                            src={item.coverImage}
-                            alt={item.title[lang]}
-                            className={`h-full w-full object-cover transition-transform duration-500 ${
-                              isEditMode ? '' : 'group-hover:scale-105'
-                            }`}
-                          />
-                        ) : (
-                          <div
-                            className={`h-full w-full ${item.coverColor} flex items-center justify-center`}
-                          >
-                            <span className="text-4xl font-black text-white opacity-40">
-                              {item.title[lang].charAt(0)}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Hover Overlay */}
-                        {!isEditMode && (
-                          <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/15" />
-                        )}
-
-                        {/* Progress slider bar at the bottom */}
-                        {item.progress > 0 && (
-                          <div className="absolute right-0 bottom-0 left-0 h-1 bg-black/20 backdrop-blur-xs">
-                            <div
-                              className={`bg-primary-500 h-full transition-all duration-500 ${getProgressWidthClass(
-                                item.progress
-                              )}`}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Details */}
-                      <div className="p-3.5">
-                        <h3 className="truncate text-sm leading-tight font-bold text-gray-900 dark:text-white">
-                          {item.title[lang]}
-                        </h3>
-                        <div className="mt-1.5 flex items-center justify-between">
-                          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                            Ep. {item.lastReadEpisode || 0}/{item.totalEpisodes}
-                          </p>
-                          {item.lastReadAt && (
-                            <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
-                              {formatDate(item.lastReadAt)}
+                      <BookCard
+                        coverImage={item.coverImage}
+                        coverColor={item.coverColor}
+                        title={item.title[lang]}
+                        showCoverLabel={false}
+                        progress={item.progress}
+                        meta={
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-semibold text-gray-500">
+                              {t('libraryPage.epOfTotal', {
+                                n: item.lastReadEpisode || 0,
+                                total: item.totalEpisodes,
+                              })}
                             </p>
-                          )}
-                        </div>
-                      </div>
+                            {item.lastReadAt && (
+                              <p className="text-2xs font-medium text-gray-400">
+                                {formatDate(item.lastReadAt)}
+                              </p>
+                            )}
+                          </div>
+                        }
+                      />
                     </div>
                   )
                 })}
@@ -482,8 +472,16 @@ const LibraryPage = () => {
                   return (
                     <div
                       key={item.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => handleCardClick(item)}
-                      className={`group relative flex items-center gap-4 rounded-3xl border bg-white p-4 shadow-sm transition-all duration-300 dark:border-white/5 dark:bg-gray-900 ${
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          handleCardClick(item)
+                        }
+                      }}
+                      className={`group focus-visible:ring-primary-500 relative flex items-center gap-4 rounded-3xl border bg-white p-4 shadow-sm transition-all duration-300 focus-visible:ring-2 focus-visible:outline-none ${
                         isEditMode ? 'cursor-pointer select-none' : ''
                       } ${isSelected ? 'border-primary-500 ring-primary-500/20 ring-2' : ''}`}
                     >
@@ -491,20 +489,22 @@ const LibraryPage = () => {
                       {isEditMode && (
                         <div className="flex-shrink-0">
                           <div
-                            className={`flex h-6.5 w-6.5 items-center justify-center rounded-full border-2 transition-all ${
+                            className={`shape-circle flex h-6.5 w-6.5 items-center justify-center border-2 transition-all ${
                               isSelected
                                 ? 'border-primary-600 bg-primary-600 text-white'
-                                : 'border-gray-300 text-transparent dark:border-white/20'
+                                : 'border-gray-300 text-transparent'
                             }`}
                           >
-                            {isSelected && <Check className="h-3.5 w-3.5 stroke-[3.5]" />}
+                            {isSelected && (
+                              <Check className="h-3.5 w-3.5 stroke-[3.5]" aria-hidden="true" />
+                            )}
                           </div>
                         </div>
                       )}
 
                       {/* Card Thumbnail */}
                       <div
-                        className={`h-22 w-16 flex-shrink-0 rounded-2xl ${item.coverColor} flex items-center justify-center overflow-hidden bg-gray-100 shadow-inner dark:bg-gray-800`}
+                        className={`book-media book-media-shadow h-22 w-16 flex-shrink-0 ${item.coverColor} flex items-center justify-center`}
                       >
                         {item.coverImage ? (
                           <img
@@ -513,7 +513,7 @@ const LibraryPage = () => {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <span className="text-2xl font-black text-white opacity-40">
+                          <span className="text-2xl font-bold text-white opacity-40">
                             {item.title[lang].charAt(0)}
                           </span>
                         )}
@@ -521,19 +521,19 @@ const LibraryPage = () => {
 
                       {/* Info layout */}
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate text-base leading-tight font-black text-gray-900 dark:text-white">
+                        <h3 className="truncate text-base leading-tight font-bold text-gray-900">
                           {item.title[lang]}
                         </h3>
-                        <p className="mt-1 text-xs font-semibold text-gray-500 dark:text-gray-400">
+                        <p className="mt-1 text-xs font-semibold text-gray-500">
                           {t('webtoon.episodes')} {item.lastReadEpisode || 0} of{' '}
                           {item.totalEpisodes}
                         </p>
                         <div className="mt-2.5 flex items-center gap-4">
                           {item.progress > 0 && (
                             <div className="max-w-[120px] flex-1">
-                              <div className="h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
+                              <div className="h-1.5 rounded-2xl bg-gray-100">
                                 <div
-                                  className={`bg-primary-500 h-full rounded-full transition-all duration-500 ${getProgressWidthClass(
+                                  className={`bg-primary-500 h-full rounded-2xl transition-all duration-500 ${getProgressWidthClass(
                                     item.progress
                                   )}`}
                                 />
@@ -541,7 +541,7 @@ const LibraryPage = () => {
                             </div>
                           )}
                           {item.lastReadAt && (
-                            <span className="text-[10px] font-semibold text-gray-400 dark:text-gray-500">
+                            <span className="text-2xs font-semibold text-gray-400">
                               {formatDate(item.lastReadAt)}
                             </span>
                           )}
@@ -556,11 +556,11 @@ const LibraryPage = () => {
                             size="sm"
                             className="hidden gap-1 text-xs font-bold sm:flex"
                           >
-                            <Play className="h-3.5 w-3.5 fill-current" />
+                            <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                             {t('libraryPage.continueReading')}
                           </Button>
-                          <div className="rounded-xl p-2 text-gray-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gray-600 dark:group-hover:text-gray-300">
-                            <ChevronRight className="h-5 w-5" />
+                          <div className="rounded-2xl p-2 text-gray-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gray-600">
+                            <ChevronRight className="h-5 w-5" aria-hidden="true" />
                           </div>
                         </div>
                       )}
@@ -570,32 +570,14 @@ const LibraryPage = () => {
               </div>
             )}
 
-            {/* EMPTY STATE */}
             {items.length === 0 && (
-              <div className="py-16 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-white/5">
-                  {activeTab === 'bookmarks' && (
-                    <Bookmark className="h-8 w-8 text-gray-400 dark:text-gray-600" />
-                  )}
-                  {activeTab === 'history' && (
-                    <Clock className="h-8 w-8 text-gray-400 dark:text-gray-600" />
-                  )}
-                  {activeTab === 'likes' && (
-                    <Heart className="h-8 w-8 text-gray-400 dark:text-gray-600" />
-                  )}
-                </div>
-                <h3 className="mb-2 text-lg font-black text-gray-900 dark:text-white">
-                  {t('libraryPage.noItems')}
-                </h3>
-                <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-                  {lang === 'mm'
-                    ? 'စာရင်းသွင်းထားသော အပိုင်းများ မရှိသေးပါ။'
-                    : 'Explore webtoons to fill your library.'}
-                </p>
-                <Button variant="primary" size="sm" onClick={() => navigate('/categories')}>
-                  {t('categories.webtoons')}
-                </Button>
-              </div>
+              <LibraryEmptyState
+                tab={activeTab}
+                title={t('libraryPage.noItems')}
+                description={t('libraryPage.emptyExplore')}
+                ctaLabel={t('categories.webtoons')}
+                onCtaClick={() => navigate('/categories')}
+              />
             )}
           </motion.div>
         </AnimatePresence>
@@ -608,13 +590,13 @@ const LibraryPage = () => {
               animate={{ y: 0, x: '-50%', opacity: 1 }}
               exit={{ y: 80, x: '-50%', opacity: 0 }}
               transition={{ type: 'spring', stiffness: 260, damping: 25 }}
-              className="fixed bottom-6 left-1/2 z-40 flex w-[90%] max-w-lg items-center justify-between gap-4 rounded-full border border-gray-200 bg-white/95 px-6 py-3.5 text-sm shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-gray-900/95"
+              className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex w-[90%] max-w-lg items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/95 px-6 py-3.5 text-sm shadow-2xl backdrop-blur-md"
             >
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+                <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
                   {t('libraryPage.title')}
                 </span>
-                <span className="font-extrabold text-gray-900 dark:text-white">
+                <span className="font-bold text-gray-900">
                   {t('libraryPage.itemsSelected', { count: selectedItems.length })}
                 </span>
               </div>
@@ -638,7 +620,7 @@ const LibraryPage = () => {
                   onClick={handleDeleteSelected}
                   className="gap-1.5 shadow-md shadow-red-500/10"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                   <span>{t('common.delete')}</span>
                 </Button>
               </div>
@@ -646,62 +628,15 @@ const LibraryPage = () => {
           )}
         </AnimatePresence>
 
-        {/* ═══════ PREMIUM CUSTOM CONFIRMATION DIALOG MODAL ═══════ */}
-        <AnimatePresence>
-          {showConfirmModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              {/* Backdrop overlay */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowConfirmModal(false)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-xs"
-              />
-
-              {/* Dialog panel */}
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 15 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 15 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-                className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-gray-100 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-gray-900"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-950/30 dark:text-red-400">
-                    <AlertTriangle className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                      {lang === 'mm' ? 'စုစည်းမှုမှ ဖယ်ရှားရန်' : 'Remove from Collection'}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed font-medium text-gray-500 dark:text-gray-400">
-                      {t('libraryPage.deleteConfirm')}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex justify-end gap-3 border-t border-gray-50 pt-4 dark:border-white/5">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setShowConfirmModal(false)}
-                    className="px-4 py-2"
-                  >
-                    {t('common.cancel')}
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={confirmDelete}
-                    className="px-5 py-2 font-bold shadow-lg shadow-red-500/15"
-                  >
-                    {t('common.delete')}
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
+        <LibraryDeleteConfirmDialog
+          isOpen={showConfirmModal}
+          title={t('libraryPage.removeFromCollection')}
+          message={t('libraryPage.deleteConfirm')}
+          cancelLabel={t('common.cancel')}
+          confirmLabel={t('common.delete')}
+          onCancel={() => setShowConfirmModal(false)}
+          onConfirm={confirmDelete}
+        />
         {/* ═══════ TOAST FEEDBACK OVERLAY BANNER ═══════ */}
         <AnimatePresence>
           {showSuccessToast && (
@@ -709,10 +644,11 @@ const LibraryPage = () => {
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 50, scale: 0.95 }}
-              className="fixed bottom-6 left-1/2 z-[250] flex -translate-x-1/2 items-center gap-3.5 rounded-full border border-emerald-500 bg-emerald-600 px-6 py-3.5 text-white shadow-xl"
+              role="status"
+              className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-[250] flex -translate-x-1/2 items-center gap-3.5 rounded-2xl border border-emerald-500 bg-emerald-600 px-6 py-3.5 text-white shadow-xl"
             >
-              <div className="rounded-full bg-white/20 p-1">
-                <Check className="h-4 w-4 stroke-[3]" />
+              <div className="rounded-2xl bg-white/20 p-1">
+                <Check className="h-4 w-4 stroke-[3]" aria-hidden="true" />
               </div>
               <span className="text-sm font-bold tracking-wide">
                 {t('libraryPage.deleteSuccess')}

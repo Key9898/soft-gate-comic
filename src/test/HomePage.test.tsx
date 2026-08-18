@@ -3,11 +3,6 @@ import { render, screen } from './utils'
 import HomePage from '../features/home/HomePage'
 
 describe('HomePage', () => {
-  it('renders featured webtoon section', () => {
-    render(<HomePage />)
-    expect(screen.getByText('Featured')).toBeInTheDocument()
-  })
-
   it('renders trending section', () => {
     render(<HomePage />)
     expect(screen.getByText('Trending Now')).toBeInTheDocument()
@@ -28,7 +23,7 @@ describe('HomePage', () => {
     expect(screen.getByRole('button', { name: /start reading/i })).toBeInTheDocument()
   })
 
-  it('renders add to library button', () => {
+  it('renders add to library CTA beside start reading', () => {
     render(<HomePage />)
     expect(screen.getByRole('button', { name: /add to library/i })).toBeInTheDocument()
   })
@@ -39,15 +34,28 @@ describe('HomePage', () => {
     expect(viewAllLinks.length).toBeGreaterThanOrEqual(2)
   })
 
-  it('renders CTA section', () => {
+  it('shows catalog release dates instead of relative ages', () => {
     render(<HomePage />)
-    expect(screen.getByText('Start Your Reading Journey')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /get started for free/i })).toBeInTheDocument()
+    expect(screen.queryByText(/years ago/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/2023/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/2024/)).not.toBeInTheDocument()
+    expect(screen.getAllByText(/\d{1,2} [A-Z][a-z]{2} 2026/).length).toBeGreaterThan(0)
   })
 
-  it('renders webtoon cards in trending section', () => {
+  it('badges the newest releases even inside Trending Now', () => {
     render(<HomePage />)
-    const covers = screen.getAllByText('Cover')
-    expect(covers.length).toBeGreaterThan(0)
+    const trending = screen.getByRole('heading', { name: 'Trending Now' }).closest('section')
+    expect(trending).toBeTruthy()
+    expect(trending?.textContent).toContain('Love in Seoul')
+    const newMarks = screen.getAllByText('New')
+    expect(newMarks.length).toBeGreaterThanOrEqual(6)
+  })
+
+  it('centers hero content in a mid-band shell', () => {
+    const { container } = render(<HomePage />)
+    const shell = container.querySelector('.hero-landscape-adjust')
+    expect(shell).toBeTruthy()
+    expect(shell?.className).toMatch(/justify-center/)
+    expect(shell?.className).toMatch(/min-h-\[/)
   })
 })

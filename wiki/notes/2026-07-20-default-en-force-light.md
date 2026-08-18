@@ -1,11 +1,12 @@
 ---
-title: Default English + force light portal theme
+title: Impl 5 — Default English + force light portal theme
 type: note
 date: 2026-07-20
-tags: [i18n, theme, light-mode, tailwind]
+tags: [i18n, theme, light-mode, tailwind, impl-5]
+impl: 5
 ---
 
-# Default English + force light portal theme
+# Impl 5 — Default English + force light portal theme
 
 ## Decisions
 

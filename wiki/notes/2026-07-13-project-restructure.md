@@ -1,13 +1,14 @@
 ---
-title: Project Restructure & Tailwind v4 Alignment
+title: Impl 1 — Project Restructure & Tailwind v4 Alignment
 type: note
 date: 2026-07-13
-tags: [architecture, tailwind, typescript, config]
+tags: [architecture, tailwind, typescript, config, impl-1]
+impl: 1
 ---
 
-# Project Restructure & Tailwind v4 Alignment (2026-07-13)
+# Impl 1 — Project Restructure & Tailwind v4 Alignment (2026-07-13)
 
-Refactored WebPad project layout and configurations to match the structural architecture of the `ai-poc-frontend` scaffold.
+Refactored WebPad project layout and configurations to match the company frontend scaffolding standard.
 
 ## Summary of Refactoring
 

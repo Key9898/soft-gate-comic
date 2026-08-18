@@ -6,14 +6,14 @@ describe('LoginPage', () => {
   it('renders login form', () => {
     render(<LoginPage />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
 
-  it('shows OAuth buttons', () => {
+  it('does not show OAuth buttons', () => {
     render(<LoginPage />)
-    expect(screen.getByRole('button', { name: /google/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /facebook/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /google/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /facebook/i })).not.toBeInTheDocument()
   })
 
   it('has link to register page', () => {

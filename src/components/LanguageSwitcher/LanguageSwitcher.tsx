@@ -21,11 +21,13 @@ const LanguageSwitcher = () => {
       onClick={toggleLanguage}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"
+      className="focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl px-3 py-2 transition-colors hover:bg-gray-100 focus-visible:ring-2 focus-visible:outline-none"
       aria-label={`Switch to ${displayLanguage.name}`}
     >
-      <Globe className="h-5 w-5 text-gray-600" />
-      <span className="text-sm font-medium text-gray-700">{displayLanguage.name}</span>
+      <Globe className="h-5 w-5 text-gray-600" aria-hidden="true" />
+      <span className="hidden text-sm font-medium text-gray-700 xl:inline">
+        {displayLanguage.name}
+      </span>
     </motion.button>
   )
 }

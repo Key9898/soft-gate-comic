@@ -10,13 +10,34 @@ afterEach(() => {
   cleanup()
 })
 
-const mockIntersectionObserver = vi.fn()
-mockIntersectionObserver.mockReturnValue({
-  observe: () => null,
-  unobserve: () => null,
-  disconnect: () => null,
-})
-window.IntersectionObserver = mockIntersectionObserver
+class IntersectionObserverMock {
+  observe() {
+    return null
+  }
+  unobserve() {
+    return null
+  }
+  disconnect() {
+    return null
+  }
+  takeRecords() {
+    return []
+  }
+}
+window.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver
+
+class ResizeObserverMock {
+  observe() {
+    return null
+  }
+  unobserve() {
+    return null
+  }
+  disconnect() {
+    return null
+  }
+}
+window.ResizeObserver = ResizeObserverMock
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
