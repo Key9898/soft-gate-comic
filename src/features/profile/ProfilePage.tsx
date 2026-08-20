@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   User as UserIcon,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
+import { MIN_PASSWORD_LENGTH } from '../../lib/auth'
 import SEO from '../../components/SEO/SEO'
 import { useAuth } from '../../context/AuthContext'
 import { useLibrary } from '../../context/LibraryContext'
@@ -22,18 +23,27 @@ import { useWallet } from '../../context/WalletContext'
 import FloatingInput from './components/FloatingInput'
 import WeeklyReadingChart from './components/WeeklyReadingChart'
 import AchievementsBadgeCenter from './components/AchievementsBadgeCenter'
+import NotificationSettingsMatrix from './components/NotificationSettingsMatrix'
+import ReaderPreferencesPanel from './components/ReaderPreferencesPanel'
 
 type TabType = 'profile' | 'settings' | 'preferences' | 'security'
+
+const isProfileTab = (value: string | null): value is TabType =>
+  value === 'profile' || value === 'settings' || value === 'preferences' || value === 'security'
 
 const ProfilePage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { user, logout, updateProfile, changePassword, deleteAccount } = useAuth()
   const { bookmarks } = useLibrary()
   const { history, likedWebtoonIds } = useEngagement()
   const { unlockedEpisodeKeys, balance } = useWallet()
-  const [activeTab, setActiveTab] = useState<TabType>('profile')
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    const tab = searchParams.get('tab')
+    return isProfileTab(tab) ? tab : 'profile'
+  })
   const [isEditing, setIsEditing] = useState(false)
   const [avatarUploading, setAvatarUploading] = useState(false)
 
@@ -55,6 +65,20 @@ const ProfilePage = () => {
     setBio(user.bio || '')
     setEmail(user.email)
   }, [user])
+
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    setActiveTab(isProfileTab(tab) ? tab : 'profile')
+  }, [searchParams])
+
+  const selectTab = (id: TabType) => {
+    setActiveTab(id)
+    if (id === 'profile') {
+      setSearchParams({}, { replace: true })
+    } else {
+      setSearchParams({ tab: id }, { replace: true })
+    }
+  }
 
   const tabs = [
     { id: 'profile' as TabType, label: t('profilePage.profileInformation'), icon: UserIcon },
@@ -133,8 +157,8 @@ const ProfilePage = () => {
     }
     if (!newPassword) {
       errs.newPassword = t('profilePage.validationRequired')
-    } else if (newPassword.length < 8) {
-      errs.newPassword = t('auth.passwordMinLength8')
+    } else if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      errs.newPassword = t('auth.passwordMinLength')
     }
     if (!confirmPassword) {
       errs.confirmPassword = t('profilePage.validationRequired')
@@ -240,7 +264,7 @@ const ProfilePage = () => {
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => selectTab(tab.id)}
                     className={`relative flex min-h-[44px] w-full items-center gap-3 rounded-2xl px-4 py-3 transition-colors ${
                       activeTab === tab.id
                         ? 'bg-primary-50 text-primary-600'
@@ -363,23 +387,9 @@ const ProfilePage = () => {
                 </>
               )}
 
-              {activeTab === 'settings' && (
-                <div className="rounded-3xl border bg-white p-6 text-left shadow-sm">
-                  <h3 className="mb-2 text-lg font-bold text-gray-900">
-                    {t('notifications.title')}
-                  </h3>
-                  <p className="text-sm text-gray-500">{t('profilePage.prefsUnavailable')}</p>
-                </div>
-              )}
+              {activeTab === 'settings' && <NotificationSettingsMatrix />}
 
-              {activeTab === 'preferences' && (
-                <div className="rounded-3xl border bg-white p-6 text-left shadow-sm">
-                  <h3 className="mb-2 text-lg font-bold text-gray-900">
-                    {t('profilePage.preferences')}
-                  </h3>
-                  <p className="text-sm text-gray-500">{t('profilePage.prefsUnavailable')}</p>
-                </div>
-              )}
+              {activeTab === 'preferences' && <ReaderPreferencesPanel />}
 
               {activeTab === 'security' && (
                 <div className="space-y-6">

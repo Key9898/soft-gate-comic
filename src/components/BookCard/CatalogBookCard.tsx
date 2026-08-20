@@ -5,6 +5,8 @@ import type { Genre, Webtoon } from '@softgate/shared'
 import { formatCatalogDate } from '../../lib/catalog'
 import { resolveGenreLabel } from '../../lib/categories'
 import { formatCount } from '../../lib/utils/formatters'
+import { RatingChip } from '../SeriesRating'
+import ContentRatingBadge from '../ContentRatingBadge'
 import BookCard from './BookCard'
 
 export interface CatalogBookCardProps {
@@ -22,6 +24,8 @@ export interface CatalogBookCardProps {
   progress?: number
   extraBadge?: ReactNode
   overlay?: ReactNode
+  rank?: number
+  dateKind?: 'createdAt' | 'updatedAt'
 }
 
 const CatalogBookCard = ({
@@ -31,6 +35,8 @@ const CatalogBookCard = ({
   newestIds,
   extraBadge,
   overlay,
+  rank,
+  dateKind = 'createdAt',
   ...bookCardProps
 }: CatalogBookCardProps) => {
   const { t } = useTranslation()
@@ -45,13 +51,27 @@ const CatalogBookCard = ({
       description={webtoon.description[lang]}
       subtitle={resolveGenreLabel(webtoon.genres[0] ?? '', genres, lang)}
       overlay={overlay}
+      rank={rank}
       badge={
         <>
-          {isNew ? (
-            <span className="bg-primary-600 absolute top-2 left-2 z-10 rounded-2xl px-2 py-0.5 text-xs font-medium text-white">
-              {t('webtoon.new')}
-            </span>
+          {isNew || webtoon.isPremium ? (
+            <div className="pointer-events-none absolute top-2 left-2 z-10 flex flex-col items-start gap-1">
+              {isNew ? (
+                <span className="bg-primary-600 rounded-2xl px-2 py-0.5 text-xs font-medium text-white">
+                  {t('webtoon.new')}
+                </span>
+              ) : null}
+              {webtoon.isPremium ? (
+                <span className="bg-accent-600 text-2xs rounded-2xl px-2 py-0.5 font-bold text-white uppercase shadow-sm">
+                  {t('webtoon.premium')}
+                </span>
+              ) : null}
+            </div>
           ) : null}
+          <div className="pointer-events-none absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+            <RatingChip rating={webtoon.rating} />
+            <ContentRatingBadge rating={webtoon.contentRating} />
+          </div>
           {extraBadge}
         </>
       }
@@ -61,7 +81,7 @@ const CatalogBookCard = ({
             <Eye className="h-3 w-3 shrink-0 text-slate-400" aria-hidden="true" />
             <span>{formatCount(webtoon.viewCount)}</span>
           </div>
-          <span className="shrink-0">{formatCatalogDate(webtoon.createdAt)}</span>
+          <span className="shrink-0">{formatCatalogDate(webtoon[dateKind])}</span>
         </div>
       }
     />

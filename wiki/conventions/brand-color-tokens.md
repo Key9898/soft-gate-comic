@@ -8,7 +8,7 @@ tags: [brand, theme, tailwind, colors, spark, semantic]
 
 # Brand color tokens
 
-Source of truth: live logo [`public/logo/logo.svg`](../../public/logo/logo.svg) (in-app) + [`logo.jpg`](../../public/logo/logo.jpg) (OG/social) + `@theme` in [`src/index.css`](../../src/index.css).
+Source of truth: live logo [`public/logo/logo.svg`](../../public/logo/logo.svg) (in-app) + [`logo.png`](../../public/logo/logo.png) (OG/social) + `@theme` in [`src/index.css`](../../src/index.css).
 
 ## Live logo anchors
 

@@ -39,6 +39,7 @@ const webtoon = {
   likeCount: 1,
   episodeCount: 1,
   rating: 5,
+  contentRating: 'all',
   createdAt: '2026-01-01',
   updatedAt: '2026-02-01',
 } as Webtoon

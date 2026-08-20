@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion, type MotionProps } from 'framer-motion'
 import {
@@ -15,11 +21,14 @@ import {
   Bookmark,
   Lock,
   Sparkles,
+  Maximize2,
+  RectangleHorizontal,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import Modal from '../../components/Modal'
 import SEO from '../../components/SEO/SEO'
+import { SeriesRatingControl } from '../../components/SeriesRating'
 import { buildArticleJsonLd } from '../../components/SEO/jsonLd'
 import { useAuth } from '../../context/AuthContext'
 import { useData } from '../../context/DataContext'
@@ -27,9 +36,33 @@ import { useLibrary } from '../../context/LibraryContext'
 import { useWallet } from '../../context/WalletContext'
 import { useEngagement } from '../../context/EngagementContext'
 import { scrollRatioFromMetrics, scrollTopFromRatio } from '../../lib/engagement'
+import {
+  formatWaitFreeAt,
+  hasWaitSchedule,
+  isEpisodeLocked,
+  isPublishedEpisode,
+  publishedEpisodesForSeries,
+} from '../../lib/catalog'
+import { confirmAge, hasAgeConfirm, requiresAgeConfirm } from '../../lib/contentRating'
+import {
+  loadReaderPrefs,
+  saveReaderPrefs,
+  swipeEpisodeDelta,
+  clampPinchScale,
+  type ReaderImageFit,
+} from '../../lib/reader'
+import { episodeCommentKey, listComments } from '../../lib/comments'
 import useScrollLock from '../../hooks/useScrollLock'
 import ReaderCommentsPanel from './components/ReaderCommentsPanel'
+import ReaderEpisodeSheet from './components/ReaderEpisodeSheet'
 import ReaderSkeleton from './components/ReaderSkeleton'
+import NotFoundPage from '../info/NotFoundPage'
+
+function isEditableReaderTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false
+  const tag = target.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
+}
 
 const ReaderPage = () => {
   const { t, i18n } = useTranslation()
@@ -39,7 +72,7 @@ const ReaderPage = () => {
   const prefersReducedMotion = useReducedMotion()
   const { webtoons, episodes, isLoading } = useData()
   const { isBookmarked, toggleBookmark } = useLibrary()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const { balance, isEpisodeUnlocked, unlockEpisode } = useWallet()
   const {
     isLiked,
@@ -53,14 +86,19 @@ const ReaderPage = () => {
   // ── States ─────────────────────────────────────────────────
   const [showHeader, setShowHeader] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
-  const [darkMode, setDarkMode] = useState(true) // Default to dark mode for reading
-  const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md')
+  const [showEpisodeSheet, setShowEpisodeSheet] = useState(false)
+  const [initialPrefs] = useState(loadReaderPrefs)
+  const [darkMode, setDarkMode] = useState(initialPrefs.darkMode)
+  const [fontSize, setFontSize] = useState(initialPrefs.fontSize)
   const [showComments, setShowComments] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
-  const [brightness, setBrightness] = useState<number>(0.9) // 0.25 to 1.0
+  const [brightness, setBrightness] = useState(initialPrefs.brightness)
+  const [imageFit, setImageFit] = useState<ReaderImageFit>(initialPrefs.imageFit)
+  const [commentCount, setCommentCount] = useState(0)
   const [estMinutesLeft, setEstMinutesLeft] = useState<number>(3)
   const [totalEstMinutes, setTotalEstMinutes] = useState<number>(1)
   const [unlockError, setUnlockError] = useState('')
+  const [ageOk, setAgeOk] = useState(() => hasAgeConfirm(null))
 
   // Last scroll track
   const lastScrollPos = useRef<number>(0)
@@ -69,6 +107,19 @@ const ReaderPage = () => {
   const lastPersistedRatioRef = useRef<number | null>(null)
   const historyRef = useRef(history)
   historyRef.current = history
+  const [pinchScale, setPinchScale] = useState(1)
+  const [pinchOrigin, setPinchOrigin] = useState({ x: 0, y: 0 })
+  const pinchScaleRef = useRef(1)
+  pinchScaleRef.current = pinchScale
+  const pointersRef = useRef(new Map<number, { x: number; y: number }>())
+  const swipeOriginRef = useRef<{ x: number; y: number; type: string } | null>(null)
+  const pinchStartRef = useRef<{ dist: number; scale: number } | null>(null)
+  const consumeClickRef = useRef(false)
+  const lastTapRef = useRef<{ t: number; x: number; y: number } | null>(null)
+
+  useEffect(() => {
+    setAgeOk(hasAgeConfirm(user?.id ?? null))
+  }, [user?.id])
 
   // ── Webtoon & Episode Data ────────────────────────────────
   const webtoon = webtoons.find((w) => w.id === webtoonId)
@@ -78,19 +129,18 @@ const ReaderPage = () => {
   const nextEpisode = episodes.find(
     (e) => e.webtoonId === webtoonId && e.episodeNumber === Number(episodeNumber) + 1
   )
+  const ageBlocked = Boolean(webtoon && requiresAgeConfirm(webtoon) && !ageOk)
 
-  const totalEpisodes = episodes.filter((e) => e.webtoonId === webtoonId).length
-  const hasPrev = Number(episodeNumber) > 1
-  const hasNext = Number(episodeNumber) < totalEpisodes
   const episodeNum = Number(episodeNumber)
-  const locked =
-    Boolean(currentEpisode?.isPremium) &&
-    Boolean(webtoonId) &&
-    !isEpisodeUnlocked(webtoonId!, episodeNum)
+  const publishedEpisodes = webtoonId ? publishedEpisodesForSeries(episodes, webtoonId) : []
+  const hasPrev = publishedEpisodes.some((e) => e.episodeNumber === episodeNum - 1)
+  const hasNext = publishedEpisodes.some((e) => e.episodeNumber === episodeNum + 1)
+  const coinUnlocked = typeof webtoonId === 'string' && isEpisodeUnlocked(webtoonId, episodeNum)
+  const locked = currentEpisode ? isEpisodeLocked(currentEpisode, coinUnlocked) : false
   const episodeKey = `${webtoonId ?? ''}:${currentEpisode?.episodeNumber ?? episodeNum}`
 
   const flushReadingProgress = useCallback(() => {
-    if (!isAuthenticated || !webtoonId || !currentEpisode || locked) return
+    if (!isAuthenticated || !webtoonId || !currentEpisode || locked || ageBlocked) return
     if (!restoreDoneRef.current) return
     const ratio = scrollRatioFromMetrics(
       window.scrollY,
@@ -105,7 +155,7 @@ const ReaderPage = () => {
     }
     lastPersistedRatioRef.current = ratio
     updateReadingProgress(webtoonId, currentEpisode.episodeNumber, ratio)
-  }, [isAuthenticated, webtoonId, currentEpisode, locked, updateReadingProgress])
+  }, [isAuthenticated, webtoonId, currentEpisode, locked, ageBlocked, updateReadingProgress])
 
   const schedulePersist = useCallback(() => {
     if (persistTimerRef.current) clearTimeout(persistTimerRef.current)
@@ -115,9 +165,22 @@ const ReaderPage = () => {
     }, 1000)
   }, [flushReadingProgress])
 
+  const goToEpisode = useCallback(
+    (num: number) => {
+      navigate(`/read/${webtoonId}/${num}`)
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    },
+    [navigate, webtoonId]
+  )
+
   useEffect(() => {
     restoreDoneRef.current = false
     lastPersistedRatioRef.current = null
+    setPinchScale(1)
+    pointersRef.current.clear()
+    swipeOriginRef.current = null
+    pinchStartRef.current = null
+    lastTapRef.current = null
     if (persistTimerRef.current) {
       clearTimeout(persistTimerRef.current)
       persistTimerRef.current = null
@@ -136,15 +199,57 @@ const ReaderPage = () => {
   }, [showSettings])
 
   useEffect(() => {
-    if (!webtoonId || !currentEpisode || locked) return
+    saveReaderPrefs({
+      schemaVersion: 1,
+      darkMode,
+      brightness,
+      fontSize,
+      imageFit,
+    })
+  }, [darkMode, brightness, fontSize, imageFit])
+
+  useEffect(() => {
+    if (!webtoonId || Number.isNaN(episodeNum)) {
+      setCommentCount(0)
+      return
+    }
+    setCommentCount(listComments(episodeCommentKey(webtoonId, episodeNum)).length)
+  }, [webtoonId, episodeNum, showComments])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      if (showSettings || showComments || showEpisodeSheet) return
+      const target = e.target as HTMLElement | null
+      if (target) {
+        const tag = target.tagName
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable) {
+          return
+        }
+      }
+      if (e.key === 'ArrowLeft' && hasPrev) {
+        e.preventDefault()
+        goToEpisode(episodeNum - 1)
+      }
+      if (e.key === 'ArrowRight' && hasNext) {
+        e.preventDefault()
+        goToEpisode(episodeNum + 1)
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [showSettings, showComments, showEpisodeSheet, hasPrev, hasNext, goToEpisode, episodeNum])
+
+  useEffect(() => {
+    if (!webtoonId || !currentEpisode || locked || ageBlocked) return
     if (!isAuthenticated) return
     recordHistory(webtoonId, currentEpisode.episodeNumber)
-  }, [webtoonId, currentEpisode, locked, isAuthenticated, recordHistory])
+  }, [webtoonId, currentEpisode, locked, ageBlocked, isAuthenticated, recordHistory])
 
   useEffect(() => {
     if (!engagementReady || !webtoon || !currentEpisode || !webtoonId) return
 
-    if (locked || !isAuthenticated) {
+    if (locked || !isAuthenticated || ageBlocked) {
       restoreDoneRef.current = true
       return
     }
@@ -184,6 +289,7 @@ const ReaderPage = () => {
     engagementReady,
     episodeKey,
     locked,
+    ageBlocked,
     isAuthenticated,
     webtoon,
     currentEpisode,
@@ -244,50 +350,57 @@ const ReaderPage = () => {
 
       lastScrollPos.current = scrollTop
 
-      if (!locked && isAuthenticated && restoreDoneRef.current) {
+      if (!locked && !ageBlocked && isAuthenticated && restoreDoneRef.current) {
         schedulePersist()
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [webtoon, currentEpisode, locked, isAuthenticated, schedulePersist])
+  }, [webtoon, currentEpisode, locked, ageBlocked, isAuthenticated, schedulePersist])
 
   if (isLoading) {
     return <ReaderSkeleton />
   }
 
-  if (!webtoon || !currentEpisode) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 text-white">
-        <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold">{t('reader.notFound')}</h1>
-          <p className="mt-2 text-white/70">{t('reader.notFoundDesc')}</p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/"
-              className="bg-primary-600 hover:bg-primary-700 rounded-2xl px-5 py-2.5 text-sm font-medium transition"
-            >
-              {t('nav.home')}
-            </Link>
-            {webtoon ? (
-              <Link
-                to={`/webtoon/${webtoon.id}`}
-                className="rounded-2xl border border-white/20 px-5 py-2.5 text-sm font-medium transition hover:bg-white/10"
-              >
-                {t('reader.backToWebtoon')}
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    )
+  if (!webtoon) {
+    return <NotFoundPage variant="series" withSiteChrome />
   }
 
-  // ── Actions ────────────────────────────────────────────────
-  const goToEpisode = (num: number) => {
-    navigate(`/read/${webtoonId}/${num}`)
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  if (!currentEpisode || !isPublishedEpisode(currentEpisode)) {
+    return <NotFoundPage variant="episode" seriesHref={`/webtoon/${webtoon.id}`} withSiteChrome />
+  }
+
+  if (ageBlocked) {
+    const hubHref = `/webtoon/${webtoon.id}`
+    return (
+      <>
+        <SEO title={webtoon.title[lang]} description={webtoon.description[lang]} noindex />
+        <Modal
+          isOpen
+          title={t('ageGate.title')}
+          onClose={() => navigate(hubHref)}
+          closeOnOverlayClick
+        >
+          <div data-testid="age-gate" className="space-y-4">
+            <p className="text-sm leading-relaxed text-gray-600">{t('ageGate.body')}</p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <Button variant="outline" onClick={() => navigate(hubHref)}>
+                {t('ageGate.cancel')}
+              </Button>
+              <Button
+                onClick={() => {
+                  confirmAge(user?.id ?? null)
+                  setAgeOk(true)
+                }}
+              >
+                {t('ageGate.confirm')}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      </>
+    )
   }
 
   // Animation Helper
@@ -300,6 +413,95 @@ const ReaderPage = () => {
       return { initial: false, animate, transition: { duration: 0 } }
     }
     return { initial, animate, transition }
+  }
+
+  const overlaysOpen = showSettings || showComments || showEpisodeSheet
+
+  const onStripPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (overlaysOpen || isEditableReaderTarget(e.target)) return
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      void 0
+    }
+    if (pointersRef.current.size === 2) {
+      consumeClickRef.current = true
+      const pts = [...pointersRef.current.values()]
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y)
+      pinchStartRef.current = { dist: dist || 1, scale: pinchScaleRef.current }
+      const rect = e.currentTarget.getBoundingClientRect()
+      setPinchOrigin({
+        x: (pts[0].x + pts[1].x) / 2 - rect.left,
+        y: (pts[0].y + pts[1].y) / 2 - rect.top,
+      })
+      swipeOriginRef.current = null
+      return
+    }
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      swipeOriginRef.current = { x: e.clientX, y: e.clientY, type: e.pointerType }
+    }
+  }
+
+  const onStripPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!pointersRef.current.has(e.pointerId)) return
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pointersRef.current.size < 2 || !pinchStartRef.current) return
+    consumeClickRef.current = true
+    const pts = [...pointersRef.current.values()]
+    const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y)
+    setPinchScale(
+      clampPinchScale(pinchStartRef.current.scale * (dist / pinchStartRef.current.dist))
+    )
+  }
+
+  const onStripPointerEnd = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const start = swipeOriginRef.current
+    pointersRef.current.delete(e.pointerId)
+    if (pointersRef.current.size < 2) pinchStartRef.current = null
+    if (
+      typeof e.currentTarget.hasPointerCapture === 'function' &&
+      e.currentTarget.hasPointerCapture(e.pointerId)
+    ) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+    if (overlaysOpen || isEditableReaderTarget(e.target)) {
+      swipeOriginRef.current = null
+      return
+    }
+    if (
+      !start ||
+      (start.type !== 'touch' && start.type !== 'pen') ||
+      pointersRef.current.size > 0
+    ) {
+      return
+    }
+    swipeOriginRef.current = null
+    const dx = e.clientX - start.x
+    const dy = e.clientY - start.y
+    const delta = swipeEpisodeDelta(dx, dy)
+    if (delta !== 0) {
+      consumeClickRef.current = true
+      lastTapRef.current = null
+      if (delta < 0 && hasPrev) goToEpisode(episodeNum - 1)
+      if (delta > 0 && hasNext) goToEpisode(episodeNum + 1)
+      return
+    }
+    const now = Date.now()
+    const prev = lastTapRef.current
+    if (prev && now - prev.t <= 300 && Math.hypot(e.clientX - prev.x, e.clientY - prev.y) <= 24) {
+      consumeClickRef.current = true
+      lastTapRef.current = null
+      setPinchScale(1)
+      return
+    }
+    lastTapRef.current = { t: now, x: e.clientX, y: e.clientY }
+  }
+
+  const onStripClick = (e: { stopPropagation: () => void }) => {
+    if (!consumeClickRef.current) return
+    e.stopPropagation()
+    consumeClickRef.current = false
   }
 
   // ── UI Theme classes ───────────────────────────────────────
@@ -427,11 +629,12 @@ const ReaderPage = () => {
                     title={t('readerPage.comments')}
                     aria-label={t('readerPage.comments')}
                     onClick={() => setShowComments(true)}
-                    className={`rounded-2xl p-2.5 transition ${
+                    className={`flex min-h-11 items-center gap-1 rounded-2xl px-2.5 py-2.5 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
                     <MessageCircle className="h-5 w-5" />
+                    <span className="text-xs font-bold">{commentCount}</span>
                   </button>
                 </div>
               </div>
@@ -452,7 +655,7 @@ const ReaderPage = () => {
 
       {/* ═══════ WEBTOON COMIC STRIPS ═══════ */}
       <main
-        className="mx-auto max-w-2xl px-0 pt-20 pb-16 sm:px-2 md:pt-24"
+        className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 pt-20 pb-16 sm:px-2 md:pt-24`}
         onClick={() => setShowHeader(!showHeader)}
       >
         {locked ? (
@@ -470,6 +673,15 @@ const ReaderPage = () => {
             <p className={`mb-4 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               {t('readerPage.unlockFor', { coins: currentEpisode.coinPrice })}
             </p>
+            {hasWaitSchedule(currentEpisode) && currentEpisode.freeAt ? (
+              <p
+                className={`mb-4 max-w-sm text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+              >
+                {t('readerPage.waitFreeWhen', {
+                  when: formatWaitFreeAt(currentEpisode.freeAt),
+                })}
+              </p>
+            ) : null}
             {isAuthenticated && (
               <p className={`mb-6 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
                 {t('coinsPage.yourBalance')}: {balance}
@@ -491,7 +703,25 @@ const ReaderPage = () => {
             </Button>
           </div>
         ) : currentEpisode.images.length > 0 ? (
-          <div className="flex flex-col gap-0 overflow-hidden shadow-xl sm:rounded-2xl">
+          <div
+            data-testid="reader-strip-stack"
+            className={`flex flex-col gap-0 shadow-xl sm:rounded-2xl ${
+              imageFit === 'full' ? 'w-full' : ''
+            } ${pinchScale > 1 ? 'overflow-visible' : 'overflow-hidden'} touch-pan-y`}
+            style={
+              pinchScale === 1
+                ? undefined
+                : {
+                    transform: `scale(${pinchScale})`,
+                    transformOrigin: `${pinchOrigin.x}px ${pinchOrigin.y}px`,
+                  }
+            }
+            onPointerDown={onStripPointerDown}
+            onPointerMove={onStripPointerMove}
+            onPointerUp={onStripPointerEnd}
+            onPointerCancel={onStripPointerEnd}
+            onClick={onStripClick}
+          >
             {currentEpisode.images.map((src, index) => (
               <img
                 key={`${src}-${index}`}
@@ -535,10 +765,16 @@ const ReaderPage = () => {
                 {t('readerPage.chapterComplete')}
               </h2>
               <p
-                className={`mb-6 max-w-sm text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+                className={`mb-4 max-w-sm text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
               >
                 {t('readerPage.readingTime')}: {t('readerPage.minutes', { mins: totalEstMinutes })}
               </p>
+
+              {webtoonId ? (
+                <div className="mb-6 w-full max-w-md">
+                  <SeriesRatingControl webtoonId={webtoonId} variant="card" darkMode={darkMode} />
+                </div>
+              ) : null}
 
               {hasNext ? (
                 <div className="w-full max-w-md">
@@ -678,13 +914,13 @@ const ReaderPage = () => {
                     type="button"
                     title={
                       webtoonId && isBookmarked(webtoonId)
-                        ? t('webtoonDetail.saved')
-                        : t('webtoonDetail.save')
+                        ? t('webtoonDetail.subscribed')
+                        : t('webtoonDetail.subscribe')
                     }
                     aria-label={
                       webtoonId && isBookmarked(webtoonId)
-                        ? t('webtoonDetail.saved')
-                        : t('webtoonDetail.save')
+                        ? t('webtoonDetail.subscribed')
+                        : t('webtoonDetail.subscribe')
                     }
                     onClick={() => {
                       if (webtoonId) toggleBookmark(webtoonId)
@@ -698,16 +934,17 @@ const ReaderPage = () => {
                     />
                   </button>
 
-                  <Link
-                    to={`/webtoon/${webtoonId}`}
+                  <button
+                    type="button"
                     title={t('readerPage.episodeList')}
                     aria-label={t('readerPage.episodeList')}
+                    onClick={() => setShowEpisodeSheet(true)}
                     className={`flex min-h-[44px] items-center gap-1 rounded-2xl px-4 py-2 transition ${
                       darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
                     }`}
                   >
                     <List className="h-5 w-5" />
-                  </Link>
+                  </button>
                 </div>
 
                 <button
@@ -866,6 +1103,38 @@ const ReaderPage = () => {
                       ))}
                     </div>
                   </div>
+
+                  <div>
+                    <label className="mb-3 block text-sm font-semibold tracking-wider text-gray-400 uppercase">
+                      {t('readerPage.imageFit')}
+                    </label>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setImageFit('fit')}
+                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
+                          imageFit === 'fit'
+                            ? 'border-primary-500 bg-primary-600/10 text-primary-500'
+                            : 'border-white/5 bg-white/5 hover:border-white/20'
+                        }`}
+                      >
+                        <RectangleHorizontal className="h-5 w-5" />
+                        {t('readerPage.fit')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setImageFit('full')}
+                        className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
+                          imageFit === 'full'
+                            ? 'border-primary-500 bg-primary-600/10 text-primary-500'
+                            : 'border-white/5 bg-white/5 hover:border-white/20'
+                        }`}
+                      >
+                        <Maximize2 className="h-5 w-5" />
+                        {t('readerPage.fullWidth')}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -874,6 +1143,23 @@ const ReaderPage = () => {
       </AnimatePresence>
 
       {/* ═══════ COMMENTS SLIDE OVER MODAL ═══════ */}
+      <ReaderEpisodeSheet
+        isOpen={showEpisodeSheet}
+        onClose={() => setShowEpisodeSheet(false)}
+        episodes={publishedEpisodes}
+        currentEpisodeNumber={episodeNum}
+        seriesCover={webtoon.coverImage}
+        seriesHref={`/webtoon/${webtoonId}`}
+        lang={lang}
+        onSelect={goToEpisode}
+        isLocked={(episode) =>
+          isEpisodeLocked(
+            episode,
+            typeof webtoonId === 'string' && isEpisodeUnlocked(webtoonId, episode.episodeNumber)
+          )
+        }
+      />
+
       <Modal
         isOpen={showComments}
         onClose={() => setShowComments(false)}

@@ -1,6 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import userEvent from '@testing-library/user-event'
+import { render as renderRtl, screen as screenRtl } from '@testing-library/react'
 import { render, screen } from './utils'
+import { AuthProvider } from '../context/AuthContext'
+import { DataProvider } from '../context/DataContext'
+import { LibraryProvider } from '../context/LibraryContext'
+import { WalletProvider } from '../context/WalletContext'
+import { EngagementProvider } from '../context/EngagementContext'
 import ProfilePage from '../features/profile/ProfilePage'
+import Navigation from '../components/Navigation/Navigation'
+import { addNotification, getNotifPrefs } from '../lib/notifications'
+import { loadReaderPrefs } from '../lib/reader'
+import type { ReactNode } from 'react'
 
 const store = new Map<string, string>()
 
@@ -11,6 +24,22 @@ const sessionUser = {
   displayName: 'Test User',
   createdAt: '2026-01-01T00:00:00.000Z',
 }
+
+const AccountTree = ({ children, entry }: { children: ReactNode; entry: string }) => (
+  <HelmetProvider>
+    <DataProvider>
+      <MemoryRouter initialEntries={[entry]}>
+        <AuthProvider>
+          <LibraryProvider>
+            <WalletProvider>
+              <EngagementProvider>{children}</EngagementProvider>
+            </WalletProvider>
+          </LibraryProvider>
+        </AuthProvider>
+      </MemoryRouter>
+    </DataProvider>
+  </HelmetProvider>
+)
 
 describe('ProfilePage', () => {
   beforeEach(() => {
@@ -49,5 +78,59 @@ describe('ProfilePage', () => {
     const { container } = render(<ProfilePage />)
     expect(container.textContent).not.toMatch(/profilePage\.[a-zA-Z]/)
     expect(container.textContent).not.toMatch(/common\.[a-zA-Z]/)
+  })
+
+  it('opens Security when tab=security', () => {
+    renderRtl(
+      <AccountTree entry="/profile?tab=security">
+        <ProfilePage />
+      </AccountTree>
+    )
+    expect(screenRtl.getByRole('heading', { name: 'Delete Account' })).toBeInTheDocument()
+  })
+
+  it('persists in-app notification toggles from Settings', async () => {
+    const user = userEvent.setup({ delay: null })
+    renderRtl(
+      <AccountTree entry="/profile?tab=settings">
+        <ProfilePage />
+      </AccountTree>
+    )
+    await user.click(screenRtl.getByRole('switch', { name: 'Promotions' }))
+    expect(getNotifPrefs('u_test').promotion).toBe(false)
+  })
+
+  it('writes reader prefs from the Preferences tab', async () => {
+    const user = userEvent.setup({ delay: null })
+    renderRtl(
+      <AccountTree entry="/profile?tab=preferences">
+        <ProfilePage />
+      </AccountTree>
+    )
+    await user.click(screenRtl.getByRole('button', { name: /light mode/i }))
+    expect(loadReaderPrefs().darkMode).toBe(false)
+  })
+
+  it('drops the nav unread dot when promotions are toggled off', async () => {
+    addNotification('u_test', {
+      id: 'promo-1',
+      type: 'promotion',
+      titleKey: 'notificationsPage.promotion',
+      message: 'Demo offer',
+      isRead: false,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      href: '/coins',
+    })
+    const user = userEvent.setup({ delay: null })
+    renderRtl(
+      <AccountTree entry="/profile?tab=settings">
+        <Navigation />
+        <ProfilePage />
+      </AccountTree>
+    )
+    const bell = screenRtl.getByRole('link', { name: 'Notifications' })
+    expect(bell.querySelector('.bg-accent-600')).toBeTruthy()
+    await user.click(screenRtl.getByRole('switch', { name: 'Promotions' }))
+    expect(bell.querySelector('.bg-accent-600')).toBeFalsy()
   })
 })

@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 99**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 155**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — frontend ↔ backend API contract
@@ -42,30 +42,35 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 - [conventions/brand-color-tokens.md](conventions/brand-color-tokens.md) — logo-aligned primary/accent
 - [conventions/portal-light-and-i18n-defaults.md](conventions/portal-light-and-i18n-defaults.md) — light-only + default EN
-- [conventions/portal-scroll-chrome.md](conventions/portal-scroll-chrome.md) — hide doc scrollbar + ScrollToTop (Impl 47)
-- [conventions/hero-spotlight.md](conventions/hero-spotlight.md) — Home Trending-5 hero rotator (Impl 49)
-- [conventions/forced-product-motion.md](conventions/forced-product-motion.md) — product animations we add are forced (Impl 90)
-- [conventions/portal-seo.md](conventions/portal-seo.md) — per-route Helmet SEO + robots/sitemap
-- [conventions/in-app-search.md](conventions/in-app-search.md) — search lib + autocomplete + SearchPage
+- [conventions/portal-scroll-chrome.md](conventions/portal-scroll-chrome.md) — hide doc scrollbar + ScrollToTop (Impl 47); legal TOC thin bar (Impl 128); sticky-below-nav (Impl 143)
+- [conventions/hero-spotlight.md](conventions/hero-spotlight.md) — Home Spotlight rotator (Impl 49, jobs Impl 104)
+- [conventions/forced-product-motion.md](conventions/forced-product-motion.md) — product animations we add are forced (Impl 90); auth photo curtain (Impl 149)
+- [conventions/prelaunch-quality-bar.md](conventions/prelaunch-quality-bar.md) — international standard; beat peers on layout/info/UI (Impl 105)
+- [conventions/portal-seo.md](conventions/portal-seo.md) — per-route Helmet SEO + robots/sitemap; Vercel unknown-path HTTP 404 (Impl 123)
+- [conventions/in-app-search.md](conventions/in-app-search.md) — search lib + autocomplete + SearchPage; Demo searches chips (Impl 145)
 - [conventions/border-radius.md](conventions/border-radius.md) — Soft-Expressive radius map (Impl 10) + book-media exception
 - [conventions/book-cover-presentation.md](conventions/book-cover-presentation.md) — BookCard + HeroBook3D (Impl 16–18)
-- [conventions/catalog-tiles.md](conventions/catalog-tiles.md) — discovery tile fields + New badge (Impl 96)
+- [conventions/catalog-tiles.md](conventions/catalog-tiles.md) — discovery tile fields + New badge (Impl 96); Daily board (Impl 150); Premium top-left (Impl 152); Daily drops not catalog tiles (Impl 153); Demo Updated/New dates (Impl 154)
 - [conventions/about-story-book.md](conventions/about-story-book.md) — About Our Story episode reader (Impl 87–95)
-- [conventions/categories-browse.md](conventions/categories-browse.md) — genre match + status URL (Impl 11)
-- [conventions/discovery-honesty.md](conventions/discovery-honesty.md) — author→search, related, LS version (Impl 13–15)
-- [conventions/library-bookmarks.md](conventions/library-bookmarks.md) — Save → Library bookmarks store (Impl 25)
-- [conventions/client-auth.md](conventions/client-auth.md) — local accounts + session (Impl 27)
-- [conventions/client-wallet.md](conventions/client-wallet.md) — Demo top-up + unlock (Impl 28–29)
+- [conventions/categories-browse.md](conventions/categories-browse.md) — genre match + status URL (Impl 11); `/ranking` + Browse vs ranks (Impl 141); chart chrome (Impl 143)
+- [conventions/series-hub.md](conventions/series-hub.md) — webtoon detail Continue/Latest, tags, thumbs (Impl 130); author chip → profile (Impl 135); Subscribe + 18+ badge (Impl 140); series discussion (Impl 144); wait-for-free chips (Impl 151)
+- [conventions/content-rating.md](conventions/content-rating.md) — per-title ratings + 18+ Reader gate (Impl 140)
+- [conventions/author-profile.md](conventions/author-profile.md) — `/author/:id` catalog profile (Impl 135); Follow (Impl 148)
+- [conventions/reader-chrome.md](conventions/reader-chrome.md) — episode sheet, prefs, keyboard, image fit, swipe/pinch (Impl 133, 138); Profile Preferences same key (Impl 142)
+- [conventions/library-bookmarks.md](conventions/library-bookmarks.md) — Subscribe → Library store (Impl 25, rename Impl 140); History Continue (Impl 142)
+- [conventions/client-auth.md](conventions/client-auth.md) — local accounts + session (Impl 27); password min 8 (Impl 142); split-card (Impl 146); photo curtain (Impl 149)
+- [conventions/client-wallet.md](conventions/client-wallet.md) — Demo top-up + unlock (Impl 28–29); Coins honesty copy (Impl 142); wait-for-free (Impl 151)
+- [conventions/discovery-honesty.md](conventions/discovery-honesty.md) — author→profile, related, LS version (Impl 13–15, 135); Search Demo chips not live trends (Impl 145); For You (Impl 147); Author Follow not public count (Impl 148); Daily `uploadDay` (Impl 150); Daily scheduled drops (Impl 153); Demo Updated/New dates + copy (Impl 154)
 - [conventions/library-engagement.md](conventions/library-engagement.md) — history + likes (Impl 31–32)
 - [conventions/continue-reading.md](conventions/continue-reading.md) — Home Continue + scroll resume (Impl 40–41)
-- [conventions/client-comments-notifications.md](conventions/client-comments-notifications.md) — comments + notifs (Impl 34–35)
+- [conventions/client-comments-notifications.md](conventions/client-comments-notifications.md) — comments + notifs (Impl 34–35); empty-first inbox + prefs (Impl 142); series hub thread (Impl 144)
 - [conventions/typography.md](conventions/typography.md) — Inter + Noto Sans Myanmar stack (Impl 12)
-- [conventions/info-page-chrome.md](conventions/info-page-chrome.md) — breadcrumb + PageHeader tiers (Impl 17)
+- [conventions/info-page-chrome.md](conventions/info-page-chrome.md) — breadcrumb + PageHeader tiers (Impl 17); Creators intake (Impl 107, polish 110); Support funnel (Impl 108, 111); Contact pitch fields (Impl 112); 404 recovery (Impl 118, polish 121); Help hub + Footer FAQ (Impl 120)
 - [conventions/source-layering-and-imports.md](conventions/source-layering-and-imports.md) — layers + hybrid imports (Impl 19)
-- [conventions/legal-pages.md](conventions/legal-pages.md) — legal document shell + storage honesty (Impl 59–60)
+- [conventions/legal-pages.md](conventions/legal-pages.md) — legal document shell + storage honesty (Impl 59–60, layered 126); TOC scrollbar (Impl 128); notif prefs row (Impl 142)
 - [conventions/guest-access.md](conventions/guest-access.md) — guest policy matrix + conversion nudges (Impl 67)
 - [conventions/loading-states.md](conventions/loading-states.md) — skeleton system + UI state stack (Impl 68)
-- [conventions/responsive-chrome.md](conventions/responsive-chrome.md) — nav breakpoint ladder + width budget + overflow guard (Impl 77)
+- [conventions/responsive-chrome.md](conventions/responsive-chrome.md) — nav breakpoint ladder + width budget + overflow guard (Impl 77); skip overlay (Impl 101)
 
 ### Decisions
 
@@ -74,6 +79,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [decisions/003-softgate-type-stack.md](decisions/003-softgate-type-stack.md) — type stack (Impl 12)
 - [decisions/004-book-media-presentation.md](decisions/004-book-media-presentation.md) — book covers (Impl 16)
 - [decisions/005-herobook3d-ux.md](decisions/005-herobook3d-ux.md) — HeroBook3D UX harden (Impl 18)
+- [decisions/006-ranking-path.md](decisions/006-ranking-path.md) — `/ranking` is Popular (Impl 141)
 
 ### Recent SoftGate notes
 
@@ -153,6 +159,62 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-08-13-theme-mechanical-sweep.md](notes/2026-08-13-theme-mechanical-sweep.md) — Impl 74
 - [notes/2026-08-13-i18n-sweep.md](notes/2026-08-13-i18n-sweep.md) — Impl 75
 - [notes/2026-08-13-a11y-structural.md](notes/2026-08-13-a11y-structural.md) — Impl 76
+- [notes/2026-08-19-auth-split-card.md](notes/2026-08-19-auth-split-card.md) — Impl 146
+- [notes/2026-08-19-for-you.md](notes/2026-08-19-for-you.md) — Impl 147
+- [notes/2026-08-19-author-follow.md](notes/2026-08-19-author-follow.md) — Impl 148
+- [notes/2026-08-19-wait-for-free.md](notes/2026-08-19-wait-for-free.md) — Impl 151
+- [notes/2026-08-19-daily-drops.md](notes/2026-08-19-daily-drops.md) — Impl 153
+- [notes/2026-08-19-discovery-time-family.md](notes/2026-08-19-discovery-time-family.md) — Impl 154
+- [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
+- [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150
+- [notes/2026-08-19-auth-split-curtain.md](notes/2026-08-19-auth-split-curtain.md) — Impl 149
+- [notes/2026-08-19-hub-comments.md](notes/2026-08-19-hub-comments.md) — Impl 144
+- [notes/2026-08-19-search-demo-trending.md](notes/2026-08-19-search-demo-trending.md) — Impl 145
+- [notes/2026-08-19-categories-chart-chrome.md](notes/2026-08-19-categories-chart-chrome.md) — Impl 143
+- [notes/2026-08-19-account-hub.md](notes/2026-08-19-account-hub.md) — Impl 142
+- [notes/2026-08-19-categories-ranking-browse.md](notes/2026-08-19-categories-ranking-browse.md) — Impl 141
+- [notes/2026-08-19-subscribe-age-gate.md](notes/2026-08-19-subscribe-age-gate.md) — Impl 140
+- [notes/2026-08-19-nav-login-return.md](notes/2026-08-19-nav-login-return.md) — Impl 139
+- [notes/2026-08-19-reader-gestures.md](notes/2026-08-19-reader-gestures.md) — Impl 138
+- [notes/2026-08-19-hero-heading-cta.md](notes/2026-08-19-hero-heading-cta.md) — Impl 137
+- [notes/2026-08-19-auth-reading-room.md](notes/2026-08-19-auth-reading-room.md) — Impl 136
+- [notes/2026-08-19-author-profile.md](notes/2026-08-19-author-profile.md) — Impl 135
+- [notes/2026-08-19-guest-start-here.md](notes/2026-08-19-guest-start-here.md) — Impl 134
+- [notes/2026-08-19-reader-chrome.md](notes/2026-08-19-reader-chrome.md) — Impl 133
+- [notes/2026-08-19-categories-polish.md](notes/2026-08-19-categories-polish.md) — Impl 132
+- [notes/2026-08-19-search-destination.md](notes/2026-08-19-search-destination.md) — Impl 131
+- [notes/2026-08-19-series-hub.md](notes/2026-08-19-series-hub.md) — Impl 130
+- [notes/2026-08-19-updated-new-split.md](notes/2026-08-19-updated-new-split.md) — Impl 129
+- [notes/2026-08-19-legal-toc-scrollbar.md](notes/2026-08-19-legal-toc-scrollbar.md) — Impl 128
+- [notes/2026-08-19-popular-rank-glyph-lip.md](notes/2026-08-19-popular-rank-glyph-lip.md) — Impl 127
+- [notes/2026-08-19-legal-layered-notice.md](notes/2026-08-19-legal-layered-notice.md) — Impl 126
+- [notes/2026-08-19-popular-rank-glyph-kick.md](notes/2026-08-19-popular-rank-glyph-kick.md) — Impl 125 (superseded by 127)
+- [notes/2026-08-19-popular-rank-glyph.md](notes/2026-08-19-popular-rank-glyph.md) — Impl 124
+- [notes/2026-08-19-host-http-404.md](notes/2026-08-19-host-http-404.md) — Impl 123
+- [notes/2026-08-19-popular-rank-pocket.md](notes/2026-08-19-popular-rank-pocket.md) — Impl 122 (superseded by 124)
+- [notes/2026-08-19-404-recovery-polish.md](notes/2026-08-19-404-recovery-polish.md) — Impl 121
+- [notes/2026-08-19-help-hub-footer-faq.md](notes/2026-08-19-help-hub-footer-faq.md) — Impl 120
+- [notes/2026-08-19-popular-rank-on-cover.md](notes/2026-08-19-popular-rank-on-cover.md) — Impl 119
+- [notes/2026-08-19-404-recovery.md](notes/2026-08-19-404-recovery.md) — Impl 118
+- [notes/2026-08-19-popular-rank-overlap.md](notes/2026-08-19-popular-rank-overlap.md) — Impl 117
+- [notes/2026-08-19-creators-pitch-align.md](notes/2026-08-19-creators-pitch-align.md) — Impl 116
+- [notes/2026-08-19-series-rating-hit-target.md](notes/2026-08-19-series-rating-hit-target.md) — Impl 115
+- [notes/2026-08-19-series-ratings.md](notes/2026-08-19-series-ratings.md) — Impl 114
+- [notes/2026-08-19-support-hours-faq-fill.md](notes/2026-08-19-support-hours-faq-fill.md) — Impl 113
+- [notes/2026-08-19-contact-pitch-fields.md](notes/2026-08-19-contact-pitch-fields.md) — Impl 112
+- [notes/2026-08-19-support-pages-perfect.md](notes/2026-08-19-support-pages-perfect.md) — Impl 111
+- [notes/2026-08-18-creators-intake-polish.md](notes/2026-08-18-creators-intake-polish.md) — Impl 110
+- [notes/2026-08-18-categories-sort-labels.md](notes/2026-08-18-categories-sort-labels.md) — Impl 109
+- [notes/2026-08-18-support-funnel.md](notes/2026-08-18-support-funnel.md) — Impl 108
+- [notes/2026-08-18-creators-intake.md](notes/2026-08-18-creators-intake.md) — Impl 107
+- [notes/2026-08-18-ranking-chart.md](notes/2026-08-18-ranking-chart.md) — Impl 106
+- [notes/2026-08-18-prelaunch-quality-bar.md](notes/2026-08-18-prelaunch-quality-bar.md) — Impl 105
+- [notes/2026-08-18-home-discovery-jobs.md](notes/2026-08-18-home-discovery-jobs.md) — Impl 104
+- [notes/2026-08-18-about-who-we-are.md](notes/2026-08-18-about-who-we-are.md) — Impl 103
+- [notes/2026-08-18-press-kit-favicon.md](notes/2026-08-18-press-kit-favicon.md) — Impl 102
+- [notes/2026-08-18-skip-link-header-align.md](notes/2026-08-18-skip-link-header-align.md) — Impl 101
+- [notes/2026-08-18-skip-link-hero-pause.md](notes/2026-08-18-skip-link-hero-pause.md) — Impl 100
+- [notes/2026-08-18-hero-hover-come-forward-prod.md](notes/2026-08-18-hero-hover-come-forward-prod.md) — Impl 99
 - [notes/2026-08-17-stale-catalog-localstorage.md](notes/2026-08-17-stale-catalog-localstorage.md) — Impl 98
 - [notes/2026-08-17-mock-calendar-2026.md](notes/2026-08-17-mock-calendar-2026.md) — Impl 97
 - [notes/2026-08-17-catalog-tile-honesty.md](notes/2026-08-17-catalog-tile-honesty.md) — Impl 96

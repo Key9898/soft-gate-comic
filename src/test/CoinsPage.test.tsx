@@ -22,4 +22,12 @@ describe('CoinsPage', () => {
     const { container } = render(<CoinsPage />)
     expect(container.textContent).not.toMatch(/coinsPage\.[a-zA-Z]/)
   })
+
+  it('uses Demo header copy and an honest unlocked list', () => {
+    render(<CoinsPage />)
+    expect(screen.queryByText(/secure payments/i)).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'How coins work' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Unlocked episodes' })).toBeInTheDocument()
+    expect(screen.getByText(/no premium episodes unlocked yet/i)).toBeInTheDocument()
+  })
 })

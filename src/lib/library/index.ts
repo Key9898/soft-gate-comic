@@ -5,6 +5,8 @@ export {
   listBookmarks,
   isBookmarked,
   toggleBookmark,
+  setNotifyMuted,
+  setLastNotifiedEpisodeNumber,
   removeBookmark,
   removeBookmarks,
 } from './bookmarks'

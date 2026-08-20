@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import RankMark from '../RankMark'
 
 export interface BookCardProps {
   coverImage?: string
@@ -10,6 +11,7 @@ export interface BookCardProps {
   meta?: ReactNode
   badge?: ReactNode
   overlay?: ReactNode
+  rank?: number
   className?: string
   coverClassName?: string
   imageLoaded?: boolean
@@ -29,6 +31,7 @@ const BookCard = ({
   meta,
   badge,
   overlay,
+  rank,
   className = '',
   coverClassName = '',
   imageLoaded = true,
@@ -74,6 +77,7 @@ const BookCard = ({
 
         {badge}
         {overlay}
+        {typeof rank === 'number' ? <RankMark rank={rank} /> : null}
 
         {typeof progress === 'number' && progress > 0 && (
           <div className="absolute right-0 bottom-0 left-0 z-10 h-[3px] bg-gray-200/90">

@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { AuthProvider } from '../context/AuthContext'
 import { DataProvider } from '../context/DataContext'
 import { LibraryProvider } from '../context/LibraryContext'
+import { FollowsProvider } from '../context/FollowsContext'
 import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
 
@@ -15,9 +16,11 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
         <BrowserRouter>
           <AuthProvider>
             <LibraryProvider>
-              <WalletProvider>
-                <EngagementProvider>{children}</EngagementProvider>
-              </WalletProvider>
+              <FollowsProvider>
+                <WalletProvider>
+                  <EngagementProvider>{children}</EngagementProvider>
+                </WalletProvider>
+              </FollowsProvider>
             </LibraryProvider>
           </AuthProvider>
         </BrowserRouter>

@@ -6,6 +6,21 @@ function emptyStore(): LibraryStore {
   return { schemaVersion: LIBRARY_SCHEMA_VERSION, byUserId: {} }
 }
 
+function parseBookmark(item: unknown): BookmarkRecord | null {
+  if (!item || typeof item !== 'object') return null
+  const rec = item as BookmarkRecord
+  if (typeof rec.webtoonId !== 'string' || typeof rec.addedAt !== 'string') return null
+  const next: BookmarkRecord = { webtoonId: rec.webtoonId, addedAt: rec.addedAt }
+  if (typeof rec.notifyMuted === 'boolean') next.notifyMuted = rec.notifyMuted
+  if (
+    typeof rec.lastNotifiedEpisodeNumber === 'number' &&
+    Number.isFinite(rec.lastNotifiedEpisodeNumber)
+  ) {
+    next.lastNotifiedEpisodeNumber = rec.lastNotifiedEpisodeNumber
+  }
+  return next
+}
+
 export function readStore(): LibraryStore {
   if (typeof window === 'undefined') return emptyStore()
   try {
@@ -24,13 +39,10 @@ export function readStore(): LibraryStore {
     const byUserId: Record<string, BookmarkRecord[]> = {}
     for (const [userId, list] of Object.entries(obj.byUserId)) {
       if (!Array.isArray(list)) continue
-      byUserId[userId] = list.filter(
-        (item): item is BookmarkRecord =>
-          Boolean(item) &&
-          typeof item === 'object' &&
-          typeof (item as BookmarkRecord).webtoonId === 'string' &&
-          typeof (item as BookmarkRecord).addedAt === 'string'
-      )
+      byUserId[userId] = list.flatMap((item) => {
+        const parsed = parseBookmark(item)
+        return parsed ? [parsed] : []
+      })
     }
     return { schemaVersion: LIBRARY_SCHEMA_VERSION, byUserId }
   } catch {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { Route, Routes } from 'react-router-dom'
 import { render, screen } from './utils'
 import WebtoonDetailPage from '../features/webtoon/WebtoonDetailPage'
@@ -52,6 +52,12 @@ function lockCountFor(title: string, container: HTMLElement): number {
 describe('WebtoonDetailPage unlock state', () => {
   beforeEach(() => {
     installStorage()
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-19T12:00:00.000Z'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('shows Lock on all premium episodes when logged out', () => {
@@ -68,5 +74,28 @@ describe('WebtoonDetailPage unlock state', () => {
     const { container } = renderDetail()
     expect(lockCountFor('Training', container)).toBe(0)
     expect(lockCountFor('Dark Secrets', container)).toBe(1)
+  })
+
+  it('drops the lock after Demo wait-for-free without a coin purchase', () => {
+    window.history.pushState({}, '', '/webtoon/2')
+    const { container } = render(
+      <Routes>
+        <Route path="/webtoon/:id" element={<WebtoonDetailPage />} />
+      </Routes>
+    )
+    expect(lockCountFor('Episode 3', container)).toBe(0)
+    const row = screen.getByText('Episode 3').closest('a')
+    expect(row?.textContent).toContain('Free now')
+    expect(row?.textContent).not.toContain('23:59')
+    expect(row?.textContent).not.toMatch(/5 Coins/)
+  })
+
+  it('keeps the lock and coins chip while wait-for-free is still in the future', () => {
+    const { container } = renderDetail()
+    expect(lockCountFor('Dark Secrets', container)).toBe(1)
+    const row = screen.getByText('Dark Secrets').closest('a')
+    expect(row?.textContent).toContain('26 Aug 2026, 05:00 UTC')
+    expect(row?.textContent).toContain('5 Coins')
+    expect(row?.textContent).not.toContain('23:59')
   })
 })

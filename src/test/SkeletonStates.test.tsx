@@ -10,7 +10,7 @@ import LibraryPageSkeleton from '../features/library/components/LibraryPageSkele
 import ReaderSkeleton from '../features/reader/components/ReaderSkeleton'
 
 const emptySharedData = JSON.stringify({
-  schemaVersion: 7,
+  schemaVersion: 13,
   data: {
     webtoons: [],
     episodes: [],
@@ -35,12 +35,27 @@ describe('page skeletons', () => {
     ['ReaderSkeleton', <ReaderSkeleton key="r" />],
   ] as const
 
-  it.each(skeletons)('%s renders an accessible busy region with no text', (_name, element) => {
+  it.each(skeletons)('%s renders an accessible busy region with no copy', (_name, element) => {
     const { container, unmount } = renderPlain(element)
     const region = screen.getByRole('status')
     expect(region).toHaveAttribute('aria-busy', 'true')
     expect(region).toHaveAttribute('aria-label')
-    expect(container.textContent).toBe('')
+    if (_name === 'HomePageSkeleton') {
+      expect(container.textContent?.replace(/[1-6]/g, '')).toBe('')
+      expect(container.querySelectorAll('[data-testid="rank-mark"]').length).toBe(6)
+    } else {
+      expect(container.textContent).toBe('')
+    }
+    unmount()
+  })
+
+  it('CategoriesPageSkeleton ranked shows six rank marks and no copy besides ranks', () => {
+    const { container, unmount } = renderPlain(<CategoriesPageSkeleton ranked />)
+    const region = screen.getByRole('status')
+    expect(region).toHaveAttribute('aria-busy', 'true')
+    expect(region).toHaveAttribute('aria-label')
+    expect(container.textContent?.replace(/[1-6]/g, '')).toBe('')
+    expect(container.querySelectorAll('[data-testid="rank-mark"]').length).toBe(6)
     unmount()
   })
 })

@@ -9,13 +9,17 @@ import { addRecentSearch, getSearchSuggestions, type SearchSuggestion } from '..
 interface SearchAutocompleteProps {
   className?: string
   inputClassName?: string
+  iconClassName?: string
   autoFocus?: boolean
+  defaultQuery?: string
 }
 
 const SearchAutocomplete = ({
   className = '',
   inputClassName = '',
+  iconClassName = 'pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400',
   autoFocus = false,
+  defaultQuery = '',
 }: SearchAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const lang = (i18n.language === 'mm' ? 'mm' : 'en') as 'mm' | 'en'
@@ -24,7 +28,7 @@ const SearchAutocomplete = ({
   const listId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
 
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(defaultQuery)
   const [open, setOpen] = useState(false)
   const debounced = useDebounce(query, 300)
 
@@ -40,6 +44,10 @@ const SearchAutocomplete = ({
       }),
     [debounced, webtoons, authors, genres, lang]
   )
+
+  useEffect(() => {
+    setQuery(defaultQuery)
+  }, [defaultQuery])
 
   useEffect(() => {
     const onDocClick = (event: MouseEvent) => {
@@ -90,7 +98,7 @@ const SearchAutocomplete = ({
             'focus:ring-primary-500 w-56 rounded-2xl border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2'
           }
         />
-        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Search className={iconClassName} aria-hidden="true" />
       </form>
 
       {open && suggestions.length > 0 && (

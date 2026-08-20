@@ -27,7 +27,29 @@ const HomePageSkeleton = () => (
       </div>
     </div>
 
-    {Array.from({ length: 2 }, (_, section) => (
+    <div className="bg-white py-8 sm:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Skeleton className="mb-6 h-7 w-44 rounded-lg" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+          {Array.from({ length: 6 }, (_, i) => (
+            <SkeletonBookCard key={`start-${i}`} />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div className="py-8 sm:py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Skeleton className="mb-6 h-7 w-44 rounded-lg" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+          {Array.from({ length: 6 }, (_, i) => (
+            <SkeletonBookCard key={i} rank={i + 1} />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {Array.from({ length: 4 }, (_, section) => (
       <div key={section} className="py-8 sm:py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Skeleton className="mb-6 h-7 w-44 rounded-lg" />

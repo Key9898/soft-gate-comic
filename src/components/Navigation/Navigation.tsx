@@ -22,40 +22,28 @@ const Navigation = () => {
   const navLinks = useMemo(
     () => [
       { name: t('categories.title'), path: '/categories' },
-      { name: t('home.trendingNow'), path: '/categories?sort=popular' },
+      { name: t('home.ranking'), path: '/ranking' },
       { name: t('home.newReleases'), path: '/categories?sort=new' },
     ],
     [t]
   )
 
   const isActive = (path: string) => {
-    const [linkPathname, linkSearch] = path.split('?')
-    if (location.pathname !== linkPathname) return false
+    const sort = new URLSearchParams(location.search).get('sort')
+    const onRanking = location.pathname === '/ranking'
+    const onCatalog =
+      location.pathname === '/categories' || location.pathname.startsWith('/categories/')
 
-    // For links with query params, check if all params match
-    if (linkSearch) {
-      const linkParams = new URLSearchParams(linkSearch)
-      const currentParams = new URLSearchParams(location.search.replace('?', ''))
-      for (const [key, value] of linkParams) {
-        if (currentParams.get(key) !== value) return false
-      }
-      return true
+    if (path === '/ranking') {
+      return onRanking || (onCatalog && sort === 'popular')
     }
-
-    // For links without query params, only active if NO more specific link matches
-    const currentParams = new URLSearchParams(location.search.replace('?', ''))
-    const hasMoreSpecificMatch = navLinks.some((otherLink) => {
-      if (otherLink.path === path) return false
-      const [otherPathname, otherSearch] = otherLink.path.split('?')
-      if (otherPathname !== linkPathname || !otherSearch) return false
-      const otherParams = new URLSearchParams(otherSearch)
-      for (const [key, value] of otherParams) {
-        if (currentParams.get(key) === value) return true
-      }
-      return false
-    })
-
-    return !hasMoreSpecificMatch
+    if (path === '/categories?sort=new') {
+      return onCatalog && sort === 'new'
+    }
+    if (path === '/categories') {
+      return onCatalog && sort !== 'popular' && sort !== 'new'
+    }
+    return false
   }
 
   return (
@@ -79,6 +67,7 @@ const Navigation = () => {
                 <Link
                   key={link.path}
                   to={link.path}
+                  aria-current={isActive(link.path) ? 'page' : undefined}
                   className={`focus-visible:ring-primary-500 rounded-2xl text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none ${
                     isActive(link.path)
                       ? 'text-primary-600'
@@ -167,7 +156,7 @@ const Navigation = () => {
               </div>
             ) : (
               <div className="hidden sm:block">
-                <Link to="/login">
+                <Link to="/login" state={{ from: location }}>
                   <Button size="sm">{t('nav.login')}</Button>
                 </Link>
               </div>
@@ -232,6 +221,7 @@ const Navigation = () => {
                     key={link.path}
                     to={link.path}
                     onClick={() => setIsMenuOpen(false)}
+                    aria-current={isActive(link.path) ? 'page' : undefined}
                     className={`focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
                       isActive(link.path)
                         ? 'text-primary-600'
@@ -282,6 +272,7 @@ const Navigation = () => {
                 ) : (
                   <Link
                     to="/login"
+                    state={{ from: location }}
                     onClick={() => setIsMenuOpen(false)}
                     className="text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
                   >

@@ -13,7 +13,11 @@ export function isBookmarked(userId: string, webtoonId: string): boolean {
   return (readStore().byUserId[userId] ?? []).some((b) => b.webtoonId === webtoonId)
 }
 
-export function toggleBookmark(userId: string, webtoonId: string): BookmarkRecord[] {
+export function toggleBookmark(
+  userId: string,
+  webtoonId: string,
+  extras?: { lastNotifiedEpisodeNumber?: number }
+): BookmarkRecord[] {
   if (!userId || !webtoonId) return listBookmarks(userId)
   const store = readStore()
   const current = store.byUserId[userId] ?? []
@@ -21,10 +25,48 @@ export function toggleBookmark(userId: string, webtoonId: string): BookmarkRecor
   const next = exists
     ? current.filter((b) => b.webtoonId !== webtoonId)
     : [
-        { webtoonId, addedAt: new Date().toISOString() },
+        {
+          webtoonId,
+          addedAt: new Date().toISOString(),
+          ...(typeof extras?.lastNotifiedEpisodeNumber === 'number'
+            ? { lastNotifiedEpisodeNumber: extras.lastNotifiedEpisodeNumber }
+            : {}),
+        },
         ...current.filter((b) => b.webtoonId !== webtoonId),
       ]
   store.byUserId[userId] = next
+  writeStore(store)
+  return listBookmarks(userId)
+}
+
+export function setNotifyMuted(
+  userId: string,
+  webtoonId: string,
+  muted: boolean
+): BookmarkRecord[] {
+  if (!userId || !webtoonId) return listBookmarks(userId)
+  const store = readStore()
+  const current = store.byUserId[userId] ?? []
+  if (!current.some((b) => b.webtoonId === webtoonId)) return listBookmarks(userId)
+  store.byUserId[userId] = current.map((b) =>
+    b.webtoonId === webtoonId ? { ...b, notifyMuted: muted } : b
+  )
+  writeStore(store)
+  return listBookmarks(userId)
+}
+
+export function setLastNotifiedEpisodeNumber(
+  userId: string,
+  webtoonId: string,
+  episodeNumber: number
+): BookmarkRecord[] {
+  if (!userId || !webtoonId || !Number.isFinite(episodeNumber)) return listBookmarks(userId)
+  const store = readStore()
+  const current = store.byUserId[userId] ?? []
+  if (!current.some((b) => b.webtoonId === webtoonId)) return listBookmarks(userId)
+  store.byUserId[userId] = current.map((b) =>
+    b.webtoonId === webtoonId ? { ...b, lastNotifiedEpisodeNumber: episodeNumber } : b
+  )
   writeStore(store)
   return listBookmarks(userId)
 }

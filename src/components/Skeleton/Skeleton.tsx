@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import RankMark from '../RankMark'
 
 export type SkeletonTone = 'light' | 'dark'
 
@@ -11,22 +12,34 @@ const toneClasses: Record<SkeletonTone, string> = {
 interface SkeletonProps {
   tone?: SkeletonTone
   className?: string
+  children?: ReactNode
 }
 
-export const Skeleton = ({ tone = 'light', className = '' }: SkeletonProps) => (
-  <div
-    aria-hidden="true"
-    className={`animate-pulse rounded-2xl ${toneClasses[tone]} ${className}`}
-  />
+export const Skeleton = ({ tone = 'light', className = '', children }: SkeletonProps) => (
+  <div aria-hidden="true" className={`animate-pulse rounded-2xl ${toneClasses[tone]} ${className}`}>
+    {children}
+  </div>
 )
 
 export const SkeletonText = ({ tone = 'light', className = 'w-full' }: SkeletonProps) => (
   <Skeleton tone={tone} className={`h-4 rounded-lg ${className}`} />
 )
 
-export const SkeletonBookCard = ({ tone = 'light' }: { tone?: SkeletonTone }) => (
+export const SkeletonBookCard = ({
+  tone = 'light',
+  rank,
+}: {
+  tone?: SkeletonTone
+  rank?: number
+}) => (
   <div className="flex flex-col gap-2">
-    <Skeleton tone={tone} className="book-media aspect-[3/4] w-full" />
+    {typeof rank === 'number' ? (
+      <Skeleton tone={tone} className="book-media aspect-[3/4] w-full">
+        <RankMark rank={rank} />
+      </Skeleton>
+    ) : (
+      <Skeleton tone={tone} className="book-media aspect-[3/4] w-full" />
+    )}
     <SkeletonText tone={tone} className="w-3/4" />
     <SkeletonText tone={tone} className="h-3 w-full" />
     <SkeletonText tone={tone} className="h-3 w-5/6" />

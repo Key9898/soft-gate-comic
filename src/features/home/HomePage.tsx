@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, useReducedMotion, type MotionProps } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
+import { useReducedMotion, type MotionProps } from 'framer-motion'
+import { ChevronRight, Clock, Heart, Play, Sparkles, TrendingUp } from 'lucide-react'
 import Button from '../../components/Button'
 import { CatalogBookCard } from '../../components/BookCard'
 import SEO from '../../components/SEO/SEO'
@@ -12,23 +12,34 @@ import { useEngagement } from '../../context/EngagementContext'
 import { useLibrary } from '../../context/LibraryContext'
 import { useOverflowScrollX } from '../../hooks/useOverflowScrollX'
 import { blendedProgressPercent, isSeriesCompleteForContinue } from '../../lib/engagement'
-import { newestPublishedIds } from '../../lib/catalog'
+import {
+  forYouWebtoons,
+  newestPublishedIds,
+  newReleaseWebtoons,
+  rankingWebtoons,
+  spotlightSlides,
+  startHereWebtoons,
+  trendingWebtoons,
+  updatedWebtoons,
+} from '../../lib/catalog'
 import HeroSpotlight from './components/HeroSpotlight'
+import HomeCatalogRail from './components/HomeCatalogRail'
+import HomeDailyBoard from './components/HomeDailyBoard'
+import HomeRankingChart from './components/HomeRankingChart'
 import HomePageSkeleton from './components/HomePageSkeleton'
 import HomeEmptyState from './components/HomeEmptyState'
 
 const CONTINUE_CAP = 12
-const HERO_SLIDE_CAP = 5
 
 const HomePage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
   const prefersReducedMotion = useReducedMotion()
 
-  const { webtoons, genres, isLoading } = useData()
-  const { isBookmarked, toggleBookmark } = useLibrary()
+  const { webtoons, genres, episodes, isLoading } = useData()
+  const { isBookmarked, toggleBookmark, bookmarkIds } = useLibrary()
   const { isAuthenticated } = useAuth()
-  const { history } = useEngagement()
+  const { history, likedWebtoonIds } = useEngagement()
   const {
     ref: genreScrollRef,
     canScrollRight: canScrollGenreRight,
@@ -84,12 +95,26 @@ const HomePage = () => {
     return items
   }, [isAuthenticated, history, webtoons])
 
-  const publishedByViews = useMemo(
-    () =>
-      [...webtoons].filter((w) => w.status !== 'draft').sort((a, b) => b.viewCount - a.viewCount),
-    [webtoons]
-  )
   const newestIds = useMemo(() => newestPublishedIds(webtoons), [webtoons])
+  const heroSlides = useMemo(() => spotlightSlides(webtoons), [webtoons])
+  const rankingList = useMemo(() => rankingWebtoons(webtoons), [webtoons])
+  const trendingList = useMemo(() => trendingWebtoons(webtoons), [webtoons])
+  const updatedList = useMemo(() => updatedWebtoons(webtoons), [webtoons])
+  const newReleases = useMemo(() => newReleaseWebtoons(webtoons), [webtoons])
+  const startHereList = useMemo(() => {
+    if (continueItems.length > 0) return []
+    return startHereWebtoons(webtoons, episodes)
+  }, [continueItems.length, webtoons, episodes])
+  const forYouList = useMemo(() => {
+    if (!isAuthenticated) return []
+    return forYouWebtoons({
+      webtoons,
+      bookmarkIds,
+      likedIds: likedWebtoonIds,
+      history,
+      excludeIds: continueItems.map((item) => item.webtoon.id),
+    })
+  }, [isAuthenticated, webtoons, bookmarkIds, likedWebtoonIds, history, continueItems])
 
   if (isLoading) {
     return <HomePageSkeleton />
@@ -98,13 +123,6 @@ const HomePage = () => {
   if (webtoons.length === 0) {
     return <HomeEmptyState />
   }
-
-  const heroSlides = publishedByViews.slice(0, HERO_SLIDE_CAP)
-  const trendingWebtoons = publishedByViews.slice(0, 6)
-  const newReleases = [...webtoons]
-    .filter((w) => w.status !== 'draft')
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 6)
 
   // Fix 13: Reduced motion helper
   const getAnimationProps = (
@@ -145,7 +163,7 @@ const HomePage = () => {
               {genres.map((genre) => (
                 <Link
                   key={genre.id}
-                  to={`/categories?genre=${genre.slug}`}
+                  to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
                   onClick={() => setSelectedGenre(genre.slug)}
                   className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition focus:ring-2 focus:ring-offset-2 focus:outline-none ${
                     selectedGenre === genre.slug
@@ -216,98 +234,118 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-      ) : null}
+      ) : (
+        <HomeCatalogRail
+          id="home-start-here"
+          title={t('home.startHere')}
+          description={t('home.startHereDesc')}
+          icon={<Play className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+          webtoons={startHereList}
+          lang={lang}
+          genres={genres}
+          newestIds={newestIds}
+          loadedImages={loadedImages}
+          failedImages={failedImages}
+          onImageLoad={handleImageLoad}
+          onImageError={handleImageError}
+          getAnimationProps={getAnimationProps}
+          sectionClassName="bg-white py-8 sm:py-10"
+          cardTo={(webtoon) => `/read/${webtoon.id}/1`}
+        />
+      )}
 
-      <section className="py-8 sm:py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">{t('home.trendingNow')}</h2>
-            <Link
-              to="/categories?sort=popular"
-              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
-            >
-              {t('common.viewAll')}
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
-            {trendingWebtoons.map((webtoon, index) => (
-              <motion.div
-                key={webtoon.id}
-                {...getAnimationProps(
-                  { opacity: 0, y: 20 },
-                  { opacity: 1, y: 0 },
-                  { duration: 0.3, delay: index * 0.05 }
-                )}
-              >
-                <Link
-                  to={`/webtoon/${webtoon.id}`}
-                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                >
-                  <CatalogBookCard
-                    webtoon={webtoon}
-                    lang={lang}
-                    genres={genres}
-                    newestIds={newestIds}
-                    imageLoaded={loadedImages.has(webtoon.id)}
-                    imageFailed={failedImages.has(webtoon.id)}
-                    onImageLoad={() => handleImageLoad(webtoon.id)}
-                    onImageError={() => handleImageError(webtoon.id)}
-                  />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeCatalogRail
+        id="home-for-you"
+        title={t('home.forYou')}
+        description={t('home.forYouDesc')}
+        icon={<Heart className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+        webtoons={forYouList}
+        lang={lang}
+        genres={genres}
+        newestIds={newestIds}
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+      />
 
-      <section className="bg-white py-8 sm:py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                {t('home.newReleases')}
-              </h2>
-              <p className="mt-1 text-xs text-gray-500 sm:text-sm">{t('home.newReleasesDesc')}</p>
-            </div>
-            <Link
-              to="/categories?sort=new"
-              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
-            >
-              {t('common.viewAll')}
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
-            {newReleases.map((webtoon, index) => (
-              <motion.div
-                key={webtoon.id}
-                {...getAnimationProps(
-                  { opacity: 0, y: 20 },
-                  { opacity: 1, y: 0 },
-                  { duration: 0.3, delay: index * 0.05 }
-                )}
-              >
-                <Link
-                  to={`/webtoon/${webtoon.id}`}
-                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                >
-                  <CatalogBookCard
-                    webtoon={webtoon}
-                    lang={lang}
-                    genres={genres}
-                    newestIds={newestIds}
-                    imageLoaded={loadedImages.has(webtoon.id)}
-                    imageFailed={failedImages.has(webtoon.id)}
-                    onImageLoad={() => handleImageLoad(webtoon.id)}
-                    onImageError={() => handleImageError(webtoon.id)}
-                  />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeRankingChart
+        id="home-ranking"
+        title={t('home.ranking')}
+        description={t('home.rankingDesc')}
+        viewAllTo="/ranking"
+        webtoons={rankingList}
+        lang={lang}
+        genres={genres}
+        newestIds={newestIds}
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+      />
+
+      <HomeCatalogRail
+        title={t('home.trendingNow')}
+        description={t('home.trendingDesc')}
+        icon={<TrendingUp className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+        webtoons={trendingList}
+        lang={lang}
+        genres={genres}
+        newestIds={newestIds}
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+        sectionClassName="bg-white py-8 sm:py-10"
+      />
+
+      <HomeDailyBoard
+        webtoons={webtoons}
+        episodes={episodes}
+        lang={lang}
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+      />
+
+      <HomeCatalogRail
+        title={t('home.updated')}
+        description={t('home.updatedDesc')}
+        icon={<Clock className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+        viewAllTo="/categories?sort=recentlyUpdated"
+        webtoons={updatedList}
+        lang={lang}
+        genres={genres}
+        newestIds={newestIds}
+        dateKind="updatedAt"
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+      />
+
+      <HomeCatalogRail
+        title={t('home.newReleases')}
+        description={t('home.newReleasesDesc')}
+        icon={<Sparkles className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+        viewAllTo="/categories?sort=new"
+        webtoons={newReleases}
+        lang={lang}
+        genres={genres}
+        newestIds={newestIds}
+        loadedImages={loadedImages}
+        failedImages={failedImages}
+        onImageLoad={handleImageLoad}
+        onImageError={handleImageError}
+        getAnimationProps={getAnimationProps}
+        sectionClassName="bg-white py-8 sm:py-10"
+      />
 
       <section className="py-10 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -111,6 +111,31 @@ describe('useAuth', () => {
     expect(result.current.isAuthenticated).toBe(false)
   })
 
+  it('register rejects a taken username', async () => {
+    const { result } = renderHook(() => useAuth(), { wrapper })
+    await act(async () => {
+      await result.current.register({
+        username: 'takenname',
+        displayName: 'First',
+        email: 'first@example.com',
+        password: 'password',
+      })
+    })
+    act(() => {
+      result.current.logout()
+    })
+    await expect(
+      act(async () => {
+        await result.current.register({
+          username: 'TakenName',
+          displayName: 'Second',
+          email: 'second@example.com',
+          password: 'password',
+        })
+      })
+    ).rejects.toThrow('USERNAME_TAKEN')
+  })
+
   it('throws error when used outside AuthProvider', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() => {

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState, type FocusEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useReducedMotion } from 'framer-motion'
-import { Play, ChevronRight, Bookmark, Check } from 'lucide-react'
+import { Play, Pause, ChevronRight, Bookmark, Check } from 'lucide-react'
 import type { Webtoon } from '@softgate/shared'
 import Button from '../../../../components/Button'
 import HeroBook3D from '../../../../components/HeroBook3D'
@@ -18,9 +17,12 @@ export interface HeroSpotlightProps {
 
 const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotlightProps) => {
   const { t } = useTranslation()
-  const prefersReducedMotion = useReducedMotion()
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [hoverPaused, setHoverPaused] = useState(false)
+  const [userPaused, setUserPaused] = useState(false)
 
   const count = slides.length
   const safeIndex = count > 0 ? index % count : 0
@@ -29,6 +31,14 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
   useEffect(() => {
     setIndex(0)
   }, [slides])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const onChange = () => setPrefersReducedMotion(mq.matches)
+    mq.addEventListener('change', onChange)
+    setPrefersReducedMotion(mq.matches)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   const goTo = useCallback(
     (nextIndex: number) => {
@@ -43,17 +53,17 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
   }, [goTo, safeIndex])
 
   useEffect(() => {
-    if (count <= 1 || paused || prefersReducedMotion) return
+    if (count <= 1 || hoverPaused || userPaused || prefersReducedMotion) return
     const id = window.setInterval(() => {
       setIndex((prev) => (prev + 1) % count)
     }, AUTOPLAY_MS)
     return () => window.clearInterval(id)
-  }, [count, paused, prefersReducedMotion, index])
+  }, [count, hoverPaused, userPaused, prefersReducedMotion, index])
 
   const handleBlur = (event: FocusEvent<HTMLElement>) => {
     const next = event.relatedTarget as Node | null
     if (next && event.currentTarget.contains(next)) return
-    setPaused(false)
+    setHoverPaused(false)
   }
 
   if (!current) return null
@@ -65,9 +75,9 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
       className="safe-top relative -mt-16 overflow-visible pt-16 text-white"
       aria-roledescription="carousel"
       aria-label={t('a11y.heroCarousel')}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
+      onMouseEnter={() => setHoverPaused(true)}
+      onMouseLeave={() => setHoverPaused(false)}
+      onFocus={() => setHoverPaused(true)}
       onBlur={handleBlur}
     >
       <div
@@ -89,9 +99,15 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
               aria-label={t('a11y.heroSlide', { n: safeIndex + 1, total: count })}
               className="w-full min-w-0"
             >
-              <h1 className="mb-4 line-clamp-2 text-3xl font-bold tracking-tight break-words sm:text-4xl md:text-[2.5rem] lg:line-clamp-1 lg:text-5xl xl:text-6xl">
-                {current.title[lang]}
+              <p className="mb-1 text-xs font-semibold tracking-wide text-white/80 uppercase">
+                {t('home.spotlightKicker')}
+              </p>
+              <h1 className="mb-3 text-sm font-semibold tracking-wide text-white/80 uppercase">
+                {t('home.pageHeading')}
               </h1>
+              <h2 className="mb-4 line-clamp-2 text-3xl font-bold tracking-tight break-words sm:text-4xl md:text-[2.5rem] lg:line-clamp-1 lg:text-5xl xl:text-6xl">
+                {current.title[lang]}
+              </h2>
               <p className="min-h-2lh mx-auto mb-8 line-clamp-2 max-w-md text-base break-words text-white/80 sm:max-w-lg sm:text-lg lg:mx-0">
                 {current.description[lang]}
               </p>
@@ -115,10 +131,14 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
                     )
                   }
                   aria-label={
-                    isBookmarked(current.id) ? t('webtoonDetail.saved') : t('home.addToLibrary')
+                    isBookmarked(current.id)
+                      ? t('webtoonDetail.subscribed')
+                      : t('home.addToLibrary')
                   }
                 >
-                  {isBookmarked(current.id) ? t('webtoonDetail.saved') : t('home.addToLibrary')}
+                  {isBookmarked(current.id)
+                    ? t('webtoonDetail.subscribed')
+                    : t('home.addToLibrary')}
                 </Button>
               </div>
             </div>
@@ -152,6 +172,20 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
                     )
                   })}
                 </div>
+                {!prefersReducedMotion ? (
+                  <button
+                    type="button"
+                    onClick={() => setUserPaused((prev) => !prev)}
+                    aria-label={userPaused ? t('a11y.heroPlay') : t('a11y.heroPause')}
+                    className="shape-circle focus:ring-primary-400 flex min-h-11 min-w-11 shrink-0 items-center justify-center bg-white/10 text-white shadow-sm ring-1 ring-white/20 transition hover:bg-white/20 focus:ring-2 focus:outline-none"
+                  >
+                    {userPaused ? (
+                      <Play className="h-5 w-5" aria-hidden />
+                    ) : (
+                      <Pause className="h-5 w-5" aria-hidden />
+                    )}
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   onClick={goNext}
@@ -174,6 +208,7 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
               description={current.description[lang]}
               href={`/webtoon/${current.id}`}
               ctaLabel={t('home.startReading')}
+              coverTabbable={false}
             />
           </div>
         </div>

@@ -272,8 +272,10 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 125000,
     episodeCount: 5,
     rating: 4.9,
+    contentRating: '13',
     createdAt: '2026-01-22',
-    updatedAt: '2026-07-28',
+    updatedAt: '2026-08-18',
+    weeklyViewCount: 12000,
   },
   {
     id: '2',
@@ -293,8 +295,12 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 98000,
     episodeCount: 3,
     rating: 4.7,
+    contentRating: '13',
     createdAt: '2026-03-12',
-    updatedAt: '2026-08-05',
+    updatedAt: '2026-03-28',
+    spotlight: true,
+    spotlightOrder: 1,
+    weeklyViewCount: 35000,
   },
   {
     id: '3',
@@ -314,8 +320,12 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 156000,
     episodeCount: 3,
     rating: 4.8,
+    contentRating: '16',
     createdAt: '2026-01-08',
-    updatedAt: '2026-08-02',
+    updatedAt: '2026-08-19',
+    spotlight: true,
+    spotlightOrder: 4,
+    weeklyViewCount: 15000,
   },
   {
     id: '4',
@@ -335,8 +345,12 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 67000,
     episodeCount: 3,
     rating: 4.6,
+    contentRating: 'all',
     createdAt: '2026-06-14',
-    updatedAt: '2026-08-08',
+    updatedAt: '2026-06-28',
+    spotlight: true,
+    spotlightOrder: 2,
+    weeklyViewCount: 80000,
   },
   {
     id: '5',
@@ -356,8 +370,10 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 89000,
     episodeCount: 3,
     rating: 4.8,
+    contentRating: '13',
     createdAt: '2026-02-04',
-    updatedAt: '2026-06-20',
+    updatedAt: '2026-08-16',
+    weeklyViewCount: 5000,
   },
   {
     id: '6',
@@ -377,8 +393,10 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 54000,
     episodeCount: 3,
     rating: 4.5,
+    contentRating: 'all',
     createdAt: '2026-07-08',
     updatedAt: '2026-07-20',
+    weeklyViewCount: 95000,
   },
   {
     id: '7',
@@ -398,8 +416,10 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 78000,
     episodeCount: 3,
     rating: 4.7,
+    contentRating: '18',
     createdAt: '2026-04-03',
-    updatedAt: '2026-08-10',
+    updatedAt: '2026-04-20',
+    weeklyViewCount: 20000,
   },
   {
     id: '8',
@@ -419,8 +439,12 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 72000,
     episodeCount: 3,
     rating: 4.6,
+    contentRating: '16',
     createdAt: '2026-05-09',
-    updatedAt: '2026-08-12',
+    updatedAt: '2026-05-26',
+    spotlight: true,
+    spotlightOrder: 5,
+    weeklyViewCount: 40000,
   },
   {
     id: '9',
@@ -440,8 +464,12 @@ export const mockWebtoons: Webtoon[] = [
     likeCount: 48000,
     episodeCount: 3,
     rating: 4.4,
+    contentRating: '13',
     createdAt: '2026-08-10',
-    updatedAt: '2026-08-15',
+    updatedAt: '2026-08-12',
+    spotlight: true,
+    spotlightOrder: 3,
+    weeklyViewCount: 120000,
   },
 ]
 
@@ -461,6 +489,36 @@ function syncMockGenreCounts() {
 }
 
 syncMockGenreCounts()
+
+function scheduledDrop(partial: {
+  id: string
+  webtoonId: string
+  episodeNumber: number
+  title: Episode['title']
+  scheduledAt: string
+}): Episode {
+  const series = mockWebtoons.find((webtoon) => webtoon.id === partial.webtoonId)
+  if (!series) {
+    throw new Error(`scheduledDrop: missing series ${partial.webtoonId}`)
+  }
+  return {
+    id: partial.id,
+    webtoonId: partial.webtoonId,
+    webtoonTitle: series.title,
+    title: partial.title,
+    description: { mm: 'ချိန်းထားသော အပိုင်း', en: 'Scheduled episode' },
+    images: [],
+    isPremium: series.isPremium,
+    coinPrice: series.isPremium ? 5 : 0,
+    viewCount: 0,
+    likeCount: 0,
+    episodeNumber: partial.episodeNumber,
+    status: 'scheduled',
+    createdAt: series.updatedAt,
+    updatedAt: series.updatedAt,
+    scheduledAt: partial.scheduledAt,
+  }
+}
 
 export const mockEpisodes: Episode[] = [
   {
@@ -571,8 +629,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 4800,
     episodeNumber: 5,
     status: 'published',
-    createdAt: '2026-07-28',
-    updatedAt: '2026-07-28',
+    createdAt: '2026-08-18',
+    updatedAt: '2026-08-18',
+    freeAt: '2026-08-26T05:00:00.000Z',
   },
   {
     id: '6',
@@ -613,8 +672,8 @@ export const mockEpisodes: Episode[] = [
     likeCount: 3500,
     episodeNumber: 2,
     status: 'published',
-    createdAt: '2026-05-22',
-    updatedAt: '2026-05-22',
+    createdAt: '2026-03-20',
+    updatedAt: '2026-03-20',
   },
   {
     id: '8',
@@ -634,8 +693,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 3450,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-05',
-    updatedAt: '2026-08-05',
+    createdAt: '2026-03-28',
+    updatedAt: '2026-03-28',
+    freeAt: '2026-08-07T05:00:00.000Z',
   },
   {
     id: '9',
@@ -697,8 +757,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 3250,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-02',
-    updatedAt: '2026-08-02',
+    createdAt: '2026-08-19',
+    updatedAt: '2026-08-19',
+    freeAt: '2026-08-26T05:00:00.000Z',
   },
   {
     id: '12',
@@ -739,8 +800,8 @@ export const mockEpisodes: Episode[] = [
     likeCount: 3100,
     episodeNumber: 2,
     status: 'published',
-    createdAt: '2026-07-11',
-    updatedAt: '2026-07-11',
+    createdAt: '2026-06-21',
+    updatedAt: '2026-06-21',
   },
   {
     id: '14',
@@ -760,8 +821,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 3050,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-08',
-    updatedAt: '2026-08-08',
+    createdAt: '2026-06-28',
+    updatedAt: '2026-06-28',
+    freeAt: '2026-08-10T05:00:00.000Z',
   },
   {
     id: '15',
@@ -823,8 +885,8 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2850,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-06-20',
-    updatedAt: '2026-06-20',
+    createdAt: '2026-08-16',
+    updatedAt: '2026-08-16',
   },
   {
     id: '18',
@@ -928,8 +990,8 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2500,
     episodeNumber: 2,
     status: 'published',
-    createdAt: '2026-06-06',
-    updatedAt: '2026-06-06',
+    createdAt: '2026-04-12',
+    updatedAt: '2026-04-12',
   },
   {
     id: '23',
@@ -949,8 +1011,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2450,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-10',
-    updatedAt: '2026-08-10',
+    createdAt: '2026-04-20',
+    updatedAt: '2026-04-20',
+    freeAt: '2026-08-24T12:00:00.000Z',
   },
   {
     id: '24',
@@ -991,8 +1054,8 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2300,
     episodeNumber: 2,
     status: 'published',
-    createdAt: '2026-06-26',
-    updatedAt: '2026-06-26',
+    createdAt: '2026-05-18',
+    updatedAt: '2026-05-18',
   },
   {
     id: '26',
@@ -1012,8 +1075,9 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2250,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-12',
-    updatedAt: '2026-08-12',
+    createdAt: '2026-05-26',
+    updatedAt: '2026-05-26',
+    freeAt: '2026-08-14T05:00:00.000Z',
   },
   {
     id: '27',
@@ -1075,8 +1139,81 @@ export const mockEpisodes: Episode[] = [
     likeCount: 2050,
     episodeNumber: 3,
     status: 'published',
-    createdAt: '2026-08-15',
-    updatedAt: '2026-08-15',
+    createdAt: '2026-08-12',
+    updatedAt: '2026-08-12',
+    freeAt: '2026-08-22T05:00:00.000Z',
+  },
+  scheduledDrop({
+    id: 'sched-1',
+    webtoonId: '1',
+    episodeNumber: 6,
+    title: { mm: 'နောက်တံခါး', en: 'The Next Gate' },
+    scheduledAt: '2026-08-24T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-1b',
+    webtoonId: '1',
+    episodeNumber: 7,
+    title: { mm: 'မုန်တိုင်းအပြီး', en: 'After the Storm' },
+    scheduledAt: '2026-08-21T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-2',
+    webtoonId: '2',
+    episodeNumber: 4,
+    title: { mm: 'မိုးရွာသောည', en: 'Rainy Night' },
+    scheduledAt: '2026-08-25T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-3',
+    webtoonId: '3',
+    episodeNumber: 4,
+    title: { mm: 'အရိပ်ထဲမှ ဓား', en: 'Blade in Shadow' },
+    scheduledAt: '2026-08-19T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-4',
+    webtoonId: '4',
+    episodeNumber: 4,
+    title: { mm: 'ခုနစ်စင်းမြောက် လှိုင်း', en: 'Seventh Wave' },
+    scheduledAt: '2026-08-23T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-7',
+    webtoonId: '7',
+    episodeNumber: 4,
+    title: { mm: 'နီသောလကြတ်', en: 'Crimson Eclipse' },
+    scheduledAt: '2026-08-20T05:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-8',
+    webtoonId: '8',
+    episodeNumber: 4,
+    title: { mm: 'နက်ဗ်ဝါးခ် ကျိုးခြင်း', en: 'Network Break' },
+    scheduledAt: '2026-08-21T08:00:00.000Z',
+  }),
+  scheduledDrop({
+    id: 'sched-9',
+    webtoonId: '9',
+    episodeNumber: 4,
+    title: { mm: 'ပထမဆုံး ပြိုင်ပွဲ', en: 'First Match' },
+    scheduledAt: '2026-08-22T05:00:00.000Z',
+  }),
+  {
+    id: 'draft-1-99',
+    webtoonId: '1',
+    webtoonTitle: { mm: 'The Last Horizon', en: 'The Last Horizon' },
+    title: { mm: 'မူကြမ်း အပိုင်း', en: 'Draft episode' },
+    description: { mm: 'ထုတ်ဝေမထားသော အပိုင်း', en: 'Unpublished episode' },
+    images: ['/webtoon-covers/the-last-horizon.png'],
+    isPremium: false,
+    coinPrice: 0,
+    viewCount: 0,
+    likeCount: 0,
+    episodeNumber: 99,
+    status: 'draft',
+    createdAt: '2026-07-28',
+    updatedAt: '2026-07-28',
   },
 ]
 
@@ -1375,7 +1512,7 @@ function fillEpisodeStripImages() {
 
 fillEpisodeStripImages()
 
-export const SHARED_DATA_SCHEMA_VERSION = 7
+export const SHARED_DATA_SCHEMA_VERSION = 13
 
 export const saveToLocalStorage = (data: SharedData) => {
   localStorage.setItem(

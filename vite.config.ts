@@ -1,10 +1,19 @@
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { emitSpaNotFoundHtml } from './src/lib/host/emitSpaNotFoundHtml'
+
+const spaNotFoundHtml = (): Plugin => ({
+  name: 'spa-not-found-html',
+  apply: 'build',
+  closeBundle() {
+    emitSpaNotFoundHtml(path.resolve(__dirname, 'dist'))
+  },
+})
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), spaNotFoundHtml()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

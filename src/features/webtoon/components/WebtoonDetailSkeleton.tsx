@@ -36,11 +36,25 @@ const WebtoonDetailSkeleton = () => (
               key={i}
               className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4"
             >
-              <Skeleton className="h-12 w-12 shrink-0 rounded-xl" />
+              <Skeleton className="aspect-[202/142] w-20 shrink-0 rounded-2xl sm:w-24" />
               <div className="flex w-full flex-col gap-2">
                 <SkeletonText className="w-1/3" />
                 <SkeletonText className="h-3 w-1/4" />
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div className="border-t border-gray-100 py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Skeleton className="mb-6 h-7 w-44 rounded-lg" />
+        <div className="space-y-3">
+          {Array.from({ length: 2 }, (_, i) => (
+            <div key={i} className="rounded-2xl border border-gray-100 bg-white p-4">
+              <SkeletonText className="w-1/4" />
+              <SkeletonText className="mt-2 w-full" />
             </div>
           ))}
         </div>

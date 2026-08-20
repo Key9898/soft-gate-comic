@@ -25,7 +25,7 @@
       "@softgate/shared": ["packages/shared/src"]
     },
 
-    "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client"]
+    "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client", "node"]
   },
   "include": ["src"]
 }

@@ -60,6 +60,7 @@ Never abbreviate the block. Never skip it. The user pastes it into Lark manually
 Treat every change against a production-ready bar:
 
 - **No placeholder-first code.** If a spec is unknowable, ship the most honest real implementation and mark gaps with precise `TODO` + a wiki/session note — never fake the surface.
+- **Prelaunch quality bar.** The portal is not public yet. Meet international webtoon-site standard and **beat** current webtoon sites on layout, information completeness, and UI/UX. Incomplete client data, pre-public status, and live upload/monetization on other sites are **not** reasons to ship a thin page. Complete IA with honest Demo / client-swap slots. Do not fake working publisher tools or fabricated MAU. Canonical: [`wiki/conventions/prelaunch-quality-bar.md`](wiki/conventions/prelaunch-quality-bar.md). Always-on: `.cursor/rules/07-prelaunch-quality-bar.mdc`.
 - **`npm run check` must pass** before declaring done. This runs lint + prettier check + vitest run + tsc + build. Fix failures, never skip with `|| true` or `--no-verify`.
 - **Strict TypeScript, strict ESLint.** Prefer real types; avoid `any`.
 - **Tailwind v4 discipline.** Theme tokens only via `src/index.css` `@theme {}`. No `tailwind.config.js`. Brand colors via `primary-*` / `accent-*` (see `wiki/conventions/brand-color-tokens.md`).

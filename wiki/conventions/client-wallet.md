@@ -33,4 +33,11 @@ Browser-local coin balance and premium unlocks. No PSP settlement.
 
 - Never claim MMQR/card settlement succeeded.
 - Keep Buy UI; label it Demo top-up.
+- Coins header uses Demo / this-browser copy — not “Secure payments” / “Instant delivery”. Processing copy credits the local Demo balance.
+- How coins work: seed 150, Demo top-up this device, unlock premium. Unlocked list from `unlockedEpisodeKeys` links `/webtoon/:id`; empty is honest.
 - Unlocks survive refresh only via this store.
+- No redeem-code field. No live PSP claim.
+
+## Wait-for-free (not this store)
+
+Per-episode `freeAt` ISO on some premium rows. Access helper: [`src/lib/catalog/waitForFree.ts`](../../src/lib/catalog/waitForFree.ts). After `now >= freeAt`, the episode is readable without debiting coins (guests included). Before that, coins unlock still works for signed-in readers. Do not write wait-free access into `unlockedEpisodeKeys`. Do not fake a daily 23:59 clock. Do not mix with Daily `scheduledAt`.

@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`src/` as it ships today).
 
-**Next Impl number to use: `99`.**
+**Next Impl number to use: `155`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -128,6 +128,62 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 96   | 2026-08-17 | Catalog tile honesty                            | [2026-08-17-catalog-tile-honesty.md](../notes/2026-08-17-catalog-tile-honesty.md)                         |
 | 97   | 2026-08-17 | Mock calendar stays in 2026                     | [2026-08-17-mock-calendar-2026.md](../notes/2026-08-17-mock-calendar-2026.md)                             |
 | 98   | 2026-08-17 | Stale catalog localStorage froze 2023 dates     | [2026-08-17-stale-catalog-localstorage.md](../notes/2026-08-17-stale-catalog-localstorage.md)             |
+| 99   | 2026-08-18 | Hero hover come-forward survives production     | [2026-08-18-hero-hover-come-forward-prod.md](../notes/2026-08-18-hero-hover-come-forward-prod.md)         |
+| 100  | 2026-08-18 | Skip link + sticky Hero Pause                   | [2026-08-18-skip-link-hero-pause.md](../notes/2026-08-18-skip-link-hero-pause.md)                         |
+| 101  | 2026-08-18 | Skip link vertically centers in the nav bar     | [2026-08-18-skip-link-header-align.md](../notes/2026-08-18-skip-link-header-align.md)                     |
+| 102  | 2026-08-18 | Favicon, OG PNG, Press kit IA                   | [2026-08-18-press-kit-favicon.md](../notes/2026-08-18-press-kit-favicon.md)                               |
+| 103  | 2026-08-18 | About Who we are (facts / product / team)       | [2026-08-18-about-who-we-are.md](../notes/2026-08-18-about-who-we-are.md)                                 |
+| 104  | 2026-08-18 | Home discovery jobs (spotlight, ranking, trend) | [2026-08-18-home-discovery-jobs.md](../notes/2026-08-18-home-discovery-jobs.md)                           |
+| 105  | 2026-08-18 | Prelaunch quality bar (always-on agent rule)    | [2026-08-18-prelaunch-quality-bar.md](../notes/2026-08-18-prelaunch-quality-bar.md)                       |
+| 106  | 2026-08-18 | Ranking chart + honest Popular destination      | [2026-08-18-ranking-chart.md](../notes/2026-08-18-ranking-chart.md)                                       |
+| 107  | 2026-08-18 | Publish with Us complete creator intake         | [2026-08-18-creators-intake.md](../notes/2026-08-18-creators-intake.md)                                   |
+| 108  | 2026-08-18 | Help / FAQ / Contact support funnel             | [2026-08-18-support-funnel.md](../notes/2026-08-18-support-funnel.md)                                     |
+| 109  | 2026-08-18 | Categories sort labels match Home               | [2026-08-18-categories-sort-labels.md](../notes/2026-08-18-categories-sort-labels.md)                     |
+| 110  | 2026-08-18 | Publish with Us intake polish                   | [2026-08-18-creators-intake-polish.md](../notes/2026-08-18-creators-intake-polish.md)                     |
+| 111  | 2026-08-19 | Help, FAQ, Contact support pages perfect        | [2026-08-19-support-pages-perfect.md](../notes/2026-08-19-support-pages-perfect.md)                       |
+| 112  | 2026-08-19 | Contact pitch fields for Publish with Us        | [2026-08-19-contact-pitch-fields.md](../notes/2026-08-19-contact-pitch-fields.md)                         |
+| 113  | 2026-08-19 | Contact Demo inbox hours + FAQ a6 a10 a11       | [2026-08-19-support-hours-faq-fill.md](../notes/2026-08-19-support-hours-faq-fill.md)                     |
+| 114  | 2026-08-19 | Series ratings on catalog + Highest Rated       | [2026-08-19-series-ratings.md](../notes/2026-08-19-series-ratings.md)                                     |
+| 115  | 2026-08-19 | Series rating star hit cells 44 by 24           | [2026-08-19-series-rating-hit-target.md](../notes/2026-08-19-series-rating-hit-target.md)                 |
+| 116  | 2026-08-19 | Pitch funnel four-point align                   | [2026-08-19-creators-pitch-align.md](../notes/2026-08-19-creators-pitch-align.md)                         |
+| 117  | 2026-08-19 | Popular rank hang-overlap                       | [2026-08-19-popular-rank-overlap.md](../notes/2026-08-19-popular-rank-overlap.md)                         |
+| 118  | 2026-08-19 | 404 recovery to hand-off bar                    | [2026-08-19-404-recovery.md](../notes/2026-08-19-404-recovery.md)                                         |
+| 119  | 2026-08-19 | Popular ranks inside the cover                  | [2026-08-19-popular-rank-on-cover.md](../notes/2026-08-19-popular-rank-on-cover.md)                       |
+| 120  | 2026-08-19 | Help hub layout + Footer FAQ                    | [2026-08-19-help-hub-footer-faq.md](../notes/2026-08-19-help-hub-footer-faq.md)                           |
+| 121  | 2026-08-19 | 404 recovery page polish                        | [2026-08-19-404-recovery-polish.md](../notes/2026-08-19-404-recovery-polish.md)                           |
+| 122  | 2026-08-19 | Popular rank bottom-left cover pocket           | [2026-08-19-popular-rank-pocket.md](../notes/2026-08-19-popular-rank-pocket.md)                           |
+| 123  | 2026-08-19 | Host HTTP 404 for unknown SPA paths             | [2026-08-19-host-http-404.md](../notes/2026-08-19-host-http-404.md)                                       |
+| 124  | 2026-08-19 | Popular rank white glyph on the cover           | [2026-08-19-popular-rank-glyph.md](../notes/2026-08-19-popular-rank-glyph.md)                             |
+| 125  | 2026-08-19 | Popular rank white offset kick                  | [2026-08-19-popular-rank-glyph-kick.md](../notes/2026-08-19-popular-rank-glyph-kick.md)                   |
+| 126  | 2026-08-19 | Legal pages layered notice + honesty            | [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md)                         |
+| 127  | 2026-08-19 | Popular rank white lip follows digit geometry   | [2026-08-19-popular-rank-glyph-lip.md](../notes/2026-08-19-popular-rank-glyph-lip.md)                     |
+| 128  | 2026-08-19 | Legal TOC thin primary scrollbar                | [2026-08-19-legal-toc-scrollbar.md](../notes/2026-08-19-legal-toc-scrollbar.md)                           |
+| 129  | 2026-08-19 | Home Updated vs New split                       | [2026-08-19-updated-new-split.md](../notes/2026-08-19-updated-new-split.md)                               |
+| 130  | 2026-08-19 | Series hub Continue, tags, thumbs, related      | [2026-08-19-series-hub.md](../notes/2026-08-19-series-hub.md)                                             |
+| 131  | 2026-08-19 | Search destination empty landing                | [2026-08-19-search-destination.md](../notes/2026-08-19-search-destination.md)                             |
+| 132  | 2026-08-19 | Categories polish search SEO empty recovery     | [2026-08-19-categories-polish.md](../notes/2026-08-19-categories-polish.md)                               |
+| 133  | 2026-08-19 | Reader chrome episode sheet prefs keyboard      | [2026-08-19-reader-chrome.md](../notes/2026-08-19-reader-chrome.md)                                       |
+| 134  | 2026-08-19 | Guest Start here rail                           | [2026-08-19-guest-start-here.md](../notes/2026-08-19-guest-start-here.md)                                 |
+| 135  | 2026-08-19 | Author profile `/author/:id`                    | [2026-08-19-author-profile.md](../notes/2026-08-19-author-profile.md)                                     |
+| 136  | 2026-08-19 | Auth reading room                               | [2026-08-19-auth-reading-room.md](../notes/2026-08-19-auth-reading-room.md)                               |
+| 137  | 2026-08-19 | Hero heading and duplicate CTA                  | [2026-08-19-hero-heading-cta.md](../notes/2026-08-19-hero-heading-cta.md)                                 |
+| 138  | 2026-08-19 | Reader swipe + pinch                            | [2026-08-19-reader-gestures.md](../notes/2026-08-19-reader-gestures.md)                                   |
+| 139  | 2026-08-19 | Nav Login carries return `from`                 | [2026-08-19-nav-login-return.md](../notes/2026-08-19-nav-login-return.md)                                 |
+| 140  | 2026-08-19 | Subscribe + 18+ content rating                  | [2026-08-19-subscribe-age-gate.md](../notes/2026-08-19-subscribe-age-gate.md)                             |
+| 141  | 2026-08-19 | Categories browse + `/ranking` path             | [2026-08-19-categories-ranking-browse.md](../notes/2026-08-19-categories-ranking-browse.md)               |
+| 142  | 2026-08-19 | Account hub to hand-off bar                     | [2026-08-19-account-hub.md](../notes/2026-08-19-account-hub.md)                                           |
+| 143  | 2026-08-19 | Categories chart chrome (no podium)             | [2026-08-19-categories-chart-chrome.md](../notes/2026-08-19-categories-chart-chrome.md)                   |
+| 144  | 2026-08-19 | Hub series comments                             | [2026-08-19-hub-comments.md](../notes/2026-08-19-hub-comments.md)                                         |
+| 145  | 2026-08-19 | Search Demo searches chips                      | [2026-08-19-search-demo-trending.md](../notes/2026-08-19-search-demo-trending.md)                         |
+| 146  | 2026-08-19 | Auth portal split-card                          | [2026-08-19-auth-split-card.md](../notes/2026-08-19-auth-split-card.md)                                   |
+| 147  | 2026-08-19 | Home For You rail                               | [2026-08-19-for-you.md](../notes/2026-08-19-for-you.md)                                                   |
+| 148  | 2026-08-19 | Author Follow on catalog profiles               | [2026-08-19-author-follow.md](../notes/2026-08-19-author-follow.md)                                       |
+| 149  | 2026-08-19 | Auth split-card photo curtain                   | [2026-08-19-auth-split-curtain.md](../notes/2026-08-19-auth-split-curtain.md)                             |
+| 150  | 2026-08-19 | Home Daily weekday board                        | [2026-08-19-daily.md](../notes/2026-08-19-daily.md)                                                       |
+| 151  | 2026-08-19 | Wait-for-free on premium episodes               | [2026-08-19-wait-for-free.md](../notes/2026-08-19-wait-for-free.md)                                       |
+| 152  | 2026-08-19 | Catalog Premium chip to top-left                | [2026-08-19-catalog-premium-left.md](../notes/2026-08-19-catalog-premium-left.md)                         |
+| 153  | 2026-08-19 | Home Daily upcoming episode drops               | [2026-08-19-daily-drops.md](../notes/2026-08-19-daily-drops.md)                                           |
+| 154  | 2026-08-19 | Daily / Updated / New Demo honesty              | [2026-08-19-discovery-time-family.md](../notes/2026-08-19-discovery-time-family.md)                       |
 
 ---
 
@@ -958,9 +1014,457 @@ Non-empty `softgate-shared-data` catalogs are re-seeded from current mock on loa
 
 ---
 
+## Impl Phase 99 — Hero hover come-forward survives production (2026-08-18)
+
+**Status:** Done
+
+Split HeroBook3D hover so straighten stays rotate-only on `.hero-book` and come-forward is `translate3d(..., 3rem)` on `.hero-book-motion`. Home enter 2D `translate` moved off the `perspective` node onto `.hero-book-enter`. Production must no longer flatten Z. Note: [2026-08-18-hero-hover-come-forward-prod.md](../notes/2026-08-18-hero-hover-come-forward-prod.md).
+
+---
+
+## Impl Phase 100 — Skip link + sticky Hero Pause (2026-08-18)
+
+**Status:** Done
+
+MainLayout skip-to-content (native `#main-content` + `.skip-link`) and Hero Pause/Play that does not share hover-pause state. Autoplay 5s, dots + next, and forced book motion unchanged. Note: [2026-08-18-skip-link-hero-pause.md](../notes/2026-08-18-skip-link-hero-pause.md).
+
+---
+
+## Impl Phase 101 — Skip link vertically centers in the nav bar (2026-08-18)
+
+**Status:** Done
+
+Focused `.skip-link` chip aligns to the nav `h-16` midpoint below `safe-top` (`top: calc(max(0px, env(safe-area-inset-top)) + 2rem)` + `translateY(-50%)`). Markup, Pause, and Hero unchanged. Note: [2026-08-18-skip-link-header-align.md](../notes/2026-08-18-skip-link-header-align.md).
+
+---
+
+## Impl Phase 102 — Favicon, OG PNG, Press kit IA (2026-08-18)
+
+**Status:** Done
+
+Favicon set in `index.html`; OG/JSON-LD use `logo.png`. Press rebuilt as honest kit (boilerplate copy, facts including SoftGate / Insein, News empty, SVG+PNG+icon-512, usage, screenshot/spokesperson slots, `press@`). Contact HQ i18n aligned. Note: [2026-08-18-press-kit-favicon.md](../notes/2026-08-18-press-kit-favicon.md).
+
+---
+
+## Impl Phase 103 — About: Who we are (facts, product, timeline, team) (2026-08-18)
+
+**Status:** Done
+
+About H1 is **Who we are**; footer/breadcrumb stay **About Us**. Trophy stats grid replaced with Press-style fact chips. New sections: how the portal works (including demo-wallet honesty), skim 2026 timeline + studio photo, stand-in team grid (`public/about/team/`, `team-creators.jpg` plural). Mission/values/CTA copy tightened; "Join Us" became **Get involved**. Stand-in names are not in Organization JSON-LD. Note: [2026-08-18-about-who-we-are.md](../notes/2026-08-18-about-who-we-are.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 104 — Home discovery jobs (2026-08-18)
+
+**Status:** Done
+
+Home modules use different jobs: Hero Spotlight flags, Ranking by `viewCount` with numbers 1–6, Trending by `weeklyViewCount`, Updated by `updatedAt`, New by `createdAt`. Same title may appear in more than one module. Schema **8**. Note: [2026-08-18-home-discovery-jobs.md](../notes/2026-08-18-home-discovery-jobs.md).
+
+---
+
+## Impl Phase 105 — Prelaunch quality bar (always-on agent rule) (2026-08-18)
+
+**Status:** Done
+
+Standing hand-off bar: international webtoon-site standard; beat current webtoon sites on layout, information, and UI/UX. Incomplete client data and live tools on other sites are not blockers. Installed in always-on rule `07-prelaunch-quality-bar.mdc` (Cursor + Antigravity), root `AGENTS.md`, `.agents/AGENTS.md`, and [prelaunch-quality-bar.md](../conventions/prelaunch-quality-bar.md). Docs only — no `src/` change. Note: [2026-08-18-prelaunch-quality-bar.md](../notes/2026-08-18-prelaunch-quality-bar.md).
+
+---
+
+## Impl Phase 106 — Ranking chart + honest Popular destination (2026-08-18)
+
+**Status:** Done
+
+Home Popular is an ordered ranking chart (large 1–3, list not a 6-up twin of New). `/categories?sort=popular` continues ranks 1–N. `/categories` without `sort` stays unranked browse. Trending gets this-week copy + icon and no View all. Hero/skip/Pause and discovery selectors unchanged. Schema **8**. Note: [2026-08-18-ranking-chart.md](../notes/2026-08-18-ranking-chart.md).
+
+---
+
+## Impl Phase 107 — Publish with Us complete creator intake (2026-08-18)
+
+**Status:** Done
+
+Plan drafted as Impl 106; that number was taken by the ranking chart. This ships as **107**. `/creators` is a complete editorial-intake landing (facts, why, handbook, pitch, after-send, rights/earnings, FAQ). CTA **Send your pitch** → `/contact?intent=submit` prefills Contact. No fake uploader. Note: [2026-08-18-creators-intake.md](../notes/2026-08-18-creators-intake.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 108 — Help / FAQ / Contact support funnel (2026-08-18)
+
+**Status:** Done
+
+Plan drafted as Impl 107; that number was taken by Creators intake. This ships as **108**. Help is the front door, FAQ is the hash/catalog library, Contact is the last step (honest mailto). Footer Support is Help + Contact only. No Zendesk, chat, or tickets. Note: [2026-08-18-support-funnel.md](../notes/2026-08-18-support-funnel.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 109 — Categories sort labels match Home (2026-08-18)
+
+**Status:** Done
+
+Categories dropdown Popular uses `home.ranking` (same as Home / Nav). Popular page icon is `ListOrdered`, not `TrendingUp`. New and Recently Updated titles were already aligned. Highest Rated stays in the dropdown; `h1` for that sort is still Browse by Genre (parked). Ranks still only when `?sort=popular`. Note: [2026-08-18-categories-sort-labels.md](../notes/2026-08-18-categories-sort-labels.md).
+
+---
+
+## Impl Phase 110 — Publish with Us intake polish (2026-08-18)
+
+**Status:** Done
+
+Plan drafted as Impl 109; Categories sort labels took 109. This ships as **110**. `/creators` adds TOC, why cards, demo 3:4 covers, handbook visuals, do-not-send, simultaneous-rights honesty, FAQ5, and a fixed Send pitch bar. Contact `intent=submit` uses labeled pitch fields; default Contact unchanged. Note: [2026-08-18-creators-intake-polish.md](../notes/2026-08-18-creators-intake-polish.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 111 — Help, FAQ, Contact support pages perfect (2026-08-19)
+
+**Status:** Done
+
+Plan drafted as Impl 109; 109–110 were taken (Categories sort labels, Creators intake polish). This ships as **111**. Help, FAQ, and Contact meet the prelaunch bar: six Help kinds, FAQ `q15`–`q20`, honest coins/refund copy, local-only thumbs, About-style chrome, no page-root `overflow-hidden`, Contact writer checklist + Insein, Yangon, Myanmar. `intent=submit` still prefills subject + message template. No chat, tickets, or extra form fields. Note: [2026-08-19-support-pages-perfect.md](../notes/2026-08-19-support-pages-perfect.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 112 — Contact pitch fields for Publish with Us (2026-08-19)
+
+**Status:** Done
+
+Last mile for Publish with Us. `/contact?intent=submit` uses labeled pitch fields (title, genre, episode count, synopsis, 3:4 cover checkbox, optional platforms/notes). Subject-only prefill. Default `/contact` unchanged. Creators CTA inbox `support@` is `translate="no"`. Note: [2026-08-19-contact-pitch-fields.md](../notes/2026-08-19-contact-pitch-fields.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 113 — Contact Demo inbox hours + FAQ a6 a10 a11 (2026-08-19)
+
+**Status:** Done
+
+Plan drafted as Impl 112; Contact pitch fields took 112. This ships as **113**. Copy-only polish: Demo weekday Yangon inbox hours (studio replaces; no clock, no SLA). FAQ `a6` / `a10` / `a11` filled (Profile → Security delete, Home New Releases, request is not a license promise). Still 20 FAQs. `q10` related Home. Note: [2026-08-19-support-hours-faq-fill.md](../notes/2026-08-19-support-hours-faq-fill.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 114 — Series ratings on catalog + Highest Rated (2026-08-19)
+
+**Status:** Done
+
+Plan drafted as Impl 113; Contact hours/FAQ fill took 113. This ships as **114**. Catalog covers show a dark community-score chip (gold star + one decimal). Premium sits under that chip on every catalog tile. Detail and chapter-complete share a 0.5-step series rating control. Community `webtoon.rating` stays frozen; your score is per-user on engagement schema **3**. First rate requires a read episode. Guest → login. Highest Rated gets a real `h1` + `Star` icon, no ranks, no Home/Nav. No fake rating counts. Note: [2026-08-19-series-ratings.md](../notes/2026-08-19-series-ratings.md).
+
+---
+
+## Impl Phase 115 — Series rating star hit cells 44 by 24 (2026-08-19)
+
+**Status:** Done
+
+Chrome only. `SeriesRatingControl` star cells are `h-11 w-12` so each 0.5 hit is 44×24 CSS pixels. Glyph stays square `h-11 w-11` centered. Cover `RatingChip` unchanged. Rating logic, gates, and Highest Rated unchanged. Note: [2026-08-19-series-rating-hit-target.md](../notes/2026-08-19-series-rating-hit-target.md).
+
+---
+
+## Impl Phase 116 — Pitch funnel four-point align (2026-08-19)
+
+**Status:** Done
+
+Plan drafted as Impl 115; series rating star hit cells took 115. This ships as **116**. Pitch form episode min 3 (matches handbook). `intent=submit` handbook link to `/creators#creators-specs`. FAQ `a14` no in-portal upload. Creators after-send: no published reply SLA. Note: [2026-08-19-creators-pitch-align.md](../notes/2026-08-19-creators-pitch-align.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 117 — Popular rank hang-overlap (2026-08-19)
+
+**Status:** Done
+
+Home Popular numbers were `text-6xl` beside the cover. Chart `RankMark` now hangs off the cover bottom-left (outside `.book-media` overflow): `text-4xl font-black`, same size for 1–6, title row `pl-12`. Matches WEBTOON overlap geometry without fake ▲/▼ deltas (no week-rank metric). 2-column chart of 6 kept. Categories tile ranks stay bottom-right (status lives bottom-left). Gist 3 Updated vs New split untouched. Note: [2026-08-19-popular-rank-overlap.md](../notes/2026-08-19-popular-rank-overlap.md).
+
+---
+
+## Impl Phase 118 — 404 recovery to hand-off bar (2026-08-19)
+
+**Status:** Done
+
+Unknown URLs, missing series, and missing episodes share one recovery (`NotFoundPage` variants). SearchAutocomplete, guest-safe destinations (no Library), demo 3:4 BookCards, Help/Contact. SEO noindex, no JSON-LD, no canonical. No homepage redirect. Note: [2026-08-19-404-recovery.md](../notes/2026-08-19-404-recovery.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md), [portal-seo.md](../conventions/portal-seo.md).
+
+---
+
+## Impl Phase 119 — Popular ranks inside the cover (2026-08-19)
+
+**Status:** Done
+
+Replaces Impl 117 hang-into-title. One RankMark inside `.book-media` (bottom-left, `primary-600`, white stroke, `text-2xl sm:text-3xl`). Home Popular uses the same 6-up grid as Trending, still an `<ol>`. Skeleton Popular is six ranked covers. Categories `?sort=popular` matches; status moves to bottom-right while ranked. No fake week-delta arrows. Gist 3 untouched. Note: [2026-08-19-popular-rank-on-cover.md](../notes/2026-08-19-popular-rank-on-cover.md).
+
+---
+
+## Impl Phase 120 — Help hub layout + Footer FAQ (2026-08-19)
+
+**Status:** Done
+
+Footer Support names Help Center, FAQ, and Contact. Help hub body fills the 7xl shell (topic card, browse-all → `/faq`, popular, creators | need-more 2-col). Compact left header and `max-w-3xl` search stay. FAQ inner `max-w-3xl` and Contact unchanged. Note: [2026-08-19-help-hub-footer-faq.md](../notes/2026-08-19-help-hub-footer-faq.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 121 — 404 recovery page polish (2026-08-19)
+
+**Status:** Done
+
+Plan drafted as Impl 120; Help hub took 120. Nine page items on the Impl 118 recovery. Reader miss uses `withSiteChrome`. Go here is Categories / Popular / New. Still need help is Help + Contact. No inner `min-h-screen`. Search heading. SEO omits keywords, `og:image`, Twitter. Dead 404 keys removed. MM copy no longer mixes `catalog` / `Live`. HTTP 404 stays a later host Impl. Note: [2026-08-19-404-recovery-polish.md](../notes/2026-08-19-404-recovery-polish.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md), [portal-seo.md](../conventions/portal-seo.md).
+
+---
+
+## Impl Phase 122 — Popular rank bottom-left cover pocket (2026-08-19)
+
+**Status:** Done
+
+Corner wash on the digit only showed on skeleton. Ranked covers now clip a bottom-left pocket (`--rank-pocket: 2.5rem`); `RankMark` sits in that hole as a sibling of the hardcover, same primary + stroke as Impl 119. Hover lifts frame + number. Home skeleton matches. Categories Popular matches. Gist 3 untouched. Note: [2026-08-19-popular-rank-pocket.md](../notes/2026-08-19-popular-rank-pocket.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
+## Impl Phase 123 — Host HTTP 404 for unknown SPA paths (2026-08-19)
+
+**Status:** Done
+
+Unknown path shapes return HTTP 404 on Vercel via post-build `dist/404.html` (copy of `index.html`) so the React recovery page still paints. Known SPA routes in `SPA_REWRITE_SOURCES` rewrite to `/index.html` (200). No catch-all rewrite (that 200s junk URLs). No homepage redirect. Catalog id misses stay 200 + React recovery. `npm run dev` stays 200. Note: [2026-08-19-host-http-404.md](../notes/2026-08-19-host-http-404.md). Convention: [portal-seo.md](../conventions/portal-seo.md).
+
+---
+
+## Impl Phase 124 — Popular rank white glyph on the cover (2026-08-19)
+
+**Status:** Done
+
+Deleted the Impl 122 square pocket. Rank is only the numeral: white fill in the digit shape + primary-600 stroke (`#0e9494`) on a full 3:4 hardcover. No hang, no title indent. Home skeleton and Categories Popular match. Gist 3 untouched. Note: [2026-08-19-popular-rank-glyph.md](../notes/2026-08-19-popular-rank-glyph.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
+## Impl Phase 125 — Popular rank white offset kick (2026-08-19)
+
+**Status:** Done
+
+Concentric stroke stayed. `RankMark` adds a hard down-right white `text-shadow` (`1px 2px 0 #fff`, no blur) so the digit has a kick without becoming a box, wash, or hang. Note: [2026-08-19-popular-rank-glyph-kick.md](../notes/2026-08-19-popular-rank-glyph-kick.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
+## Impl Phase 126 — Legal pages layered notice + honesty (2026-08-19)
+
+**Status:** Done
+
+Privacy, Terms, and Cookies share `LegalPageShell`: Help-identical wash, related-policy strip, At a glance, mailto + `/contact`, one `LEGAL_EFFECTIVE_DATE` (19 Aug 2026). Cookies storage table lists every real key including `softgate_engage_v1`, `softgate_accounts_v1`, and `softgate-shared-data`. Privacy rights link `/profile?tab=security`. Terms add Changes + guest vs signed-in. No cookie CMP or US arbitration. Note: [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md). Convention: [legal-pages.md](../conventions/legal-pages.md).
+
+---
+
+## Impl Phase 127 — Popular rank white lip follows digit geometry (2026-08-19)
+
+**Status:** Done
+
+Impl 125 `text-shadow` was not visible under the 3px stroke. `RankMark` is two copies of the same digit: a white `scale-[1.2]` lip behind white fill + primary stroke. No hang, no box. Note: [2026-08-19-popular-rank-glyph-lip.md](../notes/2026-08-19-popular-rank-glyph-lip.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
+## Impl Phase 128 — Legal TOC thin primary scrollbar (2026-08-19)
+
+**Status:** Done
+
+Legal TOC pane (`max-h-[50vh] overflow-y-auto`) uses `@utility scrollbar-thin-primary` (thin rounded primary thumb) instead of the Windows default bar. Privacy / Terms / Cookies share `LegalTocSidebar`. Document `html` scrollbar stays hidden. Note: [2026-08-19-legal-toc-scrollbar.md](../notes/2026-08-19-legal-toc-scrollbar.md). Conventions: [legal-pages.md](../conventions/legal-pages.md), [portal-scroll-chrome.md](../conventions/portal-scroll-chrome.md).
+
+---
+
+## Impl Phase 129 — Home Updated vs New split (2026-08-19)
+
+**Status:** Done
+
+Gist 3: Home Updated excludes New-rail ids; honesty copy + Clock/Sparkles; Updated tiles (and Categories recentlyUpdated) print `updatedAt`. No fake Daily. Note: [2026-08-19-updated-new-split.md](../notes/2026-08-19-updated-new-split.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md), [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 130 — Series hub Continue, tags, thumbs, related (2026-08-19)
+
+**Status:** Done
+
+Series detail: Continue vs Start from published history; Latest when it is not the primary target; HeroBook3D matches primary; genre → `/categories/:slug`; tags → search; author other-works rail; related heading You may also like; landscape episode thumbs with mobile date/views; unpublished reader 404. Note: [2026-08-19-series-hub.md](../notes/2026-08-19-series-hub.md). Convention: [series-hub.md](../conventions/series-hub.md).
+
+---
+
+## Impl Phase 131 — Search destination empty landing (2026-08-19)
+
+**Status:** Done
+
+Empty `/search` is a discovery destination: visible h1, Browse genres, recent + Clear, Go here, Popular/New rails. Webtoons-tab chips; richer author/episode hits; 404-class no-results. Note: [2026-08-19-search-destination.md](../notes/2026-08-19-search-destination.md). Convention: [in-app-search.md](../conventions/in-app-search.md).
+
+---
+
+## Impl Phase 132 — Categories polish search SEO empty recovery (2026-08-19)
+
+**Status:** Done
+
+Header search submits to `/search`. SEO uses browse description and path-only URL. Genre `h1` when no sort query. Count line includes genre/status. Empty recovery matches 404 plus Clear filters. Note: [2026-08-19-categories-polish.md](../notes/2026-08-19-categories-polish.md). Convention: [categories-browse.md](../conventions/categories-browse.md).
+
+---
+
+## Impl Phase 133 — Reader chrome episode sheet prefs keyboard (2026-08-19)
+
+**Status:** Done
+
+Episode List Modal of published episodes; device prefs `softgate_reader_prefs_v1`; Cookies Reader display row; ArrowLeft/Right; comments count; Fit vs Full width on the strip stack. Note: [2026-08-19-reader-chrome.md](../notes/2026-08-19-reader-chrome.md). Convention: [reader-chrome.md](../conventions/reader-chrome.md).
+
+---
+
+## Impl Phase 134 — Guest Start here rail (2026-08-19)
+
+**Status:** Done
+
+When Continue is empty, Home fills that slot with a Start here catalog rail: free published episode 1, Hero ids excluded, cards open `/read/:id/1`. Continue XOR Start here. Popular stays a chart. Bottom Get started free unchanged. Note: [2026-08-19-guest-start-here.md](../notes/2026-08-19-guest-start-here.md). Conventions: [guest-access.md](../conventions/guest-access.md), [discovery-honesty.md](../conventions/discovery-honesty.md), [continue-reading.md](../conventions/continue-reading.md).
+
+---
+
+## Impl Phase 135 — Author profile `/author/:id` (2026-08-19)
+
+**Status:** Done
+
+Catalog creator profile at `/author/:id`. Hub chip, Search authors tab, and autocomplete author hits go there. Series count is published titles. Hub episode stat uses published length. Schema stays 8. Note: [2026-08-19-author-profile.md](../notes/2026-08-19-author-profile.md). Convention: [author-profile.md](../conventions/author-profile.md).
+
+---
+
+## Impl Phase 136 — Auth reading room (2026-08-19)
+
+**Status:** Done
+
+Plan B reading-room auth: desk photos, 7xl shell, real `/login` `/register` `/forgot-password` `/reset-password` routes. Forgot is an email → mock OTP → new password stepper that does not send mail or persist password. Token reset is a future mail-link shell. Note: [2026-08-19-auth-reading-room.md](../notes/2026-08-19-auth-reading-room.md). Convention: [client-auth.md](../conventions/client-auth.md).
+
+---
+
+## Impl Phase 137 — Hero heading and duplicate CTA (2026-08-19)
+
+**Status:** Done
+
+Home `h1` is `home.pageHeading` (site identity). Spotlight kicker is an eyebrow `<p>`. Series title is `h2`. Home 3D cover is pointer-only (not a second SR/keyboard Start Reading). Detail cover stays a tabbable link. Note: [2026-08-19-hero-heading-cta.md](../notes/2026-08-19-hero-heading-cta.md). Convention: [hero-spotlight.md](../conventions/hero-spotlight.md).
+
+---
+
+## Impl Phase 138 — Reader swipe + pinch (2026-08-19)
+
+**Status:** Done
+
+Touch/pen swipe on the reader strip changes episode; pinch CSS-scales 1–3 at the pinch midpoint; double-tap resets. Session-only zoom. Overlays block gestures like arrows. Guests keep gestures. Note: [2026-08-19-reader-gestures.md](../notes/2026-08-19-reader-gestures.md). Convention: [reader-chrome.md](../conventions/reader-chrome.md).
+
+---
+
+## Impl Phase 139 — Nav Login carries return `from` (2026-08-19)
+
+**Status:** Done
+
+MainLayout guest Login links pass `state={{ from: location }}` so Author, Categories (including query), and other in-app pages return after sign-in. Login/Register already consume `safeReturnTo`. ReaderLayout has no Nav. Note: [2026-08-19-nav-login-return.md](../notes/2026-08-19-nav-login-return.md). Conventions: [client-auth.md](../conventions/client-auth.md), [guest-access.md](../conventions/guest-access.md).
+
+---
+
+## Impl Phase 140 — Subscribe + 18+ content rating (2026-08-19)
+
+**Status:** Done
+
+Save → Subscribe (keep `softgate_library_v1`). Mute in-app episode notices. Demo notify when catalog episode number advances after subscribe. Per-title `contentRating`; 18+ Reader gate (account localStorage / guest sessionStorage). Schema **9**. Note: [2026-08-19-subscribe-age-gate.md](../notes/2026-08-19-subscribe-age-gate.md). Conventions: [library-bookmarks.md](../conventions/library-bookmarks.md), [content-rating.md](../conventions/content-rating.md).
+
+---
+
+## Impl Phase 141 — Categories browse + `/ranking` path (2026-08-19)
+
+**Status:** Done
+
+`/ranking` is the all-genre numbered Popular catalog. Browse (`/categories`) sorts by `viewCount` without ranks. Home genre chips use `/categories/:slug`. Unknown genre slug is React 404. Pagination logic exists; UI hidden at ≤24 titles. Note: [2026-08-19-categories-ranking-browse.md](../notes/2026-08-19-categories-ranking-browse.md). ADR: [006-ranking-path.md](../decisions/006-ranking-path.md). Convention: [categories-browse.md](../conventions/categories-browse.md).
+
+---
+
+## Impl Phase 142 — Account hub to hand-off bar (2026-08-19)
+
+**Status:** Done
+
+Signed-in hub (Profile Settings/Preferences, Notifications, Coins honesty, Library History Continue) to the prelaunch bar. Password min 8. Empty-first inbox; notification prefs in `softgate_notif_prefs_v1`. No live mail, IAP, or push. Note: [2026-08-19-account-hub.md](../notes/2026-08-19-account-hub.md).
+
+---
+
+## Impl Phase 143 — Categories chart chrome (2026-08-19)
+
+**Status:** Done
+
+Ranked catalog grids (`/ranking`, `?sort=popular`) are `<ol>` with RankMark-on-cover, numbered-chart eyebrow, and masthead `radial-wash-primary`. Filters stick below nav via `sticky-below-nav`. Header search removed. Genre chips `min-h-11` without `uppercase`. Note: [2026-08-19-categories-chart-chrome.md](../notes/2026-08-19-categories-chart-chrome.md). Convention: [categories-browse.md](../conventions/categories-browse.md).
+
+---
+
+## Impl Phase 144 — Hub series comments (2026-08-19)
+
+**Status:** Done
+
+Series hub has a series discussion thread keyed `id:series`, stored in `softgate_comments_v1` schema 1 next to episode `id:N`. Guest reads; write requires login. Reader episode comments stay isolated. Note: [2026-08-19-hub-comments.md](../notes/2026-08-19-hub-comments.md). Conventions: [series-hub.md](../conventions/series-hub.md), [client-comments-notifications.md](../conventions/client-comments-notifications.md).
+
+---
+
+## Impl Phase 145 — Search Demo searches chips (2026-08-19)
+
+**Status:** Done
+
+Empty `/search` has frozen Demo search chips above Browse genres. Honesty copy: not live trends. Chips run `?q=`. Not Home Trending. Note: [2026-08-19-search-demo-trending.md](../notes/2026-08-19-search-demo-trending.md). Convention: [in-app-search.md](../conventions/in-app-search.md).
+
+---
+
+## Impl Phase 146 — Auth portal split-card (2026-08-19)
+
+**Status:** Done
+
+Login/register: portal wash + one card; reading-room photo slides as the 50% pane (0.65s). No full-bleed page photo. No OAuth. Forgot/reset stay a plain form card. Note: [2026-08-19-auth-split-card.md](../notes/2026-08-19-auth-split-card.md). Convention: [client-auth.md](../conventions/client-auth.md).
+
+---
+
+## Impl Phase 147 — Home For You rail (2026-08-19)
+
+**Status:** Done
+
+Home For You from Subscribe, likes, and history, then same-genre neighbors by stable id. Guest / empty hide. Not Ranking. Note: [2026-08-19-for-you.md](../notes/2026-08-19-for-you.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 148 — Author Follow on catalog profiles (2026-08-19)
+
+**Status:** Done
+
+Author profile Follow / Following via `softgate_follows_v1`. Guest → login `from`. No public `followerCount`. Not series Subscribe. Note: [2026-08-19-author-follow.md](../notes/2026-08-19-author-follow.md). Convention: [author-profile.md](../conventions/author-profile.md).
+
+---
+
+## Impl Phase 149 — Auth split-card photo curtain (2026-08-19)
+
+**Status:** Done
+
+Login and register forms stay glued (left / right 50%). Only the reading-room photo translates. No form `translate`. Split card does not render `Outlet`. Note: [2026-08-19-auth-split-curtain.md](../notes/2026-08-19-auth-split-curtain.md). Convention: [client-auth.md](../conventions/client-auth.md).
+
+---
+
+## Impl Phase 150 — Home Daily weekday board (2026-08-19)
+
+**Status:** Done
+
+Home Daily after Trending, before Updated. `uploadDay` `0–6` (`Date.getDay()`), ongoing only, Demo Mon–Sun assignment, schema **10**. Sort `viewCount`. Not `updatedAt`. No View all. No wait-for-free clock. Note: [2026-08-19-daily.md](../notes/2026-08-19-daily.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 151 — Wait-for-free on premium episodes (2026-08-19)
+
+**Status:** Done
+
+Premium episodes may list `freeAt`. After that time they are readable without coins. Coins still skip the wait for signed-in readers. Not Daily `uploadDay`. Not a 23:59 clock. Schema **11**. Note: [2026-08-19-wait-for-free.md](../notes/2026-08-19-wait-for-free.md). Convention: [client-wallet.md](../conventions/client-wallet.md).
+
+---
+
+## Impl Phase 152 — Catalog Premium chip to top-left (2026-08-19)
+
+**Status:** Done
+
+Catalog cover Premium chip moves to the top-left column with New (`gap-1`). Rating + age stay top-right. Same `span` chrome; not a button. One `CatalogBookCard` change. Note: [2026-08-19-catalog-premium-left.md](../notes/2026-08-19-catalog-premium-left.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
+## Impl Phase 153 — Home Daily upcoming episode drops (2026-08-19)
+
+**Status:** Done
+
+Home Daily lists unpublished `Episode.scheduledAt` drops by Yangon weekday. Cards are not links. Countdown on the cover bottom lip; episode + Yangon time under the cover. Published leaves Daily; overdue stays Publishing soon. Hub Next drop uses the global soonest scheduled episode. Schema **12**. Note: [2026-08-19-daily-drops.md](../notes/2026-08-19-daily-drops.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md), [catalog-tiles.md](../conventions/catalog-tiles.md), [series-hub.md](../conventions/series-hub.md).
+
+---
+
+## Impl Phase 154 — Daily / Updated / New Demo honesty (2026-08-19)
+
+**Status:** Done
+
+Demo seed retuned so Home Updated is older series with later `updatedAt` (Shadow / Horizon / Golden Age). New six-pack stays launch windows. Copy names episode vs series. Demo omits `uploadDay`; type stays optional. Schema **13**. Selectors and Daily `scheduledAt` unchanged. Note: [2026-08-19-discovery-time-family.md](../notes/2026-08-19-discovery-time-family.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md), [catalog-tiles.md](../conventions/catalog-tiles.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **99**).
+1. Take **next free Impl** (currently **155**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

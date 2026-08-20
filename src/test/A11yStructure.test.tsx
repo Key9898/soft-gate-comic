@@ -42,7 +42,7 @@ describe('A11y structure — page h1s', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Test User' })).toBeInTheDocument()
   })
 
-  it('SearchPage has an sr-only h1', () => {
+  it('SearchPage has a visible Search h1', () => {
     render(<SearchPage />)
     expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
   })

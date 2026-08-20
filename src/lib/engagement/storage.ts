@@ -1,9 +1,12 @@
+import { isValidRating } from '../rating'
 import {
   ENGAGEMENT_SCHEMA_VERSION,
   type EngagementStore,
   type HistoryRecord,
   type UserEngagement,
 } from './types'
+
+const ACCEPTED_SCHEMA_VERSIONS = new Set([1, 2, 3])
 
 export const STORAGE_KEY = 'softgate_engage_v1'
 
@@ -45,6 +48,16 @@ function normalizeHistory(item: HistoryRecord): HistoryRecord {
   }
 }
 
+function sanitizeRatings(raw: unknown): Record<string, number> {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {}
+  const ratings: Record<string, number> = {}
+  for (const [webtoonId, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (!webtoonId || !isValidRating(value)) continue
+    ratings[webtoonId] = value
+  }
+  return ratings
+}
+
 function normalize(raw: unknown): UserEngagement | null {
   if (!raw || typeof raw !== 'object') return null
   const e = raw as Partial<UserEngagement>
@@ -54,6 +67,7 @@ function normalize(raw: unknown): UserEngagement | null {
     likedWebtoonIds: Array.isArray(e.likedWebtoonIds)
       ? e.likedWebtoonIds.filter((id): id is string => typeof id === 'string')
       : [],
+    ratings: sanitizeRatings(e.ratings),
   }
 }
 
@@ -67,7 +81,8 @@ export function readStore(): EngagementStore {
     const obj = parsed as Partial<EngagementStore>
     const version = obj.schemaVersion
     if (
-      (version !== 1 && version !== ENGAGEMENT_SCHEMA_VERSION) ||
+      typeof version !== 'number' ||
+      !ACCEPTED_SCHEMA_VERSIONS.has(version) ||
       !obj.byUserId ||
       typeof obj.byUserId !== 'object'
     ) {

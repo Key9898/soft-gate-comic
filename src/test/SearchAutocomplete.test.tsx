@@ -38,4 +38,21 @@ describe('SearchAutocomplete', () => {
 
     expect(store.get('softgate_recent_searches')).toContain('Cloud')
   })
+
+  it('offers author suggestions that navigate to the profile', async () => {
+    const user = userEvent.setup()
+    render(
+      <HelmetProvider>
+        <DataProvider>
+          <MemoryRouter>
+            <SearchAutocomplete />
+          </MemoryRouter>
+        </DataProvider>
+      </HelmetProvider>
+    )
+
+    const input = await screen.findByLabelText(/search webtoons/i)
+    await user.type(input, 'Zaw')
+    expect(await screen.findByRole('option', { name: /ko zaw/i })).toBeInTheDocument()
+  })
 })

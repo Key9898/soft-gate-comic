@@ -8,7 +8,13 @@ import {
   type Author,
   type Webtoon,
 } from '@softgate/shared'
-import { formatCatalogDate, NEW_RELEASE_CAP, newestPublishedIds } from '../lib/catalog'
+import {
+  formatCatalogDate,
+  NEW_RELEASE_CAP,
+  newestPublishedIds,
+  newReleaseWebtoons,
+  updatedWebtoons,
+} from '../lib/catalog'
 
 const author: Author = {
   id: 'a1',
@@ -32,6 +38,7 @@ const series = (
   likeCount: 1,
   episodeCount: 1,
   rating: 4,
+  contentRating: 'all',
   updatedAt: partial.createdAt,
   ...partial,
 })
@@ -82,14 +89,39 @@ describe('mock catalog calendar', () => {
   const yearOf = (iso: string) => iso.slice(0, 4)
 
   it('keeps series, episodes, and users in 2026', () => {
-    expect(SHARED_DATA_SCHEMA_VERSION).toBe(7)
+    expect(SHARED_DATA_SCHEMA_VERSION).toBe(13)
 
     for (const webtoon of mockWebtoons) {
       expect(yearOf(webtoon.createdAt)).toBe('2026')
       expect(yearOf(webtoon.updatedAt)).toBe('2026')
       expect(webtoon.createdAt <= webtoon.updatedAt).toBe(true)
-      expect(webtoon.updatedAt <= '2026-08-17').toBe(true)
+      expect(webtoon.updatedAt <= '2026-08-19').toBe(true)
+      expect(['all', '13', '16', '18']).toContain(webtoon.contentRating)
     }
+
+    expect(mockWebtoons.map((webtoon) => webtoon.contentRating)).toEqual([
+      '13',
+      '13',
+      '16',
+      'all',
+      '13',
+      'all',
+      '18',
+      '16',
+      '13',
+    ])
+
+    expect(mockWebtoons.every((webtoon) => webtoon.uploadDay === undefined)).toBe(true)
+
+    expect(newReleaseWebtoons(mockWebtoons).map((webtoon) => webtoon.id)).toEqual([
+      '9',
+      '6',
+      '4',
+      '8',
+      '7',
+      '2',
+    ])
+    expect(updatedWebtoons(mockWebtoons).map((webtoon) => webtoon.id)).toEqual(['3', '1', '5'])
 
     for (const episode of mockEpisodes) {
       const series = mockWebtoons.find((webtoon) => webtoon.id === episode.webtoonId)
@@ -97,7 +129,33 @@ describe('mock catalog calendar', () => {
       expect(yearOf(episode.createdAt)).toBe('2026')
       expect(episode.createdAt >= series!.createdAt).toBe(true)
       expect(episode.createdAt <= series!.updatedAt).toBe(true)
+      if (episode.status === 'scheduled') {
+        expect(episode.scheduledAt).toBeTruthy()
+        expect(episode.scheduledAt!.startsWith('2026-')).toBe(true)
+        expect(episode.scheduledAt).not.toMatch(/T23:59/)
+        continue
+      }
+      if (!episode.isPremium) {
+        expect(episode.freeAt).toBeUndefined()
+      }
+      if (episode.freeAt) {
+        expect(episode.isPremium).toBe(true)
+        expect(episode.freeAt.startsWith('2026-')).toBe(true)
+        expect(episode.freeAt >= episode.createdAt).toBe(true)
+        expect(episode.freeAt).not.toMatch(/T23:59/)
+      }
     }
+
+    const publishedPremium = mockEpisodes.filter(
+      (episode) => episode.isPremium && episode.status === 'published'
+    )
+    const waiting = publishedPremium.filter((episode) => episode.freeAt)
+    const coinsOnly = publishedPremium.filter((episode) => !episode.freeAt)
+    expect(coinsOnly.length).toBeGreaterThan(0)
+    expect(waiting.length).toBeGreaterThan(0)
+    const demoNow = Date.parse('2026-08-19T12:00:00.000Z')
+    expect(waiting.some((episode) => Date.parse(episode.freeAt!) <= demoNow)).toBe(true)
+    expect(waiting.some((episode) => Date.parse(episode.freeAt!) > demoNow)).toBe(true)
 
     for (const user of mockUsers) {
       expect(yearOf(user.createdAt)).toBe('2026')

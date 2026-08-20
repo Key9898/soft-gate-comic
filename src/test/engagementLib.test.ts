@@ -11,6 +11,10 @@ import {
   removeLikes,
   toggleLike,
   readStore,
+  getRating,
+  setRating,
+  clearRating,
+  listRatings,
 } from '../lib/engagement'
 
 describe('engagement storage', () => {
@@ -149,5 +153,39 @@ describe('engagement storage', () => {
   it('ignores corrupt engagement payloads', () => {
     window.localStorage.setItem(STORAGE_KEY, '{bad')
     expect(readStore().byUserId).toEqual({})
+  })
+
+  it('loads schema v2 records and defaults ratings to empty', () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 2,
+        byUserId: {
+          u1: {
+            history: [],
+            likedWebtoonIds: ['a'],
+          },
+        },
+      })
+    )
+    expect(listLikedWebtoonIds('u1')).toEqual(['a'])
+    expect(listRatings('u1')).toEqual({})
+    expect(readStore().schemaVersion).toBe(ENGAGEMENT_SCHEMA_VERSION)
+  })
+
+  it('sets half-star ratings, rejects off-grid values, and clears', () => {
+    expect(setRating('u1', 'wt-1', 3.2)).toEqual({})
+    expect(getRating('u1', 'wt-1')).toBeNull()
+    expect(setRating('u1', 'wt-1', 4.5)).toEqual({ 'wt-1': 4.5 })
+    expect(getRating('u1', 'wt-1')).toBe(4.5)
+    expect(clearRating('u1', 'wt-1')).toEqual({})
+    expect(getRating('u1', 'wt-1')).toBeNull()
+  })
+
+  it('preserves ratings when likes change', () => {
+    setRating('u1', 'wt-1', 4.5)
+    toggleLike('u1', 'a')
+    expect(getRating('u1', 'wt-1')).toBe(4.5)
+    expect(listLikedWebtoonIds('u1')).toEqual(['a'])
   })
 })

@@ -3,6 +3,8 @@ import {
   SESSION_STORAGE_KEY,
   deleteAccountByEmail,
   getAccountByEmail,
+  getAccountByUsername,
+  MIN_PASSWORD_LENGTH,
   readSession,
   toPublicUser,
   upsertAccount,
@@ -11,6 +13,7 @@ import {
   type AuthUser,
 } from '../lib/auth'
 import { migrateUserData, deleteUserData } from '../lib/account'
+import { promoteSessionAgeConfirm } from '../lib/contentRating'
 import { useStorageSync } from '../hooks/useStorageSync'
 
 export type { AuthUser }
@@ -68,11 +71,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = useCallback(async (email: string, password: string) => {
     await new Promise((resolve) => setTimeout(resolve, 300))
-    const account = getAccountByEmail(email)
+    const account = getAccountByEmail(email.trim().toLowerCase())
     if (!account || account.password !== password) {
       throw new Error('INVALID_CREDENTIALS')
     }
     const publicUser = toPublicUser(account)
+    promoteSessionAgeConfirm(publicUser.id)
     setUser(publicUser)
     writeSession(publicUser)
   }, [])
@@ -80,13 +84,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = useCallback(async (data: RegisterData) => {
     await new Promise((resolve) => setTimeout(resolve, 300))
     const email = data.email.trim().toLowerCase()
+    const username = data.username.trim()
     if (getAccountByEmail(email)) {
       throw new Error('EMAIL_TAKEN')
+    }
+    if (getAccountByUsername(username)) {
+      throw new Error('USERNAME_TAKEN')
+    }
+    if (data.password.length < MIN_PASSWORD_LENGTH) {
+      throw new Error('PASSWORD_TOO_SHORT')
     }
     const account = {
       id: userIdFromEmail(email),
       email,
-      username: data.username.trim(),
+      username,
       displayName: data.displayName.trim(),
       password: data.password,
       bio: '',
@@ -94,6 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     upsertAccount(account)
     const publicUser = toPublicUser(account)
+    promoteSessionAgeConfirm(publicUser.id)
     setUser(publicUser)
     writeSession(publicUser)
   }, [])
@@ -136,6 +148,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const account = getAccountByEmail(user.email)
       if (!account || account.password !== currentPassword) {
         throw new Error('INVALID_CREDENTIALS')
+      }
+      if (newPassword.length < MIN_PASSWORD_LENGTH) {
+        throw new Error('PASSWORD_TOO_SHORT')
       }
       upsertAccount({ ...account, password: newPassword })
     },

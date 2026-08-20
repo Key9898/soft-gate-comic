@@ -26,6 +26,10 @@ export interface User {
   lastLoginAt?: string
 }
 
+export type ContentRating = 'all' | '13' | '16' | '18'
+
+export type UploadDay = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
 export interface Webtoon {
   id: string
   title: BilingualText
@@ -41,8 +45,13 @@ export interface Webtoon {
   likeCount: number
   episodeCount: number
   rating: number
+  contentRating: ContentRating
   createdAt: string
   updatedAt: string
+  uploadDay?: UploadDay
+  spotlight?: boolean
+  spotlightOrder?: number
+  weeklyViewCount?: number
 }
 
 export interface Episode {
@@ -60,6 +69,8 @@ export interface Episode {
   status: 'published' | 'draft' | 'scheduled'
   createdAt: string
   updatedAt: string
+  freeAt?: string
+  scheduledAt?: string
 }
 
 export interface Author {

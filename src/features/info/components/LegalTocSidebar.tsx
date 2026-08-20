@@ -50,7 +50,7 @@ const LegalTocSidebar = ({ sections }: LegalTocSidebarProps) => {
       </div>
       <nav
         aria-label={t('legal.toc')}
-        className={`${mobileOpen ? 'mt-4 block' : 'hidden'} max-h-[50vh] space-y-1 overflow-y-auto pr-1 lg:mt-4 lg:block`}
+        className={`${mobileOpen ? 'mt-4 block' : 'hidden'} scrollbar-thin-primary max-h-[50vh] space-y-1 overflow-y-auto overscroll-y-contain pr-1 lg:mt-4 lg:block`}
       >
         {sections.map((sec) => (
           <a

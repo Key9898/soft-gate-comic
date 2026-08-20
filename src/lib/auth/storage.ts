@@ -90,6 +90,16 @@ export function getAccountByEmail(email: string): AuthAccount | null {
   return readAccounts().byEmail[email.trim().toLowerCase()] ?? null
 }
 
+export function getAccountByUsername(username: string): AuthAccount | null {
+  const needle = username.trim().toLowerCase()
+  if (!needle) return null
+  return (
+    Object.values(readAccounts().byEmail).find(
+      (account) => account.username.trim().toLowerCase() === needle
+    ) ?? null
+  )
+}
+
 export function deleteAccountByEmail(email: string): void {
   const store = readAccounts()
   delete store.byEmail[email.trim().toLowerCase()]

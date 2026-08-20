@@ -12,8 +12,8 @@ const Footer = () => {
     ],
     support: [
       { name: t('footer.help'), path: '/help' },
-      { name: t('footer.contact'), path: '/contact' },
       { name: t('footer.faq'), path: '/faq' },
+      { name: t('footer.contact'), path: '/contact' },
     ],
     legal: [
       { name: t('footer.privacy'), path: '/privacy' },

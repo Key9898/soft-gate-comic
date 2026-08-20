@@ -5,8 +5,15 @@ function newCommentId(): string {
   return `c-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
+export const SERIES_COMMENT_SUFFIX = 'series'
+
 export function episodeCommentKey(webtoonId: string, episodeNumber: number): string {
   return `${webtoonId}:${episodeNumber}`
+}
+
+export function seriesCommentKey(webtoonId: string): string {
+  if (!webtoonId) return ''
+  return `${webtoonId}:${SERIES_COMMENT_SUFFIX}`
 }
 
 export function listComments(episodeKey: string): StoredComment[] {

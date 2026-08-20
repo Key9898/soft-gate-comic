@@ -6,6 +6,8 @@ import {
   readStore,
   removeBookmark,
   removeBookmarks,
+  setLastNotifiedEpisodeNumber,
+  setNotifyMuted,
   toggleBookmark,
   writeStore,
 } from '../lib/library'
@@ -87,5 +89,30 @@ describe('library bookmarks storage', () => {
       },
     })
     expect(listBookmarks('1')).toEqual([{ webtoonId: 'ok', addedAt: '2026-08-11T00:00:00.000Z' }])
+  })
+
+  it('keeps schema 1 records and optional mute fields', () => {
+    writeStore({
+      schemaVersion: 1,
+      byUserId: {
+        '1': [{ webtoonId: 'ok', addedAt: '2026-08-11T00:00:00.000Z' }],
+      },
+    })
+    expect(listBookmarks('1')[0]).toEqual({
+      webtoonId: 'ok',
+      addedAt: '2026-08-11T00:00:00.000Z',
+    })
+
+    toggleBookmark('1', 'wt-2', { lastNotifiedEpisodeNumber: 3 })
+    expect(listBookmarks('1').find((b) => b.webtoonId === 'wt-2')).toMatchObject({
+      webtoonId: 'wt-2',
+      lastNotifiedEpisodeNumber: 3,
+    })
+    setNotifyMuted('1', 'wt-2', true)
+    expect(listBookmarks('1').find((b) => b.webtoonId === 'wt-2')?.notifyMuted).toBe(true)
+    setLastNotifiedEpisodeNumber('1', 'wt-2', 4)
+    expect(listBookmarks('1').find((b) => b.webtoonId === 'wt-2')?.lastNotifiedEpisodeNumber).toBe(
+      4
+    )
   })
 })

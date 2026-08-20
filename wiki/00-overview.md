@@ -45,7 +45,7 @@ npm run check        # lint + format:check + test:run + build  ← pre-push runs
 
 ## Documentation (Impl & QA)
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–98** (next: **99**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–154** (next: **155**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — historical Airtable rows (legacy-era)
 - [conventions/brand-color-tokens.md](conventions/brand-color-tokens.md)
@@ -53,4 +53,5 @@ npm run check        # lint + format:check + test:run + build  ← pre-push runs
 - [conventions/border-radius.md](conventions/border-radius.md)
 - [conventions/typography.md](conventions/typography.md)
 - [conventions/info-page-chrome.md](conventions/info-page-chrome.md)
+- [conventions/prelaunch-quality-bar.md](conventions/prelaunch-quality-bar.md) — international standard + beat peers (Impl 105)
 - Agent contract: [`AGENTS.md`](../AGENTS.md)

@@ -31,6 +31,8 @@ function installStorage() {
 }
 
 function renderLoginAtFrom(fromPath: string) {
+  const destinationPath =
+    fromPath.startsWith('/') && !fromPath.startsWith('//') ? fromPath : '/returned'
   return render(
     <HelmetProvider>
       <DataProvider>
@@ -46,7 +48,7 @@ function renderLoginAtFrom(fromPath: string) {
             <LibraryProvider>
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path={fromPath} element={<div>Returned to detail</div>} />
+                <Route path={destinationPath} element={<div>Returned to detail</div>} />
                 <Route path="/" element={<div>Home fallback</div>} />
               </Routes>
             </LibraryProvider>
@@ -82,6 +84,38 @@ describe('LoginPage return from', () => {
     await waitFor(
       () => {
         expect(screen.getByText('Returned to detail')).toBeInTheDocument()
+      },
+      { timeout: 4000 }
+    )
+  })
+
+  it('returns to a Start here reader path after login', async () => {
+    const user = userEvent.setup()
+    renderLoginAtFrom('/read/wt-1/1')
+
+    await user.type(screen.getByLabelText(/^email$/i), 'reader@softgate.test')
+    await user.type(screen.getByLabelText(/^password$/i), 'secret12')
+    await user.click(screen.getByRole('button', { name: /sign in/i }))
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Returned to detail')).toBeInTheDocument()
+      },
+      { timeout: 4000 }
+    )
+  })
+
+  it('rejects open redirects and lands on home', async () => {
+    const user = userEvent.setup()
+    renderLoginAtFrom('//evil.example')
+
+    await user.type(screen.getByLabelText(/^email$/i), 'reader@softgate.test')
+    await user.type(screen.getByLabelText(/^password$/i), 'secret12')
+    await user.click(screen.getByRole('button', { name: /sign in/i }))
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Home fallback')).toBeInTheDocument()
       },
       { timeout: 4000 }
     )

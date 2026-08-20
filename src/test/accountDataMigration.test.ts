@@ -4,6 +4,15 @@ import { createElement, type ReactNode } from 'react'
 import { AuthProvider, useAuth } from '../context/AuthContext'
 import { migrateUserData, deleteUserData } from '../lib/account'
 import {
+  ensureNotifications,
+  addNotification,
+  markAsRead,
+  readStore as readNotificationsStore,
+  getNotifPrefs,
+  setNotifPrefs,
+  readPrefsStore,
+} from '../lib/notifications'
+import {
   listHistory,
   listLikedWebtoonIds,
   recordHistory,
@@ -18,11 +27,8 @@ import {
   getWallet,
 } from '../lib/wallet'
 import { listBookmarks, toggleBookmark, readStore as readLibraryStore } from '../lib/library'
-import {
-  ensureNotifications,
-  markAsRead,
-  readStore as readNotificationsStore,
-} from '../lib/notifications'
+import { listFollows, toggleFollow, readStore as readFollowsStore } from '../lib/follows'
+import { confirmAge, readAgeConfirmStore } from '../lib/contentRating'
 import {
   addComment,
   addReply,
@@ -65,8 +71,17 @@ describe('account data migration', () => {
     demoTopUp(OLD_ID, 50, 'seed top-up')
     unlockEpisode(OLD_ID, '1', 4, 5, 'unlock ep 4')
     toggleBookmark(OLD_ID, 'wt-3')
-    ensureNotifications(OLD_ID)
+    toggleFollow(OLD_ID, 'a-1')
+    addNotification(OLD_ID, {
+      id: 'n1',
+      type: 'system',
+      titleKey: 'notificationsPage.system',
+      message: 'Demo notice',
+      isRead: false,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    })
     markAsRead(OLD_ID, 'n1')
+    setNotifPrefs(OLD_ID, { promotion: false })
 
     migrateUserData(OLD_ID, NEW_ID)
 
@@ -76,12 +91,25 @@ describe('account data migration', () => {
     expect(wallet?.balance).toBe(DEFAULT_SEED_BALANCE + 50 - 5)
     expect(wallet?.unlockedEpisodeKeys).toContain('1:4')
     expect(listBookmarks(NEW_ID).map((b) => b.webtoonId)).toEqual(['wt-3'])
+    expect(listFollows(NEW_ID).map((row) => row.authorId)).toEqual(['a-1'])
     expect(readNotificationsStore().byUserId[NEW_ID]?.find((n) => n.id === 'n1')?.isRead).toBe(true)
+    expect(getNotifPrefs(NEW_ID).promotion).toBe(false)
+    expect(readPrefsStore().byUserId[OLD_ID]).toBeUndefined()
 
     expect(readEngagementStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readWalletStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readLibraryStore().byUserId[OLD_ID]).toBeUndefined()
+    expect(readFollowsStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readNotificationsStore().byUserId[OLD_ID]).toBeUndefined()
+  })
+
+  it('moves 18+ age confirm with the user id', () => {
+    confirmAge(OLD_ID)
+    migrateUserData(OLD_ID, NEW_ID)
+    expect(readAgeConfirmStore().byUserId[NEW_ID]?.confirmedAt).toBeTruthy()
+    expect(readAgeConfirmStore().byUserId[OLD_ID]).toBeUndefined()
+    deleteUserData(NEW_ID)
+    expect(readAgeConfirmStore().byUserId[NEW_ID]).toBeUndefined()
   })
 
   it('rewrites comment authorship and liker ids without changing counts', () => {
@@ -123,7 +151,9 @@ describe('account data migration', () => {
     recordHistory(OLD_ID, 'wt-1', 2)
     demoTopUp(OLD_ID, 50, 'seed')
     toggleBookmark(OLD_ID, 'wt-3')
+    toggleFollow(OLD_ID, 'a-1')
     ensureNotifications(OLD_ID)
+    setNotifPrefs(OLD_ID, { commentReply: false })
 
     const key = episodeCommentKey('1', 6)
     addComment(key, userA, 'Own comment')
@@ -138,7 +168,9 @@ describe('account data migration', () => {
     expect(readEngagementStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readWalletStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readLibraryStore().byUserId[OLD_ID]).toBeUndefined()
+    expect(readFollowsStore().byUserId[OLD_ID]).toBeUndefined()
     expect(readNotificationsStore().byUserId[OLD_ID]).toBeUndefined()
+    expect(readPrefsStore().byUserId[OLD_ID]).toBeUndefined()
 
     const after = listComments(key)
     expect(after.find((c) => c.content === 'Own comment')).toBeUndefined()

@@ -1,8 +1,9 @@
+import { isValidRating } from '../rating'
 import { readStore, writeStore } from './storage'
 import type { HistoryRecord, UserEngagement } from './types'
 
 function emptyEngagement(): UserEngagement {
-  return { history: [], likedWebtoonIds: [] }
+  return { history: [], likedWebtoonIds: [], ratings: {} }
 }
 
 function getOrCreate(userId: string): UserEngagement {
@@ -13,6 +14,7 @@ function getOrCreate(userId: string): UserEngagement {
     return {
       history: [...existing.history],
       likedWebtoonIds: [...existing.likedWebtoonIds],
+      ratings: { ...existing.ratings },
     }
   }
   const created = emptyEngagement()
@@ -137,4 +139,40 @@ export function removeLikes(userId: string, webtoonIds: string[]): string[] {
   store.byUserId[userId] = { ...current, likedWebtoonIds }
   writeStore(store)
   return [...likedWebtoonIds]
+}
+
+export function listRatings(userId: string): Record<string, number> {
+  return { ...getOrCreate(userId).ratings }
+}
+
+export function getRating(userId: string, webtoonId: string): number | null {
+  if (!userId || !webtoonId) return null
+  const value = getOrCreate(userId).ratings[webtoonId]
+  return isValidRating(value) ? value : null
+}
+
+export function setRating(
+  userId: string,
+  webtoonId: string,
+  value: number
+): Record<string, number> {
+  if (!userId || !webtoonId || !isValidRating(value)) return listRatings(userId)
+  const store = readStore()
+  const current = getOrCreate(userId)
+  const ratings = { ...current.ratings, [webtoonId]: value }
+  store.byUserId[userId] = { ...current, ratings }
+  writeStore(store)
+  return { ...ratings }
+}
+
+export function clearRating(userId: string, webtoonId: string): Record<string, number> {
+  if (!userId || !webtoonId) return listRatings(userId)
+  const store = readStore()
+  const current = getOrCreate(userId)
+  if (!(webtoonId in current.ratings)) return { ...current.ratings }
+  const ratings = { ...current.ratings }
+  delete ratings[webtoonId]
+  store.byUserId[userId] = { ...current, ratings }
+  writeStore(store)
+  return { ...ratings }
 }

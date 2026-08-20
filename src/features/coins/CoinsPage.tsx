@@ -13,10 +13,12 @@ import {
   AlertCircle,
   CreditCard,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import SEO from '../../components/SEO/SEO'
 import { useWallet } from '../../context/WalletContext'
+import { useData } from '../../context/DataContext'
 import useScrollLock from '../../hooks/useScrollLock'
 import useFocusTrap from '../../hooks/useFocusTrap'
 import { coinPackages, type CoinPackage } from './components/coinData'
@@ -29,7 +31,8 @@ const CoinsPage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
   const prefersReducedMotion = useReducedMotion()
-  const { balance, transactions, demoTopUp } = useWallet()
+  const { balance, transactions, demoTopUp, unlockedEpisodeKeys } = useWallet()
+  const { webtoons } = useData()
 
   const [selectedPackage, setSelectedPackage] = useState<CoinPackage | null>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
@@ -184,6 +187,22 @@ const CoinsPage = () => {
     }))
   }, [])
 
+  const unlockedEpisodes = useMemo(() => {
+    const byId = new Map(webtoons.map((webtoon) => [webtoon.id, webtoon]))
+    return unlockedEpisodeKeys
+      .map((key) => {
+        const sep = key.lastIndexOf(':')
+        if (sep <= 0) return null
+        const webtoonId = key.slice(0, sep)
+        const episodeNumber = Number(key.slice(sep + 1))
+        if (!Number.isFinite(episodeNumber)) return null
+        const webtoon = byId.get(webtoonId)
+        if (!webtoon) return null
+        return { key, webtoonId, episodeNumber, title: webtoon.title }
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+  }, [unlockedEpisodeKeys, webtoons])
+
   return (
     <div className="min-h-screen bg-gray-50 pb-12 transition-colors duration-300">
       <SEO title={t('coinsPage.title')} noindex />
@@ -335,14 +354,51 @@ const CoinsPage = () => {
               <div className="flex flex-col gap-3 rounded-2xl bg-black/20 p-4 backdrop-blur-md">
                 <div className="text-primary-100 flex items-center gap-2.5 text-sm font-semibold">
                   <Shield className="h-4.5 w-4.5 text-emerald-400" />
-                  {t('coinsPage.securePayments')}
+                  {t('coinsPage.headerDemo')}
                 </div>
                 <div className="text-primary-100 flex items-center gap-2.5 text-sm font-semibold">
                   <Clock className="h-4.5 w-4.5 text-sky-400" aria-hidden="true" />
-                  {t('coinsPage.instantDelivery')}
+                  {t('coinsPage.headerLocalCredit')}
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="mb-6 grid gap-4 sm:grid-cols-2">
+            <section className="rounded-3xl border bg-white p-5 shadow-sm">
+              <h2 className="text-base font-bold text-gray-900">{t('coinsPage.howItWorks')}</h2>
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm font-medium text-gray-600">
+                <li>{t('coinsPage.howSeed')}</li>
+                <li>{t('coinsPage.howTopUp')}</li>
+                <li>{t('coinsPage.howUnlock')}</li>
+              </ul>
+            </section>
+            <section className="rounded-3xl border bg-white p-5 shadow-sm">
+              <h2 className="text-base font-bold text-gray-900">
+                {t('coinsPage.unlockedEpisodes')}
+              </h2>
+              {unlockedEpisodes.length === 0 ? (
+                <p className="mt-3 text-sm font-medium text-gray-500">
+                  {t('coinsPage.unlockedEmpty')}
+                </p>
+              ) : (
+                <ul className="mt-3 space-y-2">
+                  {unlockedEpisodes.map((item) => (
+                    <li key={item.key}>
+                      <Link
+                        to={`/webtoon/${item.webtoonId}`}
+                        className="focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-2 text-sm font-bold text-gray-800 hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                      >
+                        <span className="truncate">{item.title[lang]}</span>
+                        <span className="shrink-0 text-xs font-semibold text-gray-500">
+                          {t('coinsPage.unlockedEpisode', { n: item.episodeNumber })}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
           </div>
 
           {/* ═══════ TABS ═══════ */}

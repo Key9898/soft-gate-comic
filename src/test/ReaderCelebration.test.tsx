@@ -48,6 +48,11 @@ describe('Reader celebration honesty', () => {
     expect(screen.queryByText(/: 3 mins/)).not.toBeInTheDocument()
   })
 
+  it('exposes series rating in the chapter complete portal', () => {
+    renderReader('/read/1/1')
+    expect(screen.getByRole('radiogroup', { name: 'Rate this series' })).toBeInTheDocument()
+  })
+
   it('localizes the end-of-series message in both locales', () => {
     expect(i18n.getFixedT('en')('readerPage.endOfSeries')).not.toBe('readerPage.endOfSeries')
     expect(i18n.getFixedT('mm')('readerPage.endOfSeries')).not.toBe('readerPage.endOfSeries')

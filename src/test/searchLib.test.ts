@@ -9,6 +9,7 @@ import {
   getRecentSearches,
   addRecentSearch,
   clearRecentSearches,
+  DEMO_SEARCH_CHIPS,
 } from '../lib/search'
 
 const webtoons = [
@@ -32,6 +33,7 @@ const webtoons = [
     likeCount: 10,
     episodeCount: 12,
     rating: 4.5,
+    contentRating: '13',
     createdAt: '2026-01-01',
     updatedAt: '2026-02-01',
   },
@@ -55,6 +57,7 @@ const webtoons = [
     likeCount: 20,
     episodeCount: 5,
     rating: 4.8,
+    contentRating: 'all',
     createdAt: '2026-01-02',
     updatedAt: '2026-03-01',
   },
@@ -127,6 +130,12 @@ describe('getSearchSuggestions', () => {
     const hits = getSearchSuggestions({ q: 'cloud', webtoons, authors, genres, limit: 5 })
     expect(hits.some((s) => s.kind === 'webtoon')).toBe(true)
   })
+
+  it('suggests author profile hrefs', () => {
+    const hits = getSearchSuggestions({ q: 'Writer', webtoons, authors, genres, limit: 5 })
+    const authorHit = hits.find((s) => s.kind === 'author')
+    expect(authorHit?.href).toBe('/author/a1')
+  })
 })
 
 describe('recentSearches', () => {
@@ -157,5 +166,20 @@ describe('recentSearches', () => {
     addRecentSearch('cloud')
     addRecentSearch('Love')
     expect(getRecentSearches()).toEqual(['Love', 'cloud'])
+  })
+})
+
+describe('DEMO_SEARCH_CHIPS', () => {
+  it('is a fixed Demo list, not live ranking', () => {
+    expect(DEMO_SEARCH_CHIPS).toHaveLength(6)
+    expect(DEMO_SEARCH_CHIPS.map((chip) => chip.en)).toEqual([
+      'Horizon',
+      'Seoul',
+      'Shadow Knight',
+      'Blood Moon',
+      'Cyber Dreams',
+      'Ko Zaw',
+    ])
+    expect(new Set(DEMO_SEARCH_CHIPS.map((chip) => chip.en)).size).toBe(6)
   })
 })

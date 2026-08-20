@@ -46,7 +46,7 @@ export function getSearchSuggestions(options: {
         id: `a-${a.id}`,
         kind: 'author',
         label: a.name[lang],
-        href: `/search?q=${encodeURIComponent(a.name[lang])}&tab=authors`,
+        href: `/author/${a.id}`,
       })
     }
   }

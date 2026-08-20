@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { LibraryProvider } from './context/LibraryContext'
+import { FollowsProvider } from './context/FollowsContext'
 import { WalletProvider } from './context/WalletContext'
 import { EngagementProvider } from './context/EngagementContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -14,6 +15,7 @@ import HomePage from './features/home/HomePage'
 import CategoriesPage from './features/categories/CategoriesPage'
 import SearchPage from './features/search/SearchPage'
 import WebtoonDetailPage from './features/webtoon/WebtoonDetailPage'
+import AuthorPage from './features/author/AuthorPage'
 import ReaderPage from './features/reader/ReaderPage'
 
 import LoginPage from './features/auth/LoginPage'
@@ -50,77 +52,81 @@ function App() {
       >
         <AuthProvider>
           <LibraryProvider>
-            <WalletProvider>
-              <EngagementProvider>
-                <Routes>
-                  <Route element={<MainLayout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/categories" element={<CategoriesPage />} />
-                    <Route path="/categories/:slug" element={<CategoriesPage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/webtoon/:id" element={<WebtoonDetailPage />} />
+            <FollowsProvider>
+              <WalletProvider>
+                <EngagementProvider>
+                  <Routes>
+                    <Route element={<MainLayout />}>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/ranking" element={<CategoriesPage />} />
+                      <Route path="/categories" element={<CategoriesPage />} />
+                      <Route path="/categories/:slug" element={<CategoriesPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/webtoon/:id" element={<WebtoonDetailPage />} />
+                      <Route path="/author/:id" element={<AuthorPage />} />
 
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <ProfilePage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/library"
-                      element={
-                        <ProtectedRoute>
-                          <LibraryPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/notifications"
-                      element={
-                        <ProtectedRoute>
-                          <NotificationsPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/coins"
-                      element={
-                        <ProtectedRoute>
-                          <CoinsPage />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <ProfilePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/library"
+                        element={
+                          <ProtectedRoute>
+                            <LibraryPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/notifications"
+                        element={
+                          <ProtectedRoute>
+                            <NotificationsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/coins"
+                        element={
+                          <ProtectedRoute>
+                            <CoinsPage />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/creators" element={<CreatorsPage />} />
-                    <Route path="/press" element={<PressPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/creators" element={<CreatorsPage />} />
+                      <Route path="/press" element={<PressPage />} />
 
-                    <Route path="/help" element={<HelpPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/faq" element={<FAQPage />} />
+                      <Route path="/help" element={<HelpPage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/faq" element={<FAQPage />} />
 
-                    <Route path="/privacy" element={<PrivacyPage />} />
-                    <Route path="/terms" element={<TermsPage />} />
-                    <Route path="/cookies" element={<CookiesPage />} />
+                      <Route path="/privacy" element={<PrivacyPage />} />
+                      <Route path="/terms" element={<TermsPage />} />
+                      <Route path="/cookies" element={<CookiesPage />} />
 
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Route>
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Route>
 
-                  <Route element={<ReaderLayout />}>
-                    <Route path="/read/:webtoonId/:episodeNumber" element={<ReaderPage />} />
-                  </Route>
+                    <Route element={<ReaderLayout />}>
+                      <Route path="/read/:webtoonId/:episodeNumber" element={<ReaderPage />} />
+                    </Route>
 
-                  <Route element={<AuthLayout />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                    <Route path="/reset-password/:token?" element={<ResetPasswordPage />} />
-                  </Route>
-                </Routes>
-              </EngagementProvider>
-            </WalletProvider>
+                    <Route element={<AuthLayout />}>
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                      <Route path="/reset-password/:token?" element={<ResetPasswordPage />} />
+                    </Route>
+                  </Routes>
+                </EngagementProvider>
+              </WalletProvider>
+            </FollowsProvider>
           </LibraryProvider>
         </AuthProvider>
       </BrowserRouter>

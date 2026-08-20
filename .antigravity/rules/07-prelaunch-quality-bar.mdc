@@ -1,0 +1,29 @@
+---
+description: Prelaunch quality bar — international standard, beat current webtoon sites, complete IA. Always attached.
+globs: []
+alwaysApply: true
+---
+
+# Prelaunch quality bar (always on)
+
+SoftGate Comic is **founded and not public yet**. Every page and flow we ship is still being finished so the client can take it and fill real data.
+
+## Bar (non-negotiable)
+
+- Meet **international webtoon-site standard** for that page type.
+- **Beat** current webtoon sites on **layout**, **information completeness**, and **UI/UX**.
+- Ship **perfect** for hand-off — the client continues (swap copy, photos, rates, SLA), they do not invent the page.
+
+## Not blockers
+
+Do **not** use these as reasons to omit sections, ship a thin page, or say we cannot surpass peers:
+
+- Client data is incomplete (names, photos, rates, SLA, pixel specs).
+- The site is not public yet.
+- WEBTOON / Tapas / Lezhin already have live upload, ads, or payouts.
+
+## Honesty (still required)
+
+Complete IA with honest **Demo** / client-swap slots (About team photos, fact chips). Do **not** fake working publisher upload, live payouts, or fabricated MAU/scale.
+
+Canonical: [`wiki/conventions/prelaunch-quality-bar.md`](../../wiki/conventions/prelaunch-quality-bar.md)

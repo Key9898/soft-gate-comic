@@ -11,9 +11,10 @@ export interface HistoryRecord {
 export interface UserEngagement {
   history: HistoryRecord[]
   likedWebtoonIds: string[]
+  ratings: Record<string, number>
 }
 
-export const ENGAGEMENT_SCHEMA_VERSION = 2
+export const ENGAGEMENT_SCHEMA_VERSION = 3
 
 export interface EngagementStore {
   schemaVersion: number

@@ -10,6 +10,10 @@ export {
   isLiked,
   toggleLike,
   removeLikes,
+  listRatings,
+  getRating,
+  setRating,
+  clearRating,
 } from './engagement'
 export {
   blendedProgressPercent,

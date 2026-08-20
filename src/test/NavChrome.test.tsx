@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { Routes, Route } from 'react-router-dom'
 import { render, screen } from './utils'
 import i18n from '../lib/i18n'
 import { SESSION_STORAGE_KEY } from '../lib/auth/types'
 import Navigation from '../components/Navigation/Navigation'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import HomePage from '../features/home/HomePage'
+import MainLayout from '../layouts/MainLayout'
 
 const seedSession = () => {
   vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
@@ -52,6 +54,51 @@ describe('Navigation chrome (Impl 73)', () => {
     const searchButton = screen.getByRole('button', { name: /search/i })
     expect(searchButton.className).toContain('min-h-11')
     expect(searchButton.className).toContain('min-w-11')
+  })
+
+  it('marks Categories current on a genre path', () => {
+    window.history.pushState({}, '', '/categories/action')
+    render(<Navigation />)
+    const categories = screen.getAllByRole('link', { name: /^categories$/i })
+    expect(categories.some((link) => link.getAttribute('aria-current') === 'page')).toBe(true)
+    expect(
+      screen
+        .getAllByRole('link', { name: /^popular$/i })
+        .every((link) => !link.getAttribute('aria-current'))
+    ).toBe(true)
+  })
+
+  it('marks Popular current on /ranking', () => {
+    window.history.pushState({}, '', '/ranking')
+    render(<Navigation />)
+    expect(
+      screen
+        .getAllByRole('link', { name: /^popular$/i })
+        .some((link) => link.getAttribute('aria-current') === 'page')
+    ).toBe(true)
+    expect(
+      screen
+        .getAllByRole('link', { name: /^categories$/i })
+        .every((link) => link.getAttribute('aria-current') !== 'page')
+    ).toBe(true)
+  })
+})
+
+describe('MainLayout skip link (Impl 100)', () => {
+  it('places a skip-to-content link before nav targeting main', () => {
+    const { container } = render(
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="*" element={<div>outlet</div>} />
+        </Route>
+      </Routes>
+    )
+    const skip = screen.getByRole('link', { name: /skip to content/i })
+    expect(skip).toHaveAttribute('href', '#main-content')
+    expect(skip).toHaveClass('skip-link')
+    const main = container.querySelector('#main-content')
+    expect(main).toHaveAttribute('tabindex', '-1')
+    expect(container.querySelector('a')).toBe(skip)
   })
 })
 

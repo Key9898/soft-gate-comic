@@ -1,7 +1,10 @@
 import { readStore as readEngagement, writeStore as writeEngagement } from '../engagement'
 import { readStore as readWallet, writeStore as writeWallet } from '../wallet'
 import { readStore as readLibrary, writeStore as writeLibrary } from '../library'
+import { readStore as readFollows, writeStore as writeFollows } from '../follows'
 import { readStore as readNotifications, writeStore as writeNotifications } from '../notifications'
+import { readPrefsStore, writePrefsStore } from '../notifications/prefs'
+import { readAgeConfirmStore, writeAgeConfirmStore } from '../contentRating'
 import { readStore as readComments, writeStore as writeComments } from '../comments'
 import type { StoredComment } from '../comments'
 
@@ -51,7 +54,10 @@ export function migrateUserData(oldUserId: string, newUserId: string): void {
   moveUserEntry(readEngagement, writeEngagement, oldUserId, newUserId)
   moveUserEntry(readWallet, writeWallet, oldUserId, newUserId)
   moveUserEntry(readLibrary, writeLibrary, oldUserId, newUserId)
+  moveUserEntry(readFollows, writeFollows, oldUserId, newUserId)
   moveUserEntry(readNotifications, writeNotifications, oldUserId, newUserId)
+  moveUserEntry(readPrefsStore, writePrefsStore, oldUserId, newUserId)
+  moveUserEntry(readAgeConfirmStore, writeAgeConfirmStore, oldUserId, newUserId)
 
   const comments = readComments()
   let changed = false
@@ -78,7 +84,10 @@ export function deleteUserData(userId: string): void {
   deleteUserEntry(readEngagement, writeEngagement, userId)
   deleteUserEntry(readWallet, writeWallet, userId)
   deleteUserEntry(readLibrary, writeLibrary, userId)
+  deleteUserEntry(readFollows, writeFollows, userId)
   deleteUserEntry(readNotifications, writeNotifications, userId)
+  deleteUserEntry(readPrefsStore, writePrefsStore, userId)
+  deleteUserEntry(readAgeConfirmStore, writeAgeConfirmStore, userId)
 
   const comments = readComments()
   let changed = false

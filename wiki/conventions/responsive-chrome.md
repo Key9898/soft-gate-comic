@@ -15,7 +15,7 @@ are **measured**, not guessed — see the width budget below before changing any
 
 | Element                                      | Visible from |
 | -------------------------------------------- | ------------ |
-| Bar nav links (Categories/Trending/New)      | `md:` (768)  |
+| Bar nav links (Categories/Popular/New)       | `md:` (768)  |
 | Bell (members)                               | always       |
 | Library + Coins icons, profile chip + logout | `lg:` (1024) |
 | Desktop search box (`w-56`)                  | `xl:` (1280) |
@@ -104,6 +104,19 @@ string from widening the row. `break-words` remains fine for short display value
 Horizontal rails use `@utility scrollbar-hide` (defined in `src/index.css`). There is no
 `scrollbar-*` utility in Tailwind v4 — a typo like `scrollbar-none` silently does nothing, so assert
 the class in a test when adding a rail.
+
+## Skip link overlay (Impl 101)
+
+The MainLayout skip-to-content control stays **outside** the nav flex (first child of the layout). Do not insert it into the `h-16` row — that would shove the logo right on focus.
+
+On `:focus` it overlays the header: `position: fixed; left: 1rem; z-index: 50`, vertically centered on the `h-16` band below `safe-top`:
+
+```css
+top: calc(max(0px, env(safe-area-inset-top)) + 2rem);
+transform: translateY(-50%);
+```
+
+Do not use viewport `top: 1rem` (sits higher than the logo). Hidden-until-Tab clip, native `#main-content` href, and chip colors stay as shipped in Impl 100.
 
 ## QA widths
 

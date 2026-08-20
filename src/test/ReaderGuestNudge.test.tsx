@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
@@ -40,10 +40,16 @@ const seedSession = () => {
 }
 
 afterEach(() => {
+  vi.useRealTimers()
   vi.mocked(window.localStorage.getItem).mockImplementation(() => null)
 })
 
 describe('Reader guest nudges', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-19T12:00:00.000Z'))
+  })
+
   it('shows the sign-up nudge with register and login links to guests on a free episode', () => {
     renderReader('/read/1/1')
     expect(
@@ -71,5 +77,20 @@ describe('Reader guest nudges', () => {
     renderReader('/read/1/4')
     expect(screen.getByRole('button', { name: /unlock with coins/i })).toBeInTheDocument()
     expect(screen.getByText(/your balance/i)).toBeInTheDocument()
+  })
+
+  it('lets guests read a wait-for-free episode after freeAt without coins', () => {
+    renderReader('/read/2/3')
+    expect(screen.queryByRole('button', { name: /log in to unlock/i })).not.toBeInTheDocument()
+    expect(screen.queryByText(/premium episode/i)).not.toBeInTheDocument()
+    expect(screen.getByTestId('reader-strip-stack')).toBeInTheDocument()
+    expect(screen.queryByText(/23:59/)).not.toBeInTheDocument()
+  })
+
+  it('shows the Demo wait window and keeps coins unlock while freeAt is in the future', () => {
+    renderReader('/read/1/5')
+    expect(screen.getByRole('button', { name: /log in to unlock/i })).toBeInTheDocument()
+    expect(screen.getByText(/26 Aug 2026, 05:00 UTC/)).toBeInTheDocument()
+    expect(screen.getByText(/not a daily 23:59 reset/i)).toBeInTheDocument()
   })
 })
