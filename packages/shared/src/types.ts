@@ -61,6 +61,7 @@ export interface Episode {
   title: BilingualText
   description?: BilingualText
   images: string[]
+  imageSizes?: Array<{ width: number; height: number } | null>
   isPremium: boolean
   coinPrice: number
   viewCount: number
@@ -211,6 +212,15 @@ export interface StoryChapter {
   coverImage?: string
 }
 
+export interface CoinPackage {
+  id: string
+  coins: number
+  price: number
+  bonus?: number
+  popular?: boolean
+  bestValue?: boolean
+}
+
 export interface SharedData {
   dashboardStats: DashboardStats
   revenueData: RevenueData[]
@@ -227,4 +237,5 @@ export interface SharedData {
   reports: Report[]
   transactions: Transaction[]
   scheduledEpisodes: ScheduledEpisode[]
+  coinPackages?: CoinPackage[]
 }

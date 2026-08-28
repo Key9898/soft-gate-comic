@@ -1,0 +1,35 @@
+export const SPA_REWRITE_SOURCES = [
+  '/',
+  '/mm',
+  '/mm/:path*',
+  '/ranking',
+  '/categories',
+  '/categories/:slug',
+  '/search',
+  '/webtoon/:id',
+  '/author/:id',
+  '/read/:webtoonId/:episodeNumber',
+  '/profile',
+  '/library',
+  '/notifications',
+  '/coins',
+  '/about',
+  '/creators',
+  '/press',
+  '/help',
+  '/contact',
+  '/faq',
+  '/privacy',
+  '/terms',
+  '/cookies',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/reset-password/:token',
+  '/maintenance',
+] as const
+
+export const SSR_REWRITE_DESTINATION = '/api/ssr'
+
+export type SpaRewriteSource = (typeof SPA_REWRITE_SOURCES)[number]

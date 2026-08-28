@@ -28,7 +28,7 @@ Demo self-confirm is not NICE/IPin. Cookies and Terms Eligibility say so. Accoun
 
 ## Catalog
 
-`SHARED_DATA_SCHEMA_VERSION` **13**. Blood Moon (`id: 7`) is the 18+ Demo title.
+`SHARED_DATA_SCHEMA_VERSION` **14**. Blood Moon (`id: 7`) is the 18+ Demo title.
 
 ## Related
 

@@ -6,4 +6,6 @@ docs/sessions
 .antigravity
 .agent
 package-lock.json
+pnpm-lock.yaml
 storybook-static
+.turbo

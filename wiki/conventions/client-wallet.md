@@ -35,9 +35,13 @@ Browser-local coin balance and premium unlocks. No PSP settlement.
 - Keep Buy UI; label it Demo top-up.
 - Coins header uses Demo / this-browser copy — not “Secure payments” / “Instant delivery”. Processing copy credits the local Demo balance.
 - How coins work: seed 150, Demo top-up this device, unlock premium. Unlocked list from `unlockedEpisodeKeys` links `/webtoon/:id`; empty is honest.
-- Unlocks survive refresh only via this store.
+- Unlocks survive refresh only via this store (mock). HTTP mode uses the API stub ledger ([portal-wallet-http.md](portal-wallet-http.md)) and does not write this key.
 - No redeem-code field. No live PSP claim.
+
+## HTTP mode (`VITE_USE_MOCK_API=false`)
+
+Cookie API is source of truth. See [portal-wallet-http.md](portal-wallet-http.md).
 
 ## Wait-for-free (not this store)
 
-Per-episode `freeAt` ISO on some premium rows. Access helper: [`src/lib/catalog/waitForFree.ts`](../../src/lib/catalog/waitForFree.ts). After `now >= freeAt`, the episode is readable without debiting coins (guests included). Before that, coins unlock still works for signed-in readers. Do not write wait-free access into `unlockedEpisodeKeys`. Do not fake a daily 23:59 clock. Do not mix with Daily `scheduledAt`.
+Per-episode `freeAt` ISO on some premium rows. Access helper: `@softgate/shared` (`isEpisodeLocked` / `isWaitFreeNow`); portal display `formatWaitFreeAt` in [`apps/portal/src/lib/catalog/waitForFree.ts`](../../apps/portal/src/lib/catalog/waitForFree.ts). After `now >= freeAt`, the episode is readable without debiting coins (guests included). Before that, coins unlock still works for signed-in readers. Do not write wait-free access into `unlockedEpisodeKeys`. Do not fake a daily 23:59 clock. Do not mix with Daily `scheduledAt`. HTTP catalog strips locked premium `images` ([portal-wallet-http.md](portal-wallet-http.md)).

@@ -1,9 +1,24 @@
 {
   "name": "@softgate/shared",
+  "private": true,
   "version": "1.0.0",
   "description": "Shared types, mock data, and utilities for SoftGate Comic projects",
+  "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": {
+      "types": "./dist/publishedCatalog.d.ts",
+      "import": "./src/publishedCatalog.ts",
+      "default": "./src/publishedCatalog.ts"
+    },
+    "./settings": {
+      "types": "./dist/portalSettings.d.ts",
+      "import": "./src/portalSettings.ts",
+      "default": "./src/portalSettings.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit"

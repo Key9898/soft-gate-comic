@@ -2,13 +2,15 @@
 title: Client auth honesty
 type: convention
 date: 2026-08-11
-updated: 2026-08-19
+updated: 2026-08-24
 tags: [auth, localStorage, demo, reading-room]
 impl: 27
-impl_updated: 149
+impl_updated: 174
 ---
 
 # Client auth (mock-honest)
+
+HTTP cookie session when mock is off is [portal-auth-http.md](portal-auth-http.md). This file is the **mock on** contract (`VITE_USE_MOCK_API` is not `false`).
 
 ## Storage
 

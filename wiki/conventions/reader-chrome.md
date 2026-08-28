@@ -2,8 +2,8 @@
 title: Reader chrome
 type: convention
 date: 2026-08-19
-tags: [reader, chrome, prefs, softgate]
-impl: 133
+tags: [reader, chrome, prefs, softgate, impl-165, impl-166, impl-167]
+impl: 167
 ---
 
 # Reader chrome
@@ -39,6 +39,14 @@ The header comments button shows `listComments(episodeCommentKey(webtoonId, epis
 ## Image fit
 
 Settings **Fit** keeps the strip stack at `max-w-2xl`. **Full width** is `w-full` on the strip stack. Do not scale `<img>` strips with font-size. Font-size may still style HUD and celebration text.
+
+## Image loading (Impl 165)
+
+Live panels after catalog JSON: index **0** is `loading="eager"` plus `fetchPriority="high"` (LCP). Index **1** is eager without high. Index **2+** stay `loading="lazy"`. Every successful `<img>` uses `decoding="async"` and `h-auto w-full`. Prefetch of URLs 3–5 and per-panel Retry stay.
+
+## Panel sizes (Impl 166)
+
+Optional `Episode.imageSizes?: Array<{ width: number; height: number } | null>`. Keep `images: string[]`. Demo omits `imageSizes`. `panelPixelSize` sets HTML `width`/`height` only when the array length matches `images` and that index has both finite integers **> 0**. Catalog `isLoading` skeleton still has no guessed strip height (`aspect-ratio` / `h-[60vh]`). Admin **Impl 27** persists sizes (wiki item 21). Impl **167** keeps a schema-matching stored catalog (`applyCatalogSeed` is identity) so those sizes survive a typical portal load. CLS ≤ 0.1 is **not** claimed until QA measures a Reader episode that has persisted sizes. Do not claim from Demo `/read/1/1`. Canonical Admin list: [`website-integration.md`](../../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md) item 21.
 
 ## Related
 

@@ -7,9 +7,9 @@ tags: [phases, softgate, comic, frontend]
 
 # SoftGate Comic — Implementation Phases
 
-Master Impl index for the **SoftGate Comic** webtoon reader portal (`src/` as it ships today).
+Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `155`.**
+**Next Impl number to use: `185`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -28,162 +28,192 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 
 ## Quick index
 
-| Impl | Date       | Title                                           | Note                                                                                                      |
-| ---- | ---------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 1    | 2026-07-13 | Project restructure & Tailwind v4 layout        | [2026-07-13-project-restructure.md](../notes/2026-07-13-project-restructure.md)                           |
-| 2    | 2026-07-15 | SoftGate Comic rebrand & git/Vercel handover    | [2026-07-15-softgate-rebrand-handover.md](../notes/2026-07-15-softgate-rebrand-handover.md)               |
-| 3    | 2026-07-17 | Hero banner overlay readability                 | [2026-07-17-hero-banner-overlay-readability.md](../notes/2026-07-17-hero-banner-overlay-readability.md)   |
-| 4    | 2026-07-20 | Brand theme (tokens → accent → cleanup → QA)    | [2026-07-20-brand-theme-color-palette.md](../notes/2026-07-20-brand-theme-color-palette.md)               |
-| 5    | 2026-07-20 | Default EN + force light theme                  | [2026-07-20-default-en-force-light.md](../notes/2026-07-20-default-en-force-light.md)                     |
-| 6    | 2026-08-10 | Company scaffolding standards                   | [2026-08-10-company-structure-alignment.md](../notes/2026-08-10-company-structure-alignment.md)           |
-| 7    | 2026-08-10 | SoftGate Comic brand rename + SVG logo          | [2026-08-10-softgate-brand-rename-svg-logo.md](../notes/2026-08-10-softgate-brand-rename-svg-logo.md)     |
-| 8    | 2026-08-10 | Portal SEO + in-app search                      | [2026-08-10-seo-and-in-app-search.md](../notes/2026-08-10-seo-and-in-app-search.md)                       |
-| 9    | 2026-08-11 | Logo theme token polish                         | [2026-08-11-logo-theme-token-polish.md](../notes/2026-08-11-logo-theme-token-polish.md)                   |
-| 10   | 2026-08-11 | Soft-Expressive border radius normalize         | [2026-08-11-soft-expressive-radius.md](../notes/2026-08-11-soft-expressive-radius.md)                     |
-| 11   | 2026-08-11 | Categories Phase A (filter + genres + status)   | [2026-08-11-categories-phase-a.md](../notes/2026-08-11-categories-phase-a.md)                             |
-| 12   | 2026-08-11 | Typography stack + bold-flicker stabilize       | [2026-08-11-typography-stabilize.md](../notes/2026-08-11-typography-stabilize.md)                         |
-| 13   | 2026-08-11 | Discovery pipelines — UI truth                  | [2026-08-11-discovery-ui-truth.md](../notes/2026-08-11-discovery-ui-truth.md)                             |
-| 14   | 2026-08-11 | Discovery pipelines — data integrity            | [2026-08-11-discovery-data-integrity.md](../notes/2026-08-11-discovery-data-integrity.md)                 |
-| 15   | 2026-08-11 | Discovery pipelines — CTA honesty               | [2026-08-11-discovery-cta-honesty.md](../notes/2026-08-11-discovery-cta-honesty.md)                       |
-| 16   | 2026-08-11 | Book covers — Hero 3D + Apple spine             | [2026-08-11-book-cover-presentation.md](../notes/2026-08-11-book-cover-presentation.md)                   |
-| 17   | 2026-08-11 | Info page headers + breadcrumbs                 | [2026-08-11-info-page-headers.md](../notes/2026-08-11-info-page-headers.md)                               |
-| 18   | 2026-08-11 | HeroBook3D UX harden                            | [2026-08-11-herobook3d-ux-harden.md](../notes/2026-08-11-herobook3d-ux-harden.md)                         |
-| 19   | 2026-08-11 | Structure hygiene (layers, AuthContext)         | [2026-08-11-structure-hygiene.md](../notes/2026-08-11-structure-hygiene.md)                               |
-| 20   | 2026-08-11 | Profile feature components extract              | [2026-08-11-profile-components-extract.md](../notes/2026-08-11-profile-components-extract.md)             |
-| 21   | 2026-08-11 | Library feature components extract              | [2026-08-11-library-components-extract.md](../notes/2026-08-11-library-components-extract.md)             |
-| 22   | 2026-08-11 | Coins presentational extract                    | [2026-08-11-coins-components-extract.md](../notes/2026-08-11-coins-components-extract.md)                 |
-| 23   | 2026-08-11 | Reader comments panel extract                   | [2026-08-11-reader-comments-extract.md](../notes/2026-08-11-reader-comments-extract.md)                   |
-| 24   | 2026-08-11 | Categories genre strip scroll affordance        | [2026-08-11-categories-genre-scroll.md](../notes/2026-08-11-categories-genre-scroll.md)                   |
-| 25   | 2026-08-11 | Library bookmark wiring + Home Save CTA         | [2026-08-11-library-bookmark-wiring.md](../notes/2026-08-11-library-bookmark-wiring.md)                   |
-| 26   | 2026-08-11 | Categories genre reserved chevron + status      | [2026-08-11-categories-genre-rail-slot.md](../notes/2026-08-11-categories-genre-rail-slot.md)             |
-| 27   | 2026-08-11 | Client auth honesty (Register/Profile/Logout)   | [2026-08-11-client-auth-honesty.md](../notes/2026-08-11-client-auth-honesty.md)                           |
-| 28   | 2026-08-11 | Wallet + Demo top-up                            | [2026-08-11-client-wallet-demo-topup.md](../notes/2026-08-11-client-wallet-demo-topup.md)                 |
-| 29   | 2026-08-11 | Premium unlock debit + persist                  | [2026-08-11-premium-unlock-wallet.md](../notes/2026-08-11-premium-unlock-wallet.md)                       |
-| 30   | 2026-08-11 | Episode images + Reader render                  | [2026-08-11-episode-media-reader.md](../notes/2026-08-11-episode-media-reader.md)                         |
-| 31   | 2026-08-11 | Reading history + Detail read badges            | [2026-08-11-reading-history-badges.md](../notes/2026-08-11-reading-history-badges.md)                     |
-| 32   | 2026-08-11 | Likes store ↔ Library Likes                     | [2026-08-11-likes-store-library.md](../notes/2026-08-11-likes-store-library.md)                           |
-| 33   | 2026-08-11 | Profile Auth + derived stats                    | [2026-08-11-profile-auth-derived-stats.md](../notes/2026-08-11-profile-auth-derived-stats.md)             |
-| 34   | 2026-08-11 | Share + Comments client-wire                    | [2026-08-11-share-comments-client-wire.md](../notes/2026-08-11-share-comments-client-wire.md)             |
-| 35   | 2026-08-11 | Notifications store + nav honesty               | [2026-08-11-notifications-honesty.md](../notes/2026-08-11-notifications-honesty.md)                       |
-| 36   | 2026-08-11 | Dead chrome + Reader polish + 404               | [2026-08-11-dead-chrome-reader-polish.md](../notes/2026-08-11-dead-chrome-reader-polish.md)               |
-| 37   | 2026-08-11 | Marketing / Home honesty                        | [2026-08-11-marketing-home-honesty.md](../notes/2026-08-11-marketing-home-honesty.md)                     |
-| 38   | 2026-08-11 | Mock-honest roadmap close                       | [2026-08-11-mock-honest-roadmap-close.md](../notes/2026-08-11-mock-honest-roadmap-close.md)               |
-| 39   | 2026-08-11 | Home UI polish (calm hero + rhythm)             | [2026-08-11-home-ui-polish.md](../notes/2026-08-11-home-ui-polish.md)                                     |
-| 40   | 2026-08-11 | Home Continue Reading episode rail              | [2026-08-11-home-continue-episode-rail.md](../notes/2026-08-11-home-continue-episode-rail.md)             |
-| 41   | 2026-08-11 | Reading scroll-depth resume                     | [2026-08-11-reading-scroll-resume.md](../notes/2026-08-11-reading-scroll-resume.md)                       |
-| 42   | 2026-08-11 | HeroBook3D reliable 3D + reference tilt         | [2026-08-11-herobook3d-tilt-fix.md](../notes/2026-08-11-herobook3d-tilt-fix.md)                           |
-| 43   | 2026-08-11 | Home Genres reserved chevron                    | [2026-08-11-home-genres-chevron.md](../notes/2026-08-11-home-genres-chevron.md)                           |
-| 44   | 2026-08-11 | HeroBook3D open fix (flatten + reduced)         | [2026-08-11-herobook3d-open-fix.md](../notes/2026-08-11-herobook3d-open-fix.md)                           |
-| 45   | 2026-08-11 | HeroBook3D real hinge + size + reduced fade     | [2026-08-11-herobook3d-hinge-size.md](../notes/2026-08-11-herobook3d-hinge-size.md)                       |
-| 46   | 2026-08-11 | static HeroBook + hero mid-align                | [2026-08-11-herobook3d-static-mid-align.md](../notes/2026-08-11-herobook3d-static-mid-align.md)           |
-| 47   | 2026-08-11 | Hide page scrollbar + ScrollToTop               | [2026-08-11-scroll-chrome-scroll-to-top.md](../notes/2026-08-11-scroll-chrome-scroll-to-top.md)           |
-| 48   | 2026-08-11 | Home hero optical vertical center               | [2026-08-11-hero-optical-vertical-center.md](../notes/2026-08-11-hero-optical-vertical-center.md)         |
-| 49   | 2026-08-11 | Hero Spotlight carousel (Trending 5)            | [2026-08-11-hero-spotlight-carousel.md](../notes/2026-08-11-hero-spotlight-carousel.md)                   |
-| 50   | 2026-08-11 | About i18n missing keys fix                     | [2026-08-11-about-i18n-missing-keys.md](../notes/2026-08-11-about-i18n-missing-keys.md)                   |
-| 51   | 2026-08-11 | HeroBook3D fore-edge pose tune                  | [2026-08-11-herobook3d-fore-edge-pose.md](../notes/2026-08-11-herobook3d-fore-edge-pose.md)               |
-| 52   | 2026-08-11 | HeroBook3D unflatten + thick fore-edge          | [2026-08-11-herobook3d-unflatten-fore-edge.md](../notes/2026-08-11-herobook3d-unflatten-fore-edge.md)     |
-| 53   | 2026-08-11 | About Our Story split + book visual             | [2026-08-11-about-story-split-narrative.md](../notes/2026-08-11-about-story-split-narrative.md)           |
-| 54   | 2026-08-11 | HeroBook3D static pose always-on                | [2026-08-11-herobook3d-static-pose-always-on.md](../notes/2026-08-11-herobook3d-static-pose-always-on.md) |
-| 55   | 2026-08-13 | About Mission & Vision + UI/UX polish           | [2026-08-13-about-mission-vision-polish.md](../notes/2026-08-13-about-mission-vision-polish.md)           |
-| 56   | 2026-08-13 | Careers → Creators (Publish with Us) pivot      | [2026-08-13-creators-page-pivot.md](../notes/2026-08-13-creators-page-pivot.md)                           |
-| 57   | 2026-08-13 | Press kit page + chrome alignment               | [2026-08-13-press-kit-chrome-align.md](../notes/2026-08-13-press-kit-chrome-align.md)                     |
-| 58   | 2026-08-13 | Support & recovery pages (FAQ/Help/404/Contact) | [2026-08-13-support-pages-revamp.md](../notes/2026-08-13-support-pages-revamp.md)                         |
-| 59   | 2026-08-13 | Legal shared shell + chrome fixes               | [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md)                           |
-| 60   | 2026-08-13 | Legal content honesty (webtoon-standard)        | [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md)                       |
-| 61   | 2026-08-13 | App pages shell alignment (Profile/Notif/Coins) | [2026-08-13-app-shell-alignment.md](../notes/2026-08-13-app-shell-alignment.md)                           |
-| 62   | 2026-08-13 | Broken flows fix (i18n/Comments/Auth chrome)    | [2026-08-13-broken-flows-fix.md](../notes/2026-08-13-broken-flows-fix.md)                                 |
-| 63   | 2026-08-13 | Data correctness (read set/unlock/likes)        | [2026-08-13-read-tracking-unlock-likes.md](../notes/2026-08-13-read-tracking-unlock-likes.md)             |
-| 64   | 2026-08-13 | Polish sweep (tokens/a11y/honesty/dead code)    | [2026-08-13-polish-sweep.md](../notes/2026-08-13-polish-sweep.md)                                         |
-| 65   | 2026-08-13 | Cross-tab sync (storage events)                 | [2026-08-13-cross-tab-sync.md](../notes/2026-08-13-cross-tab-sync.md)                                     |
-| 66   | 2026-08-13 | Account data migration + delete cascade         | [2026-08-13-account-data-migration.md](../notes/2026-08-13-account-data-migration.md)                     |
-| 67   | 2026-08-13 | Reader guest conversion nudges                  | [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md)                           |
-| 68   | 2026-08-13 | Skeleton loading states + Home empty state      | [2026-08-13-skeleton-loading-states.md](../notes/2026-08-13-skeleton-loading-states.md)                   |
-| 69   | 2026-08-13 | Reader celebration truth (title/time/i18n)      | [2026-08-13-reader-celebration-truth.md](../notes/2026-08-13-reader-celebration-truth.md)                 |
-| 70   | 2026-08-13 | Dialog a11y system (APG + lock + trap)          | [2026-08-13-dialog-a11y-system.md](../notes/2026-08-13-dialog-a11y-system.md)                             |
-| 71   | 2026-08-13 | Coins checkout honesty + i18n copy              | [2026-08-13-coins-honesty-i18n.md](../notes/2026-08-13-coins-honesty-i18n.md)                             |
-| 72   | 2026-08-13 | Coins wizard shell (scroll/dialog/dark strip)   | [2026-08-13-coins-wizard-shell.md](../notes/2026-08-13-coins-wizard-shell.md)                             |
-| 73   | 2026-08-13 | Chrome polish (safe-area/targets/nav/CTA)       | [2026-08-13-chrome-polish-safe-area.md](../notes/2026-08-13-chrome-polish-safe-area.md)                   |
-| 74   | 2026-08-13 | Mechanical theme sweep (dark/2xs/sepia/wash)    | [2026-08-13-theme-mechanical-sweep.md](../notes/2026-08-13-theme-mechanical-sweep.md)                     |
-| 75   | 2026-08-13 | i18n sweep (dates/chart honesty/strings)        | [2026-08-13-i18n-sweep.md](../notes/2026-08-13-i18n-sweep.md)                                             |
-| 76   | 2026-08-13 | A11y structural (h1/keyboard/live/labels)       | [2026-08-13-a11y-structural.md](../notes/2026-08-13-a11y-structural.md)                                   |
-| 77   | 2026-08-13 | Responsive header + overflow hardening          | [2026-08-13-responsive-header-hardening.md](../notes/2026-08-13-responsive-header-hardening.md)           |
-| 78   | 2026-08-14 | HeroBook3D Home size + thickness + top poke     | [2026-08-14-herobook3d-home-size-thickness.md](../notes/2026-08-14-herobook3d-home-size-thickness.md)     |
-| 79   | 2026-08-14 | HeroBook3D fore-edge vertical page lines        | [2026-08-14-herobook3d-fore-edge-vertical.md](../notes/2026-08-14-herobook3d-fore-edge-vertical.md)       |
-| 80   | 2026-08-14 | Home hero pair lg:mt-10 nudge                   | [2026-08-14-hero-pair-mt-nudge.md](../notes/2026-08-14-hero-pair-mt-nudge.md)                             |
-| 81   | 2026-08-14 | Home hero row mt-12 + book mt-4                 | [2026-08-14-hero-row-mt12-book-mt4.md](../notes/2026-08-14-hero-row-mt12-book-mt4.md)                     |
-| 82   | 2026-08-17 | Hero title/deck line rules + overflow           | [2026-08-17-hero-copy-line-rules.md](../notes/2026-08-17-hero-copy-line-rules.md)                         |
-| 83   | 2026-08-17 | Home hero book enter from under copy            | [2026-08-17-hero-book-enter.md](../notes/2026-08-17-hero-book-enter.md)                                   |
-| 84   | 2026-08-17 | Force Home book enter for all visitors          | [2026-08-17-hero-book-enter-forced.md](../notes/2026-08-17-hero-book-enter-forced.md)                     |
-| 85   | 2026-08-17 | About Our Story uses Home HeroBook3D            | [2026-08-17-about-story-herobook3d.md](../notes/2026-08-17-about-story-herobook3d.md)                     |
-| 86   | 2026-08-17 | Hero book enter from under copy                 | [2026-08-17-hero-book-enter-from-copy.md](../notes/2026-08-17-hero-book-enter-from-copy.md)               |
-| 87   | 2026-08-17 | Our Story readable book                         | [2026-08-17-about-story-book.md](../notes/2026-08-17-about-story-book.md)                                 |
-| 88   | 2026-08-17 | Hero book hover straighten then lift            | [2026-08-17-herobook-hover-straighten-lift.md](../notes/2026-08-17-herobook-hover-straighten-lift.md)     |
-| 89   | 2026-08-17 | Our Story open-book shell                       | [2026-08-17-about-story-open-shell.md](../notes/2026-08-17-about-story-open-shell.md)                     |
-| 90   | 2026-08-17 | Force hero book hover for all visitors          | [2026-08-17-hero-book-hover-forced.md](../notes/2026-08-17-hero-book-hover-forced.md)                     |
-| 91   | 2026-08-17 | Our Story shell + cover + on-page turns         | [2026-08-17-about-story-shell-fix.md](../notes/2026-08-17-about-story-shell-fix.md)                       |
-| 92   | 2026-08-17 | Hero book hover come-forward not lift           | [2026-08-17-herobook-hover-come-forward.md](../notes/2026-08-17-herobook-hover-come-forward.md)           |
-| 93   | 2026-08-17 | Our Story 3D valley + page turn                 | [2026-08-17-about-story-page-turn.md](../notes/2026-08-17-about-story-page-turn.md)                       |
-| 94   | 2026-08-17 | Our Story episode reader                        | [2026-08-17-about-story-episode-reader.md](../notes/2026-08-17-about-story-episode-reader.md)             |
-| 95   | 2026-08-17 | Our Story reader pane is white                  | [2026-08-17-about-story-reader-white-pane.md](../notes/2026-08-17-about-story-reader-white-pane.md)       |
-| 96   | 2026-08-17 | Catalog tile honesty                            | [2026-08-17-catalog-tile-honesty.md](../notes/2026-08-17-catalog-tile-honesty.md)                         |
-| 97   | 2026-08-17 | Mock calendar stays in 2026                     | [2026-08-17-mock-calendar-2026.md](../notes/2026-08-17-mock-calendar-2026.md)                             |
-| 98   | 2026-08-17 | Stale catalog localStorage froze 2023 dates     | [2026-08-17-stale-catalog-localstorage.md](../notes/2026-08-17-stale-catalog-localstorage.md)             |
-| 99   | 2026-08-18 | Hero hover come-forward survives production     | [2026-08-18-hero-hover-come-forward-prod.md](../notes/2026-08-18-hero-hover-come-forward-prod.md)         |
-| 100  | 2026-08-18 | Skip link + sticky Hero Pause                   | [2026-08-18-skip-link-hero-pause.md](../notes/2026-08-18-skip-link-hero-pause.md)                         |
-| 101  | 2026-08-18 | Skip link vertically centers in the nav bar     | [2026-08-18-skip-link-header-align.md](../notes/2026-08-18-skip-link-header-align.md)                     |
-| 102  | 2026-08-18 | Favicon, OG PNG, Press kit IA                   | [2026-08-18-press-kit-favicon.md](../notes/2026-08-18-press-kit-favicon.md)                               |
-| 103  | 2026-08-18 | About Who we are (facts / product / team)       | [2026-08-18-about-who-we-are.md](../notes/2026-08-18-about-who-we-are.md)                                 |
-| 104  | 2026-08-18 | Home discovery jobs (spotlight, ranking, trend) | [2026-08-18-home-discovery-jobs.md](../notes/2026-08-18-home-discovery-jobs.md)                           |
-| 105  | 2026-08-18 | Prelaunch quality bar (always-on agent rule)    | [2026-08-18-prelaunch-quality-bar.md](../notes/2026-08-18-prelaunch-quality-bar.md)                       |
-| 106  | 2026-08-18 | Ranking chart + honest Popular destination      | [2026-08-18-ranking-chart.md](../notes/2026-08-18-ranking-chart.md)                                       |
-| 107  | 2026-08-18 | Publish with Us complete creator intake         | [2026-08-18-creators-intake.md](../notes/2026-08-18-creators-intake.md)                                   |
-| 108  | 2026-08-18 | Help / FAQ / Contact support funnel             | [2026-08-18-support-funnel.md](../notes/2026-08-18-support-funnel.md)                                     |
-| 109  | 2026-08-18 | Categories sort labels match Home               | [2026-08-18-categories-sort-labels.md](../notes/2026-08-18-categories-sort-labels.md)                     |
-| 110  | 2026-08-18 | Publish with Us intake polish                   | [2026-08-18-creators-intake-polish.md](../notes/2026-08-18-creators-intake-polish.md)                     |
-| 111  | 2026-08-19 | Help, FAQ, Contact support pages perfect        | [2026-08-19-support-pages-perfect.md](../notes/2026-08-19-support-pages-perfect.md)                       |
-| 112  | 2026-08-19 | Contact pitch fields for Publish with Us        | [2026-08-19-contact-pitch-fields.md](../notes/2026-08-19-contact-pitch-fields.md)                         |
-| 113  | 2026-08-19 | Contact Demo inbox hours + FAQ a6 a10 a11       | [2026-08-19-support-hours-faq-fill.md](../notes/2026-08-19-support-hours-faq-fill.md)                     |
-| 114  | 2026-08-19 | Series ratings on catalog + Highest Rated       | [2026-08-19-series-ratings.md](../notes/2026-08-19-series-ratings.md)                                     |
-| 115  | 2026-08-19 | Series rating star hit cells 44 by 24           | [2026-08-19-series-rating-hit-target.md](../notes/2026-08-19-series-rating-hit-target.md)                 |
-| 116  | 2026-08-19 | Pitch funnel four-point align                   | [2026-08-19-creators-pitch-align.md](../notes/2026-08-19-creators-pitch-align.md)                         |
-| 117  | 2026-08-19 | Popular rank hang-overlap                       | [2026-08-19-popular-rank-overlap.md](../notes/2026-08-19-popular-rank-overlap.md)                         |
-| 118  | 2026-08-19 | 404 recovery to hand-off bar                    | [2026-08-19-404-recovery.md](../notes/2026-08-19-404-recovery.md)                                         |
-| 119  | 2026-08-19 | Popular ranks inside the cover                  | [2026-08-19-popular-rank-on-cover.md](../notes/2026-08-19-popular-rank-on-cover.md)                       |
-| 120  | 2026-08-19 | Help hub layout + Footer FAQ                    | [2026-08-19-help-hub-footer-faq.md](../notes/2026-08-19-help-hub-footer-faq.md)                           |
-| 121  | 2026-08-19 | 404 recovery page polish                        | [2026-08-19-404-recovery-polish.md](../notes/2026-08-19-404-recovery-polish.md)                           |
-| 122  | 2026-08-19 | Popular rank bottom-left cover pocket           | [2026-08-19-popular-rank-pocket.md](../notes/2026-08-19-popular-rank-pocket.md)                           |
-| 123  | 2026-08-19 | Host HTTP 404 for unknown SPA paths             | [2026-08-19-host-http-404.md](../notes/2026-08-19-host-http-404.md)                                       |
-| 124  | 2026-08-19 | Popular rank white glyph on the cover           | [2026-08-19-popular-rank-glyph.md](../notes/2026-08-19-popular-rank-glyph.md)                             |
-| 125  | 2026-08-19 | Popular rank white offset kick                  | [2026-08-19-popular-rank-glyph-kick.md](../notes/2026-08-19-popular-rank-glyph-kick.md)                   |
-| 126  | 2026-08-19 | Legal pages layered notice + honesty            | [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md)                         |
-| 127  | 2026-08-19 | Popular rank white lip follows digit geometry   | [2026-08-19-popular-rank-glyph-lip.md](../notes/2026-08-19-popular-rank-glyph-lip.md)                     |
-| 128  | 2026-08-19 | Legal TOC thin primary scrollbar                | [2026-08-19-legal-toc-scrollbar.md](../notes/2026-08-19-legal-toc-scrollbar.md)                           |
-| 129  | 2026-08-19 | Home Updated vs New split                       | [2026-08-19-updated-new-split.md](../notes/2026-08-19-updated-new-split.md)                               |
-| 130  | 2026-08-19 | Series hub Continue, tags, thumbs, related      | [2026-08-19-series-hub.md](../notes/2026-08-19-series-hub.md)                                             |
-| 131  | 2026-08-19 | Search destination empty landing                | [2026-08-19-search-destination.md](../notes/2026-08-19-search-destination.md)                             |
-| 132  | 2026-08-19 | Categories polish search SEO empty recovery     | [2026-08-19-categories-polish.md](../notes/2026-08-19-categories-polish.md)                               |
-| 133  | 2026-08-19 | Reader chrome episode sheet prefs keyboard      | [2026-08-19-reader-chrome.md](../notes/2026-08-19-reader-chrome.md)                                       |
-| 134  | 2026-08-19 | Guest Start here rail                           | [2026-08-19-guest-start-here.md](../notes/2026-08-19-guest-start-here.md)                                 |
-| 135  | 2026-08-19 | Author profile `/author/:id`                    | [2026-08-19-author-profile.md](../notes/2026-08-19-author-profile.md)                                     |
-| 136  | 2026-08-19 | Auth reading room                               | [2026-08-19-auth-reading-room.md](../notes/2026-08-19-auth-reading-room.md)                               |
-| 137  | 2026-08-19 | Hero heading and duplicate CTA                  | [2026-08-19-hero-heading-cta.md](../notes/2026-08-19-hero-heading-cta.md)                                 |
-| 138  | 2026-08-19 | Reader swipe + pinch                            | [2026-08-19-reader-gestures.md](../notes/2026-08-19-reader-gestures.md)                                   |
-| 139  | 2026-08-19 | Nav Login carries return `from`                 | [2026-08-19-nav-login-return.md](../notes/2026-08-19-nav-login-return.md)                                 |
-| 140  | 2026-08-19 | Subscribe + 18+ content rating                  | [2026-08-19-subscribe-age-gate.md](../notes/2026-08-19-subscribe-age-gate.md)                             |
-| 141  | 2026-08-19 | Categories browse + `/ranking` path             | [2026-08-19-categories-ranking-browse.md](../notes/2026-08-19-categories-ranking-browse.md)               |
-| 142  | 2026-08-19 | Account hub to hand-off bar                     | [2026-08-19-account-hub.md](../notes/2026-08-19-account-hub.md)                                           |
-| 143  | 2026-08-19 | Categories chart chrome (no podium)             | [2026-08-19-categories-chart-chrome.md](../notes/2026-08-19-categories-chart-chrome.md)                   |
-| 144  | 2026-08-19 | Hub series comments                             | [2026-08-19-hub-comments.md](../notes/2026-08-19-hub-comments.md)                                         |
-| 145  | 2026-08-19 | Search Demo searches chips                      | [2026-08-19-search-demo-trending.md](../notes/2026-08-19-search-demo-trending.md)                         |
-| 146  | 2026-08-19 | Auth portal split-card                          | [2026-08-19-auth-split-card.md](../notes/2026-08-19-auth-split-card.md)                                   |
-| 147  | 2026-08-19 | Home For You rail                               | [2026-08-19-for-you.md](../notes/2026-08-19-for-you.md)                                                   |
-| 148  | 2026-08-19 | Author Follow on catalog profiles               | [2026-08-19-author-follow.md](../notes/2026-08-19-author-follow.md)                                       |
-| 149  | 2026-08-19 | Auth split-card photo curtain                   | [2026-08-19-auth-split-curtain.md](../notes/2026-08-19-auth-split-curtain.md)                             |
-| 150  | 2026-08-19 | Home Daily weekday board                        | [2026-08-19-daily.md](../notes/2026-08-19-daily.md)                                                       |
-| 151  | 2026-08-19 | Wait-for-free on premium episodes               | [2026-08-19-wait-for-free.md](../notes/2026-08-19-wait-for-free.md)                                       |
-| 152  | 2026-08-19 | Catalog Premium chip to top-left                | [2026-08-19-catalog-premium-left.md](../notes/2026-08-19-catalog-premium-left.md)                         |
-| 153  | 2026-08-19 | Home Daily upcoming episode drops               | [2026-08-19-daily-drops.md](../notes/2026-08-19-daily-drops.md)                                           |
-| 154  | 2026-08-19 | Daily / Updated / New Demo honesty              | [2026-08-19-discovery-time-family.md](../notes/2026-08-19-discovery-time-family.md)                       |
+| Impl | Date       | Title                                                        | Note                                                                                                                                                          |
+| ---- | ---------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | 2026-07-13 | Project restructure & Tailwind v4 layout                     | [2026-07-13-project-restructure.md](../notes/2026-07-13-project-restructure.md)                                                                               |
+| 2    | 2026-07-15 | SoftGate Comic rebrand & git/Vercel handover                 | [2026-07-15-softgate-rebrand-handover.md](../notes/2026-07-15-softgate-rebrand-handover.md)                                                                   |
+| 3    | 2026-07-17 | Hero banner overlay readability                              | [2026-07-17-hero-banner-overlay-readability.md](../notes/2026-07-17-hero-banner-overlay-readability.md)                                                       |
+| 4    | 2026-07-20 | Brand theme (tokens → accent → cleanup → QA)                 | [2026-07-20-brand-theme-color-palette.md](../notes/2026-07-20-brand-theme-color-palette.md)                                                                   |
+| 5    | 2026-07-20 | Default EN + force light theme                               | [2026-07-20-default-en-force-light.md](../notes/2026-07-20-default-en-force-light.md)                                                                         |
+| 6    | 2026-08-10 | Company scaffolding standards                                | [2026-08-10-company-structure-alignment.md](../notes/2026-08-10-company-structure-alignment.md)                                                               |
+| 7    | 2026-08-10 | SoftGate Comic brand rename + SVG logo                       | [2026-08-10-softgate-brand-rename-svg-logo.md](../notes/2026-08-10-softgate-brand-rename-svg-logo.md)                                                         |
+| 8    | 2026-08-10 | Portal SEO + in-app search                                   | [2026-08-10-seo-and-in-app-search.md](../notes/2026-08-10-seo-and-in-app-search.md)                                                                           |
+| 9    | 2026-08-11 | Logo theme token polish                                      | [2026-08-11-logo-theme-token-polish.md](../notes/2026-08-11-logo-theme-token-polish.md)                                                                       |
+| 10   | 2026-08-11 | Soft-Expressive border radius normalize                      | [2026-08-11-soft-expressive-radius.md](../notes/2026-08-11-soft-expressive-radius.md)                                                                         |
+| 11   | 2026-08-11 | Categories Phase A (filter + genres + status)                | [2026-08-11-categories-phase-a.md](../notes/2026-08-11-categories-phase-a.md)                                                                                 |
+| 12   | 2026-08-11 | Typography stack + bold-flicker stabilize                    | [2026-08-11-typography-stabilize.md](../notes/2026-08-11-typography-stabilize.md)                                                                             |
+| 13   | 2026-08-11 | Discovery pipelines — UI truth                               | [2026-08-11-discovery-ui-truth.md](../notes/2026-08-11-discovery-ui-truth.md)                                                                                 |
+| 14   | 2026-08-11 | Discovery pipelines — data integrity                         | [2026-08-11-discovery-data-integrity.md](../notes/2026-08-11-discovery-data-integrity.md)                                                                     |
+| 15   | 2026-08-11 | Discovery pipelines — CTA honesty                            | [2026-08-11-discovery-cta-honesty.md](../notes/2026-08-11-discovery-cta-honesty.md)                                                                           |
+| 16   | 2026-08-11 | Book covers — Hero 3D + Apple spine                          | [2026-08-11-book-cover-presentation.md](../notes/2026-08-11-book-cover-presentation.md)                                                                       |
+| 17   | 2026-08-11 | Info page headers + breadcrumbs                              | [2026-08-11-info-page-headers.md](../notes/2026-08-11-info-page-headers.md)                                                                                   |
+| 18   | 2026-08-11 | HeroBook3D UX harden                                         | [2026-08-11-herobook3d-ux-harden.md](../notes/2026-08-11-herobook3d-ux-harden.md)                                                                             |
+| 19   | 2026-08-11 | Structure hygiene (layers, AuthContext)                      | [2026-08-11-structure-hygiene.md](../notes/2026-08-11-structure-hygiene.md)                                                                                   |
+| 20   | 2026-08-11 | Profile feature components extract                           | [2026-08-11-profile-components-extract.md](../notes/2026-08-11-profile-components-extract.md)                                                                 |
+| 21   | 2026-08-11 | Library feature components extract                           | [2026-08-11-library-components-extract.md](../notes/2026-08-11-library-components-extract.md)                                                                 |
+| 22   | 2026-08-11 | Coins presentational extract                                 | [2026-08-11-coins-components-extract.md](../notes/2026-08-11-coins-components-extract.md)                                                                     |
+| 23   | 2026-08-11 | Reader comments panel extract                                | [2026-08-11-reader-comments-extract.md](../notes/2026-08-11-reader-comments-extract.md)                                                                       |
+| 24   | 2026-08-11 | Categories genre strip scroll affordance                     | [2026-08-11-categories-genre-scroll.md](../notes/2026-08-11-categories-genre-scroll.md)                                                                       |
+| 25   | 2026-08-11 | Library bookmark wiring + Home Save CTA                      | [2026-08-11-library-bookmark-wiring.md](../notes/2026-08-11-library-bookmark-wiring.md)                                                                       |
+| 26   | 2026-08-11 | Categories genre reserved chevron + status                   | [2026-08-11-categories-genre-rail-slot.md](../notes/2026-08-11-categories-genre-rail-slot.md)                                                                 |
+| 27   | 2026-08-11 | Client auth honesty (Register/Profile/Logout)                | [2026-08-11-client-auth-honesty.md](../notes/2026-08-11-client-auth-honesty.md)                                                                               |
+| 28   | 2026-08-11 | Wallet + Demo top-up                                         | [2026-08-11-client-wallet-demo-topup.md](../notes/2026-08-11-client-wallet-demo-topup.md)                                                                     |
+| 29   | 2026-08-11 | Premium unlock debit + persist                               | [2026-08-11-premium-unlock-wallet.md](../notes/2026-08-11-premium-unlock-wallet.md)                                                                           |
+| 30   | 2026-08-11 | Episode images + Reader render                               | [2026-08-11-episode-media-reader.md](../notes/2026-08-11-episode-media-reader.md)                                                                             |
+| 31   | 2026-08-11 | Reading history + Detail read badges                         | [2026-08-11-reading-history-badges.md](../notes/2026-08-11-reading-history-badges.md)                                                                         |
+| 32   | 2026-08-11 | Likes store ↔ Library Likes                                  | [2026-08-11-likes-store-library.md](../notes/2026-08-11-likes-store-library.md)                                                                               |
+| 33   | 2026-08-11 | Profile Auth + derived stats                                 | [2026-08-11-profile-auth-derived-stats.md](../notes/2026-08-11-profile-auth-derived-stats.md)                                                                 |
+| 34   | 2026-08-11 | Share + Comments client-wire                                 | [2026-08-11-share-comments-client-wire.md](../notes/2026-08-11-share-comments-client-wire.md)                                                                 |
+| 35   | 2026-08-11 | Notifications store + nav honesty                            | [2026-08-11-notifications-honesty.md](../notes/2026-08-11-notifications-honesty.md)                                                                           |
+| 36   | 2026-08-11 | Dead chrome + Reader polish + 404                            | [2026-08-11-dead-chrome-reader-polish.md](../notes/2026-08-11-dead-chrome-reader-polish.md)                                                                   |
+| 37   | 2026-08-11 | Marketing / Home honesty                                     | [2026-08-11-marketing-home-honesty.md](../notes/2026-08-11-marketing-home-honesty.md)                                                                         |
+| 38   | 2026-08-11 | Mock-honest roadmap close                                    | [2026-08-11-mock-honest-roadmap-close.md](../notes/2026-08-11-mock-honest-roadmap-close.md)                                                                   |
+| 39   | 2026-08-11 | Home UI polish (calm hero + rhythm)                          | [2026-08-11-home-ui-polish.md](../notes/2026-08-11-home-ui-polish.md)                                                                                         |
+| 40   | 2026-08-11 | Home Continue Reading episode rail                           | [2026-08-11-home-continue-episode-rail.md](../notes/2026-08-11-home-continue-episode-rail.md)                                                                 |
+| 41   | 2026-08-11 | Reading scroll-depth resume                                  | [2026-08-11-reading-scroll-resume.md](../notes/2026-08-11-reading-scroll-resume.md)                                                                           |
+| 42   | 2026-08-11 | HeroBook3D reliable 3D + reference tilt                      | [2026-08-11-herobook3d-tilt-fix.md](../notes/2026-08-11-herobook3d-tilt-fix.md)                                                                               |
+| 43   | 2026-08-11 | Home Genres reserved chevron                                 | [2026-08-11-home-genres-chevron.md](../notes/2026-08-11-home-genres-chevron.md)                                                                               |
+| 44   | 2026-08-11 | HeroBook3D open fix (flatten + reduced)                      | [2026-08-11-herobook3d-open-fix.md](../notes/2026-08-11-herobook3d-open-fix.md)                                                                               |
+| 45   | 2026-08-11 | HeroBook3D real hinge + size + reduced fade                  | [2026-08-11-herobook3d-hinge-size.md](../notes/2026-08-11-herobook3d-hinge-size.md)                                                                           |
+| 46   | 2026-08-11 | static HeroBook + hero mid-align                             | [2026-08-11-herobook3d-static-mid-align.md](../notes/2026-08-11-herobook3d-static-mid-align.md)                                                               |
+| 47   | 2026-08-11 | Hide page scrollbar + ScrollToTop                            | [2026-08-11-scroll-chrome-scroll-to-top.md](../notes/2026-08-11-scroll-chrome-scroll-to-top.md)                                                               |
+| 48   | 2026-08-11 | Home hero optical vertical center                            | [2026-08-11-hero-optical-vertical-center.md](../notes/2026-08-11-hero-optical-vertical-center.md)                                                             |
+| 49   | 2026-08-11 | Hero Spotlight carousel (Trending 5)                         | [2026-08-11-hero-spotlight-carousel.md](../notes/2026-08-11-hero-spotlight-carousel.md)                                                                       |
+| 50   | 2026-08-11 | About i18n missing keys fix                                  | [2026-08-11-about-i18n-missing-keys.md](../notes/2026-08-11-about-i18n-missing-keys.md)                                                                       |
+| 51   | 2026-08-11 | HeroBook3D fore-edge pose tune                               | [2026-08-11-herobook3d-fore-edge-pose.md](../notes/2026-08-11-herobook3d-fore-edge-pose.md)                                                                   |
+| 52   | 2026-08-11 | HeroBook3D unflatten + thick fore-edge                       | [2026-08-11-herobook3d-unflatten-fore-edge.md](../notes/2026-08-11-herobook3d-unflatten-fore-edge.md)                                                         |
+| 53   | 2026-08-11 | About Our Story split + book visual                          | [2026-08-11-about-story-split-narrative.md](../notes/2026-08-11-about-story-split-narrative.md)                                                               |
+| 54   | 2026-08-11 | HeroBook3D static pose always-on                             | [2026-08-11-herobook3d-static-pose-always-on.md](../notes/2026-08-11-herobook3d-static-pose-always-on.md)                                                     |
+| 55   | 2026-08-13 | About Mission & Vision + UI/UX polish                        | [2026-08-13-about-mission-vision-polish.md](../notes/2026-08-13-about-mission-vision-polish.md)                                                               |
+| 56   | 2026-08-13 | Careers → Creators (Publish with Us) pivot                   | [2026-08-13-creators-page-pivot.md](../notes/2026-08-13-creators-page-pivot.md)                                                                               |
+| 57   | 2026-08-13 | Press kit page + chrome alignment                            | [2026-08-13-press-kit-chrome-align.md](../notes/2026-08-13-press-kit-chrome-align.md)                                                                         |
+| 58   | 2026-08-13 | Support & recovery pages (FAQ/Help/404/Contact)              | [2026-08-13-support-pages-revamp.md](../notes/2026-08-13-support-pages-revamp.md)                                                                             |
+| 59   | 2026-08-13 | Legal shared shell + chrome fixes                            | [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md)                                                                               |
+| 60   | 2026-08-13 | Legal content honesty (webtoon-standard)                     | [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md)                                                                           |
+| 61   | 2026-08-13 | App pages shell alignment (Profile/Notif/Coins)              | [2026-08-13-app-shell-alignment.md](../notes/2026-08-13-app-shell-alignment.md)                                                                               |
+| 62   | 2026-08-13 | Broken flows fix (i18n/Comments/Auth chrome)                 | [2026-08-13-broken-flows-fix.md](../notes/2026-08-13-broken-flows-fix.md)                                                                                     |
+| 63   | 2026-08-13 | Data correctness (read set/unlock/likes)                     | [2026-08-13-read-tracking-unlock-likes.md](../notes/2026-08-13-read-tracking-unlock-likes.md)                                                                 |
+| 64   | 2026-08-13 | Polish sweep (tokens/a11y/honesty/dead code)                 | [2026-08-13-polish-sweep.md](../notes/2026-08-13-polish-sweep.md)                                                                                             |
+| 65   | 2026-08-13 | Cross-tab sync (storage events)                              | [2026-08-13-cross-tab-sync.md](../notes/2026-08-13-cross-tab-sync.md)                                                                                         |
+| 66   | 2026-08-13 | Account data migration + delete cascade                      | [2026-08-13-account-data-migration.md](../notes/2026-08-13-account-data-migration.md)                                                                         |
+| 67   | 2026-08-13 | Reader guest conversion nudges                               | [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md)                                                                               |
+| 68   | 2026-08-13 | Skeleton loading states + Home empty state                   | [2026-08-13-skeleton-loading-states.md](../notes/2026-08-13-skeleton-loading-states.md)                                                                       |
+| 69   | 2026-08-13 | Reader celebration truth (title/time/i18n)                   | [2026-08-13-reader-celebration-truth.md](../notes/2026-08-13-reader-celebration-truth.md)                                                                     |
+| 70   | 2026-08-13 | Dialog a11y system (APG + lock + trap)                       | [2026-08-13-dialog-a11y-system.md](../notes/2026-08-13-dialog-a11y-system.md)                                                                                 |
+| 71   | 2026-08-13 | Coins checkout honesty + i18n copy                           | [2026-08-13-coins-honesty-i18n.md](../notes/2026-08-13-coins-honesty-i18n.md)                                                                                 |
+| 72   | 2026-08-13 | Coins wizard shell (scroll/dialog/dark strip)                | [2026-08-13-coins-wizard-shell.md](../notes/2026-08-13-coins-wizard-shell.md)                                                                                 |
+| 73   | 2026-08-13 | Chrome polish (safe-area/targets/nav/CTA)                    | [2026-08-13-chrome-polish-safe-area.md](../notes/2026-08-13-chrome-polish-safe-area.md)                                                                       |
+| 74   | 2026-08-13 | Mechanical theme sweep (dark/2xs/sepia/wash)                 | [2026-08-13-theme-mechanical-sweep.md](../notes/2026-08-13-theme-mechanical-sweep.md)                                                                         |
+| 75   | 2026-08-13 | i18n sweep (dates/chart honesty/strings)                     | [2026-08-13-i18n-sweep.md](../notes/2026-08-13-i18n-sweep.md)                                                                                                 |
+| 76   | 2026-08-13 | A11y structural (h1/keyboard/live/labels)                    | [2026-08-13-a11y-structural.md](../notes/2026-08-13-a11y-structural.md)                                                                                       |
+| 77   | 2026-08-13 | Responsive header + overflow hardening                       | [2026-08-13-responsive-header-hardening.md](../notes/2026-08-13-responsive-header-hardening.md)                                                               |
+| 78   | 2026-08-14 | HeroBook3D Home size + thickness + top poke                  | [2026-08-14-herobook3d-home-size-thickness.md](../notes/2026-08-14-herobook3d-home-size-thickness.md)                                                         |
+| 79   | 2026-08-14 | HeroBook3D fore-edge vertical page lines                     | [2026-08-14-herobook3d-fore-edge-vertical.md](../notes/2026-08-14-herobook3d-fore-edge-vertical.md)                                                           |
+| 80   | 2026-08-14 | Home hero pair lg:mt-10 nudge                                | [2026-08-14-hero-pair-mt-nudge.md](../notes/2026-08-14-hero-pair-mt-nudge.md)                                                                                 |
+| 81   | 2026-08-14 | Home hero row mt-12 + book mt-4                              | [2026-08-14-hero-row-mt12-book-mt4.md](../notes/2026-08-14-hero-row-mt12-book-mt4.md)                                                                         |
+| 82   | 2026-08-17 | Hero title/deck line rules + overflow                        | [2026-08-17-hero-copy-line-rules.md](../notes/2026-08-17-hero-copy-line-rules.md)                                                                             |
+| 83   | 2026-08-17 | Home hero book enter from under copy                         | [2026-08-17-hero-book-enter.md](../notes/2026-08-17-hero-book-enter.md)                                                                                       |
+| 84   | 2026-08-17 | Force Home book enter for all visitors                       | [2026-08-17-hero-book-enter-forced.md](../notes/2026-08-17-hero-book-enter-forced.md)                                                                         |
+| 85   | 2026-08-17 | About Our Story uses Home HeroBook3D                         | [2026-08-17-about-story-herobook3d.md](../notes/2026-08-17-about-story-herobook3d.md)                                                                         |
+| 86   | 2026-08-17 | Hero book enter from under copy                              | [2026-08-17-hero-book-enter-from-copy.md](../notes/2026-08-17-hero-book-enter-from-copy.md)                                                                   |
+| 87   | 2026-08-17 | Our Story readable book                                      | [2026-08-17-about-story-book.md](../notes/2026-08-17-about-story-book.md)                                                                                     |
+| 88   | 2026-08-17 | Hero book hover straighten then lift                         | [2026-08-17-herobook-hover-straighten-lift.md](../notes/2026-08-17-herobook-hover-straighten-lift.md)                                                         |
+| 89   | 2026-08-17 | Our Story open-book shell                                    | [2026-08-17-about-story-open-shell.md](../notes/2026-08-17-about-story-open-shell.md)                                                                         |
+| 90   | 2026-08-17 | Force hero book hover for all visitors                       | [2026-08-17-hero-book-hover-forced.md](../notes/2026-08-17-hero-book-hover-forced.md)                                                                         |
+| 91   | 2026-08-17 | Our Story shell + cover + on-page turns                      | [2026-08-17-about-story-shell-fix.md](../notes/2026-08-17-about-story-shell-fix.md)                                                                           |
+| 92   | 2026-08-17 | Hero book hover come-forward not lift                        | [2026-08-17-herobook-hover-come-forward.md](../notes/2026-08-17-herobook-hover-come-forward.md)                                                               |
+| 93   | 2026-08-17 | Our Story 3D valley + page turn                              | [2026-08-17-about-story-page-turn.md](../notes/2026-08-17-about-story-page-turn.md)                                                                           |
+| 94   | 2026-08-17 | Our Story episode reader                                     | [2026-08-17-about-story-episode-reader.md](../notes/2026-08-17-about-story-episode-reader.md)                                                                 |
+| 95   | 2026-08-17 | Our Story reader pane is white                               | [2026-08-17-about-story-reader-white-pane.md](../notes/2026-08-17-about-story-reader-white-pane.md)                                                           |
+| 96   | 2026-08-17 | Catalog tile honesty                                         | [2026-08-17-catalog-tile-honesty.md](../notes/2026-08-17-catalog-tile-honesty.md)                                                                             |
+| 97   | 2026-08-17 | Mock calendar stays in 2026                                  | [2026-08-17-mock-calendar-2026.md](../notes/2026-08-17-mock-calendar-2026.md)                                                                                 |
+| 98   | 2026-08-17 | Stale catalog localStorage froze 2023 dates                  | [2026-08-17-stale-catalog-localstorage.md](../notes/2026-08-17-stale-catalog-localstorage.md)                                                                 |
+| 99   | 2026-08-18 | Hero hover come-forward survives production                  | [2026-08-18-hero-hover-come-forward-prod.md](../notes/2026-08-18-hero-hover-come-forward-prod.md)                                                             |
+| 100  | 2026-08-18 | Skip link + sticky Hero Pause                                | [2026-08-18-skip-link-hero-pause.md](../notes/2026-08-18-skip-link-hero-pause.md)                                                                             |
+| 101  | 2026-08-18 | Skip link vertically centers in the nav bar                  | [2026-08-18-skip-link-header-align.md](../notes/2026-08-18-skip-link-header-align.md)                                                                         |
+| 102  | 2026-08-18 | Favicon, OG PNG, Press kit IA                                | [2026-08-18-press-kit-favicon.md](../notes/2026-08-18-press-kit-favicon.md)                                                                                   |
+| 103  | 2026-08-18 | About Who we are (facts / product / team)                    | [2026-08-18-about-who-we-are.md](../notes/2026-08-18-about-who-we-are.md)                                                                                     |
+| 104  | 2026-08-18 | Home discovery jobs (spotlight, ranking, trend)              | [2026-08-18-home-discovery-jobs.md](../notes/2026-08-18-home-discovery-jobs.md)                                                                               |
+| 105  | 2026-08-18 | Prelaunch quality bar (always-on agent rule)                 | [2026-08-18-prelaunch-quality-bar.md](../notes/2026-08-18-prelaunch-quality-bar.md)                                                                           |
+| 106  | 2026-08-18 | Ranking chart + honest Popular destination                   | [2026-08-18-ranking-chart.md](../notes/2026-08-18-ranking-chart.md)                                                                                           |
+| 107  | 2026-08-18 | Publish with Us complete creator intake                      | [2026-08-18-creators-intake.md](../notes/2026-08-18-creators-intake.md)                                                                                       |
+| 108  | 2026-08-18 | Help / FAQ / Contact support funnel                          | [2026-08-18-support-funnel.md](../notes/2026-08-18-support-funnel.md)                                                                                         |
+| 109  | 2026-08-18 | Categories sort labels match Home                            | [2026-08-18-categories-sort-labels.md](../notes/2026-08-18-categories-sort-labels.md)                                                                         |
+| 110  | 2026-08-18 | Publish with Us intake polish                                | [2026-08-18-creators-intake-polish.md](../notes/2026-08-18-creators-intake-polish.md)                                                                         |
+| 111  | 2026-08-19 | Help, FAQ, Contact support pages perfect                     | [2026-08-19-support-pages-perfect.md](../notes/2026-08-19-support-pages-perfect.md)                                                                           |
+| 112  | 2026-08-19 | Contact pitch fields for Publish with Us                     | [2026-08-19-contact-pitch-fields.md](../notes/2026-08-19-contact-pitch-fields.md)                                                                             |
+| 113  | 2026-08-19 | Contact Demo inbox hours + FAQ a6 a10 a11                    | [2026-08-19-support-hours-faq-fill.md](../notes/2026-08-19-support-hours-faq-fill.md)                                                                         |
+| 114  | 2026-08-19 | Series ratings on catalog + Highest Rated                    | [2026-08-19-series-ratings.md](../notes/2026-08-19-series-ratings.md)                                                                                         |
+| 115  | 2026-08-19 | Series rating star hit cells 44 by 24                        | [2026-08-19-series-rating-hit-target.md](../notes/2026-08-19-series-rating-hit-target.md)                                                                     |
+| 116  | 2026-08-19 | Pitch funnel four-point align                                | [2026-08-19-creators-pitch-align.md](../notes/2026-08-19-creators-pitch-align.md)                                                                             |
+| 117  | 2026-08-19 | Popular rank hang-overlap                                    | [2026-08-19-popular-rank-overlap.md](../notes/2026-08-19-popular-rank-overlap.md)                                                                             |
+| 118  | 2026-08-19 | 404 recovery to hand-off bar                                 | [2026-08-19-404-recovery.md](../notes/2026-08-19-404-recovery.md)                                                                                             |
+| 119  | 2026-08-19 | Popular ranks inside the cover                               | [2026-08-19-popular-rank-on-cover.md](../notes/2026-08-19-popular-rank-on-cover.md)                                                                           |
+| 120  | 2026-08-19 | Help hub layout + Footer FAQ                                 | [2026-08-19-help-hub-footer-faq.md](../notes/2026-08-19-help-hub-footer-faq.md)                                                                               |
+| 121  | 2026-08-19 | 404 recovery page polish                                     | [2026-08-19-404-recovery-polish.md](../notes/2026-08-19-404-recovery-polish.md)                                                                               |
+| 122  | 2026-08-19 | Popular rank bottom-left cover pocket                        | [2026-08-19-popular-rank-pocket.md](../notes/2026-08-19-popular-rank-pocket.md)                                                                               |
+| 123  | 2026-08-19 | Host HTTP 404 for unknown SPA paths                          | [2026-08-19-host-http-404.md](../notes/2026-08-19-host-http-404.md)                                                                                           |
+| 124  | 2026-08-19 | Popular rank white glyph on the cover                        | [2026-08-19-popular-rank-glyph.md](../notes/2026-08-19-popular-rank-glyph.md)                                                                                 |
+| 125  | 2026-08-19 | Popular rank white offset kick                               | [2026-08-19-popular-rank-glyph-kick.md](../notes/2026-08-19-popular-rank-glyph-kick.md)                                                                       |
+| 126  | 2026-08-19 | Legal pages layered notice + honesty                         | [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md)                                                                             |
+| 127  | 2026-08-19 | Popular rank white lip follows digit geometry                | [2026-08-19-popular-rank-glyph-lip.md](../notes/2026-08-19-popular-rank-glyph-lip.md)                                                                         |
+| 128  | 2026-08-19 | Legal TOC thin primary scrollbar                             | [2026-08-19-legal-toc-scrollbar.md](../notes/2026-08-19-legal-toc-scrollbar.md)                                                                               |
+| 129  | 2026-08-19 | Home Updated vs New split                                    | [2026-08-19-updated-new-split.md](../notes/2026-08-19-updated-new-split.md)                                                                                   |
+| 130  | 2026-08-19 | Series hub Continue, tags, thumbs, related                   | [2026-08-19-series-hub.md](../notes/2026-08-19-series-hub.md)                                                                                                 |
+| 131  | 2026-08-19 | Search destination empty landing                             | [2026-08-19-search-destination.md](../notes/2026-08-19-search-destination.md)                                                                                 |
+| 132  | 2026-08-19 | Categories polish search SEO empty recovery                  | [2026-08-19-categories-polish.md](../notes/2026-08-19-categories-polish.md)                                                                                   |
+| 133  | 2026-08-19 | Reader chrome episode sheet prefs keyboard                   | [2026-08-19-reader-chrome.md](../notes/2026-08-19-reader-chrome.md)                                                                                           |
+| 134  | 2026-08-19 | Guest Start here rail                                        | [2026-08-19-guest-start-here.md](../notes/2026-08-19-guest-start-here.md)                                                                                     |
+| 135  | 2026-08-19 | Author profile `/author/:id`                                 | [2026-08-19-author-profile.md](../notes/2026-08-19-author-profile.md)                                                                                         |
+| 136  | 2026-08-19 | Auth reading room                                            | [2026-08-19-auth-reading-room.md](../notes/2026-08-19-auth-reading-room.md)                                                                                   |
+| 137  | 2026-08-19 | Hero heading and duplicate CTA                               | [2026-08-19-hero-heading-cta.md](../notes/2026-08-19-hero-heading-cta.md)                                                                                     |
+| 138  | 2026-08-19 | Reader swipe + pinch                                         | [2026-08-19-reader-gestures.md](../notes/2026-08-19-reader-gestures.md)                                                                                       |
+| 139  | 2026-08-19 | Nav Login carries return `from`                              | [2026-08-19-nav-login-return.md](../notes/2026-08-19-nav-login-return.md)                                                                                     |
+| 140  | 2026-08-19 | Subscribe + 18+ content rating                               | [2026-08-19-subscribe-age-gate.md](../notes/2026-08-19-subscribe-age-gate.md)                                                                                 |
+| 141  | 2026-08-19 | Categories browse + `/ranking` path                          | [2026-08-19-categories-ranking-browse.md](../notes/2026-08-19-categories-ranking-browse.md)                                                                   |
+| 142  | 2026-08-19 | Account hub to hand-off bar                                  | [2026-08-19-account-hub.md](../notes/2026-08-19-account-hub.md)                                                                                               |
+| 143  | 2026-08-19 | Categories chart chrome (no podium)                          | [2026-08-19-categories-chart-chrome.md](../notes/2026-08-19-categories-chart-chrome.md)                                                                       |
+| 144  | 2026-08-19 | Hub series comments                                          | [2026-08-19-hub-comments.md](../notes/2026-08-19-hub-comments.md)                                                                                             |
+| 145  | 2026-08-19 | Search Demo searches chips                                   | [2026-08-19-search-demo-trending.md](../notes/2026-08-19-search-demo-trending.md)                                                                             |
+| 146  | 2026-08-19 | Auth portal split-card                                       | [2026-08-19-auth-split-card.md](../notes/2026-08-19-auth-split-card.md)                                                                                       |
+| 147  | 2026-08-19 | Home For You rail                                            | [2026-08-19-for-you.md](../notes/2026-08-19-for-you.md)                                                                                                       |
+| 148  | 2026-08-19 | Author Follow on catalog profiles                            | [2026-08-19-author-follow.md](../notes/2026-08-19-author-follow.md)                                                                                           |
+| 149  | 2026-08-19 | Auth split-card photo curtain                                | [2026-08-19-auth-split-curtain.md](../notes/2026-08-19-auth-split-curtain.md)                                                                                 |
+| 150  | 2026-08-19 | Home Daily weekday board                                     | [2026-08-19-daily.md](../notes/2026-08-19-daily.md)                                                                                                           |
+| 151  | 2026-08-19 | Wait-for-free on premium episodes                            | [2026-08-19-wait-for-free.md](../notes/2026-08-19-wait-for-free.md)                                                                                           |
+| 152  | 2026-08-19 | Catalog Premium chip to top-left                             | [2026-08-19-catalog-premium-left.md](../notes/2026-08-19-catalog-premium-left.md)                                                                             |
+| 153  | 2026-08-19 | Home Daily upcoming episode drops                            | [2026-08-19-daily-drops.md](../notes/2026-08-19-daily-drops.md)                                                                                               |
+| 154  | 2026-08-19 | Daily / Updated / New Demo honesty                           | [2026-08-19-discovery-time-family.md](../notes/2026-08-19-discovery-time-family.md)                                                                           |
+| 155  | 2026-08-21 | Skeleton layout (155a) + contract (155b; sheen reverted 156) | [2026-08-21-skeleton-production-contract.md](../notes/2026-08-21-skeleton-production-contract.md); [layout](../notes/2026-08-21-page-skeletons-match-live.md) |
+| 156  | 2026-08-21 | Restore skeleton pulse, remove sheen                         | [2026-08-21-skeleton-pulse-restore.md](../notes/2026-08-21-skeleton-pulse-restore.md)                                                                         |
+| 157  | 2026-08-21 | Lock skeleton docs to pulse + current contract               | [2026-08-21-skeleton-docs-truth.md](../notes/2026-08-21-skeleton-docs-truth.md)                                                                               |
+| 158  | 2026-08-21 | Lock Daily skeleton cap                                      | [2026-08-21-daily-skeleton-cap.md](../notes/2026-08-21-daily-skeleton-cap.md)                                                                                 |
+| 159  | 2026-08-21 | Match Home hero skeleton chrome                              | [2026-08-21-hero-skeleton-chrome.md](../notes/2026-08-21-hero-skeleton-chrome.md)                                                                             |
+| 160  | 2026-08-21 | Home skeleton Continue / For You by session                  | [2026-08-21-home-skeleton-auth-rails.md](../notes/2026-08-21-home-skeleton-auth-rails.md)                                                                     |
+| 161  | 2026-08-21 | Unhook account pages from catalog loading                    | [2026-08-21-account-skeleton-triggers.md](../notes/2026-08-21-account-skeleton-triggers.md)                                                                   |
+| 162  | 2026-08-22 | Search landing live chrome + Reader chrome                   | [2026-08-22-search-reader-skeleton-chrome.md](../notes/2026-08-22-search-reader-skeleton-chrome.md)                                                           |
+| 163  | 2026-08-22 | Search query live chrome                                     | [2026-08-22-search-query-skeleton-chrome.md](../notes/2026-08-22-search-query-skeleton-chrome.md)                                                             |
+| 164  | 2026-08-22 | Categories skeleton live chrome                              | [2026-08-22-categories-skeleton-chrome.md](../notes/2026-08-22-categories-skeleton-chrome.md)                                                                 |
+| 165  | 2026-08-23 | Reader first-panel fetchpriority + async decode              | [2026-08-23-reader-panel-priority.md](../notes/2026-08-23-reader-panel-priority.md)                                                                           |
+| 166  | 2026-08-23 | Reader imageSizes consume + Admin wiki item 21               | [2026-08-23-reader-panel-sizes.md](../notes/2026-08-23-reader-panel-sizes.md)                                                                                 |
+| 167  | 2026-08-23 | Trust stored catalog (stop seed wipe)                        | [2026-08-23-trust-stored-catalog.md](../notes/2026-08-23-trust-stored-catalog.md)                                                                             |
+| 168  | 2026-08-23 | Consume Admin coinPackages on /coins                         | [2026-08-23-portal-coin-packages.md](../notes/2026-08-23-portal-coin-packages.md)                                                                             |
+| 169  | 2026-08-23 | Reserved genre-rail chevron slot                             | [2026-08-23-genre-rail-chevron-slot.md](../notes/2026-08-23-genre-rail-chevron-slot.md)                                                                       |
+| 170  | 2026-08-24 | Portal pnpm + Turbo monorepo plumbing                        | [2026-08-24-monorepo-workspace.md](../notes/2026-08-24-monorepo-workspace.md)                                                                                 |
+| 171  | 2026-08-24 | API skeleton (`apps/api`)                                    | [2026-08-24-api-skeleton.md](../notes/2026-08-24-api-skeleton.md)                                                                                             |
+| 172  | 2026-08-24 | Portal catalog HTTP read (`GET /api/catalog`)                | [2026-08-24-catalog-http-read.md](../notes/2026-08-24-catalog-http-read.md)                                                                                   |
+| 173  | 2026-08-24 | Portal settings HTTP read (`GET /api/settings`)              | [2026-08-24-settings-http-read.md](../notes/2026-08-24-settings-http-read.md)                                                                                 |
+| 174  | 2026-08-24 | Reader auth httpOnly cookie                                  | [2026-08-24-reader-auth-cookie.md](../notes/2026-08-24-reader-auth-cookie.md)                                                                                 |
+| 175  | 2026-08-24 | Wallet authority + paywall strip                             | [2026-08-24-wallet-paywall-strip.md](../notes/2026-08-24-wallet-paywall-strip.md)                                                                             |
+| 176  | 2026-08-25 | Named integration slots (schema + honesty)                   | [2026-08-25-named-integration-slots.md](../notes/2026-08-25-named-integration-slots.md)                                                                       |
+| 177  | 2026-08-25 | Love in Seoul MM title + schema 14                           | [2026-08-25-love-in-seoul-mm-title.md](../notes/2026-08-25-love-in-seoul-mm-title.md)                                                                         |
+| 178  | 2026-08-25 | Vite SSR/hybrid infrastructure (public routes)               | [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md)                                                                         |
+| 179  | 2026-08-25 | Server meta + ComicSeries JSON-LD + dynamic sitemap          | [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md)                                                                         |
+| 180  | 2026-08-25 | /mm locale URLs + hreflang en/my/x-default                   | [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md)                                                                         |
+| 181  | 2026-08-25 | Series OG image generation (1200x630)                        | [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md)                                                                         |
+| 182  | 2026-08-26 | HeroBook3D cover after SSR onLoad miss                       | [2026-08-26-hero-cover-ssr-onload.md](../notes/2026-08-26-hero-cover-ssr-onload.md)                                                                           |
+| 183  | 2026-08-26 | Catalog cover after SSR onLoad miss                          | [2026-08-26-catalog-cover-ssr-onload.md](../notes/2026-08-26-catalog-cover-ssr-onload.md)                                                                     |
+| 184  | 2026-08-27 | Local pnpm dev back to Vite SPA                              | [2026-08-27-dev-spa-default.md](../notes/2026-08-27-dev-spa-default.md)                                                                                       |
 
 ---
 
@@ -1462,9 +1492,249 @@ Demo seed retuned so Home Updated is older series with later `updatedAt` (Shadow
 
 ---
 
+## Impl Phase 155 — Skeleton layout (155a) + production contract (155b) (2026-08-21)
+
+**Status:** Done
+
+One Impl number, two same-day passes. **155a** layout: guest Home, Daily lip, hub comments, Library/Author bones ([2026-08-21-page-skeletons-match-live.md](../notes/2026-08-21-page-skeletons-match-live.md)). **155b** contract: CatalogStatus, cover `imageLoaded` setters, extra page skeletons, reader prefetch; sheen added then reverted in 156 ([2026-08-21-skeleton-production-contract.md](../notes/2026-08-21-skeleton-production-contract.md)). Route page skeletons (no splash). Continue / For You / related rails omitted (CLS). Convention: [loading-states.md](../conventions/loading-states.md). Docs map: [2026-08-21-skeleton-docs-truth.md](../notes/2026-08-21-skeleton-docs-truth.md).
+
+---
+
+## Impl Phase 156 — Restore skeleton pulse, remove sheen (2026-08-21)
+
+**Status:** Done
+
+Skeleton primitive is Tailwind `animate-pulse` again. Sheen CSS, `coverSheenClass`, and unused `SkeletonLibraryCard` removed. Cover overlays (BookCard, DailyDropCard, HeroBook3D, Author avatar) pulse until `onLoad`. **155a** section order unchanged. **155b** extras (CatalogStatus, setters, extra page skeletons, reader prefetch) stayed. Note: [2026-08-21-skeleton-pulse-restore.md](../notes/2026-08-21-skeleton-pulse-restore.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 157 — Lock skeleton docs to pulse + current contract (2026-08-21)
+
+**Status:** Done
+
+Docs-only. Wiki + session match current code: pulse (no sheen); 155a layout vs 155b contract labeled; hub omits Other works; CatalogStatus sits above nav. No `src/` changes. Note: [2026-08-21-skeleton-docs-truth.md](../notes/2026-08-21-skeleton-docs-truth.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 158 — Lock Daily skeleton cap (2026-08-21)
+
+**Status:** Done
+
+Docs-only. Home Daily skeleton (155a bones, unchanged) is **7** weekday chips + **6** `SkeletonDailyDropCard` lip bones (index 0–5) as **cap / reserved slots**, not a promised count. Empty/`dailyEmpty` after catalog load only. Do not bind Demo 1–3. No `src/` changes. Note: [2026-08-21-daily-skeleton-cap.md](../notes/2026-08-21-daily-skeleton-cap.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 159 — Match Home hero skeleton chrome (2026-08-21)
+
+**Status:** Done
+
+Home hero skeleton reuses live static `/banner/banner.png` plus the gray-950 gradient overlay. `bg-gray-950` is banner-layer fallback only (not a solid black section). Dark-tone bones and `z-10` copy column kept. Genre chips and catalog rails stay white. Daily and Continue / For You untouched. Note: [2026-08-21-hero-skeleton-chrome.md](../notes/2026-08-21-hero-skeleton-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 160 — Home skeleton Continue / For You by session (2026-08-21)
+
+**Status:** Done
+
+Home catalog skeleton follows session: guest = Start here only; signed-in = Continue xor Start here plus For You 6 as cap. Continue bones are a horizontal cap-12 shelf. Catalog-loading paint uses `readSession` + `listHistory` (not `EngagementContext.history`). Hero 159 and Daily 158 unchanged. Note: [2026-08-21-home-skeleton-auth-rails.md](../notes/2026-08-21-home-skeleton-auth-rails.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 161 — Unhook account pages from catalog loading (2026-08-21)
+
+**Status:** Done
+
+Profile and Notifications no longer wait on catalog `isLoading`; skeleton files stay on disk. Coins page skeleton is off the route; Buy / wallet paint immediately. Unlock titles show one row bone per wallet key while catalog joins (`coins-unlocked-pending`), not a fake empty state. Library stays catalog-gated. Note: [2026-08-21-account-skeleton-triggers.md](../notes/2026-08-21-account-skeleton-triggers.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 162 — Search landing live chrome + Reader chrome (2026-08-22)
+
+**Status:** Done
+
+Search no-query catalog wait paints live h1, search field, demo chips, recent from localStorage, and Go here. Genre chips (8) and Popular / New Releases cards (`DISCOVERY_RAIL_CAP` 6) stay reserved bones. Query 12-card branch unchanged (reserved cap). Reader skeleton matches live header/footer from reader prefs; close uses route series id; strip height stays unguessed. Categories wash/chevron parked. Note: [2026-08-22-search-reader-skeleton-chrome.md](../notes/2026-08-22-search-reader-skeleton-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 163 — Search query live chrome (2026-08-22)
+
+**Status:** Done
+
+Search hasQuery catalog wait paints live h1, filled search field, clear, tabs without counts, status, All genres, and sort. Named genre chips (8) and result lists stay reserved bones (webtoons 12 / authors 6 / episodes 6 caps). Busy region does not wrap the search field. Landing 162, Categories wash/chevron, and reader strip stay parked. Note: [2026-08-22-search-query-skeleton-chrome.md](../notes/2026-08-22-search-query-skeleton-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 164 — Categories skeleton live chrome (2026-08-22)
+
+**Status:** Done
+
+Categories catalog wait paints live masthead from the sort job (ranked wash plus Numbered chart / Popular). Status and sort stay live from the URL. Genre names stay 8 reserved bones with no overflow chevron; count stays a bone; 24 cards and ranks unchanged. Search 162/163 and Reader strip parked. Note: [2026-08-22-categories-skeleton-chrome.md](../notes/2026-08-22-categories-skeleton-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 165 — Reader first-panel fetchpriority + async decode (2026-08-23)
+
+**Status:** Done
+
+Live strip panel 0 is eager with `fetchPriority` high; panel 1 stays eager without high; later panels stay lazy; all successful panels use `decoding="async"` and `h-auto`. No guessed skeleton strip height, no `width`/`height` attrs, no shared schema change. Note: [2026-08-23-reader-panel-priority.md](../notes/2026-08-23-reader-panel-priority.md). Convention: [reader-chrome.md](../conventions/reader-chrome.md).
+
+---
+
+## Impl Phase 166 — Reader imageSizes consume + Admin wiki item 21 (2026-08-23)
+
+**Status:** Done
+
+Optional `Episode.imageSizes?`; live `<img width height>` only when both integers > 0; Demo omits sizes; `applyCatalogSeed` unchanged in this Impl. At ship, Admin item 21 was markdown only; Admin persist later shipped as Admin Impl **27**. CLS ≤ 0.1 not claimed. Note: [2026-08-23-reader-panel-sizes.md](../notes/2026-08-23-reader-panel-sizes.md). Convention: [reader-chrome.md](../conventions/reader-chrome.md).
+
+---
+
+## Impl Phase 167 — Trust stored catalog (stop seed wipe) (2026-08-23)
+
+**Status:** Done
+
+`applyCatalogSeed` is identity. Schema **13** stored catalog (Admin + `imageSizes`) survives load. Empty catalogs stay empty. Demo refresh stays schema bump / first-run mocks. Admin persist is Impl **27** shipped. CLS ≤ 0.1 not claimed (QA measure of a sized episode). Note: [2026-08-23-trust-stored-catalog.md](../notes/2026-08-23-trust-stored-catalog.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 168 — Consume Admin coinPackages on /coins (2026-08-23)
+
+**Status:** Done
+
+`/coins` reads optional `SharedData.coinPackages` from `softgate-shared-data` (schema 13). Missing / non-array → `coinData.ts` six packs. `[]` → empty shop. Invalid rows skipped; metal/glow derived in the UI only. Checkout still `demoTopUp(coins+bonus)`. Schema not bumped. Admin repo untouched. Note: [2026-08-23-portal-coin-packages.md](../notes/2026-08-23-portal-coin-packages.md).
+
+---
+
+## Impl Phase 169 — Reserved genre-rail chevron slot (2026-08-23)
+
+**Status:** Done
+
+`GenreRailChevron` always reserves the right min-size slot on Categories, Home Genres, and Search landing. The Show more genres button paints only when `canScrollRight`. Skeletons use the inert slot only. Home Continue stays conditional. Search hasQuery has no this slot. Guessed Reader strip and CLS ≤ 0.1 stay unclaimed. Note: [2026-08-23-genre-rail-chevron-slot.md](../notes/2026-08-23-genre-rail-chevron-slot.md). Conventions: [categories-browse.md](../conventions/categories-browse.md), [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 170 — Portal monorepo plumbing (2026-08-24)
+
+**Status:** Done
+
+pnpm workspaces + Turborepo on this portal repo. Vite app lives at `apps/portal`. `@softgate/contracts` is a Zod envelope skeleton. `@softgate/shared` is unchanged catalog types/mock. No `apps/api`. Catalog still localStorage. Admin dashboard repo untouched. Note: [2026-08-24-monorepo-workspace.md](../notes/2026-08-24-monorepo-workspace.md).
+
+---
+
+## Impl Phase 171 — API skeleton (2026-08-24)
+
+**Status:** Done
+
+`apps/api` is a Hono Node TypeScript skeleton (`@softgate/api`). `GET /health` returns the contracts envelope with `persist: "stub"`. Env validation, CORS allowlist (`CLIENT_URL` plus optional `ADMIN_URL`), and TLS-ready cookie helpers ship; health does not set cookies. No `/api/data`, Prisma, R2, or Brevo runtime. Portal catalog stays localStorage. Named later: PostgreSQL + Prisma, Cloudflare R2, Brevo. Note: [2026-08-24-api-skeleton.md](../notes/2026-08-24-api-skeleton.md). ADR: [007-backend-integrations.md](../decisions/007-backend-integrations.md).
+
+---
+
+## Impl Phase 172 — Portal catalog HTTP read (2026-08-24)
+
+**Status:** Done
+
+When `VITE_USE_MOCK_API=false`, portal `DataContext` `GET`s `/api/catalog` (published read model: webtoons, episodes, authors, genres, optional `coinPackages`). Envelope `{ data }` via `@softgate/contracts`. No whole-`SharedData` `PUT` / `/api/data` (still 404). Mock default still uses schema-13 localStorage. Persist remains stub; `publishedCatalogFrom` filters drafts and keeps scheduled + premium images. `applyCatalogSeed` stays identity. Note: [2026-08-24-catalog-http-read.md](../notes/2026-08-24-catalog-http-read.md). Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
+
+---
+
+## Impl Phase 173 — Portal settings HTTP read (2026-08-24)
+
+**Status:** Done
+
+Portal consumes `maintenanceMode`, `allowRegistration`, and `contactEmail` from `GET /api/settings` when mock is off. Stub persist returns Admin seed defaults (`contactEmail: admin@softgatecomic.com`). Mock keeps registration open and uses fallback `support@softgatecomic.com` when email is missing. Maintenance closes catalog/reader/account surfaces; `/login` and info/legal stay open. `/register` is gated. `defaultLanguage` is on the payload and unused. Note: [2026-08-24-settings-http-read.md](../notes/2026-08-24-settings-http-read.md). Convention: [portal-settings-read.md](../conventions/portal-settings-read.md).
+
+---
+
+## Impl Phase 174 — Reader auth httpOnly cookie (2026-08-24)
+
+**Status:** Done
+
+Reader register/login/logout/me/refresh on `apps/api` with bcryptjs hashes and `sg_reader` / `sg_reader_refresh` httpOnly cookies. Portal mock still uses localStorage accounts; `VITE_USE_MOCK_API=false` uses the cookie API as source of truth. Profile write APIs are not in this Impl (`AUTH_PROFILE_NOT_LIVE`). Guest access unchanged. Persist users are in-memory stub. Note: [2026-08-24-reader-auth-cookie.md](../notes/2026-08-24-reader-auth-cookie.md). Convention: [portal-auth-http.md](../conventions/portal-auth-http.md).
+
+---
+
+## Impl Phase 175 — Wallet authority + paywall strip (2026-08-24)
+
+**Status:** Done
+
+Stub wallet ledger + paywall image strip on `apps/api` when mock is off. `GET /api/catalog` optional cookie (never 401) empties locked premium `images` and keeps `imageSizes`. `GET/POST /api/wallet/*` seed 150, Demo top-up, unlock by server `coinPrice`. Portal mock still uses `softgate_wallet_v1`. HTTP does not write that key. Guest wait-for-free unchanged. Note: [2026-08-24-wallet-paywall-strip.md](../notes/2026-08-24-wallet-paywall-strip.md). Convention: [portal-wallet-http.md](../conventions/portal-wallet-http.md).
+
+---
+
+## Impl Phase 176 — Named integration slots (2026-08-25)
+
+**Status:** Done
+
+Optional env slots for PostgreSQL, Cloudflare R2, and Brevo plus a Prisma 6 schema mirroring stub users/wallet/refresh. Runtime persist stays `kind: "stub"` even when `DATABASE_URL` is set. No migrate, no `@prisma/client` persist, no R2/Brevo SDKs, no portal change. Note: [2026-08-25-named-integration-slots.md](../notes/2026-08-25-named-integration-slots.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 177 — Love in Seoul MM title + schema 14 (2026-08-25)
+
+**Status:** Done
+
+Demo series id `2` MM title is `ဆိုးလ်မြို့က ချစ်ခြင်းတရား`. EN and cover path unchanged. Envelope **14** so stored catalogs pick up the seed (`applyCatalogSeed` stays identity). Forest Spirit and other cover-brand MMs stay Latin. Admin repo untouched. Note: [2026-08-25-love-in-seoul-mm-title.md](../notes/2026-08-25-love-in-seoul-mm-title.md). Convention: [catalog-tiles.md](../conventions/catalog-tiles.md), [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 178 — Vite SSR/hybrid infrastructure (2026-08-25)
+
+**Status:** Done
+
+Public routes server-rendered on the existing Vite 6 + React Router 6 stack (no framework swap). SSR-safety pass (i18n `document` guard, `DataContext` seed → effect, `CommentsThread`/`HeroSpotlight` deterministic initializers), `entry-client`/`entry-server` split with per-request i18n clone and `SsrResponseContext` real 404s, `index.html` placeholders, `server/dev.ts` + `server/index.ts` (Hono), Vercel `api/ssr.ts` + rewrites, `template.html` rename. Node-env `SsrRenderSmoke` tests. Note: [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md). Convention: [portal-seo-ssr.md](../conventions/portal-seo-ssr.md).
+
+---
+
+## Impl Phase 179 — Server meta + JSON-LD + dynamic sitemap (2026-08-25)
+
+**Status:** Done
+
+Explicit `path`-derived canonicals (no `window.location` fallback), reader `noindex, follow` with no JSON-LD. `ComicSeries` + `BreadcrumbList` on hubs, `WebSite` + `SearchAction` + `Organization` on home; `Book`/`Article` builders removed. Dynamic `/sitemap.xml` from the shared catalog (`lastmod`, cover images, hreflang alternates) via build script + dev route; static sitemap deleted; `robots.txt` disallows `/read/` + private/auth for both locales. Note: [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md). Conventions: [portal-seo-ssr.md](../conventions/portal-seo-ssr.md), [portal-seo.md](../conventions/portal-seo.md).
+
+---
+
+## Impl Phase 180 — /mm locale URLs + hreflang (2026-08-25)
+
+**Status:** Done
+
+Myanmar mounted at `/mm/` via router `basename`; URL prefix is the public-page language source of truth (no Accept-Language redirect). `lib/locale/` helpers + `LocaleProvider`; `SEO.tsx` emits self-referencing canonical, `hreflang` `en`/`my`/`x-default`, `og:locale` `en_US`/`my_MM`; server sets `<html lang>` (`my` BCP47). `LanguageSwitcher` navigates to the alternate-locale URL. Note: [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md). Convention: [portal-seo-ssr.md](../conventions/portal-seo-ssr.md).
+
+---
+
+## Impl Phase 181 — Series OG image generation (2026-08-25)
+
+**Status:** Done
+
+`scripts/generate-og-images.ts` (sharp) composes 1200x630 per published series — blurred cover background, brand gradient, rounded cover, logo — into `public/og/<id>.png` (9 images). `ogImageForWebtoon` wires hubs to them; other pages keep the logo fallback. Honest demo assets only. Note: [2026-08-25-perfect-seo-ssr-hybrid.md](../notes/2026-08-25-perfect-seo-ssr-hybrid.md). Convention: [portal-seo-ssr.md](../conventions/portal-seo-ssr.md).
+
+---
+
+## Impl Phase 182 — HeroBook3D cover after SSR onLoad miss (2026-08-26)
+
+**Status:** Done
+
+`HeroBook3D` now reveals a cover when `img.complete && naturalWidth > 0` after mount, so SSR/hydration can no longer miss `onLoad` and leave the first spotlight slide (`opacity-0` + gray pulse) blank. `onLoad` / `onError` stay for in-flight decode. Catalog covers and `BookCard` defaults unchanged. Note: [2026-08-26-hero-cover-ssr-onload.md](../notes/2026-08-26-hero-cover-ssr-onload.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 183 — Catalog cover after SSR onLoad miss (2026-08-26)
+
+**Status:** Done
+
+`BookCard` and `DailyDropCard` call `onImageLoad` when `img.complete && naturalWidth > 0` after mount, so SSR/hydration can no longer miss `onLoad` and leave catalog rail covers (`opacity-0` + gray pulse) blank. Default `imageLoaded = true` unchanged. HeroBook3D, layout, badges, copy, Author avatar untouched. Note: [2026-08-26-catalog-cover-ssr-onload.md](../notes/2026-08-26-catalog-cover-ssr-onload.md). Convention: [loading-states.md](../conventions/loading-states.md).
+
+---
+
+## Impl Phase 184 — Local pnpm dev back to Vite SPA (2026-08-27)
+
+**Status:** Done
+
+Portal `dev` is Vite SPA again (`vite`); `dev:ssr` runs `server/dev.ts` for optional local SEO checks. Root `pnpm dev` still proxies portal `dev`. Production Perfect SEO unchanged: `build` + `api/ssr.ts` + `vercel.json`. Note: [2026-08-27-dev-spa-default.md](../notes/2026-08-27-dev-spa-default.md). Convention: [portal-seo-ssr.md](../conventions/portal-seo-ssr.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **155**).
+1. Take **next free Impl** (currently **185**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

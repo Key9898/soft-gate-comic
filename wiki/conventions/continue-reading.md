@@ -7,7 +7,7 @@ tags: [home, continue, engagement, progress]
 
 # Continue Reading
 
-Auth-gated Home shelf driven by `softgate_engage_v1` history (`EngagementContext`). Guests never see the rail. Empty authenticated history → omit the section (no placeholders). Home fills that empty slot with **Start here** (catalog rail, not fake progress) — see [guest-access.md](guest-access.md) and [discovery-honesty.md](discovery-honesty.md). Continue and Start here never show together.
+Auth-gated Home shelf driven by `softgate_engage_v1` history (`EngagementContext`). Guests never see the rail. Empty authenticated history → omit the section (no placeholders). Home fills that empty slot with **Start here** (catalog rail, not fake progress) — see [guest-access.md](guest-access.md) and [discovery-honesty.md](discovery-honesty.md). Continue and Start here never show together. Home **skeleton** reserves Continue vs Start here from `readSession` + `listHistory` on the catalog-loading paint ([2026-08-21-home-skeleton-auth-rails.md](../notes/2026-08-21-home-skeleton-auth-rails.md), Impl 160); live empty / complete-series filtering is unchanged.
 
 ## Resume route
 

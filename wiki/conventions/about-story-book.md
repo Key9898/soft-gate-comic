@@ -36,7 +36,7 @@ impl_updated: 95
 
 ## Data
 
-Chapters are `StoryChapter` + `mockStoryChapters` in `@softgate/shared`, **outside** `SharedData`. Optional `coverImage?: string`. Do not bump `SHARED_DATA_SCHEMA_VERSION` for story copy (catalog schema is independent; currently **13**). Portal reads via `getPublishedStoryChapters()` (`published === true`, `sortOrder` asc).
+Chapters are `StoryChapter` + `mockStoryChapters` in `@softgate/shared`, **outside** `SharedData`. Optional `coverImage?: string`. Do not bump `SHARED_DATA_SCHEMA_VERSION` for story copy (catalog schema is independent; currently **14**). Portal reads via `getPublishedStoryChapters()` (`published === true`, `sortOrder` asc).
 
 Chrome strings stay in i18n (`storyEpisodes`, `storyNowReading`, `storyChapterOf`). Chapter title/body are bilingual fields on the chapter records — do not change the six published strings for chrome work.
 

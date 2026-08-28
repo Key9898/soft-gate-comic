@@ -38,3 +38,4 @@ MM Daily uses ရွေးထားသည့် နေ့ (selected weekday), no
 - [catalog-tiles.md](../conventions/catalog-tiles.md)
 - [2026-08-19-daily-drops.md](2026-08-19-daily-drops.md)
 - [2026-08-19-updated-new-split.md](2026-08-19-updated-new-split.md)
+- [2026-08-21-daily-skeleton-cap.md](2026-08-21-daily-skeleton-cap.md) — Impl 158 Daily skeleton cap

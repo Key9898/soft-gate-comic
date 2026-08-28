@@ -71,7 +71,7 @@ export const mockPopularWebtoons: PopularWebtoon[] = [
   },
   {
     id: '2',
-    title: { mm: 'Love in Seoul', en: 'Love in Seoul' },
+    title: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
     views: 1800000,
     likes: 98000,
     revenue: 9800,
@@ -279,7 +279,7 @@ export const mockWebtoons: Webtoon[] = [
   },
   {
     id: '2',
-    title: { mm: 'Love in Seoul', en: 'Love in Seoul' },
+    title: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
     description: {
       mm: 'ဆိုးလ်မြို့၏ လူစည်ကားသော လမ်းမကြီးများတွင် ဖြစ်ပွားသော နွေးထွေးလှသည့် အချစ်ဇာတ်လမ်းတစ်ပုဒ်။',
       en: 'A heartwarming love story set in the bustling streets of Seoul.',
@@ -636,7 +636,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '6',
     webtoonId: '2',
-    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 1', en: 'Episode 1' },
     description: { mm: 'အပိုင်း 1 အကျဉ်းချုပ်', en: 'Episode 1 summary' },
     images: [
@@ -657,7 +657,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '7',
     webtoonId: '2',
-    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 2', en: 'Episode 2' },
     description: { mm: 'အပိုင်း 2 အကျဉ်းချုပ်', en: 'Episode 2 summary' },
     images: [
@@ -678,7 +678,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '8',
     webtoonId: '2',
-    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 3', en: 'Episode 3' },
     description: { mm: 'အပိုင်း 3 အကျဉ်းချုပ်', en: 'Episode 3 summary' },
     images: [
@@ -1488,17 +1488,6 @@ export const importFromJSON = (jsonString: string): SharedData => {
   }
 }
 
-export const downloadJSON = (data: SharedData, filename: string = 'softgate-data.json') => {
-  const json = exportToJSON(data)
-  const blob = new Blob([json], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
 function fillEpisodeStripImages() {
   const coverByWebtoon = Object.fromEntries(mockWebtoons.map((w) => [w.id, w.coverImage]))
   for (const episode of mockEpisodes) {
@@ -1512,44 +1501,6 @@ function fillEpisodeStripImages() {
 
 fillEpisodeStripImages()
 
-export const SHARED_DATA_SCHEMA_VERSION = 13
+export const SHARED_DATA_SCHEMA_VERSION = 14
 
-export const saveToLocalStorage = (data: SharedData) => {
-  localStorage.setItem(
-    'softgate-shared-data',
-    JSON.stringify({ schemaVersion: SHARED_DATA_SCHEMA_VERSION, data })
-  )
-}
-
-export const applyCatalogSeed = (stored: SharedData): SharedData => {
-  if (stored.webtoons.length === 0) return stored
-  return {
-    ...stored,
-    authors: mockAuthors,
-    genres: mockGenres,
-    webtoons: mockWebtoons,
-    episodes: mockEpisodes,
-  }
-}
-
-export const loadFromLocalStorage = (): SharedData | null => {
-  const stored = localStorage.getItem('softgate-shared-data')
-  if (!stored) return null
-  try {
-    const parsed = JSON.parse(stored) as {
-      schemaVersion?: number
-      data?: SharedData
-    }
-    if (
-      !parsed ||
-      typeof parsed !== 'object' ||
-      parsed.schemaVersion !== SHARED_DATA_SCHEMA_VERSION ||
-      !parsed.data
-    ) {
-      return null
-    }
-    return applyCatalogSeed(parsed.data)
-  } catch {
-    return null
-  }
-}
+export const applyCatalogSeed = (stored: SharedData): SharedData => stored

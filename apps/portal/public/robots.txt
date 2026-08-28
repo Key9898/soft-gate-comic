@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+Disallow: /read/
+Disallow: /library
+Disallow: /coins
+Disallow: /profile
+Disallow: /notifications
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /maintenance
+Disallow: /mm/read/
+Disallow: /mm/library
+Disallow: /mm/coins
+Disallow: /mm/profile
+Disallow: /mm/notifications
+Disallow: /mm/login
+Disallow: /mm/register
+Disallow: /mm/forgot-password
+Disallow: /mm/reset-password
+Disallow: /mm/maintenance
+
+Sitemap: https://softgatecomic.com/sitemap.xml

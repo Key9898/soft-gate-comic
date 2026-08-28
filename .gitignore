@@ -18,6 +18,7 @@ dist-ssr
 *.local
 build
 .storybook-out
+.turbo
 
 # Editor directories and files
 .vscode/*

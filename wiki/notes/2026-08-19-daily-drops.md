@@ -33,3 +33,4 @@ Categories Daily sort. Live CMS. Fake 23:59. `scheduledEpisodes[]` sidecar. Cade
 - [discovery-honesty.md](../conventions/discovery-honesty.md)
 - [catalog-tiles.md](../conventions/catalog-tiles.md)
 - [series-hub.md](../conventions/series-hub.md)
+- [2026-08-21-daily-skeleton-cap.md](2026-08-21-daily-skeleton-cap.md) — Impl 158 Daily skeleton cap (7 chips + 6 lip bones)

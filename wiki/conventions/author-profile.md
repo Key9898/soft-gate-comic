@@ -15,7 +15,7 @@ Applies to [`AuthorPage`](../../src/features/author/AuthorPage.tsx) at `/author/
 
 - Missing id → [`NotFoundPage`](../../src/features/info/NotFoundPage.tsx) `variant="author"`. Same three Go here destinations as other 404s. Do not restyle 404.
 - `h1` is `author.name[lang]`. Bio is `author.bio[lang]`.
-- Avatar: letter circle unless `author.avatar` is set. Do not add JPEGs or bump schema for avatars. Catalog field changes (`contentRating`, `uploadDay`, `freeAt`, `scheduledAt`) moved `SHARED_DATA_SCHEMA_VERSION` to **12**. Demo seed dates + omitted `uploadDay` values are schema **13**. `uploadDay?` stays on the type for CMS cadence; Daily uses `scheduledAt`.
+- Avatar: letter circle unless `author.avatar` is set. Do not add JPEGs or bump schema for avatars. Catalog field changes (`contentRating`, `uploadDay`, `freeAt`, `scheduledAt`) moved `SHARED_DATA_SCHEMA_VERSION` to **12**. Demo seed dates + omitted `uploadDay` values landed in schema **13**. Envelope is now **14** (Impl 177 title refresh). `uploadDay?` stays on the type for CMS cadence; Daily uses `scheduledAt`.
 - Series count = published catalog titles with `author.id` and `status !== 'draft'` — not `author.webtoonCount`.
 - Follow: signed-in `softgate_follows_v1` (`src/lib/follows/` + `FollowsContext`). Button is Follow / Following. Guest click → `/login` `from`. Honesty line: not a public follower count.
 - Omit `followerCount` UI and public sub counts (fabricated scale). No `/creators` CTA, no upload/payout.

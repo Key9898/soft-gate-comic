@@ -16,7 +16,7 @@ tags: [git, husky, wiki, sessions]
 
 ### pre-commit (`.husky/pre-commit`)
 
-Runs `npx lint-staged` — only touches **staged files**:
+Runs `pnpm exec lint-staged` — only touches **staged files**:
 
 | Pattern                  | Task                                |
 | ------------------------ | ----------------------------------- |
@@ -25,12 +25,11 @@ Runs `npx lint-staged` — only touches **staged files**:
 
 ### pre-push (`.husky/pre-push`)
 
-Runs `npm run check` — full project validation:
+Runs `pnpm check` — full project validation:
 
 1. `eslint .`
-2. `prettier --check`
-3. `vitest run`
-4. `tsc -b && vite build`
+2. `prettier --check` (portal src + api + packages + wiki)
+3. `turbo run test:run build`
 
 > If any step fails, push is **blocked**.
 
@@ -61,8 +60,8 @@ git push --no-verify
 
 ## prepare script
 
-`package.json` ထဲမှာ `prepare: husky` — `npm install` run တိုင်း hook auto-install။
-New team members: `git clone && npm install` → hooks ready.
+`package.json` ထဲမှာ `prepare: husky` — `pnpm install` run တိုင်း hook auto-install။
+New team members: `git clone && pnpm install` → hooks ready.
 
 ## Documentation dual-track
 
@@ -73,7 +72,7 @@ New team members: `git clone && npm install` → hooks ready.
 
 **Start here for SoftGate Comic phase history:**
 
-1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–154 (**next: 155**)
+1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–184 (**next: 185**)
 2. [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (`phases: [N]`)
 

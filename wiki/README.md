@@ -32,10 +32,13 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 155**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 185**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
-- [references/api-contract.md](references/api-contract.md) — frontend ↔ backend API contract
+- [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
+- [references/softgate-api.md](references/softgate-api.md) — SoftGate `apps/api` health + catalog + settings + reader auth + wallet + named slots (Impl 171–176)
+- Pre-backend Admin catalog/settings contract (list lives in Admin wiki; do not invent conflicting portal fields): [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)
+- [references/admin-coin-packages.md](references/admin-coin-packages.md) — Admin Impl 24 blob → consumed on `/coins` (Impl 168)
 - [references/avatar-manifest.md](references/avatar-manifest.md) — (legacy/reference; not SoftGate portal runtime)
 
 ### Conventions (SoftGate portal)
@@ -43,7 +46,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [conventions/brand-color-tokens.md](conventions/brand-color-tokens.md) — logo-aligned primary/accent
 - [conventions/portal-light-and-i18n-defaults.md](conventions/portal-light-and-i18n-defaults.md) — light-only + default EN
 - [conventions/portal-scroll-chrome.md](conventions/portal-scroll-chrome.md) — hide doc scrollbar + ScrollToTop (Impl 47); legal TOC thin bar (Impl 128); sticky-below-nav (Impl 143)
-- [conventions/hero-spotlight.md](conventions/hero-spotlight.md) — Home Spotlight rotator (Impl 49, jobs Impl 104)
+- [conventions/hero-spotlight.md](conventions/hero-spotlight.md) — Home Spotlight rotator (Impl 49, jobs Impl 104); Home skeleton same banner chrome (Impl 159)
 - [conventions/forced-product-motion.md](conventions/forced-product-motion.md) — product animations we add are forced (Impl 90); auth photo curtain (Impl 149)
 - [conventions/prelaunch-quality-bar.md](conventions/prelaunch-quality-bar.md) — international standard; beat peers on layout/info/UI (Impl 105)
 - [conventions/portal-seo.md](conventions/portal-seo.md) — per-route Helmet SEO + robots/sitemap; Vercel unknown-path HTTP 404 (Impl 123)
@@ -51,16 +54,22 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [conventions/border-radius.md](conventions/border-radius.md) — Soft-Expressive radius map (Impl 10) + book-media exception
 - [conventions/book-cover-presentation.md](conventions/book-cover-presentation.md) — BookCard + HeroBook3D (Impl 16–18)
 - [conventions/catalog-tiles.md](conventions/catalog-tiles.md) — discovery tile fields + New badge (Impl 96); Daily board (Impl 150); Premium top-left (Impl 152); Daily drops not catalog tiles (Impl 153); Demo Updated/New dates (Impl 154)
+- [conventions/portal-catalog-read.md](conventions/portal-catalog-read.md) — mock localStorage vs `GET /api/catalog` published read model (Impl 172)
+- [conventions/portal-settings-read.md](conventions/portal-settings-read.md) — mock vs `GET /api/settings` (Impl 173)
+- [conventions/portal-auth-http.md](conventions/portal-auth-http.md) — mock localStorage vs reader cookie API (Impl 174)
+- [conventions/portal-wallet-http.md](conventions/portal-wallet-http.md) — mock `softgate_wallet_v1` vs stub ledger + catalog strip (Impl 175)
+- [conventions/named-integrations.md](conventions/named-integrations.md) — optional Prisma/R2/Brevo env slots; persist stays stub (Impl 176)
+- [conventions/portal-seo-ssr.md](conventions/portal-seo-ssr.md) — Vite SSR/hybrid for public routes, hreflang `/mm`, dynamic sitemap, OG images (Impl 178–181)
 - [conventions/about-story-book.md](conventions/about-story-book.md) — About Our Story episode reader (Impl 87–95)
-- [conventions/categories-browse.md](conventions/categories-browse.md) — genre match + status URL (Impl 11); `/ranking` + Browse vs ranks (Impl 141); chart chrome (Impl 143)
+- [conventions/categories-browse.md](conventions/categories-browse.md) — genre match + status URL (Impl 11); `/ranking` + Browse vs ranks (Impl 141); chart chrome (Impl 143); reserved chevron slot (Impl 169)
 - [conventions/series-hub.md](conventions/series-hub.md) — webtoon detail Continue/Latest, tags, thumbs (Impl 130); author chip → profile (Impl 135); Subscribe + 18+ badge (Impl 140); series discussion (Impl 144); wait-for-free chips (Impl 151)
 - [conventions/content-rating.md](conventions/content-rating.md) — per-title ratings + 18+ Reader gate (Impl 140)
 - [conventions/author-profile.md](conventions/author-profile.md) — `/author/:id` catalog profile (Impl 135); Follow (Impl 148)
-- [conventions/reader-chrome.md](conventions/reader-chrome.md) — episode sheet, prefs, keyboard, image fit, swipe/pinch (Impl 133, 138); Profile Preferences same key (Impl 142)
+- [conventions/reader-chrome.md](conventions/reader-chrome.md) — episode sheet, prefs, keyboard, image fit, swipe/pinch (Impl 133, 138); Profile Preferences same key (Impl 142); first-panel fetchpriority + async decode (Impl 165); optional imageSizes consume (Impl 166)
 - [conventions/library-bookmarks.md](conventions/library-bookmarks.md) — Subscribe → Library store (Impl 25, rename Impl 140); History Continue (Impl 142)
-- [conventions/client-auth.md](conventions/client-auth.md) — local accounts + session (Impl 27); password min 8 (Impl 142); split-card (Impl 146); photo curtain (Impl 149)
-- [conventions/client-wallet.md](conventions/client-wallet.md) — Demo top-up + unlock (Impl 28–29); Coins honesty copy (Impl 142); wait-for-free (Impl 151)
-- [conventions/discovery-honesty.md](conventions/discovery-honesty.md) — author→profile, related, LS version (Impl 13–15, 135); Search Demo chips not live trends (Impl 145); For You (Impl 147); Author Follow not public count (Impl 148); Daily `uploadDay` (Impl 150); Daily scheduled drops (Impl 153); Demo Updated/New dates + copy (Impl 154)
+- [conventions/client-auth.md](conventions/client-auth.md) — local accounts + session (Impl 27); password min 8 (Impl 142); split-card (Impl 146); photo curtain (Impl 149); HTTP cookie SoT when mock off (Impl 174)
+- [conventions/client-wallet.md](conventions/client-wallet.md) — Demo top-up + unlock (Impl 28–29); Coins honesty copy (Impl 142); wait-for-free (Impl 151); HTTP stub ledger (Impl 175)
+- [conventions/discovery-honesty.md](conventions/discovery-honesty.md) — author→profile, related, LS version (Impl 13–15, 135); Search Demo chips not live trends (Impl 145); For You (Impl 147); Author Follow not public count (Impl 148); Daily `uploadDay` (Impl 150); Daily scheduled drops (Impl 153); Demo Updated/New dates + copy (Impl 154); trust stored catalog (Impl 167)
 - [conventions/library-engagement.md](conventions/library-engagement.md) — history + likes (Impl 31–32)
 - [conventions/continue-reading.md](conventions/continue-reading.md) — Home Continue + scroll resume (Impl 40–41)
 - [conventions/client-comments-notifications.md](conventions/client-comments-notifications.md) — comments + notifs (Impl 34–35); empty-first inbox + prefs (Impl 142); series hub thread (Impl 144)
@@ -69,7 +78,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [conventions/source-layering-and-imports.md](conventions/source-layering-and-imports.md) — layers + hybrid imports (Impl 19)
 - [conventions/legal-pages.md](conventions/legal-pages.md) — legal document shell + storage honesty (Impl 59–60, layered 126); TOC scrollbar (Impl 128); notif prefs row (Impl 142)
 - [conventions/guest-access.md](conventions/guest-access.md) — guest policy matrix + conversion nudges (Impl 67)
-- [conventions/loading-states.md](conventions/loading-states.md) — skeleton system + UI state stack (Impl 68)
+- [conventions/loading-states.md](conventions/loading-states.md) — skeleton system + UI state stack (Impl 68); 155a layout / 155b contract; pulse (Impl 156); docs truth (Impl 157); Daily skeleton cap (Impl 158); Home hero skeleton chrome (Impl 159); Home Continue / For You by session (Impl 160); account pages unhooked from catalog (Impl 161); Search landing live chrome + Reader chrome (Impl 162); Search query live chrome (Impl 163); Categories skeleton live chrome (Impl 164); reserved genre-rail chevron slot (Impl 169); HeroBook3D SSR `img.complete` reveal (Impl 182); BookCard / DailyDropCard SSR `img.complete` reveal (Impl 183)
 - [conventions/responsive-chrome.md](conventions/responsive-chrome.md) — nav breakpoint ladder + width budget + overflow guard (Impl 77); skip overlay (Impl 101)
 
 ### Decisions
@@ -80,6 +89,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [decisions/004-book-media-presentation.md](decisions/004-book-media-presentation.md) — book covers (Impl 16)
 - [decisions/005-herobook3d-ux.md](decisions/005-herobook3d-ux.md) — HeroBook3D UX harden (Impl 18)
 - [decisions/006-ranking-path.md](decisions/006-ranking-path.md) — `/ranking` is Popular (Impl 141)
+- [decisions/007-backend-integrations.md](decisions/007-backend-integrations.md) — Hono API + named Postgres/Prisma, R2, Brevo (Impl 171); catalog GET in 172 (persist still stub)
 
 ### Recent SoftGate notes
 
@@ -165,6 +175,34 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-08-19-wait-for-free.md](notes/2026-08-19-wait-for-free.md) — Impl 151
 - [notes/2026-08-19-daily-drops.md](notes/2026-08-19-daily-drops.md) — Impl 153
 - [notes/2026-08-19-discovery-time-family.md](notes/2026-08-19-discovery-time-family.md) — Impl 154
+- [notes/2026-08-21-page-skeletons-match-live.md](notes/2026-08-21-page-skeletons-match-live.md) — Impl 155a layout pass
+- [notes/2026-08-21-skeleton-production-contract.md](notes/2026-08-21-skeleton-production-contract.md) — Impl 155b production contract (sheen superseded by 156)
+- [notes/2026-08-21-skeleton-pulse-restore.md](notes/2026-08-21-skeleton-pulse-restore.md) — Impl 156 restore pulse, remove sheen
+- [notes/2026-08-21-skeleton-docs-truth.md](notes/2026-08-21-skeleton-docs-truth.md) — Impl 157 lock skeleton docs to pulse + current contract
+- [notes/2026-08-21-daily-skeleton-cap.md](notes/2026-08-21-daily-skeleton-cap.md) — Impl 158 lock Daily skeleton cap
+- [notes/2026-08-21-hero-skeleton-chrome.md](notes/2026-08-21-hero-skeleton-chrome.md) — Impl 159 match Home hero skeleton chrome
+- [notes/2026-08-21-home-skeleton-auth-rails.md](notes/2026-08-21-home-skeleton-auth-rails.md) — Impl 160 Home skeleton Continue / For You by session
+- [notes/2026-08-21-account-skeleton-triggers.md](notes/2026-08-21-account-skeleton-triggers.md) — Impl 161 unhook account pages from catalog loading
+- [notes/2026-08-22-search-reader-skeleton-chrome.md](notes/2026-08-22-search-reader-skeleton-chrome.md) — Impl 162 Search landing live chrome + Reader chrome
+- [notes/2026-08-22-search-query-skeleton-chrome.md](notes/2026-08-22-search-query-skeleton-chrome.md) — Impl 163 Search query live chrome
+- [notes/2026-08-22-categories-skeleton-chrome.md](notes/2026-08-22-categories-skeleton-chrome.md) — Impl 164 Categories skeleton live chrome
+- [notes/2026-08-23-reader-panel-priority.md](notes/2026-08-23-reader-panel-priority.md) — Impl 165 Reader first-panel fetchpriority + async decode
+- [notes/2026-08-23-reader-panel-sizes.md](notes/2026-08-23-reader-panel-sizes.md) — Impl 166 Reader imageSizes consume; Admin persist later Impl 27; CLS not claimed
+- [notes/2026-08-23-trust-stored-catalog.md](notes/2026-08-23-trust-stored-catalog.md) — Impl 167 Trust stored catalog (stop seed wipe); CLS not claimed
+- [notes/2026-08-23-portal-coin-packages.md](notes/2026-08-23-portal-coin-packages.md) — Impl 168 Consume Admin coinPackages on /coins
+- [notes/2026-08-23-genre-rail-chevron-slot.md](notes/2026-08-23-genre-rail-chevron-slot.md) — Impl 169 reserved genre-rail chevron slot
+- [notes/2026-08-24-monorepo-workspace.md](notes/2026-08-24-monorepo-workspace.md) — Impl 170 portal pnpm + Turbo monorepo
+- [notes/2026-08-24-api-skeleton.md](notes/2026-08-24-api-skeleton.md) — Impl 171 API skeleton
+- [notes/2026-08-24-catalog-http-read.md](notes/2026-08-24-catalog-http-read.md) — Impl 172 portal catalog HTTP read
+- [notes/2026-08-24-settings-http-read.md](notes/2026-08-24-settings-http-read.md) — Impl 173 portal settings HTTP read
+- [notes/2026-08-24-reader-auth-cookie.md](notes/2026-08-24-reader-auth-cookie.md) — Impl 174 reader auth httpOnly cookie
+- [notes/2026-08-24-wallet-paywall-strip.md](notes/2026-08-24-wallet-paywall-strip.md) — Impl 175 wallet authority + paywall strip
+- [notes/2026-08-25-named-integration-slots.md](notes/2026-08-25-named-integration-slots.md) — Impl 176 named integration slots
+- [notes/2026-08-25-love-in-seoul-mm-title.md](notes/2026-08-25-love-in-seoul-mm-title.md) — Impl 177 Love in Seoul MM title + schema 14
+- [notes/2026-08-25-perfect-seo-ssr-hybrid.md](notes/2026-08-25-perfect-seo-ssr-hybrid.md) — Impl 178–181 Vite SSR/hybrid + JSON-LD + dynamic sitemap + /mm hreflang + OG images
+- [notes/2026-08-26-hero-cover-ssr-onload.md](notes/2026-08-26-hero-cover-ssr-onload.md) — Impl 182 HeroBook3D cover after SSR onLoad miss
+- [notes/2026-08-26-catalog-cover-ssr-onload.md](notes/2026-08-26-catalog-cover-ssr-onload.md) — Impl 183 catalog cover after SSR onLoad miss
+- [notes/2026-08-27-dev-spa-default.md](notes/2026-08-27-dev-spa-default.md) — Impl 184 local pnpm dev back to Vite SPA
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150
 - [notes/2026-08-19-auth-split-curtain.md](notes/2026-08-19-auth-split-curtain.md) — Impl 149

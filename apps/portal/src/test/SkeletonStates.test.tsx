@@ -1,0 +1,322 @@
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render as renderPlain, screen } from '@testing-library/react'
+import { render } from './utils'
+import HomePage from '../features/home/HomePage'
+import HomePageSkeleton from '../features/home/components/HomePageSkeleton'
+import CategoriesPageSkeleton from '../features/categories/components/CategoriesPageSkeleton'
+import WebtoonDetailSkeleton from '../features/webtoon/components/WebtoonDetailSkeleton'
+import SearchPageSkeleton from '../features/search/components/SearchPageSkeleton'
+import LibraryPageSkeleton from '../features/library/components/LibraryPageSkeleton'
+import ReaderSkeleton from '../features/reader/components/ReaderSkeleton'
+import AuthorPageSkeleton from '../features/author/components/AuthorPageSkeleton'
+import NotificationsPageSkeleton from '../features/notifications/components/NotificationsPageSkeleton'
+import CoinsPageSkeleton from '../features/coins/components/CoinsPageSkeleton'
+import ProfilePageSkeleton from '../features/profile/components/ProfilePageSkeleton'
+
+const emptySharedData = JSON.stringify({
+  schemaVersion: 14,
+  data: {
+    webtoons: [],
+    episodes: [],
+    users: [],
+    comments: [],
+    authors: [],
+    genres: [],
+  },
+})
+
+afterEach(() => {
+  vi.mocked(window.localStorage.getItem).mockImplementation(() => null)
+})
+
+describe('page skeletons', () => {
+  const skeletons = [
+    ['HomePageSkeleton', <HomePageSkeleton key="h" />],
+    ['WebtoonDetailSkeleton', <WebtoonDetailSkeleton key="w" />],
+    ['LibraryPageSkeleton', <LibraryPageSkeleton key="l" />],
+    ['AuthorPageSkeleton', <AuthorPageSkeleton key="a" />],
+    ['NotificationsPageSkeleton', <NotificationsPageSkeleton key="n" />],
+    ['CoinsPageSkeleton', <CoinsPageSkeleton key="co" />],
+    ['ProfilePageSkeleton', <ProfilePageSkeleton key="p" />],
+  ] as const
+
+  it.each(skeletons)('%s renders an accessible busy region with no copy', (_name, element) => {
+    const { container, unmount } = renderPlain(element)
+    const region = screen.getByRole('status')
+    expect(region).toHaveAttribute('aria-busy', 'true')
+    expect(region).toHaveAttribute('aria-label')
+    if (_name === 'HomePageSkeleton') {
+      expect(container.textContent?.replace(/[1-6]/g, '')).toBe('')
+      expect(container.querySelectorAll('[data-testid="rank-mark"]').length).toBe(6)
+    } else {
+      expect(container.textContent).toBe('')
+    }
+    unmount()
+  })
+
+  it('HomePageSkeleton Daily uses weekday chips and lip cards without rank marks', () => {
+    const { container, unmount } = renderPlain(<HomePageSkeleton />)
+    expect(container.querySelectorAll('[data-testid="home-daily-weekday"]')).toHaveLength(7)
+    const drops = container.querySelectorAll('[data-testid="home-daily-drop"]')
+    expect(drops).toHaveLength(6)
+    drops.forEach((drop) => {
+      expect(drop.querySelectorAll('[data-testid="rank-mark"]')).toHaveLength(0)
+    })
+    unmount()
+  })
+
+  it('HomePageSkeleton hero uses live banner chrome not a solid gray-950 section', () => {
+    const { container, unmount } = renderPlain(<HomePageSkeleton />)
+    const hero = container.querySelector('section.safe-top')
+    expect(hero).toBeTruthy()
+    expect(hero?.classList.contains('bg-gray-950')).toBe(false)
+    const withBanner = Array.from(hero?.querySelectorAll('[style]') ?? []).some((el) =>
+      (el.getAttribute('style') ?? '').includes('/banner/banner.png')
+    )
+    expect(withBanner).toBe(true)
+    const withGradient = Array.from(hero?.querySelectorAll('div') ?? []).some((el) =>
+      el.className.includes('from-gray-950/70')
+    )
+    expect(withGradient).toBe(true)
+    unmount()
+  })
+
+  it('HomePageSkeleton guest has Start here and omits Continue and For You', () => {
+    const { unmount } = renderPlain(<HomePageSkeleton />)
+    expect(screen.getByTestId('home-start-here')).toBeInTheDocument()
+    expect(screen.queryByTestId('home-continue')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('home-for-you')).not.toBeInTheDocument()
+    expect(screen.getByTestId('genre-rail-chevron-slot')).toBeInTheDocument()
+    unmount()
+  })
+
+  it('HomePageSkeleton signed-in with history uses Continue shelf and For You cap', () => {
+    const { container, unmount } = renderPlain(<HomePageSkeleton signedIn hasContinueHistory />)
+    expect(screen.getByTestId('home-continue')).toBeInTheDocument()
+    expect(screen.getAllByTestId('home-continue-card')).toHaveLength(12)
+    expect(screen.queryByTestId('home-start-here')).not.toBeInTheDocument()
+    expect(screen.getByTestId('home-for-you')).toBeInTheDocument()
+    expect(container.querySelectorAll('[data-testid="rank-mark"]').length).toBe(6)
+    expect(container.textContent?.replace(/[1-6]/g, '')).toBe('')
+    unmount()
+  })
+
+  it('HomePageSkeleton signed-in without history uses Start here and For You cap', () => {
+    const { unmount } = renderPlain(<HomePageSkeleton signedIn />)
+    expect(screen.getByTestId('home-start-here')).toBeInTheDocument()
+    expect(screen.queryByTestId('home-continue')).not.toBeInTheDocument()
+    expect(screen.getByTestId('home-for-you')).toBeInTheDocument()
+    unmount()
+  })
+
+  it('WebtoonDetailSkeleton has a next-drop slot and three episode tabs', () => {
+    const { unmount } = renderPlain(<WebtoonDetailSkeleton />)
+    expect(screen.getByTestId('hub-next-drop-slot')).toBeInTheDocument()
+    expect(screen.getByTestId('hub-episode-tabs').children).toHaveLength(3)
+    unmount()
+  })
+
+  it('LibraryPageSkeleton has three tabs', () => {
+    const { unmount } = renderPlain(<LibraryPageSkeleton />)
+    expect(screen.getAllByTestId('library-tab')).toHaveLength(3)
+    unmount()
+  })
+
+  it('Categories browse skeleton paints live chrome and reserves catalog bones', () => {
+    const { container, unmount } = render(<CategoriesPageSkeleton />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Browse by Genre' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Browse' })).toBeInTheDocument()
+    expect(container.querySelector('.radial-wash-primary')).toBeNull()
+    expect(screen.queryByText('Numbered chart')).not.toBeInTheDocument()
+    expect(container.querySelectorAll('.book-media')).toHaveLength(24)
+    expect(container.querySelectorAll('[data-testid="rank-mark"]')).toHaveLength(0)
+    expect(screen.queryByRole('button', { name: 'Show more genres' })).not.toBeInTheDocument()
+    expect(screen.getByTestId('genre-rail-chevron-slot')).toBeInTheDocument()
+    const allStatuses = screen.getByRole('button', { name: /all statuses/i })
+    const sort = screen.getByRole('button', { name: 'Browse' })
+    const regions = screen.getAllByRole('status')
+    expect(regions.length).toBeGreaterThan(0)
+    regions.forEach((region) => {
+      expect(region).not.toContainElement(allStatuses)
+      expect(region).not.toContainElement(sort)
+    })
+    unmount()
+  })
+
+  it('Categories ranked skeleton paints chart wash and 24 rank marks', () => {
+    const { container, unmount } = render(<CategoriesPageSkeleton ranked />)
+    expect(container.querySelector('.radial-wash-primary')).toBeTruthy()
+    expect(screen.getByText('Numbered chart')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Popular' })).toBeInTheDocument()
+    expect(container.querySelectorAll('[data-testid="rank-mark"]')).toHaveLength(24)
+    expect(container.querySelectorAll('.book-media')).toHaveLength(24)
+    expect(screen.getByTestId('genre-rail-chevron-slot')).toBeInTheDocument()
+    unmount()
+  })
+
+  it('Categories skeleton status follows the URL-known chip', () => {
+    const { unmount } = render(<CategoriesPageSkeleton status="ongoing" />)
+    expect(screen.getByRole('button', { name: /^ongoing$/i }).className).toMatch(/bg-primary-50/)
+    expect(screen.getByRole('button', { name: /all statuses/i }).className).not.toMatch(
+      /bg-primary-50/
+    )
+    unmount()
+  })
+
+  it('Categories genre-slug skeleton does not lie Browse by Genre as the heading', () => {
+    const { container, unmount } = render(
+      <CategoriesPageSkeleton genreSlug="action" sort="browse" />
+    )
+    expect(screen.queryByRole('heading', { name: 'Browse by Genre' })).not.toBeInTheDocument()
+    expect(container.querySelectorAll('.book-media')).toHaveLength(24)
+    unmount()
+  })
+
+  it('Categories skeleton sort button follows the sort job', () => {
+    const { unmount } = render(<CategoriesPageSkeleton sort="new" />)
+    expect(screen.getByRole('heading', { level: 1, name: 'New Releases' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'New Releases' })).toBeInTheDocument()
+    unmount()
+  })
+
+  it('Search landing skeleton paints live chrome and reserves catalog rails', () => {
+    const { unmount } = render(<SearchPageSkeleton />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Demo searches' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Browse genres' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Popular' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'New Releases' })).toBeInTheDocument()
+    expect(screen.getByText(/no recent searches yet/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^categories$/i })).toHaveAttribute(
+      'href',
+      '/categories'
+    )
+    expect(screen.getByRole('link', { name: /^popular$/i })).toHaveAttribute('href', '/ranking')
+    expect(screen.getByRole('link', { name: /^new releases$/i })).toHaveAttribute(
+      'href',
+      '/categories?sort=new'
+    )
+    const viewAll = screen.getAllByRole('link', { name: /view all/i })
+    expect(viewAll[0]).toHaveAttribute('href', '/ranking')
+    expect(viewAll[1]).toHaveAttribute('href', '/categories?sort=new')
+    expect(screen.getByRole('button', { name: 'Horizon' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Seoul' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Shadow Knight' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Blood Moon' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Cyber Dreams' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Ko Zaw' })).toBeInTheDocument()
+    const search = screen.getByRole('searchbox')
+    const statuses = screen.getAllByRole('status')
+    expect(statuses.length).toBeGreaterThan(0)
+    statuses.forEach((region) => {
+      expect(region).not.toContainElement(search)
+    })
+    expect(document.querySelectorAll('.book-media')).toHaveLength(12)
+    expect(screen.getByTestId('genre-rail-chevron-slot')).toBeInTheDocument()
+    unmount()
+  })
+
+  it('Search landing skeleton reads recent searches from localStorage', () => {
+    vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
+      key === 'softgate_recent_searches' ? JSON.stringify(['Forest']) : null
+    )
+    const { unmount } = render(<SearchPageSkeleton />)
+    expect(screen.getByRole('button', { name: 'Forest' })).toBeInTheDocument()
+    expect(screen.queryByText(/no recent searches yet/i)).not.toBeInTheDocument()
+    unmount()
+  })
+
+  it('Search query skeleton paints live chrome and reserves result bones', () => {
+    window.history.pushState({}, '', '/search?q=Horizon')
+    const { unmount } = render(<SearchPageSkeleton hasQuery />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
+    expect(screen.getByRole('searchbox')).toHaveValue('Horizon')
+    expect(screen.getByRole('button', { name: /^close$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^webtoons$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^authors$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^episodes$/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /webtoons \(/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /all statuses/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /all genres/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /results for "horizon"/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /^\d+\s+results for/i })).not.toBeInTheDocument()
+    const search = screen.getByRole('searchbox')
+    const statuses = screen.getAllByRole('status')
+    expect(statuses.length).toBeGreaterThan(0)
+    statuses.forEach((region) => {
+      expect(region).not.toContainElement(search)
+    })
+    expect(document.querySelectorAll('.book-media')).toHaveLength(12)
+    expect(screen.queryByTestId('genre-rail-chevron-slot')).not.toBeInTheDocument()
+    unmount()
+  })
+
+  it('Search query skeleton authors tab hides webtoon filters', () => {
+    window.history.pushState({}, '', '/search?q=Horizon&tab=authors')
+    const { container, unmount } = render(<SearchPageSkeleton hasQuery />)
+    expect(screen.queryByRole('button', { name: /all statuses/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /all genres/i })).not.toBeInTheDocument()
+    expect(container.querySelectorAll('.book-media')).toHaveLength(0)
+    expect(container.querySelectorAll('.shape-circle')).toHaveLength(6)
+    unmount()
+  })
+
+  it('Search query skeleton episodes tab reserves six strip rows', () => {
+    window.history.pushState({}, '', '/search?q=Horizon&tab=episodes')
+    const { container, unmount } = render(<SearchPageSkeleton hasQuery />)
+    expect(screen.queryByRole('button', { name: /all statuses/i })).not.toBeInTheDocument()
+    expect(container.querySelectorAll('.book-media')).toHaveLength(0)
+    expect(container.querySelectorAll('[class*="aspect-[202/142]"]')).toHaveLength(6)
+    unmount()
+  })
+
+  it('Search query skeleton status and genre follow the URL', () => {
+    window.history.pushState({}, '', '/search?q=Horizon&status=ongoing&genre=romance')
+    const { unmount } = render(<SearchPageSkeleton hasQuery />)
+    expect(screen.getByRole('button', { name: /^ongoing$/i }).className).toMatch(/bg-primary-50/)
+    expect(screen.getByRole('button', { name: /all statuses/i }).className).not.toMatch(
+      /bg-primary-50/
+    )
+    expect(screen.getByRole('button', { name: /all genres/i }).className).not.toMatch(
+      /bg-primary-50/
+    )
+    unmount()
+  })
+
+  it('ReaderSkeleton paints header and footer chrome without strip tiles', () => {
+    const { container, unmount } = renderPlain(<ReaderSkeleton />)
+    expect(screen.getByTestId('reader-skeleton-header')).toBeInTheDocument()
+    expect(screen.getByTestId('reader-skeleton-footer')).toBeInTheDocument()
+    expect(container.firstElementChild?.className).toMatch(/bg-gray-950/)
+    expect(container.querySelectorAll('img')).toHaveLength(0)
+    expect(container.querySelectorAll('.book-media')).toHaveLength(0)
+    unmount()
+  })
+
+  it('ReaderSkeleton close uses the series id from the route', () => {
+    const { unmount } = renderPlain(<ReaderSkeleton webtoonId="1" />)
+    expect(screen.getByRole('link', { name: /close reader/i })).toHaveAttribute(
+      'href',
+      '/webtoon/1'
+    )
+    unmount()
+  })
+})
+
+describe('HomePage loading vs empty resolution', () => {
+  it('shows the empty state, not a skeleton, when shared data has zero webtoons', () => {
+    vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
+      key === 'softgate-shared-data' ? emptySharedData : null
+    )
+    render(<HomePage />)
+    expect(screen.getByText(/no webtoons here yet/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /refresh/i })).toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
+  it('renders real content with mock data and no busy region', () => {
+    render(<HomePage />)
+    expect(screen.getByText(/trending now/i)).toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+})

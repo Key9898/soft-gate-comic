@@ -11,41 +11,46 @@ Webtoon reader portal application designed for Myanmar readers.
 ## Stack at a glance
 
 - **React 18.3** + **TypeScript 5.5** (strict mode, project refs)
-- **Vite 5** — build tool, dev server
-- **Tailwind CSS v4** — CSS-first config (`@theme` in `src/index.css`), `@tailwindcss/vite` plugin
+- **Vite 6** — build tool, dev server (`apps/portal`)
+- **Tailwind CSS v4** — CSS-first config (`@theme` in `apps/portal/src/index.css`), `@tailwindcss/vite` plugin
 - **ESLint 9** + **Prettier 3** + `prettier-plugin-tailwindcss`
 - **Vitest 4** + Testing Library + jsdom + v8 coverage
 - **Husky 9** + **lint-staged 15** — git hooks
+- **pnpm 10** workspaces + **Turborepo**
 
 ## Entry points
 
-- `index.html` → `src/main.tsx` → `<App />` (`src/App.tsx`)
-- `src/index.css` — Tailwind import + design tokens
-- `vite.config.ts` — app build config
-- `vitest.config.ts` — test config (separate file because vitest bundles its own vite)
+- `apps/portal/index.html` (placeholders) → `apps/portal/src/entry-client.tsx` (hydrate) → `<App />` (`apps/portal/src/App.tsx`); SSR: `apps/portal/src/entry-server.tsx` via `apps/portal/server/` + `api/ssr.ts`
+- `apps/portal/src/index.css` — Tailwind import + design tokens
+- `apps/portal/vite.config.ts` — app build config
+- `apps/portal/vitest.config.ts` — test config (separate file because vitest bundles its own vite)
 
 ## Top-level commands
 
 ```bash
-npm run dev          # vite dev server (port 5173)
-npm run build        # tsc -b && vite build
-npm run preview      # serve production build
-npm run lint         # eslint .
-npm run lint:fix     # eslint . --fix
-npm run format       # prettier --write (src/ + wiki/)
-npm run format:check # prettier --check
-npm run test         # vitest (watch)
-npm run test:run     # vitest run (single)
-npm run test:ui      # vitest --ui
-npm run check        # lint + format:check + test:run + build  ← runs in pre-push
+pnpm dev                 # vite dev server (port 5173)
+pnpm dev:api             # apps/api Hono (port 3000)
+pnpm build               # turbo run build
+pnpm preview             # serve production build
+pnpm lint                # eslint .
+pnpm lint:fix            # eslint . --fix
+pnpm format              # prettier --write (portal src + packages + wiki)
+pnpm format:check        # prettier --check
+pnpm test                # vitest (watch)
+pnpm test:run            # turbo run test:run
+pnpm test:ui             # vitest --ui
+pnpm check               # lint + format:check + test:run + build  ← runs in pre-push
 ```
 
 ## Where things live
 
 | Area | Location |
 |---|---|
-| App source | `src/` |
-| Tests | `src/test/` |
+| App source | `apps/portal/src/` |
+| API | `apps/api/` |
+| Tests | `apps/portal/src/test/`, `apps/api/src/test/` |
+| Shared catalog types | `packages/shared` |
+| API contracts skeleton | `packages/contracts` |
 | Wiki (AI knowledge base) | `wiki/` |
 | Project rules (Cursor) | `.cursor/rules/` |
 | Project skills (Cursor) | `.cursor/skills/` |
@@ -54,4 +59,4 @@ npm run check        # lint + format:check + test:run + build  ← runs in pre-p
 
 ## Conventions in one line
 
-Strict TS, React 18, Tailwind v4 utility classes, semantic HTML, test colocated under `src/test/`, knowledge persisted in `wiki/`. Product motion we add is forced for every visitor (do not gate HeroBook3D enter/hover on `prefers-reduced-motion`) — `wiki/conventions/forced-product-motion.md`. Prelaunch quality bar: international standard; beat current webtoon sites on layout, information, and UI/UX; incomplete client data is not a reason to ship a thin page — `wiki/conventions/prelaunch-quality-bar.md`.
+Strict TS, React 18, Tailwind v4 utility classes, semantic HTML, test colocated under `src/test/`, knowledge persisted in `wiki/`. Product motion we add is forced for every visitor (do not gate HeroBook3D enter/hover on `prefers-reduced-motion`) — `wiki/conventions/forced-product-motion.md`. Prelaunch quality bar: international standard; beat current webtoon sites on layout, information, and UI/UX; incomplete client data is not a reason to ship a thin page — `wiki/conventions/prelaunch-quality-bar.md`. Catalog: mock/localStorage by default; `VITE_USE_MOCK_API=false` consumes `GET /api/catalog` — `wiki/conventions/portal-catalog-read.md`. Auth: mock localStorage by default; HTTP cookie session when mock is off — `wiki/conventions/portal-auth-http.md`. Wallet: mock `softgate_wallet_v1` by default; HTTP stub ledger + catalog strip when mock is off — `wiki/conventions/portal-wallet-http.md`. Named Prisma/R2/Brevo slots; persist stays stub — `wiki/conventions/named-integrations.md`.

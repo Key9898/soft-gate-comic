@@ -4,7 +4,7 @@ type: convention
 date: 2026-08-17
 tags: [catalog, bookcard, discovery, softgate]
 impl: 96
-impl_updated: 154
+impl_updated: 177
 ---
 
 # Catalog discovery tiles
@@ -38,7 +38,7 @@ Home rails (Impl 104 + 106) use different sort keys and may overlap:
 
 Hero is Spotlight flags, not `viewCount` top 5. Do not strip Hero ids from rails.
 
-Mock calendar is **2026 only**. Episode `createdAt` sits inside the parent series `createdAt`…`updatedAt` window. No published mock date after the current work day when last set (2026-08-19). Schema **13**. Demo omits `uploadDay` (optional CMS field; Daily uses `scheduledAt`). Home Updated leftover titles are the older series with the latest `updatedAt`. Stored `softgate-shared-data` catalogs are re-seeded on load (`applyCatalogSeed`) so a matching schema cannot keep 2023/2024 tile dates.
+Mock calendar is **2026 only**. Episode `createdAt` sits inside the parent series `createdAt`…`updatedAt` window. No published mock date after the current work day when last set (2026-08-19). Schema **14**. Love in Seoul MM is literary `ဆိုးလ်မြို့က ချစ်ခြင်းတရား` (Impl 177); other cover-brand MMs stay Latin. Demo omits `uploadDay` (optional CMS field; Daily uses `scheduledAt`). Home Updated leftover titles are the older series with the latest `updatedAt`. Stored `softgate-shared-data` catalogs are **kept** on load (Impl 167). Refresh Demo browsers by bumping `SHARED_DATA_SCHEMA_VERSION` or clearing the key — do not wipe Admin catalog on every visit.
 
 ## Code
 

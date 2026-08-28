@@ -3,7 +3,7 @@ title: Categories browse (genre + status)
 type: convention
 date: 2026-08-11
 tags: [categories, genres, softgate]
-impl_updated: 143
+impl_updated: 169
 ---
 
 # Categories browse
@@ -52,16 +52,19 @@ The count line is `{n} Webtoons`, plus ` · {genre}` when the genre is not all, 
 
 Ranked views (`/ranking` and `?sort=popular`) use an `<ol className="list-none">` grid (same RankMark-on-cover as Home Popular — **no** podium). Browse / New / Updated / Rated stay a `<div>` grid. Popular masthead adds `categories.rankingEyebrow` plus `radial-wash-primary` at `inset-0` on the masthead only (not the 450px info-page wash).
 
+Catalog `isLoading` skeleton mirrors that chart wash and sticky filters: status + sort stay live; genre names are **8** reserved bones plus an inert right chevron slot (`genre-rail-chevron-slot`); no working Show more genres button; count is reserved; 24 cards and `rankOnPage` unchanged. Unknown genre slug does not paint Browse by Genre as h1. Empty Search / Go here stays post-load only.
+
 `h1` + deck scroll away. Genre + status + count/sort stick below the nav via `@utility sticky-below-nav` (`top: calc(4rem + safe-area)`, `z-index: 30`). That band is a **sibling** of the results section, not a child of the masthead. Sort menu `z-50` stays inside the `z-30` stacking context so it cannot cover nav `z-40`.
 
 Genre/status/chevron chips are `min-h-11`. Genre chips do **not** use `uppercase` (Myanmar labels). Completed/Hiatus cover badges, the sort closed-button, and “Go here” keep `uppercase`.
 
-## Genre filter row chrome (Impl 24 + 26 + 43 + 143)
+## Genre filter row chrome (Impl 24 + 26 + 43 + 143 + 169)
 
-On `/categories`, `/categories/:slug`, `/ranking`, **and** Home `Genres:` strip (Impl 43):
+On `/categories`, `/categories/:slug`, `/ranking`, Home `Genres:` strip (Impl 43), **and** Search landing browse-genres (Impl 169):
 
 - Genre pills stay on **one horizontal row** (`flex-nowrap` + `overflow-x-auto`).
 - Native scrollbar is **hidden** via `scrollbar-hide`.
-- When more genres exist to the right, show a **reserved right-slot chevron**.
+- The right chevron **slot** is always reserved (`GenreRailChevron`). The Show more genres button paints only when `canScrollRight`. Do not mount/unmount the control.
 - Home keeps a fixed `Genres:` label outside the scroll rail; Categories has no label.
-- On Categories, status chips remain a separate wrap row below and share genre **size** metrics (`min-h-11 px-4.5 py-2.5`, `rounded-2xl`). Home genre chevron stays `min-h-[38px]`.
+- On Categories, status chips remain a separate wrap row below and share genre **size** metrics (`min-h-11 px-4.5 py-2.5`, `rounded-2xl`). Home and Search landing chevron stay `min-h-[38px]`.
+- Home Continue rail is **not** this pattern (still conditional). Search hasQuery genre chips stay wrap, no this slot.

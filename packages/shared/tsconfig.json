@@ -9,6 +9,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "composite": true,
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,

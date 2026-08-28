@@ -25,9 +25,9 @@ Hub rail lists other published series with the same `author.id` (exclude self, p
 
 ## Shared mock localStorage
 
-Key `softgate-shared-data` stores `{ schemaVersion, data }`. Current `SHARED_DATA_SCHEMA_VERSION` is **13**. Bump it in `@softgate/shared` when mock catalog data or shape must refresh stale browsers.
+Key `softgate-shared-data` stores `{ schemaVersion, data }`. Current `SHARED_DATA_SCHEMA_VERSION` is **14**. Bump it in `@softgate/shared` when mock catalog data or shape must refresh stale browsers.
 
-`loadFromLocalStorage` also runs `applyCatalogSeed`: if stored webtoons exist, series/episodes/authors/genres are replaced with the current mock. Schema match alone cannot freeze 2023 titles or dates after a seed edit. Empty stored catalogs stay empty (empty-state tests).
+`loadFromLocalStorage` still schema-gates. `applyCatalogSeed` is identity (Impl **167**): a matching schema keeps the stored catalog (Admin edits, `imageSizes`). Empty stored catalogs stay empty (empty-state tests). Demo first-run still uses mocks when the key is missing or the schema does not match. Leftover 2023 dates in a matching-schema blob: clear `softgate-shared-data` once, or bump schema when the mock seed itself must replace browsers.
 
 Catalog titles follow cover lettering (do not edit cover PNGs to match the database). Discovery tiles: [catalog-tiles.md](catalog-tiles.md). Home discovery jobs live in [`src/lib/catalog/discovery.ts`](../../src/lib/catalog/discovery.ts) plus Daily in [`src/lib/catalog/dailyDrops.ts`](../../src/lib/catalog/dailyDrops.ts):
 
@@ -36,7 +36,7 @@ Catalog titles follow cover lettering (do not edit cover PNGs to match the datab
 - Ranking — lifetime `viewCount`
 - Trending — `weeklyViewCount` (missing sorts as 0)
 - For You — signed-in only; Subscribe, then likes, then history, then same-genre neighbors by stable `id`. Never `viewCount` / `weeklyViewCount`. Hide when empty. Continue-rail ids excluded. No View all.
-- Daily — Home only. Unpublished `status === 'scheduled'` episodes with `scheduledAt`. Weekday is `Asia/Yangon`. One card per series per selected day (soonest that day). Sort `scheduledAt` asc, cap 6. No View all. Cards are not links. Countdown on the cover bottom lip; episode + Yangon time under the cover. Leave Daily only when published. Overdue stays Publishing soon. Hub Next drop is the global soonest scheduled episode. Do not use `uploadDay` or `Date.getDay()`. Do not strip Daily ids from Updated / Ranking / Trending. Copy: Upcoming episode drops this weekday. `uploadDay?` stays on the type for CMS cadence; Demo seed omits it.
+- Daily — Home only. Unpublished `status === 'scheduled'` episodes with `scheduledAt`. Weekday is `Asia/Yangon`. One card per series per selected day (soonest that day). Sort `scheduledAt` asc, cap 6. No View all. Cards are not links. Countdown on the cover bottom lip; episode + Yangon time under the cover. Leave Daily only when published. Overdue stays Publishing soon. Hub Next drop is the global soonest scheduled episode. Do not use `uploadDay` or `Date.getDay()`. Do not strip Daily ids from Updated / Ranking / Trending. Copy: Upcoming episode drops this weekday. `uploadDay?` stays on the type for CMS cadence; Demo seed omits it. Home skeleton reserves the same cap: 7 weekday chips + 6 lip bones (index 0–5); loading ≠ empty — see [loading-states.md](loading-states.md) and [2026-08-21-daily-skeleton-cap.md](../notes/2026-08-21-daily-skeleton-cap.md).
 - Updated — `updatedAt` (Home six-pack excludes New-rail ids). Not the Daily board. Demo leftover is older series with later `updatedAt` than the New six-pack launch windows.
 - New — `createdAt` top 6. Series birth, not new episodes.
 

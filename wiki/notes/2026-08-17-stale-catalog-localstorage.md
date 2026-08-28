@@ -24,6 +24,6 @@ Impl 96 put series `createdAt` in 2026 in `@softgate/shared`. Impl 97 moved epis
 
 Hard-refresh the portal (or clear `softgate-shared-data`) once. Tiles should read `8 Jan 2026`, `12 Mar 2026`, not 2023/2024.
 
-## Next
+## Later (Impl 167)
 
-Impl **99**
+`applyCatalogSeed` is identity so Admin catalog survives load. Do **not** use the Impl 98 wipe anymore. Refresh Demo browsers by bumping `SHARED_DATA_SCHEMA_VERSION` or clearing the key. Leftover 2023 dates in a matching-schema blob can reappear until that refresh.

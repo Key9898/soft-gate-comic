@@ -16,7 +16,7 @@ Home hero rotator for SoftGate Comic.
 
 - Slides: editorial Spotlight (`spotlight === true`, `spotlightOrder`). Cap **5**. Fallback to `viewCount` top 5 only when the catalog has **zero** spotlight flags.
 - Stable **`h1`**: `home.pageHeading` (“SoftGate Comic — Myanmar webtoons”). Eyebrow `<p>` is `home.spotlightKicker` (“This week's spotlight”). Series title is a large **`h2`** (does not rotate the page heading).
-- Static SoftGate `/banner/banner.png` + gradient — background does **not** rotate
+- Static SoftGate `/banner/banner.png` + gradient — background does **not** rotate. Home skeleton reuses the same static chrome ([2026-08-21-hero-skeleton-chrome.md](../notes/2026-08-21-hero-skeleton-chrome.md), Impl 159).
 - Rotating layer: title, deck, Start Reading / Save, `HeroBook3D`
 - Home cover is pointer-only (`coverTabbable={false}`): a `div` that `navigate`s to the hub on click — not a `Link`, not in the tab order, not in the SR link list. Keyboard users use Start Reading. Detail keeps the cover as a tabbable `Link`. Do not wrap a Home linked book in `aria-hidden`.
 - Same title may also appear in Ranking or Trending (different jobs). Do not strip Hero ids from rails.
@@ -35,6 +35,7 @@ Home hero rotator for SoftGate Comic.
 - `prefers-reduced-motion: reduce` → autoplay off (dots + next still work)
 - Do not steal focus on auto-advance
 - **Impl 52:** Never wrap `HeroBook3D` in `motion.*` (flattens CSS 3D). Book remounts via `key={current.id}` under a plain width wrapper.
+- **Impl 182:** First-slide cover must show on SSR hard refresh. `HeroBook3D` treats `img.complete && naturalWidth > 0` as loaded — do not rely on `onLoad` alone.
 - **Impl 83 + 84 + 86 + 99:** Home-only book enter is CSS `translate` on the **`.hero-book-enter` shell** (parent of `.hero-book-scene`). **Forced for every visitor.** Do not put enter on the `perspective` node. Pair row is named container `hero-pair`. **lg+** start is `calc(100% - 100cqi) 0` (under the title column). **Below lg** start is `0 calc(-100% - 2rem)` (under stacked copy). Axis switch is viewport `min-width: 1024px`, never `@container (min-width: 1024px)`. Title/deck/CTAs stay opaque (no Framer fade). Never Framer on the book, never `opacity < 1` on the 3D chain, never Tailwind `translate-*` on the width wrapper, never `container-type` on `.hero-book-scene`. Detail / About do not get `hero-book-enter`.
 - **Impl 88 + 90 + 92 + 99:** After enter, hover/focus-within **straightens then comes forward**. Rotate-only on `.hero-book`; camera-Z is `translate3d(0, 0, 3rem)` on `.hero-book-motion` (not screen-up, not Z on the same node as rotate). **Forced for every visitor** — not inside `no-preference`, and reduce must not `transition: none` the book, motion wrapper, or enter shell. No `hero-book-enter-hit` / `pointer-events` keyframes. See [forced-product-motion.md](forced-product-motion.md).
 
