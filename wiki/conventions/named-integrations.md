@@ -4,7 +4,7 @@ type: convention
 date: 2026-08-25
 updated: 2026-09-08
 tags: [api, prisma, r2, brevo, env, softgate]
-impl: 192
+impl: 193
 ---
 
 # Named backend integrations
@@ -77,5 +77,6 @@ Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access +
 - Api `test:run` waits on this package’s `build` (`apps/api/turbo.json`) so generate is not raced in parallel with `tsc`.
 - `PersistPort` is an explicit interface (`kind: 'stub' | 'prisma'`). Routes keep importing the module singleton `persist`.
 - `createObjectStore` throws `R2_NOT_CONFIGURED` or `R2_INVALID_KEY` via `IntegrationError`. `createMail` throws `MAIL_NOT_CONFIGURED` when unset. Forgot/reset HTTP routes call mail only if configured.
+- Git never holds live `DATABASE_URL`, R2, Brevo, or JWT values. `development` is the integration branch; use local gitignored env only.
 
-ADR: [007-backend-integrations.md](../decisions/007-backend-integrations.md), [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
+ADR: [007-backend-integrations.md](../decisions/007-backend-integrations.md), [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md), [012-development-branch.md](../decisions/012-development-branch.md).

@@ -9,8 +9,13 @@ tags: [git, husky, wiki, sessions]
 
 ## Branches
 
-- `main` — production / stable
-- Feature branches: `feat/<scope>`, `fix/<scope>`, `chore/<scope>`
+- `main` — product/UI; Vercel deploy; mock-safe default (`isMockApi()` unset stays mock)
+- `development` — leader **dev** stack integration track. Railway/R2/Brevo/JWT values live in **local gitignored env** only, never committed. Not auto-prod.
+- Feature branches: `feat/<scope>`, `fix/<scope>`, `chore/<scope>` — UI from `main`; infra against the leader dev stack from `development`
+
+Secrets never land on any branch. Vercel stays `main` only. An Admin repo `development` branch is a different repository — do not merge.
+
+ADR: [decisions/012-development-branch.md](decisions/012-development-branch.md).
 
 ## Hooks
 
@@ -72,7 +77,7 @@ New team members: `git clone && pnpm install` → hooks ready.
 
 **Start here for SoftGate Comic phase history:**
 
-1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–192 (**next: 193**)
+1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–193 (**next: 194**)
 2. [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (`phases: [N]`)
 
