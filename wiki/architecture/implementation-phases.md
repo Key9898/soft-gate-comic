@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `193`.**
+**Next Impl number to use: `194`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -222,6 +222,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 190  | 2026-09-08 | Library Subscribe/History/Likes HTTP persist                 | [2026-09-08-library-http-persist.md](../notes/2026-09-08-library-http-persist.md)                                                                             |
 | 191  | 2026-09-08 | Notifications inbox HTTP persist                             | [2026-09-08-notifications-http-persist.md](../notes/2026-09-08-notifications-http-persist.md)                                                                 |
 | 192  | 2026-09-08 | Notif toggles + reader prefs HTTP persist                    | [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md)                                                                                 |
+| 193  | 2026-09-08 | Leader dev env mapping (no runtime change)                   | [2026-09-08-leader-dev-env-mapping.md](../notes/2026-09-08-leader-dev-env-mapping.md)                                                                         |
 
 ---
 
@@ -1804,9 +1805,17 @@ Cookie API + stub/Prisma persist for notification toggles and reader display pre
 
 ---
 
+## Impl Phase 193 — Leader dev env mapping (2026-09-08)
+
+**Status:** Done
+
+Map leader **dev** JWT / R2 / Brevo onto existing `apps/api` slots in gitignored local env. Omit `DATABASE_URL` until the database name is known (set URL + down Postgres fails boot). No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Runtime TypeScript unchanged. Catalog/CMS, mock-off, migrate, Vercel, and prod keys stay out. Note: [2026-09-08-leader-dev-env-mapping.md](../notes/2026-09-08-leader-dev-env-mapping.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **193**).
+1. Take **next free Impl** (currently **194**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

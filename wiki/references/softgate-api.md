@@ -3,12 +3,14 @@ title: SoftGate Comic API
 type: reference
 date: 2026-08-24
 tags: [api, health, catalog, settings, auth, wallet, library, notifications, prefs, env, softgate]
-impl: 192
+impl: 193
 ---
 
 # SoftGate Comic API
 
 Runtime: [`apps/api`](../../apps/api) (`@softgate/api`). Legacy EDC HTTP lists stay in [api-contract.md](api-contract.md) and are not this product.
+
+Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/api/.env` (Impl 193). Omit `DATABASE_URL` until the database name is known. No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Live secrets are not in this file.
 
 ## Health
 

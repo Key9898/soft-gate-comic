@@ -4,12 +4,12 @@ type: convention
 date: 2026-08-25
 updated: 2026-09-08
 tags: [api, prisma, r2, brevo, env, softgate]
-impl: 192
+impl: 193
 ---
 
 # Named backend integrations
 
-PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Impl 185 swaps reader persist when `DATABASE_URL` is set. Impl 186 adds an R2 put helper. Impl 187 adds forgot/reset mail + token API. Catalog/CMS stay unwired.
+PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Impl 185 swaps reader persist when `DATABASE_URL` is set. Impl 186 adds an R2 put helper. Impl 187 adds forgot/reset mail + token API. Catalog/CMS stay unwired. Impl 193 maps leader **dev** fields onto these slots in gitignored local env; omit `DATABASE_URL` until the database name is known.
 
 ## Env slots
 
@@ -38,7 +38,7 @@ Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access +
 | `R2_PUBLIC_BASE_URL` set   | `publicUrl` = origin + `/` + full key under `portal/`             |
 
 - Shared bucket. This API’s keys are under `portal/` (`r2ObjectKey`). Do not use an `admin/` prefix here.
-- No `ACL` on put. No `R2_ENDPOINT` env. No upload HTTP routes. `GET /health` does not report R2.
+- No `ACL` on put. No `R2_ENDPOINT` env. Bucket is `R2_BUCKET`, not a path on the account host. No upload HTTP routes. `GET /health` does not report R2.
 - Boot does **not** fail if R2 is unset.
 
 ## Mail helper (Impl 187)
@@ -54,6 +54,7 @@ Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access +
 - Reset updates `passwordHash`, deletes the token, revokes refresh JTIs. Confirmation send errors swallowed.
 - `GET /health` does not report mail. Boot does **not** fail if Brevo is unset.
 - Portal HTTP drops Demo OTP. Mock OTP stepper does not persist password.
+- Transactional sender **name** in code is SoftGate Comic. No `BREVO_FROM_NAME` slot.
 
 ## Persist boot (Impl 185)
 
@@ -69,6 +70,7 @@ Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access +
 - Username lookup is case-insensitive (stub maps + Prisma `mode: 'insensitive'`).
 - Local Docker: `apps/api/docker-compose.yml` (`pnpm --filter @softgate/api db:up`) then `db:migrate`.
 - Shared Railway DB vs Admin schema is **not** assumed identical. This repo commits reader-table SQL only.
+- Leader public proxy still needs a **database name**. Omit `DATABASE_URL` until that name exists (set URL + down Postgres = boot fail). `.env.example` placeholder is fake (`CHANGE_ME_DBNAME` on `127.0.0.1`), not a live server.
 
 ## Schema vs check
 

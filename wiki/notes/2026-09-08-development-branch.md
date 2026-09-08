@@ -7,7 +7,7 @@ tags: [git, workflow, env, softgate]
 
 # Git development branch for leader dev stack
 
-Not a numbered Impl. `main` stays product/UI and Vercel. `development` is the long-lived track for the second leader’s **dev** PostgreSQL/R2/Brevo/JWT stack. Secrets stay in gitignored local env. Mock catalog is unchanged. Next product Impl remains **193**.
+Not a numbered Impl. `main` stays product/UI and Vercel. `development` is the long-lived track for the second leader’s **dev** PostgreSQL/R2/Brevo/JWT stack. Secrets stay in gitignored local env. Mock catalog is unchanged. Next product Impl remains **194**.
 
 ## What shipped
 
