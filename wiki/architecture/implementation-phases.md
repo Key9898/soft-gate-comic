@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `194`.**
+**Next Impl number to use: `193`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -222,7 +222,6 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 190  | 2026-09-08 | Library Subscribe/History/Likes HTTP persist                 | [2026-09-08-library-http-persist.md](../notes/2026-09-08-library-http-persist.md)                                                                             |
 | 191  | 2026-09-08 | Notifications inbox HTTP persist                             | [2026-09-08-notifications-http-persist.md](../notes/2026-09-08-notifications-http-persist.md)                                                                 |
 | 192  | 2026-09-08 | Notif toggles + reader prefs HTTP persist                    | [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md)                                                                                 |
-| 193  | 2026-09-08 | Git `development` branch for leader dev stack                | [2026-09-08-development-branch.md](../notes/2026-09-08-development-branch.md)                                                                                 |
 
 ---
 
@@ -1801,21 +1800,13 @@ Cookie API + stub/Prisma persist for the notifications inbox when mock is off. H
 
 **Status:** Done
 
-Cookie API + stub/Prisma persist for notification toggles and reader display prefs when mock is off. HTTP logged-in does not write `softgate_notif_prefs_v1` or `softgate_reader_prefs_v1`. Guest reader keeps the device reader key. No login merge. Do not seed. GET returns defaults without insert. `deleteReaderUser` / `clearAuth` drop prefs before `ReaderUser`. Note: [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md). Convention: [portal-prefs-http.md](../conventions/portal-prefs-http.md).
-
----
-
-## Impl Phase 193 — Git `development` branch for leader dev stack (2026-09-08)
-
-**Status:** Done
-
-`main` is product/UI and Vercel. `development` is the long-lived track for the leader **dev** stack. Secrets stay gitignored. Product 185–192 landed on `main` first. ADR: [012-development-branch.md](../decisions/012-development-branch.md). Note: [2026-09-08-development-branch.md](../notes/2026-09-08-development-branch.md). Convention: [02-workflow.md](../02-workflow.md).
+Cookie API + stub/Prisma persist for notification toggles and reader display prefs when mock is off. HTTP logged-in does not write `softgate_notif_prefs_v1` or `softgate_reader_prefs_v1`. Guest reader keeps the device reader key. No login merge. Do not seed. GET returns defaults without insert. `deleteReaderUser` / `clearAuth` drop prefs before `ReaderUser`. Note: [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md). Convention: [portal-prefs-http.md](../conventions/portal-prefs-http.md). Git `main` / `development` is documented in [02-workflow.md](../02-workflow.md) (not a numbered Impl).
 
 ---
 
 ## How to append
 
-1. Take **next free Impl** (currently **194**).
+1. Take **next free Impl** (currently **193**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

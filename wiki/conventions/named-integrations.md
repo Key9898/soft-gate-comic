@@ -4,7 +4,7 @@ type: convention
 date: 2026-08-25
 updated: 2026-09-08
 tags: [api, prisma, r2, brevo, env, softgate]
-impl: 193
+impl: 192
 ---
 
 # Named backend integrations

@@ -1,14 +1,13 @@
 ---
-title: Impl 193 — Git development branch for leader dev stack
+title: Git development branch for leader dev stack
 type: note
 date: 2026-09-08
 tags: [git, workflow, env, softgate]
-impl: 193
 ---
 
-# Impl 193 — Git development branch for leader dev stack
+# Git development branch for leader dev stack
 
-`main` stays product/UI and Vercel. `development` is the long-lived track for the second leader’s **dev** PostgreSQL/R2/Brevo/JWT stack. Secrets stay in gitignored local env. Mock catalog is unchanged.
+Not a numbered Impl. `main` stays product/UI and Vercel. `development` is the long-lived track for the second leader’s **dev** PostgreSQL/R2/Brevo/JWT stack. Secrets stay in gitignored local env. Mock catalog is unchanged. Next product Impl remains **193**.
 
 ## What shipped
 

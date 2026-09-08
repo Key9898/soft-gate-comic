@@ -3,7 +3,6 @@ title: Long-lived development branch for leader dev stack
 type: decision
 date: 2026-09-08
 tags: [git, env, railway, softgate]
-impl: 193
 ---
 
 # Long-lived development branch for leader dev stack

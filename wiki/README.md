@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 194**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 193**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
@@ -97,7 +97,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [decisions/009-r2-object-store.md](decisions/009-r2-object-store.md) — R2 helper not boot; `portal/` prefix; public URL env-only (Impl 186)
 - [decisions/010-brevo-mail.md](decisions/010-brevo-mail.md) — mail helper not boot; HTML in repo; enumeration-safe forgot (Impl 187)
 - [decisions/011-portal-http-local.md](decisions/011-portal-http-local.md) — example `false` + helper unset still mock; profile cookie writers (Impl 188)
-- [decisions/012-development-branch.md](decisions/012-development-branch.md) — `main` product/Vercel; `development` leader-dev track (Impl 193)
+- [decisions/012-development-branch.md](decisions/012-development-branch.md) — `main` product/Vercel; `development` leader-dev track
 
 ### Recent SoftGate notes
 
@@ -219,7 +219,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-08-notifications-http-persist.md](notes/2026-09-08-notifications-http-persist.md) — Impl 191 notifications inbox HTTP persist
 - [notes/2026-09-08-library-http-persist.md](notes/2026-09-08-library-http-persist.md) — Impl 190 library subscribe/history/likes HTTP persist
 - [notes/2026-09-08-prefs-http-persist.md](notes/2026-09-08-prefs-http-persist.md) — Impl 192 notif toggles + reader prefs HTTP persist
-- [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — Impl 193 git `development` branch for leader dev stack
+- [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150
 - [notes/2026-08-19-auth-split-curtain.md](notes/2026-08-19-auth-split-curtain.md) — Impl 149
