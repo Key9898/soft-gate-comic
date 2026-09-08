@@ -10,11 +10,21 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Skeleton, SkeletonSection, SkeletonText } from '../../../components/Skeleton'
-import { loadReaderPrefs } from '../../../lib/reader'
+import { loadReaderPrefs, type ReaderImageFit } from '../../../lib/reader'
 
-const ReaderSkeleton = ({ webtoonId }: { webtoonId?: string }) => {
+const ReaderSkeleton = ({
+  webtoonId,
+  darkMode: darkModeProp,
+  imageFit: imageFitProp,
+}: {
+  webtoonId?: string
+  darkMode?: boolean
+  imageFit?: ReaderImageFit
+}) => {
   const { t } = useTranslation()
-  const { darkMode, imageFit } = loadReaderPrefs()
+  const loaded = loadReaderPrefs()
+  const darkMode = darkModeProp ?? loaded.darkMode
+  const imageFit = imageFitProp ?? loaded.imageFit
   const tone = darkMode ? 'dark' : 'light'
   const chromeHover = darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
   const chromeBorder = darkMode

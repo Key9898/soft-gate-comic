@@ -20,9 +20,6 @@ import { isMockApi } from '../lib/api/isMockApi'
 
 export type { AuthUser }
 
-const AUTH_SYNC_KEYS = [SESSION_STORAGE_KEY]
-const AUTH_PROFILE_NOT_LIVE = 'AUTH_PROFILE_NOT_LIVE'
-
 interface RegisterData {
   username: string
   displayName: string
@@ -51,6 +48,10 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+const USER_KEY = 'softgate_user'
+const ACCOUNTS_KEY = 'softgate_accounts_v1'
+const AUTH_SYNC_KEYS = [SESSION_STORAGE_KEY, USER_KEY, ACCOUNTS_KEY]
 
 const applySession = (publicUser: AuthUser) => {
   promoteSessionAgeConfirm(publicUser.id)
@@ -182,7 +183,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateProfile = useCallback(
     async (data: UpdateProfileData) => {
-      if (!isMockApi()) throw new Error(AUTH_PROFILE_NOT_LIVE)
+      if (!isMockApi()) {
+        const body: Record<string, string> = {}
+        if (data.displayName !== undefined) body.displayName = data.displayName
+        if (data.email !== undefined) body.email = data.email
+        if (data.bio !== undefined) body.bio = data.bio
+        if (data.avatar !== undefined) body.avatar = data.avatar
+        const publicUser = await authFetch<AuthUser>('/api/auth/profile', {
+          method: 'POST',
+          body: JSON.stringify(body),
+        })
+        setUser(publicUser)
+        return
+      }
       if (!user) throw new Error('NOT_AUTHENTICATED')
       const account = getAccountByEmail(user.email)
       if (!account) throw new Error('ACCOUNT_MISSING')
@@ -211,7 +224,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const changePassword = useCallback(
     async (currentPassword: string, newPassword: string) => {
-      if (!isMockApi()) throw new Error(AUTH_PROFILE_NOT_LIVE)
+      if (!isMockApi()) {
+        await authFetch<{ ok: true }>('/api/auth/password', {
+          method: 'POST',
+          body: JSON.stringify({ currentPassword, newPassword }),
+        })
+        return
+      }
       if (!user) throw new Error('NOT_AUTHENTICATED')
       const account = getAccountByEmail(user.email)
       if (!account || account.password !== currentPassword) {
@@ -227,7 +246,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteAccount = useCallback(
     async (password: string) => {
-      if (!isMockApi()) throw new Error(AUTH_PROFILE_NOT_LIVE)
+      if (!isMockApi()) {
+        if (!user) throw new Error('NOT_AUTHENTICATED')
+        await authFetch<{ ok: true }>('/api/auth/delete-account', {
+          method: 'POST',
+          body: JSON.stringify({ password }),
+        })
+        deleteUserData(user.id)
+        setUser(null)
+        return
+      }
       if (!user) throw new Error('NOT_AUTHENTICATED')
       const account = getAccountByEmail(user.email)
       if (!account || account.password !== password) {

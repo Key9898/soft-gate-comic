@@ -14,7 +14,9 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
-import { MIN_PASSWORD_LENGTH } from '../../lib/auth'
+import { MIN_PASSWORD_LENGTH, isAllowedAvatarFile } from '../../lib/auth'
+import { AuthApiError } from '../../lib/api/authFetch'
+import { isMockApi } from '../../lib/api/isMockApi'
 import SEO from '../../components/SEO/SEO'
 import { useAuth } from '../../context/AuthContext'
 import { useLibrary } from '../../context/LibraryContext'
@@ -25,6 +27,10 @@ import WeeklyReadingChart from './components/WeeklyReadingChart'
 import AchievementsBadgeCenter from './components/AchievementsBadgeCenter'
 import NotificationSettingsMatrix from './components/NotificationSettingsMatrix'
 import ReaderPreferencesPanel from './components/ReaderPreferencesPanel'
+
+function authErrorCode(err: unknown) {
+  return err instanceof AuthApiError ? err.code : undefined
+}
 
 type TabType = 'profile' | 'settings' | 'preferences' | 'security'
 
@@ -37,6 +43,7 @@ const ProfilePage = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { user, logout, updateProfile, changePassword, deleteAccount } = useAuth()
+  const mock = isMockApi()
   const { bookmarks } = useLibrary()
   const { history, likedWebtoonIds } = useEngagement()
   const { unlockedEpisodeKeys, balance } = useWallet()
@@ -101,8 +108,14 @@ const ProfilePage = () => {
   ]
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const input = e.target
+    const file = input.files?.[0]
     if (!file) return
+    if (!isAllowedAvatarFile(file)) {
+      setStatusMessage(t('profilePage.avatarTooLarge'))
+      input.value = ''
+      return
+    }
     setAvatarUploading(true)
     try {
       const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -112,15 +125,16 @@ const ProfilePage = () => {
         reader.readAsDataURL(file)
       })
       await updateProfile({ avatar: dataUrl })
-      setStatusMessage(t('profilePage.savedLocally'))
+      setStatusMessage(mock ? t('profilePage.savedLocally') : t('profilePage.saved'))
     } catch (err) {
-      setStatusMessage(
-        err instanceof Error && err.message === 'AUTH_PROFILE_NOT_LIVE'
-          ? t('profilePage.notLiveOnApi')
-          : t('profilePage.avatarFailed')
-      )
+      if (authErrorCode(err) === 'VALIDATION_ERROR') {
+        setStatusMessage(t('profilePage.avatarTooLarge'))
+      } else {
+        setStatusMessage(t('profilePage.avatarFailed'))
+      }
     } finally {
       setAvatarUploading(false)
+      input.value = ''
     }
   }
 
@@ -148,10 +162,19 @@ const ProfilePage = () => {
     try {
       await updateProfile({ displayName, email, bio })
       setIsEditing(false)
-      setStatusMessage(t('profilePage.savedLocally'))
+      setStatusMessage(mock ? t('profilePage.savedLocally') : t('profilePage.saved'))
     } catch (err) {
-      if (err instanceof Error && err.message === 'AUTH_PROFILE_NOT_LIVE') {
-        setStatusMessage(t('profilePage.notLiveOnApi'))
+      const code = authErrorCode(err)
+      if (code === 'NOT_AUTHENTICATED') {
+        navigate('/login')
+        return
+      }
+      if (code === 'EMAIL_TAKEN') {
+        setErrors({ email: t('auth.emailTaken') })
+        return
+      }
+      if (code === 'VALIDATION_ERROR') {
+        setErrors({ displayName: t('profilePage.validationTooShort') })
         return
       }
       setErrors({ email: t('auth.emailTaken') })
@@ -182,10 +205,21 @@ const ProfilePage = () => {
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
-      setStatusMessage(t('profilePage.passwordUpdatedLocally'))
+      setStatusMessage(
+        mock ? t('profilePage.passwordUpdatedLocally') : t('profilePage.passwordUpdated')
+      )
     } catch (err) {
-      if (err instanceof Error && err.message === 'AUTH_PROFILE_NOT_LIVE') {
-        setStatusMessage(t('profilePage.notLiveOnApi'))
+      const code = authErrorCode(err)
+      if (code === 'NOT_AUTHENTICATED') {
+        navigate('/login')
+        return
+      }
+      if (code === 'PASSWORD_TOO_SHORT') {
+        setSecurityErrors({ newPassword: t('auth.passwordMinLength') })
+        return
+      }
+      if (code === 'INVALID_CREDENTIALS' || code === 'VALIDATION_ERROR') {
+        setSecurityErrors({ currentPassword: t('auth.loginFailed') })
         return
       }
       setSecurityErrors({ currentPassword: t('auth.loginFailed') })
@@ -206,11 +240,13 @@ const ProfilePage = () => {
       await deleteAccount(deletePassword)
       navigate('/')
     } catch (err) {
+      const code = authErrorCode(err)
+      if (code === 'NOT_AUTHENTICATED') {
+        navigate('/login')
+        return
+      }
       setSecurityErrors({
-        deletePassword:
-          err instanceof Error && err.message === 'AUTH_PROFILE_NOT_LIVE'
-            ? t('profilePage.notLiveOnApi')
-            : t('auth.loginFailed'),
+        deletePassword: t('auth.loginFailed'),
       })
     }
   }
@@ -247,7 +283,7 @@ const ProfilePage = () => {
                     <Edit3 className="text-primary-600 h-3.5 w-3.5" />
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/webp"
                       className="sr-only"
                       disabled={avatarUploading}
                       onChange={handleAvatarChange}

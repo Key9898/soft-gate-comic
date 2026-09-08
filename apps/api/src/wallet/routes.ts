@@ -40,7 +40,7 @@ export function createWalletApp(env: Env) {
   wallet.get('/me', async (c) => {
     const userId = await optionalReaderUserId(c, env)
     if (!userId) return jsonError(c, 'NOT_AUTHENTICATED', 401)
-    return c.json({ data: persist.getWallet(userId) })
+    return c.json({ data: await persist.getWallet(userId) })
   })
 
   wallet.post('/demo-topup', async (c) => {
@@ -57,7 +57,7 @@ export function createWalletApp(env: Env) {
     }
 
     return c.json({
-      data: persist.demoTopUp(userId, coins, parsed.data.description, parsed.data.packageId),
+      data: await persist.demoTopUp(userId, coins, parsed.data.description, parsed.data.packageId),
     })
   })
 
@@ -76,7 +76,7 @@ export function createWalletApp(env: Env) {
       return jsonError(c, 'VALIDATION_ERROR', 400)
     }
 
-    const result = persist.unlockEpisode(userId, webtoonId, episodeNumber)
+    const result = await persist.unlockEpisode(userId, webtoonId, episodeNumber)
     if (!result.ok) {
       return jsonError(c, result.reason, 400)
     }

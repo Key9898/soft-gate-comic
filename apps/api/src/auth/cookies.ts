@@ -17,8 +17,8 @@ export function readRefreshCookie(c: Context) {
 export async function issueSessionCookies(c: Context, env: Env, userId: string) {
   const access = await signAccessToken(env, userId)
   const refresh = await signRefreshToken(env, userId)
-  persist.saveRefreshJti(refresh.jti, userId)
-  persist.touchLastLogin(userId)
+  await persist.saveRefreshJti(refresh.jti, userId)
+  await persist.touchLastLogin(userId)
 
   const base = sessionCookieOptions(env)
   setCookie(c, ACCESS_COOKIE, access, { ...base, maxAge: ACCESS_MAX_AGE })

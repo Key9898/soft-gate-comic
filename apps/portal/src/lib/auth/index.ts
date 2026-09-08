@@ -15,3 +15,4 @@ export {
 export { safeReturnTo, type ReturnFrom } from './safeReturnTo'
 export { DEMO_PASSWORD_RESET_OTP, isDemoOtp } from './passwordResetMock'
 export { MIN_PASSWORD_LENGTH } from './passwordPolicy'
+export { MAX_AVATAR_FILE_BYTES, isAllowedAvatarFile } from './avatarPolicy'

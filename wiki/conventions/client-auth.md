@@ -5,7 +5,7 @@ date: 2026-08-11
 updated: 2026-08-24
 tags: [auth, localStorage, demo, reading-room]
 impl: 27
-impl_updated: 174
+impl_updated: 187
 ---
 
 # Client auth (mock-honest)
@@ -41,12 +41,10 @@ Auth is a **portal page** (`gray-50` + `radial-wash-primary`), not a full-bleed 
 
 [`safeReturnTo`](../../src/lib/auth/safeReturnTo.ts): same-origin relative paths only (`/` + not `//`, no `\`, no `http:`). Allows `/read/:id/1` (Start here) and other in-app `from` values. MainLayout Nav Login passes `state={{ from: location }}` (pathname + search). Login/Register already forward `from` when switching forms. ReaderLayout has no Nav. AuthLayout logo stays `/`.
 
-## Password reset (prepared for mail)
+## Password reset (Impl 187)
 
-- `/forgot-password` stepper: email → OTP → new password. Enumeration-safe (always advances after a valid-looking email). Logged-in email is the session mailbox and is not editable.
-- Demo OTP `000000` is on-page mock, **not emailed**. Resend repeats honesty.
-- Final submit does **not** write `password` (`upsertAccount` / `changePassword` unused here) until backend+mail.
-- `/reset-password/:token?` is the future emailed-link shell: missing token = incomplete link; token present skips OTP fields; submit still does not persist.
+- **Mock** (`VITE_USE_MOCK_API` is not `false`): `/forgot-password` stepper email → OTP `000000` → new password. Enumeration-safe. Logged-in email is read-only. Submit does **not** write `password`. `/reset-password/:token?` is a shell; missing token = incomplete link; submit still does not persist.
+- **HTTP:** Forgot posts `POST /api/auth/forgot` and shows check-inbox copy that does not claim mail was sent. No Demo OTP. `/reset-password/:token` posts `POST /api/auth/reset` and saves the password. Missing token does not call the API. No auto-login.
 - Signed-in users can still change password from Profile → Security with the current password.
 
 ## Cross-tab sync (Impl 65)
@@ -55,4 +53,4 @@ Auth is a **portal page** (`gray-50` + `radial-wash-primary`), not a full-bleed 
 
 ## Out of scope
 
-Firebase, OAuth providers, email delivery, cross-device sync, live OTP.
+Firebase, OAuth providers, live OTP.

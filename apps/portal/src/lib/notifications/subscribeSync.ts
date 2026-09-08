@@ -11,15 +11,38 @@ function subscribeNotificationId(webtoonId: string, episodeNumber: number): stri
   return `sub-${webtoonId}-${episodeNumber}`
 }
 
+export type SubscribeInboxIo = {
+  readList: (userId: string) => AppNotification[]
+  persist: (userId: string, list: AppNotification[]) => void
+  newEpisode?: boolean
+}
+
+const defaultInboxIo: SubscribeInboxIo = {
+  readList: (userId) => ensureNotifications(userId),
+  persist: (userId, list) => {
+    const store = readStore()
+    store.byUserId[userId] = list
+    writeStore(store)
+  },
+}
+
 export function syncSubscribeNotifications(
   userId: string,
   bookmarks: BookmarkRecord[],
   webtoons: Webtoon[],
-  episodes: Episode[]
+  episodes: Episode[],
+  stampLastNotified: (
+    userId: string,
+    webtoonId: string,
+    episodeNumber: number
+  ) => void = setLastNotifiedEpisodeNumber,
+  inbox: SubscribeInboxIo = defaultInboxIo
 ): AppNotification[] {
   if (!userId) return []
-  if (!getNotifPrefs(userId).newEpisode) return ensureNotifications(userId)
-  const list = ensureNotifications(userId)
+  const enabled =
+    typeof inbox.newEpisode === 'boolean' ? inbox.newEpisode : getNotifPrefs(userId).newEpisode
+  if (!enabled) return inbox.readList(userId)
+  const list = inbox.readList(userId)
   const titles = new Map(webtoons.map((webtoon) => [webtoon.id, webtoon.title]))
   let next = [...list]
   let changed = false
@@ -30,13 +53,13 @@ export function syncSubscribeNotifications(
     if (!latest) continue
     const last = bookmark.lastNotifiedEpisodeNumber
     if (last == null) {
-      setLastNotifiedEpisodeNumber(userId, bookmark.webtoonId, latest.episodeNumber)
+      stampLastNotified(userId, bookmark.webtoonId, latest.episodeNumber)
       continue
     }
     if (latest.episodeNumber <= last) continue
     const id = subscribeNotificationId(bookmark.webtoonId, latest.episodeNumber)
     if (next.some((item) => item.id === id)) {
-      setLastNotifiedEpisodeNumber(userId, bookmark.webtoonId, latest.episodeNumber)
+      stampLastNotified(userId, bookmark.webtoonId, latest.episodeNumber)
       continue
     }
     const title =
@@ -58,14 +81,13 @@ export function syncSubscribeNotifications(
     }
     next = [notification, ...next]
     changed = true
-    setLastNotifiedEpisodeNumber(userId, bookmark.webtoonId, latest.episodeNumber)
+    stampLastNotified(userId, bookmark.webtoonId, latest.episodeNumber)
   }
 
   if (changed) {
-    const store = readStore()
-    store.byUserId[userId] = next
-    writeStore(store)
+    inbox.persist(userId, next)
+    return next
   }
 
-  return ensureNotifications(userId)
+  return list
 }

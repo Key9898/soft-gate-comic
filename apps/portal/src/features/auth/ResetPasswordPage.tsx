@@ -5,6 +5,8 @@ import { Lock } from 'lucide-react'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import { MIN_PASSWORD_LENGTH } from '../../lib/auth'
+import { authFetch, AuthApiError } from '../../lib/api/authFetch'
+import { isMockApi } from '../../lib/api/isMockApi'
 import AuthSEO from './AuthSEO'
 
 const ResetPasswordPage = () => {
@@ -12,13 +14,17 @@ const ResetPasswordPage = () => {
   const { token } = useParams()
   const location = useLocation()
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from
+  const mock = isMockApi()
   const hasToken = Boolean(token)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
+  const [invalidToken, setInvalidToken] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const desc = mock ? t('auth.setNewPasswordDesc') : t('auth.setNewPasswordDescHttp')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const nextErrors: Record<string, string> = {}
     if (!password) {
@@ -33,19 +39,51 @@ const ResetPasswordPage = () => {
     }
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
-    setSubmitted(true)
+    if (mock) {
+      setSubmitted(true)
+      return
+    }
+    setBusy(true)
+    try {
+      await authFetch<{ ok: true }>('/api/auth/reset', {
+        method: 'POST',
+        body: JSON.stringify({ token, password }),
+      })
+      setSubmitted(true)
+    } catch (err) {
+      if (err instanceof AuthApiError && err.code === 'PASSWORD_TOO_SHORT') {
+        setErrors({ password: t('auth.passwordMinLength') })
+      } else if (err instanceof AuthApiError && err.code === 'RESET_TOKEN_INVALID') {
+        setInvalidToken(true)
+      } else {
+        setErrors({ password: t('auth.forgotHttpError') })
+      }
+    } finally {
+      setBusy(false)
+    }
   }
+
+  const showInvalid = !hasToken || invalidToken
 
   return (
     <>
-      <AuthSEO title={t('auth.seoReset')} description={t('auth.setNewPasswordDesc')} />
-      {hasToken ? (
+      <AuthSEO title={t('auth.seoReset')} description={desc} />
+      {showInvalid ? (
+        <>
+          <h1 className="text-2xl font-bold text-gray-900">{t('auth.invalidLink')}</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            {mock ? t('auth.invalidLinkDesc') : t('auth.invalidLinkDescHttp')}
+          </p>
+        </>
+      ) : (
         <>
           <h1 className="text-2xl font-bold text-gray-900">{t('auth.setNewPassword')}</h1>
-          <p className="mt-2 text-sm text-gray-600">{t('auth.setNewPasswordDesc')}</p>
+          <p className="mt-2 text-sm text-gray-600">{desc}</p>
           {submitted ? (
-            <p className="mt-6 rounded-2xl bg-amber-50 px-3 py-3 text-sm text-amber-900">
-              {t('auth.resetPrepared')} {t('auth.resetNotSaved')}
+            <p className="bg-primary-50 text-primary-900 mt-6 rounded-2xl px-3 py-3 text-sm">
+              {mock
+                ? `${t('auth.resetPrepared')} ${t('auth.resetNotSaved')}`
+                : t('auth.passwordResetDesc')}
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -79,16 +117,11 @@ const ResetPasswordPage = () => {
                 error={errors.confirmPassword}
                 leftIcon={<Lock className="h-5 w-5" />}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={busy}>
                 {t('auth.setNewPassword')}
               </Button>
             </form>
           )}
-        </>
-      ) : (
-        <>
-          <h1 className="text-2xl font-bold text-gray-900">{t('auth.invalidLink')}</h1>
-          <p className="mt-2 text-sm text-gray-600">{t('auth.invalidLinkDesc')}</p>
         </>
       )}
       <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm">
@@ -104,7 +137,7 @@ const ResetPasswordPage = () => {
           state={{ from }}
           className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:ring-2 focus-visible:outline-none"
         >
-          {t('auth.backToLogin')}
+          {submitted && !mock ? t('auth.continueToLogin') : t('auth.backToLogin')}
         </Link>
       </div>
     </>

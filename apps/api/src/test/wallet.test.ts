@@ -20,12 +20,12 @@ function cookieHeader(res: Response) {
 }
 
 describe('wallet stub', () => {
-  beforeEach(() => {
-    persist.clearAuth()
+  beforeEach(async () => {
+    await persist.clearAuth()
   })
 
-  afterEach(() => {
-    persist.clearAuth()
+  afterEach(async () => {
+    await persist.clearAuth()
   })
 
   it('seeds 150 on first /me and does not set cookies', async () => {
@@ -145,7 +145,7 @@ describe('wallet stub', () => {
     })
     const cookie = cookieHeader(registered)
     const registeredBody = (await registered.json()) as { data: { id: string } }
-    persist.setWalletBalance(registeredBody.data.id, 0)
+    await persist.setWalletBalance(registeredBody.data.id, 0)
 
     const res = await app.request('/api/wallet/unlock', {
       method: 'POST',

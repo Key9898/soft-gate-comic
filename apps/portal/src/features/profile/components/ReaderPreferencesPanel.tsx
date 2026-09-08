@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Moon, Sun, Type, RectangleHorizontal, Maximize2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useEngagement } from '../../../context/EngagementContext'
+import { isMockApi } from '../../../lib/api/isMockApi'
 import {
+  DEFAULT_READER_PREFS,
   loadReaderPrefs,
   saveReaderPrefs,
   type ReaderFontSize,
@@ -9,13 +12,43 @@ import {
   type ReaderPrefs,
 } from '../../../lib/reader'
 
+function sameReaderChrome(a: ReaderPrefs, b: ReaderPrefs) {
+  return (
+    a.darkMode === b.darkMode &&
+    a.brightness === b.brightness &&
+    a.fontSize === b.fontSize &&
+    a.imageFit === b.imageFit
+  )
+}
+
 const ReaderPreferencesPanel = () => {
   const { t } = useTranslation()
-  const [prefs, setPrefs] = useState<ReaderPrefs>(() => loadReaderPrefs())
+  const mock = isMockApi()
+  const { readerPrefs, setReaderPrefs, prefsHydrated } = useEngagement()
+  const [prefs, setPrefs] = useState<ReaderPrefs>(() =>
+    mock ? loadReaderPrefs() : { ...DEFAULT_READER_PREFS }
+  )
 
   useEffect(() => {
+    if (!mock) return
     saveReaderPrefs(prefs)
-  }, [prefs])
+  }, [mock, prefs])
+
+  useEffect(() => {
+    if (mock) return
+    if (!prefsHydrated) {
+      setPrefs({ ...DEFAULT_READER_PREFS })
+      return
+    }
+    setPrefs(readerPrefs)
+  }, [mock, prefsHydrated, readerPrefs])
+
+  useEffect(() => {
+    if (mock) return
+    if (!prefsHydrated) return
+    if (sameReaderChrome(prefs, readerPrefs)) return
+    setReaderPrefs(prefs)
+  }, [mock, prefsHydrated, prefs, readerPrefs, setReaderPrefs])
 
   const patch = (next: Partial<ReaderPrefs>) => {
     setPrefs((current) => ({ ...current, ...next, schemaVersion: 1 }))
@@ -25,11 +58,21 @@ const ReaderPreferencesPanel = () => {
     <div className="rounded-3xl border bg-white p-6 text-left shadow-sm">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h3 className="text-lg font-bold text-gray-900">{t('profilePage.preferences')}</h3>
-        <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
-          {t('profilePage.prefsDeviceChip')}
-        </span>
+        {mock ? (
+          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
+            {t('profilePage.prefsDeviceChip')}
+          </span>
+        ) : (
+          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
+            {t('profilePage.prefsAccountChip')}
+          </span>
+        )}
       </div>
-      <p className="mb-2 text-sm text-gray-500">{t('profilePage.prefsThisBrowser')}</p>
+      {mock ? (
+        <p className="mb-2 text-sm text-gray-500">{t('profilePage.prefsThisBrowser')}</p>
+      ) : (
+        <p className="mb-2 text-sm text-gray-500">{t('profilePage.prefsAccountNote')}</p>
+      )}
       <p className="mb-6 text-sm text-gray-500">{t('profilePage.prefsLanguageNote')}</p>
 
       <div className="space-y-6">

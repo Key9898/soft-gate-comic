@@ -35,6 +35,7 @@ describe('named integration ports', () => {
       notConfiguredMail.sendTransactional({
         to: 'reader@softgate.example',
         subject: 'Demo',
+        html: '<p>Not wired</p>',
         text: 'Not wired',
       })
     ).rejects.toMatchObject({

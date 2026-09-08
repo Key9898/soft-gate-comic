@@ -134,4 +134,13 @@ describe('ProfilePage', () => {
     await user.click(screenRtl.getByRole('switch', { name: 'Promotions' }))
     expect(bell.querySelector('.bg-accent-600')).toBeFalsy()
   })
+
+  it('rejects an oversized jpeg on the avatar picker', async () => {
+    const user = userEvent.setup({ delay: null })
+    render(<ProfilePage />)
+    const input = screen.getByLabelText('Change avatar')
+    const file = new File([new Uint8Array(524289)], 'a.jpg', { type: 'image/jpeg' })
+    await user.upload(input, file)
+    expect(await screen.findByText('Use a JPEG, PNG, or WebP under 512 KB.')).toBeInTheDocument()
+  })
 })

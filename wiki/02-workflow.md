@@ -72,7 +72,7 @@ New team members: `git clone && pnpm install` → hooks ready.
 
 **Start here for SoftGate Comic phase history:**
 
-1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–184 (**next: 185**)
+1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–192 (**next: 193**)
 2. [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (`phases: [N]`)
 
@@ -86,6 +86,10 @@ New team members: `git clone && pnpm install` → hooks ready.
 | Wiki mirror | Same batch → `wiki/notes/YYYY-MM-DD-<slug>.md` (committed summary)                                  |
 
 Agents must update **both** tracks after implementation work (Cursor rule `06-documentation-hygiene`) — user need not ask.
+
+## Local portal HTTP (Impl 188)
+
+Committed `apps/portal/.env.example` is `VITE_USE_MOCK_API=false`. Vite does **not** load the example. `isMockApi()` unset stays mock (Vercel without the var, Vitest). For this machine’s `pnpm dev` to hit the API, gitignored `apps/portal/.env.development.local` must be `false` and `pnpm dev:api` must be running. Do not put `false` in `.env` / `.env.local` (Vitest loads those). Do not merge portal + API into one process.
 
 ## Local session logs (agents)
 

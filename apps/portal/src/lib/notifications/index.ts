@@ -11,7 +11,7 @@ export {
   clearRead,
   addNotification,
 } from './notifications'
-export { syncSubscribeNotifications } from './subscribeSync'
+export { syncSubscribeNotifications, type SubscribeInboxIo } from './subscribeSync'
 export {
   PREFS_STORAGE_KEY,
   PREFS_SCHEMA_VERSION,

@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: softgate
+      POSTGRES_PASSWORD: softgate
+      POSTGRES_DB: softgate
+    ports:
+      - '5432:5432'
+    volumes:
+      - softgate_pg:/var/lib/postgresql/data
+
+volumes:
+  softgate_pg:

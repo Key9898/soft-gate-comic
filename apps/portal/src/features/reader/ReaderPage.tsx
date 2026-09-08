@@ -47,12 +47,15 @@ import {
 } from '../../lib/catalog'
 import { confirmAge, hasAgeConfirm, requiresAgeConfirm } from '../../lib/contentRating'
 import {
+  DEFAULT_READER_PREFS,
   loadReaderPrefs,
   saveReaderPrefs,
   swipeEpisodeDelta,
   clampPinchScale,
   type ReaderImageFit,
+  type ReaderPrefs,
 } from '../../lib/reader'
+import { isMockApi } from '../../lib/api/isMockApi'
 import { episodeCommentKey, listComments } from '../../lib/comments'
 import useScrollLock from '../../hooks/useScrollLock'
 import ReaderCommentsPanel from './components/ReaderCommentsPanel'
@@ -66,6 +69,15 @@ function isEditableReaderTarget(target: EventTarget | null) {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable
 }
 
+function sameReaderChrome(a: ReaderPrefs, b: ReaderPrefs) {
+  return (
+    a.darkMode === b.darkMode &&
+    a.brightness === b.brightness &&
+    a.fontSize === b.fontSize &&
+    a.imageFit === b.imageFit
+  )
+}
+
 const ReaderPage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
@@ -74,7 +86,7 @@ const ReaderPage = () => {
   const prefersReducedMotion = useReducedMotion()
   const { webtoons, episodes, isLoading, retry } = useData()
   const { isBookmarked, toggleBookmark } = useLibrary()
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth()
   const { maintenanceMode, allowRegistration } = useSettings()
   const registrationOpen = isRegistrationOpen(maintenanceMode, allowRegistration)
   const { balance, isEpisodeUnlocked, unlockEpisode } = useWallet()
@@ -85,19 +97,23 @@ const ReaderPage = () => {
     updateReadingProgress,
     history,
     isReady: engagementReady,
+    readerPrefs,
+    setReaderPrefs,
+    prefsHydrated,
   } = useEngagement()
+  const mock = isMockApi()
+  const [deviceHydrated, setDeviceHydrated] = useState(false)
 
   // ── States ─────────────────────────────────────────────────
   const [showHeader, setShowHeader] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
   const [showEpisodeSheet, setShowEpisodeSheet] = useState(false)
-  const [initialPrefs] = useState(loadReaderPrefs)
-  const [darkMode, setDarkMode] = useState(initialPrefs.darkMode)
-  const [fontSize, setFontSize] = useState(initialPrefs.fontSize)
+  const [darkMode, setDarkMode] = useState(DEFAULT_READER_PREFS.darkMode)
+  const [fontSize, setFontSize] = useState(DEFAULT_READER_PREFS.fontSize)
   const [showComments, setShowComments] = useState(false)
   const [readingProgress, setReadingProgress] = useState(0)
-  const [brightness, setBrightness] = useState(initialPrefs.brightness)
-  const [imageFit, setImageFit] = useState<ReaderImageFit>(initialPrefs.imageFit)
+  const [brightness, setBrightness] = useState(DEFAULT_READER_PREFS.brightness)
+  const [imageFit, setImageFit] = useState<ReaderImageFit>(DEFAULT_READER_PREFS.imageFit)
   const [commentCount, setCommentCount] = useState(0)
   const [estMinutesLeft, setEstMinutesLeft] = useState<number>(3)
   const [totalEstMinutes, setTotalEstMinutes] = useState<number>(1)
@@ -212,15 +228,62 @@ const ReaderPage = () => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [showSettings])
 
+  const applyChrome = (prefs: ReaderPrefs) => {
+    setDarkMode(prefs.darkMode)
+    setFontSize(prefs.fontSize)
+    setBrightness(prefs.brightness)
+    setImageFit(prefs.imageFit)
+  }
+
   useEffect(() => {
-    saveReaderPrefs({
+    if (authLoading) {
+      applyChrome(DEFAULT_READER_PREFS)
+      setDeviceHydrated(false)
+      return
+    }
+    if (!mock && isAuthenticated) {
+      setDeviceHydrated(false)
+      if (!prefsHydrated) {
+        applyChrome(DEFAULT_READER_PREFS)
+        return
+      }
+      applyChrome(readerPrefs)
+      return
+    }
+    applyChrome(loadReaderPrefs())
+    setDeviceHydrated(true)
+  }, [authLoading, mock, isAuthenticated, prefsHydrated, readerPrefs])
+
+  useEffect(() => {
+    if (authLoading) return
+    const current: ReaderPrefs = {
       schemaVersion: 1,
       darkMode,
       brightness,
       fontSize,
       imageFit,
-    })
-  }, [darkMode, brightness, fontSize, imageFit])
+    }
+    if (!mock && isAuthenticated) {
+      if (!prefsHydrated) return
+      if (sameReaderChrome(current, readerPrefs)) return
+      setReaderPrefs(current)
+      return
+    }
+    if (!deviceHydrated) return
+    saveReaderPrefs(current)
+  }, [
+    authLoading,
+    mock,
+    isAuthenticated,
+    prefsHydrated,
+    deviceHydrated,
+    darkMode,
+    brightness,
+    fontSize,
+    imageFit,
+    readerPrefs,
+    setReaderPrefs,
+  ])
 
   useEffect(() => {
     if (!webtoonId || Number.isNaN(episodeNum)) {
@@ -374,7 +437,13 @@ const ReaderPage = () => {
   }, [webtoon, currentEpisode, locked, ageBlocked, isAuthenticated, schedulePersist])
 
   if (isLoading) {
-    return <ReaderSkeleton webtoonId={webtoonId} />
+    return (
+      <ReaderSkeleton
+        webtoonId={webtoonId}
+        darkMode={authLoading || (!mock && isAuthenticated) ? darkMode : undefined}
+        imageFit={authLoading || (!mock && isAuthenticated) ? imageFit : undefined}
+      />
+    )
   }
 
   if (!webtoon) {

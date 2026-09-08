@@ -10,7 +10,7 @@ impl: 172
 
 ## Mock on (`VITE_USE_MOCK_API` is not `false`)
 
-Portal `DataContext` reads and writes the schema-14 catalog envelope through `localStorage` (`loadFromLocalStorage` / `saveToLocalStorage`). Default for `pnpm dev`.
+Portal `DataContext` reads and writes the schema-14 catalog envelope through `localStorage` (`loadFromLocalStorage` / `saveToLocalStorage`). Unset `VITE_USE_MOCK_API` (including Vitest and Vercel without the var) stays mock. Committed `.env.example` is `false`; Vite does not load it. Local `pnpm dev` HTTP uses gitignored `.env.development.local` plus `pnpm dev:api`.
 
 ## Mock off
 

@@ -2,13 +2,13 @@
 title: Folder Map
 type: reference
 date: 2026-08-10
-updated: 2026-08-25
+updated: 2026-09-08
 tags: [structure, folders, soft-gate]
 ---
 
 # Folder Map
 
-SoftGate Comic — Myanmar webtoon reader portal (pnpm + Turborepo workspace, Impl 176).
+SoftGate Comic — Myanmar webtoon reader portal (pnpm + Turborepo workspace, Impl 188).
 
 ```
 soft-gate-comic/
@@ -29,7 +29,9 @@ soft-gate-comic/
 ├── packages/
 │   ├── shared/             # @softgate/shared types + mock data
 │   └── contracts/          # @softgate/contracts Zod envelope skeleton
-├── apps/api/               # @softgate/api Hono (health + catalog + settings GET + reader auth + wallet; Prisma schema slots; Impl 176)
+├── apps/api/               # @softgate/api Hono (health + catalog + settings GET + reader auth + wallet + library + notifications + prefs; Prisma persist Impl 185/190–192; R2 put helper Impl 186; Brevo forgot/reset Impl 187; profile writers Impl 188)
+│   ├── docker-compose.yml  # local Postgres 16
+│   └── prisma/             # schema + reader persist / password-reset migrations
 └── apps/portal/            # Vite reader app
     ├── index.html
     ├── vite.config.ts
@@ -53,7 +55,7 @@ soft-gate-comic/
 ## Conventions
 
 - `apps/portal/src/**` — application code only
-- `apps/api/src/**` — API process (health + catalog + settings GET + reader auth + wallet; persist stub; Prisma schema under `apps/api/prisma/`)
+- `apps/api/src/**` — API process (health + catalog + settings GET + reader auth + wallet + library + notifications + prefs under `src/prefs/`; persist stub or Prisma; R2 put helper under `portal/`; Brevo HTML mail under `src/mail/`; schema/migrations under `apps/api/prisma/`)
 - Wiki lives at `wiki/` and is **tracked in git**
 - `docs/` is **gitignored** — session summaries are local hand-off only
 - Tests colocate under `apps/portal/src/test/` and `apps/api/src/test/`
@@ -62,11 +64,11 @@ soft-gate-comic/
 
 ## Key entry files
 
-| Concern       | Path                                                                                                              |
-| ------------- | ----------------------------------------------------------------------------------------------------------------- |
-| App bootstrap | `apps/portal/src/main.tsx`                                                                                        |
-| Routes        | `apps/portal/src/App.tsx`                                                                                         |
-| Catalog       | `packages/shared` (`publishedCatalogFrom`; mock localStorage in portal)                                           |
-| Settings      | `packages/shared` (`portalSettings`; portal `SettingsContext`)                                                    |
-| API process   | `apps/api` (`GET /health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`; named slots Impl 176) |
-| API contracts | `packages/contracts` (envelope; Impl 170)                                                                         |
+| Concern       | Path                                                                                                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App bootstrap | `apps/portal/src/main.tsx`                                                                                                                                                                                                                                    |
+| Routes        | `apps/portal/src/App.tsx`                                                                                                                                                                                                                                     |
+| Catalog       | `packages/shared` (`publishedCatalogFrom`; mock localStorage in portal)                                                                                                                                                                                       |
+| Settings      | `packages/shared` (`portalSettings`; portal `SettingsContext`)                                                                                                                                                                                                |
+| API process   | `apps/api` (`GET /health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`, `/api/library/*`, `/api/notifications/*`; persist stub or Prisma Impl 185/190/191; R2 put helper Impl 186; Brevo forgot/reset Impl 187; profile writers Impl 188) |
+| API contracts | `packages/contracts` (envelope; Impl 170)                                                                                                                                                                                                                     |

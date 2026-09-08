@@ -25,12 +25,12 @@ function cookieLine(res: Response, name: string) {
 }
 
 describe('reader auth', () => {
-  beforeEach(() => {
-    persist.clearAuth()
+  beforeEach(async () => {
+    await persist.clearAuth()
   })
 
-  afterEach(() => {
-    persist.clearAuth()
+  afterEach(async () => {
+    await persist.clearAuth()
   })
 
   it('registers, sets httpOnly cookies, and hides the password hash', async () => {
@@ -54,7 +54,7 @@ describe('reader auth', () => {
     expect(access?.toLowerCase()).toContain('httponly')
     expect(refresh?.toLowerCase()).toContain('httponly')
 
-    const stored = persist.findUserByEmail('reader@example.com')
+    const stored = await persist.findUserByEmail('reader@example.com')
     expect(stored?.passwordHash).not.toBe('password1')
     expect(stored?.passwordHash.startsWith('$2')).toBe(true)
   })

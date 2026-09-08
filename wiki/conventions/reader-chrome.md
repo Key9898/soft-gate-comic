@@ -16,7 +16,7 @@ Footer **Episode List** opens the existing `Modal` (`size="lg"`). It lists **pub
 
 ## Prefs
 
-Device-level key `softgate_reader_prefs_v1`: `{ schemaVersion: 1, darkMode, brightness, fontSize, imageFit }`. Load on mount; write on change. Not auth-gated. Profile → Preferences writes the **same** key (reader strip, brightness, type size, image fit). Chip: this device. No portal light/dark toggle; language stays the header switcher. Cookies `dl` lists this row as **Reader display**. Do not add a second “Reading progress” row — progress stays in `softgate_engage_v1`.
+Mock and HTTP guests use device-level key `softgate_reader_prefs_v1`: `{ schemaVersion: 1, darkMode, brightness, fontSize, imageFit }`. Load on mount; write on change. Mock logged-in still uses this key. HTTP logged-in SoT is `/api/prefs` ([portal-prefs-http.md](portal-prefs-http.md)) — do not write the device key. Profile → Preferences writes the same mock key or POSTs the HTTP snapshot (reader strip, brightness, type size, image fit). Mock chip: this device. HTTP chip: this account. No portal light/dark toggle; language stays the header switcher. Cookies `dl` lists the device key as **Reader display**. Do not add a second “Reading progress” row — progress stays in `softgate_engage_v1`. While `authLoading`, do not write the device key. HTTP persist only after `prefsHydrated` and only when chrome differs from the snapshot.
 
 ## Keyboard
 
@@ -53,3 +53,4 @@ Optional `Episode.imageSizes?: Array<{ width: number; height: number } | null>`.
 - [guest-access.md](guest-access.md) — Continue/history stays auth-only
 - [series-hub.md](series-hub.md) — unpublished 404
 - [legal-pages.md](legal-pages.md) — Cookies storage table
+- [portal-prefs-http.md](portal-prefs-http.md) — HTTP logged-in reader prefs

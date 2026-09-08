@@ -5,12 +5,15 @@ import { Lock, Mail } from 'lucide-react'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import { DEMO_PASSWORD_RESET_OTP, isDemoOtp, MIN_PASSWORD_LENGTH } from '../../lib/auth'
+import { authFetch, AuthApiError } from '../../lib/api/authFetch'
+import { isMockApi } from '../../lib/api/isMockApi'
 import { useAuth } from './useAuth'
 import AuthSEO from './AuthSEO'
 
-type Step = 'email' | 'otp' | 'password' | 'done'
+type MockStep = 'email' | 'otp' | 'password' | 'done'
+type HttpStep = 'email' | 'check'
 
-const STEPS: { id: Exclude<Step, 'done'>; labelKey: string }[] = [
+const STEPS: { id: Exclude<MockStep, 'done'>; labelKey: string }[] = [
   { id: 'email', labelKey: 'auth.stepEmail' },
   { id: 'otp', labelKey: 'auth.stepOtp' },
   { id: 'password', labelKey: 'auth.stepPassword' },
@@ -21,13 +24,16 @@ const ForgotPasswordPage = () => {
   const location = useLocation()
   const { user, isAuthenticated } = useAuth()
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from
-  const [step, setStep] = useState<Step>('email')
+  const mock = isMockApi()
+  const [step, setStep] = useState<MockStep>('email')
+  const [httpStep, setHttpStep] = useState<HttpStep>('email')
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [resendNote, setResendNote] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
@@ -36,8 +42,9 @@ const ForgotPasswordPage = () => {
   }, [isAuthenticated, user?.email])
 
   const emailLocked = isAuthenticated && Boolean(user?.email)
+  const lead = mock ? t('auth.forgotLead') : t('auth.forgotLeadHttp')
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const nextErrors: Record<string, string> = {}
     if (!email) {
@@ -47,8 +54,27 @@ const ForgotPasswordPage = () => {
     }
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
-    setResendNote(false)
-    setStep('otp')
+    if (mock) {
+      setResendNote(false)
+      setStep('otp')
+      return
+    }
+    setBusy(true)
+    try {
+      await authFetch<{ ok: true }>('/api/auth/forgot', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      })
+      setHttpStep('check')
+    } catch (err) {
+      if (err instanceof AuthApiError && err.code === 'VALIDATION_ERROR') {
+        setErrors({ email: t('auth.emailInvalid') })
+      } else {
+        setErrors({ email: t('auth.forgotHttpError') })
+      }
+    } finally {
+      setBusy(false)
+    }
   }
 
   const handleOtpSubmit = (e: React.FormEvent) => {
@@ -85,34 +111,36 @@ const ForgotPasswordPage = () => {
 
   return (
     <>
-      <AuthSEO title={t('auth.seoForgot')} description={t('auth.forgotLead')} />
+      <AuthSEO title={t('auth.seoForgot')} description={lead} />
       <h1 className="text-2xl font-bold text-gray-900">{t('auth.forgotPasswordTitle')}</h1>
-      <p className="mt-2 text-sm text-gray-600">{t('auth.forgotLead')}</p>
+      <p className="mt-2 text-sm text-gray-600">{lead}</p>
 
-      <ol className="mt-6 flex gap-2" aria-label={t('auth.forgotPasswordTitle')}>
-        {STEPS.map((item, index) => {
-          const order = ['email', 'otp', 'password'] as const
-          const currentIndex = step === 'done' ? 3 : order.indexOf(step as (typeof order)[number])
-          const current = step === item.id
-          const complete = currentIndex > index
-          return (
-            <li
-              key={item.id}
-              className={`flex min-h-11 flex-1 items-center justify-center rounded-2xl px-2 text-center text-xs font-semibold ${
-                current
-                  ? 'bg-primary-600 text-white'
-                  : complete
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {index + 1}. {t(item.labelKey)}
-            </li>
-          )
-        })}
-      </ol>
+      {mock ? (
+        <ol className="mt-6 flex gap-2" aria-label={t('auth.forgotPasswordTitle')}>
+          {STEPS.map((item, index) => {
+            const order = ['email', 'otp', 'password'] as const
+            const currentIndex = step === 'done' ? 3 : order.indexOf(step as (typeof order)[number])
+            const current = step === item.id
+            const complete = currentIndex > index
+            return (
+              <li
+                key={item.id}
+                className={`flex min-h-11 flex-1 items-center justify-center rounded-2xl px-2 text-center text-xs font-semibold ${
+                  current
+                    ? 'bg-primary-600 text-white'
+                    : complete
+                      ? 'bg-primary-50 text-primary-700'
+                      : 'bg-gray-100 text-gray-500'
+                }`}
+              >
+                {index + 1}. {t(item.labelKey)}
+              </li>
+            )
+          })}
+        </ol>
+      ) : null}
 
-      {step === 'email' ? (
+      {(mock ? step === 'email' : httpStep === 'email') ? (
         <form onSubmit={handleEmailSubmit} className="mt-6 space-y-5">
           <Input
             label={t('auth.email')}
@@ -129,13 +157,13 @@ const ForgotPasswordPage = () => {
             readOnly={emailLocked}
             leftIcon={<Mail className="h-5 w-5" />}
           />
-          <Button type="submit" className="w-full">
-            {t('auth.sendCode')}
+          <Button type="submit" className="w-full" disabled={busy}>
+            {mock ? t('auth.sendCode') : t('auth.sendResetLink')}
           </Button>
         </form>
       ) : null}
 
-      {step === 'otp' ? (
+      {mock && step === 'otp' ? (
         <form onSubmit={handleOtpSubmit} className="mt-6 space-y-5">
           <p className="rounded-2xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
             {t('auth.otpMockNote', { code: DEMO_PASSWORD_RESET_OTP })}
@@ -168,7 +196,13 @@ const ForgotPasswordPage = () => {
         </form>
       ) : null}
 
-      {step === 'password' ? (
+      {!mock && httpStep === 'check' ? (
+        <p className="bg-primary-50 text-primary-900 mt-6 rounded-2xl px-3 py-3 text-sm">
+          {t('auth.checkYourEmail')} {t('auth.forgotCheckHttp')}
+        </p>
+      ) : null}
+
+      {mock && step === 'password' ? (
         <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-5">
           <Input
             label={t('auth.newPassword')}
@@ -204,13 +238,14 @@ const ForgotPasswordPage = () => {
         </form>
       ) : null}
 
-      {step === 'done' ? (
+      {mock && step === 'done' ? (
         <p className="mt-6 rounded-2xl bg-amber-50 px-3 py-3 text-sm text-amber-900">
           {t('auth.resetPrepared')} {t('auth.resetNotSaved')}
         </p>
-      ) : (
+      ) : null}
+      {mock && step !== 'done' ? (
         <p className="mt-6 text-sm text-gray-500">{t('auth.resetNotSaved')}</p>
-      )}
+      ) : null}
 
       <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm">
         <Link

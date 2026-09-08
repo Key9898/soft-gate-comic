@@ -9,7 +9,7 @@ export async function optionalReaderUserId(c: Context, env: Env): Promise<string
   if (!token) return undefined
   try {
     const userId = await verifyAccessToken(env, token)
-    if (!persist.findUserById(userId)) return undefined
+    if (!(await persist.findUserById(userId))) return undefined
     return userId
   } catch {
     return undefined

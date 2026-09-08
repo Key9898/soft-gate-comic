@@ -2,7 +2,9 @@
 title: Library engagement (history + likes)
 type: convention
 date: 2026-08-11
+updated: 2026-09-08
 tags: [engagement, history, likes, library]
+impl_updated: 190
 ---
 
 # Library engagement
@@ -11,6 +13,8 @@ Client history and likes, mirrored after bookmarks (`schemaVersion` + `byUserId`
 
 ## Storage
 
+Mock (`VITE_USE_MOCK_API` is not `false`):
+
 - Key: `softgate_engage_v1` (key name stable; `schemaVersion` currently **3**)
 - History record: `{ webtoonId, episodeNumber, lastReadAt, scrollRatio? }` (`scrollRatio` 0..1 within episode; missing → 0)
 - Likes: `likedWebtoonIds: string[]`
@@ -18,6 +22,8 @@ Client history and likes, mirrored after bookmarks (`schemaVersion` + `byUserId`
 - Persist **only when authenticated** (guest like/history/rating does not write)
 - v1 → v2: migrate-in-place, default `scrollRatio: 0` (no wipe)
 - v2 → v3: migrate-in-place, default `ratings: {}` (accept schema 1, 2, and 3; do not wipe)
+
+HTTP (`VITE_USE_MOCK_API=false`): history and likes come from `/api/library` ([portal-library-http.md](portal-library-http.md)). Ratings **stay** on this key in 190. HTTP hydrate must not load history/likes from the blob. Leftover empty history/likes arrays after a rating write are not source of truth.
 
 ## Surfaces
 

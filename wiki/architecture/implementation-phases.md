@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `185`.**
+**Next Impl number to use: `193`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -214,6 +214,14 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 182  | 2026-08-26 | HeroBook3D cover after SSR onLoad miss                       | [2026-08-26-hero-cover-ssr-onload.md](../notes/2026-08-26-hero-cover-ssr-onload.md)                                                                           |
 | 183  | 2026-08-26 | Catalog cover after SSR onLoad miss                          | [2026-08-26-catalog-cover-ssr-onload.md](../notes/2026-08-26-catalog-cover-ssr-onload.md)                                                                     |
 | 184  | 2026-08-27 | Local pnpm dev back to Vite SPA                              | [2026-08-27-dev-spa-default.md](../notes/2026-08-27-dev-spa-default.md)                                                                                       |
+| 185  | 2026-09-08 | Prisma persist for reader auth and wallet                    | [2026-09-08-prisma-persist.md](../notes/2026-09-08-prisma-persist.md)                                                                                         |
+| 186  | 2026-09-08 | R2 helper with portal/ prefix                                | [2026-09-08-r2-object-store.md](../notes/2026-09-08-r2-object-store.md)                                                                                       |
+| 187  | 2026-09-08 | Brevo HTML forgot/reset + token API                          | [2026-09-08-brevo-forgot-reset.md](../notes/2026-09-08-brevo-forgot-reset.md)                                                                                 |
+| 188  | 2026-09-08 | Local portal HTTP + profile writers                          | [2026-09-08-portal-http-local.md](../notes/2026-09-08-portal-http-local.md)                                                                                   |
+| 189  | 2026-09-08 | Cap profile avatars at 512 KB jpeg/png/webp                  | [2026-09-08-avatar-byte-cap.md](../notes/2026-09-08-avatar-byte-cap.md)                                                                                       |
+| 190  | 2026-09-08 | Library Subscribe/History/Likes HTTP persist                 | [2026-09-08-library-http-persist.md](../notes/2026-09-08-library-http-persist.md)                                                                             |
+| 191  | 2026-09-08 | Notifications inbox HTTP persist                             | [2026-09-08-notifications-http-persist.md](../notes/2026-09-08-notifications-http-persist.md)                                                                 |
+| 192  | 2026-09-08 | Notif toggles + reader prefs HTTP persist                    | [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md)                                                                                 |
 
 ---
 
@@ -1732,9 +1740,73 @@ Portal `dev` is Vite SPA again (`vite`); `dev:ssr` runs `server/dev.ts` for opti
 
 ---
 
+## Impl Phase 185 — Prisma persist for reader tables (2026-09-08)
+
+**Status:** Done
+
+Empty `DATABASE_URL` keeps in-memory stub. Non-empty URL + Prisma `$connect` uses reader tables (`ReaderUser`, refresh, wallet, unlocks). Non-empty URL + down Postgres fails boot. `GET /health` `persist` is `"stub"` | `"prisma"`. Catalog/settings stay shared mocks. Local Docker compose + committed migration SQL. `prisma generate` in api build; no migrate in check. Portal mock default unchanged. Note: [2026-09-08-prisma-persist.md](../notes/2026-09-08-prisma-persist.md). Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md).
+
+---
+
+## Impl Phase 186 — R2 helper with portal prefix (2026-09-08)
+
+**Status:** Done
+
+Four core R2 env slots set → S3 `PutObject` under `portal/` on the shared bucket. Empty or partial → `R2_NOT_CONFIGURED`, no send, boot still listens. `R2_PUBLIC_BASE_URL` is the only public origin. No upload HTTP routes. No health R2 field. Note: [2026-09-08-r2-object-store.md](../notes/2026-09-08-r2-object-store.md). Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [009-r2-object-store.md](../decisions/009-r2-object-store.md).
+
+---
+
+## Impl Phase 187 — Brevo HTML forgot/reset + token API (2026-09-08)
+
+**Status:** Done
+
+Repo HTML (EN+MM) for forgot link and reset confirmation. `BREVO_API_KEY` + `BREVO_FROM_EMAIL` → send via Brevo v6; empty/partial → no send. `POST /api/auth/forgot` always `{ data: { ok: true } }`. `POST /api/auth/reset` updates bcrypt hash and revokes refresh. HTTP portal drops Demo OTP; mock OTP stepper unchanged. No health mail field. No boot ping. Note: [2026-09-08-brevo-forgot-reset.md](../notes/2026-09-08-brevo-forgot-reset.md). Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [010-brevo-mail.md](../decisions/010-brevo-mail.md).
+
+---
+
+## Impl Phase 188 — Local portal HTTP + profile writers (2026-09-08)
+
+**Status:** Done
+
+Committed `apps/portal/.env.example` is `VITE_USE_MOCK_API=false`. `isMockApi()` stays `!== 'false'` (Vercel unset = mock). Vite does not load the example. Local `pnpm dev` HTTP uses gitignored `.env.development.local` (not `.env`, which Vitest also loads). Cookie POSTs `/api/auth/profile`, `/password`, `/delete-account` on stub + Prisma persist. HTTP Profile copy no longer says “this device.” Note: [2026-09-08-portal-http-local.md](../notes/2026-09-08-portal-http-local.md). Convention: [portal-auth-http.md](../conventions/portal-auth-http.md). ADR: [011-portal-http-local.md](../decisions/011-portal-http-local.md).
+
+---
+
+## Impl Phase 189 — Cap profile avatars at 512 KB jpeg/png/webp (2026-09-08)
+
+**Status:** Done
+
+Profile file picker rejects files over 524288 bytes or not jpeg/png/webp before FileReader. `POST /api/auth/profile` rejects `avatar` that is not a jpeg/png/webp data URL or longer than `ceil(524288 * 4 / 3) + 32`. 400 `VALIDATION_ERROR`. Persist unchanged. No R2, no compress. Note: [2026-09-08-avatar-byte-cap.md](../notes/2026-09-08-avatar-byte-cap.md). Convention: [portal-auth-http.md](../conventions/portal-auth-http.md).
+
+---
+
+## Impl Phase 190 — Library Subscribe, History, Likes HTTP persist (2026-09-08)
+
+**Status:** Done
+
+Cookie API + stub/Prisma persist for Library Subscribe, History (`scrollRatio`, `readEpisodeNumbers`), and Likes when mock is off. HTTP does not write `softgate_library_v1`. History/likes SoT is `/api/library`, not `softgate_engage_v1`. Ratings stay localStorage. Notifications inbox HTTP is Impl 191. Prefs HTTP is Impl 192. Mute and `lastNotifiedEpisodeNumber` persist. `deleteReaderUser` / `clearAuth` drop library rows before `ReaderUser`. Note: [2026-09-08-library-http-persist.md](../notes/2026-09-08-library-http-persist.md). Convention: [portal-library-http.md](../conventions/portal-library-http.md).
+
+---
+
+## Impl Phase 191 — Notifications inbox HTTP persist (2026-09-08)
+
+**Status:** Done
+
+Cookie API + stub/Prisma persist for the notifications inbox when mock is off. HTTP does not write `softgate_notifications_v1`. Prefs HTTP is Impl 192 ([portal-prefs-http.md](../conventions/portal-prefs-http.md)). Client still generates `new_episode` via `syncSubscribeNotifications`; API does not scan catalog. `deleteReaderUser` / `clearAuth` drop notification rows before `ReaderUser`. Note: [2026-09-08-notifications-http-persist.md](../notes/2026-09-08-notifications-http-persist.md). Convention: [portal-notifications-http.md](../conventions/portal-notifications-http.md).
+
+---
+
+## Impl Phase 192 — Notif toggles + reader prefs HTTP persist (2026-09-08)
+
+**Status:** Done
+
+Cookie API + stub/Prisma persist for notification toggles and reader display prefs when mock is off. HTTP logged-in does not write `softgate_notif_prefs_v1` or `softgate_reader_prefs_v1`. Guest reader keeps the device reader key. No login merge. Do not seed. GET returns defaults without insert. `deleteReaderUser` / `clearAuth` drop prefs before `ReaderUser`. Note: [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md). Convention: [portal-prefs-http.md](../conventions/portal-prefs-http.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **185**).
+1. Take **next free Impl** (currently **193**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

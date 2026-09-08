@@ -12,7 +12,7 @@ Wallet source of truth depends on `VITE_USE_MOCK_API`.
 
 ## Mock on (`VITE_USE_MOCK_API` is not `false`)
 
-[`WalletContext`](../../apps/portal/src/context/WalletContext.tsx) keeps [`client-wallet.md`](client-wallet.md): `softgate_wallet_v1`, seed 150, local unlock, Demo top-up. Default for `pnpm dev`. Catalog still ships premium `images`; Reader UI lock + skipped prefetch hide panels.
+[`WalletContext`](../../apps/portal/src/context/WalletContext.tsx) keeps [`client-wallet.md`](client-wallet.md): `softgate_wallet_v1`, seed 150, local unlock, Demo top-up. Unset `VITE_USE_MOCK_API` stays mock. Committed `.env.example` is `false`; Vite does not load it. Local `pnpm dev` HTTP uses gitignored `.env.development.local` plus `pnpm dev:api`. Catalog still ships premium `images`; Reader UI lock + skipped prefetch hide panels.
 
 ## Mock off
 

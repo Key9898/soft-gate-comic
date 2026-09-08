@@ -7,21 +7,23 @@ tags: [stack, react, vite, tailwind]
 
 # Tech Stack
 
-| Layer     | Tool         | Version | Why                                            |
-| --------- | ------------ | ------- | ---------------------------------------------- |
-| UI        | React        | 18.3    | Concurrent rendering, mature ecosystem         |
-| Lang      | TypeScript   | 5.5     | Strict type safety, `tsc -b` project refs      |
-| Build     | Vite         | 6       | Fast HMR, ESM-native; Vitest 4 `module-runner` |
-| Style     | Tailwind CSS | 4.0     | CSS-first config via `@theme`, no PostCSS      |
-| Lint      | ESLint       | 9       | Flat config, typescript-eslint                 |
-| Format    | Prettier     | 3       | + `prettier-plugin-tailwindcss` for class sort |
-| Test      | Vitest       | 4       | Vite-native, jsdom env, v8 coverage            |
-| Hooks     | Husky        | 9       | Lightweight git hooks                          |
-| Hooks     | lint-staged  | 15      | Run tasks only on staged files                 |
-| Workspace | pnpm         | 10      | Workspaces (`apps/*`, `packages/*`)            |
-| Tasks     | Turborepo    | 2       | Cached lint/test/build graph                   |
-| API       | Hono         | 4       | Node via `@hono/node-server` (Impl 171–176)    |
-| ORM CLI   | Prisma       | 6       | Schema validate only; persist still stub (176) |
+| Layer     | Tool         | Version | Why                                              |
+| --------- | ------------ | ------- | ------------------------------------------------ |
+| UI        | React        | 18.3    | Concurrent rendering, mature ecosystem           |
+| Lang      | TypeScript   | 5.5     | Strict type safety, `tsc -b` project refs        |
+| Build     | Vite         | 6       | Fast HMR, ESM-native; Vitest 4 `module-runner`   |
+| Style     | Tailwind CSS | 4.0     | CSS-first config via `@theme`, no PostCSS        |
+| Lint      | ESLint       | 9       | Flat config, typescript-eslint                   |
+| Format    | Prettier     | 3       | + `prettier-plugin-tailwindcss` for class sort   |
+| Test      | Vitest       | 4       | Vite-native, jsdom env, v8 coverage              |
+| Hooks     | Husky        | 9       | Lightweight git hooks                            |
+| Hooks     | lint-staged  | 15      | Run tasks only on staged files                   |
+| Workspace | pnpm         | 10      | Workspaces (`apps/*`, `packages/*`)              |
+| Tasks     | Turborepo    | 2       | Cached lint/test/build graph                     |
+| API       | Hono         | 4       | Node via `@hono/node-server` (Impl 171–188)      |
+| ORM       | Prisma       | 6       | Reader persist when `DATABASE_URL` is set (185)  |
+| Object    | R2 / S3 SDK  | 3       | Put helper under `portal/` when env is set (186) |
+| Mail      | Brevo SDK    | 6       | HTML forgot/reset when key+from set (187)        |
 
 ## Tailwind v4 specifics
 

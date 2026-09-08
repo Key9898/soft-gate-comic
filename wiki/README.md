@@ -32,11 +32,11 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 185**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 193**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
-- [references/softgate-api.md](references/softgate-api.md) — SoftGate `apps/api` health + catalog + settings + reader auth + wallet + named slots (Impl 171–176)
+- [references/softgate-api.md](references/softgate-api.md) — SoftGate `apps/api` health + catalog + settings + reader auth + wallet + library + notifications + prefs + Prisma persist + R2 helper + Brevo forgot/reset + profile writers (Impl 171–192)
 - Pre-backend Admin catalog/settings contract (list lives in Admin wiki; do not invent conflicting portal fields): [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)
 - [references/admin-coin-packages.md](references/admin-coin-packages.md) — Admin Impl 24 blob → consumed on `/coins` (Impl 168)
 - [references/avatar-manifest.md](references/avatar-manifest.md) — (legacy/reference; not SoftGate portal runtime)
@@ -56,9 +56,12 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [conventions/catalog-tiles.md](conventions/catalog-tiles.md) — discovery tile fields + New badge (Impl 96); Daily board (Impl 150); Premium top-left (Impl 152); Daily drops not catalog tiles (Impl 153); Demo Updated/New dates (Impl 154)
 - [conventions/portal-catalog-read.md](conventions/portal-catalog-read.md) — mock localStorage vs `GET /api/catalog` published read model (Impl 172)
 - [conventions/portal-settings-read.md](conventions/portal-settings-read.md) — mock vs `GET /api/settings` (Impl 173)
-- [conventions/portal-auth-http.md](conventions/portal-auth-http.md) — mock localStorage vs reader cookie API (Impl 174)
+- [conventions/portal-auth-http.md](conventions/portal-auth-http.md) — mock localStorage vs reader cookie API (Impl 174); profile writers (Impl 188)
 - [conventions/portal-wallet-http.md](conventions/portal-wallet-http.md) — mock `softgate_wallet_v1` vs stub ledger + catalog strip (Impl 175)
-- [conventions/named-integrations.md](conventions/named-integrations.md) — optional Prisma/R2/Brevo env slots; persist stays stub (Impl 176)
+- [conventions/portal-library-http.md](conventions/portal-library-http.md) — mock library/engage keys vs `/api/library` subscribe/history/likes (Impl 190)
+- [conventions/portal-notifications-http.md](conventions/portal-notifications-http.md) — mock inbox key vs `/api/notifications` (Impl 191)
+- [conventions/portal-prefs-http.md](conventions/portal-prefs-http.md) — mock notif/reader prefs keys vs `/api/prefs` (Impl 192)
+- [conventions/named-integrations.md](conventions/named-integrations.md) — Prisma persist when `DATABASE_URL` is set; R2 put helper under `portal/` (Impl 186); Brevo forgot/reset when key+from set (Impl 187)
 - [conventions/portal-seo-ssr.md](conventions/portal-seo-ssr.md) — Vite SSR/hybrid for public routes, hreflang `/mm`, dynamic sitemap, OG images (Impl 178–181)
 - [conventions/about-story-book.md](conventions/about-story-book.md) — About Our Story episode reader (Impl 87–95)
 - [conventions/categories-browse.md](conventions/categories-browse.md) — genre match + status URL (Impl 11); `/ranking` + Browse vs ranks (Impl 141); chart chrome (Impl 143); reserved chevron slot (Impl 169)
@@ -89,7 +92,11 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [decisions/004-book-media-presentation.md](decisions/004-book-media-presentation.md) — book covers (Impl 16)
 - [decisions/005-herobook3d-ux.md](decisions/005-herobook3d-ux.md) — HeroBook3D UX harden (Impl 18)
 - [decisions/006-ranking-path.md](decisions/006-ranking-path.md) — `/ranking` is Popular (Impl 141)
-- [decisions/007-backend-integrations.md](decisions/007-backend-integrations.md) — Hono API + named Postgres/Prisma, R2, Brevo (Impl 171); catalog GET in 172 (persist still stub)
+- [decisions/007-backend-integrations.md](decisions/007-backend-integrations.md) — Hono API + named Postgres/Prisma, R2, Brevo (Impl 171); catalog GET in 172; persist swap in 185
+- [decisions/008-prisma-persist-boot.md](decisions/008-prisma-persist-boot.md) — empty URL stub; set URL Prisma; fail boot if Postgres is down (Impl 185)
+- [decisions/009-r2-object-store.md](decisions/009-r2-object-store.md) — R2 helper not boot; `portal/` prefix; public URL env-only (Impl 186)
+- [decisions/010-brevo-mail.md](decisions/010-brevo-mail.md) — mail helper not boot; HTML in repo; enumeration-safe forgot (Impl 187)
+- [decisions/011-portal-http-local.md](decisions/011-portal-http-local.md) — example `false` + helper unset still mock; profile cookie writers (Impl 188)
 
 ### Recent SoftGate notes
 
@@ -203,6 +210,14 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-08-26-hero-cover-ssr-onload.md](notes/2026-08-26-hero-cover-ssr-onload.md) — Impl 182 HeroBook3D cover after SSR onLoad miss
 - [notes/2026-08-26-catalog-cover-ssr-onload.md](notes/2026-08-26-catalog-cover-ssr-onload.md) — Impl 183 catalog cover after SSR onLoad miss
 - [notes/2026-08-27-dev-spa-default.md](notes/2026-08-27-dev-spa-default.md) — Impl 184 local pnpm dev back to Vite SPA
+- [notes/2026-09-08-prisma-persist.md](notes/2026-09-08-prisma-persist.md) — Impl 185 Prisma persist for reader auth and wallet
+- [notes/2026-09-08-r2-object-store.md](notes/2026-09-08-r2-object-store.md) — Impl 186 R2 helper with portal/ prefix
+- [notes/2026-09-08-brevo-forgot-reset.md](notes/2026-09-08-brevo-forgot-reset.md) — Impl 187 Brevo HTML forgot/reset + token API
+- [notes/2026-09-08-portal-http-local.md](notes/2026-09-08-portal-http-local.md) — Impl 188 local portal HTTP + profile writers
+- [notes/2026-09-08-avatar-byte-cap.md](notes/2026-09-08-avatar-byte-cap.md) — Impl 189 cap profile avatars at 512 KB jpeg/png/webp
+- [notes/2026-09-08-notifications-http-persist.md](notes/2026-09-08-notifications-http-persist.md) — Impl 191 notifications inbox HTTP persist
+- [notes/2026-09-08-library-http-persist.md](notes/2026-09-08-library-http-persist.md) — Impl 190 library subscribe/history/likes HTTP persist
+- [notes/2026-09-08-prefs-http-persist.md](notes/2026-09-08-prefs-http-persist.md) — Impl 192 notif toggles + reader prefs HTTP persist
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150
 - [notes/2026-08-19-auth-split-curtain.md](notes/2026-08-19-auth-split-curtain.md) — Impl 149

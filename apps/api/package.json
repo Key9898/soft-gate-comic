@@ -5,14 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "pnpm prisma:generate && tsc",
     "start": "node dist/index.js",
     "test": "vitest",
     "prisma:validate": "cross-env DATABASE_URL=postgresql://unused:unused@127.0.0.1:5432/unused prisma validate",
+    "prisma:generate": "cross-env DATABASE_URL=postgresql://unused:unused@127.0.0.1:5432/unused prisma generate",
+    "db:up": "docker compose up -d",
+    "db:migrate": "prisma migrate deploy",
     "test:run": "pnpm prisma:validate && vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.901.0",
+    "@getbrevo/brevo": "^6.0.3",
     "@hono/node-server": "^1.19.0",
+    "@prisma/client": "^6.19.3",
     "@softgate/contracts": "workspace:*",
     "@softgate/shared": "workspace:*",
     "bcryptjs": "^3.0.3",

@@ -2,17 +2,18 @@
 title: Named backend integrations
 type: convention
 date: 2026-08-25
+updated: 2026-09-08
 tags: [api, prisma, r2, brevo, env, softgate]
-impl: 176
+impl: 192
 ---
 
 # Named backend integrations
 
-PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Runtime persist stays the in-memory stub until a later Impl swaps adapters.
+PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Impl 185 swaps reader persist when `DATABASE_URL` is set. Impl 186 adds an R2 put helper. Impl 187 adds forgot/reset mail + token API. Catalog/CMS stay unwired.
 
 ## Env slots
 
-Parsed by `parseEnv` via `emptyToUndef`. Empty / whitespace = unset. Boot does **not** require them. Setting them does **not** switch persist.
+Parsed by `parseEnv` via `emptyToUndef`. Empty / whitespace = unset. Boot does **not** require R2 or Brevo. `DATABASE_URL` is still optional; when set it **does** pick persist.
 
 | Variable               | Required | Notes                                                                |
 | ---------------------- | -------- | -------------------------------------------------------------------- |
@@ -21,17 +22,60 @@ Parsed by `parseEnv` via `emptyToUndef`. Empty / whitespace = unset. Boot does *
 | `R2_ACCESS_KEY_ID`     | no       | Core R2 slot                                                         |
 | `R2_SECRET_ACCESS_KEY` | no       | Core R2 slot                                                         |
 | `R2_BUCKET`            | no       | Core R2 slot                                                         |
-| `R2_PUBLIC_BASE_URL`   | no       | Optional HTTP origin for later public covers                         |
+| `R2_PUBLIC_BASE_URL`   | no       | Optional public origin (`r2.dev` or custom). Not required to put     |
 | `BREVO_API_KEY`        | no       | Mail slot                                                            |
 | `BREVO_FROM_EMAIL`     | no       | Verified sender later                                                |
 
-Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access + secret + bucket; public base optional) / `isMailConfigured` (api key **and** from email). **Do not** read these flags to pick persist in 176.
+Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access + secret + bucket; public base optional) / `isMailConfigured` (api key **and** from email). `openPersist` in `apps/api/src/index.ts` reads `isDatabaseConfigured`. `createApp` does not pick persist. R2 and mail are not read at boot.
 
-## Schema vs runtime
+## R2 helper (Impl 186)
 
-- Prisma 6 schema at `apps/api/prisma/schema.prisma` mirrors stub users / refresh jti / wallet / unlock. No catalog CMS tables.
-- `pnpm --filter @softgate/api prisma:validate` uses a dummy `DATABASE_URL`. Never `migrate` / `db push` / `generate` in `pnpm check`.
-- `PersistPort` is `typeof persist`. Routes keep importing `persist`. Do not auto-switch when `DATABASE_URL` is set.
-- Object-store / mail not-configured adapters throw `R2_NOT_CONFIGURED` / `MAIL_NOT_CONFIGURED`. No HTTP routes call them yet.
+| Condition                  | Helper                                                            |
+| -------------------------- | ----------------------------------------------------------------- |
+| Core R2 empty / partial    | `putObject` throws `R2_NOT_CONFIGURED`; no SDK call               |
+| All four core slots set    | S3 `PutObject` to `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` |
+| `R2_PUBLIC_BASE_URL` unset | put allowed if core set; `publicUrl` is `undefined`               |
+| `R2_PUBLIC_BASE_URL` set   | `publicUrl` = origin + `/` + full key under `portal/`             |
 
-ADR: [007-backend-integrations.md](../decisions/007-backend-integrations.md).
+- Shared bucket. This API’s keys are under `portal/` (`r2ObjectKey`). Do not use an `admin/` prefix here.
+- No `ACL` on put. No `R2_ENDPOINT` env. No upload HTTP routes. `GET /health` does not report R2.
+- Boot does **not** fail if R2 is unset.
+
+## Mail helper (Impl 187)
+
+| Condition            | Helper                                                              |
+| -------------------- | ------------------------------------------------------------------- |
+| Mail empty / partial | no SDK send; forgot still 200                                       |
+| Key + from set       | Brevo v6 `htmlContent` / `textContent` (repo HTML, no template IDs) |
+| Unknown email        | 200; no token; no send                                              |
+| Send error on forgot | still 200 (do not leak that the address exists)                     |
+
+- Forgot link = `CLIENT_URL` (trailing slash stripped) + `/reset-password/<raw>`. Token hashed at rest, TTL 1 hour.
+- Reset updates `passwordHash`, deletes the token, revokes refresh JTIs. Confirmation send errors swallowed.
+- `GET /health` does not report mail. Boot does **not** fail if Brevo is unset.
+- Portal HTTP drops Demo OTP. Mock OTP stepper does not persist password.
+
+## Persist boot (Impl 185)
+
+| Condition                    | Persist                             | `GET /health` `data.persist` |
+| ---------------------------- | ----------------------------------- | ---------------------------- |
+| `DATABASE_URL` empty / unset | in-memory stub                      | `"stub"`                     |
+| URL set + Postgres up        | Prisma on existing reader models    | `"prisma"`                   |
+| URL set + Postgres down      | **do not boot** (`process.exit(1)`) | no silent stub               |
+
+- Models: `ReaderUser`, `RefreshToken`, `ReaderPasswordReset`, `Wallet`, `WalletTransaction`, `WalletUnlock`, `LibrarySubscribe`, `LibraryHistory`, `LibraryLike`, `ReaderNotification`, `ReaderUserPrefs`. No catalog CMS tables.
+- Catalog and portal settings still come from `@softgate/shared` mocks on both adapters.
+- `authFlags` (`setAuthFlags`) stay in-memory on both adapters.
+- Username lookup is case-insensitive (stub maps + Prisma `mode: 'insensitive'`).
+- Local Docker: `apps/api/docker-compose.yml` (`pnpm --filter @softgate/api db:up`) then `db:migrate`.
+- Shared Railway DB vs Admin schema is **not** assumed identical. This repo commits reader-table SQL only.
+
+## Schema vs check
+
+- `pnpm --filter @softgate/api prisma:validate` uses a dummy `DATABASE_URL`.
+- `prisma generate` (dummy URL, no Postgres) runs in api `build` only. `pnpm check` may run generate via turbo `build`. Never `migrate` / `db push` in check.
+- Api `test:run` waits on this package’s `build` (`apps/api/turbo.json`) so generate is not raced in parallel with `tsc`.
+- `PersistPort` is an explicit interface (`kind: 'stub' | 'prisma'`). Routes keep importing the module singleton `persist`.
+- `createObjectStore` throws `R2_NOT_CONFIGURED` or `R2_INVALID_KEY` via `IntegrationError`. `createMail` throws `MAIL_NOT_CONFIGURED` when unset. Forgot/reset HTTP routes call mail only if configured.
+
+ADR: [007-backend-integrations.md](../decisions/007-backend-integrations.md), [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).

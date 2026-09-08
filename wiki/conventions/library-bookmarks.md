@@ -4,7 +4,7 @@ type: convention
 date: 2026-08-11
 tags: [library, bookmarks, subscribe, localStorage, auth]
 impl: 25
-impl_updated: 142
+impl_updated: 190
 ---
 
 # Library bookmarks (Subscribe)
@@ -15,10 +15,14 @@ Persist **subscriptions** in the bookmarks store. Library History and Likes tabs
 
 ## Storage
 
+Mock (`VITE_USE_MOCK_API` is not `false`):
+
 - Key: `softgate_library_v1`
 - Shape: `{ schemaVersion: 1, byUserId: Record<userId, BookmarkRecord[]> }` — **do not bump** schema (optional fields must not wipe old rows)
 - `BookmarkRecord`: `{ webtoonId, addedAt, notifyMuted?, lastNotifiedEpisodeNumber? }`
 - Guests cannot persist; storage is namespaced by authenticated `user.id`
+
+HTTP (`VITE_USE_MOCK_API=false`): cookie API is source of truth. Do **not** write this key. See [portal-library-http.md](portal-library-http.md).
 
 On subscribe, stamp `lastNotifiedEpisodeNumber` to the current latest published episode so subscribe does not spam. Mute (`notifyMuted`) hides future Demo episode notices without unsubscribing. Unsub removes the record.
 
@@ -32,7 +36,7 @@ Helpers: `src/lib/library/` (`listBookmarks`, `isBookmarked`, `toggleBookmark`, 
 
 - Guest `toggleBookmark` → `/login` with `state.from`
 - Surfaces: Home Subscribe CTA, hub Subscribe + mute bell, Reader bookmark control, Library Subscribed tab + mute (hidden in edit mode)
-- History and Likes persist via engagement (`softgate_engage_v1`), not mock-seeded lists
+- History and Likes persist via engagement (`softgate_engage_v1`) when mock is on. HTTP mode uses `/api/library` ([portal-library-http.md](portal-library-http.md)).
 - History only: Continue goes `/read/:webtoonId/:lastReadEpisode` (fallback episode `1`) with `stopPropagation`; cover/row still `/webtoon/:id`. Hide Continue on Subscribed and Likes.
 
 ## Out of scope

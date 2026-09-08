@@ -1,9 +1,11 @@
 import type { ApiDataEnvelope } from '@softgate/contracts'
-import { persist } from './persist.js'
+import { persist, type PersistKind } from './persist.js'
 
-export const healthPayload: ApiDataEnvelope<{ ok: true; persist: typeof persist.kind }> = {
-  data: {
-    ok: true,
-    persist: persist.kind,
-  },
+export function healthPayload(): ApiDataEnvelope<{ ok: true; persist: PersistKind }> {
+  return {
+    data: {
+      ok: true,
+      persist: persist.kind,
+    },
+  }
 }

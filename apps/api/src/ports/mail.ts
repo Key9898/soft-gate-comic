@@ -3,6 +3,7 @@ import { IntegrationError } from './error.js'
 export type SendTransactionalInput = {
   to: string
   subject: string
+  html: string
   text: string
 }
 
@@ -15,3 +16,5 @@ export const notConfiguredMail: MailPort = {
     throw new IntegrationError('MAIL_NOT_CONFIGURED')
   },
 }
+
+export { createMail, type BrevoSend } from './brevo-mail.js'

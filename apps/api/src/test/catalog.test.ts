@@ -4,6 +4,8 @@ import { createApp } from '../app.js'
 import { persist } from '../persist.js'
 import { testEnv } from './helpers.js'
 
+type PublishedCatalog = Awaited<ReturnType<typeof persist.getPublishedCatalog>>
+
 const jsonHeaders = { 'Content-Type': 'application/json' }
 
 const registerBody = {
@@ -21,12 +23,12 @@ function cookieHeader(res: Response) {
 }
 
 describe('GET /api/catalog', () => {
-  beforeEach(() => {
-    persist.clearAuth()
+  beforeEach(async () => {
+    await persist.clearAuth()
   })
 
-  afterEach(() => {
-    persist.clearAuth()
+  afterEach(async () => {
+    await persist.clearAuth()
   })
 
   it('returns the published catalog envelope from the stub', async () => {
@@ -36,7 +38,7 @@ describe('GET /api/catalog', () => {
     expect(res.headers.get('Set-Cookie')).toBeNull()
 
     const body: unknown = await res.json()
-    const catalog = unwrapApiData<ReturnType<typeof persist.getPublishedCatalog>>(body)
+    const catalog = unwrapApiData<PublishedCatalog>(body)
     expect(catalog).not.toBeNull()
     expect(Array.isArray(catalog?.webtoons)).toBe(true)
     expect(Array.isArray(catalog?.episodes)).toBe(true)
@@ -49,7 +51,7 @@ describe('GET /api/catalog', () => {
     const res = await app.request('/api/catalog')
     expect(res.status).toBe(200)
 
-    const catalog = unwrapApiData<ReturnType<typeof persist.getPublishedCatalog>>(await res.json())
+    const catalog = unwrapApiData<PublishedCatalog>(await res.json())
     const locked = catalog!.episodes.find(
       (episode) => episode.webtoonId === '1' && episode.episodeNumber === 4
     )
@@ -75,7 +77,7 @@ describe('GET /api/catalog', () => {
       headers: { Cookie: 'sg_reader=not-a-jwt' },
     })
     expect(res.status).toBe(200)
-    const catalog = unwrapApiData<ReturnType<typeof persist.getPublishedCatalog>>(await res.json())
+    const catalog = unwrapApiData<PublishedCatalog>(await res.json())
     const locked = catalog!.episodes.find(
       (episode) => episode.webtoonId === '1' && episode.episodeNumber === 4
     )
@@ -91,7 +93,7 @@ describe('GET /api/catalog', () => {
     })
     const cookie = cookieHeader(registered)
 
-    const before = unwrapApiData<ReturnType<typeof persist.getPublishedCatalog>>(
+    const before = unwrapApiData<PublishedCatalog>(
       await (
         await app.request('/api/catalog', {
           headers: { Cookie: cookie },
@@ -110,7 +112,7 @@ describe('GET /api/catalog', () => {
     })
     expect(unlocked.status).toBe(200)
 
-    const after = unwrapApiData<ReturnType<typeof persist.getPublishedCatalog>>(
+    const after = unwrapApiData<PublishedCatalog>(
       await (
         await app.request('/api/catalog', {
           headers: { Cookie: cookie },

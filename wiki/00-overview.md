@@ -14,7 +14,7 @@ tags: [overview, project]
 ## Quick facts
 
 - **Stack:** React 18.3 + TypeScript 5.5 + Vite 6 + Tailwind CSS v4
-- **API:** Portal mock/localStorage by default. `apps/api` Hono (`GET /health`, `GET /api/catalog`, `GET /api/settings`, reader `/api/auth/*`, `/api/wallet/*`, persist stub; named Prisma/R2/Brevo slots in 176) — Impl 171–176
+- **API:** Portal mock/localStorage when `VITE_USE_MOCK_API` is not `false` (Vercel unset). Committed example is `false`; local `pnpm dev` HTTP needs gitignored `.env.development.local` + `pnpm dev:api`. `apps/api` Hono (`GET /health`, `GET /api/catalog`, `GET /api/settings`, reader `/api/auth/*`, `/api/wallet/*`; persist stub or Prisma when `DATABASE_URL` is set — Impl 185; R2 put helper under `portal/` — Impl 186; Brevo forgot/reset — Impl 187; profile writers — Impl 188) — Impl 171–188
 - **Testing:** Vitest 4 (portal jsdom + API node)
 - **Quality:** ESLint 9 + Prettier 3 + Husky 9 + lint-staged 15 + Turborepo
 - **Workspace:** pnpm workspaces (`apps/*`, `packages/*`); package manager `pnpm@10.32.1`
@@ -41,16 +41,18 @@ pnpm check               # lint + format:check + test:run + build  ← pre-push 
 pnpm storybook           # Storybook :6006
 ```
 
+Local HTTP catalog/auth/wallet: gitignored `apps/portal/.env.development.local` with `VITE_USE_MOCK_API=false`, then `pnpm dev` **and** `pnpm dev:api`. Vite does not load `.env.example`. Unset (Vercel without the var) stays mock.
+
 ## Entry points
 
 - `apps/portal/index.html` (placeholders) → `apps/portal/src/entry-client.tsx` (hydrate) → `<App />` → layouts (`MainLayout` / `AuthLayout` / `ReaderLayout`); SSR: `apps/portal/src/entry-server.tsx` (Impl 178)
 - `apps/portal/src/index.css` — Tailwind v4 import + `@theme` brand tokens (`primary-*` / `accent-*`)
 - In-app logo: `apps/portal/public/logo/logo.svg`
-- `apps/api` — `pnpm dev:api` → `GET http://localhost:3000/health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`
+- `apps/api` — `pnpm dev:api` → `GET http://localhost:3000/health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`, `/api/library/*`, `/api/notifications/*`, `/api/prefs/*`
 
 ## Documentation (Impl & QA)
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–184** (next: **185**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–192** (next: **193**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — historical Airtable rows (legacy-era)
 - Pre-backend Admin catalog/settings contract (do not invent conflicting portal fields): [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)

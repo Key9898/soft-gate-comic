@@ -82,12 +82,27 @@ describe('useAuth HTTP', () => {
     expect(store.has('softgate_accounts_v1')).toBe(false)
   })
 
-  it('throws AUTH_PROFILE_NOT_LIVE for profile writers', async () => {
+  it('posts profile writers without writing softgate_user', async () => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input)
       const method = init?.method ?? 'GET'
       if (url.endsWith('/api/auth/me') && method === 'GET') {
         return jsonResponse({ data: publicUser }, 200)
+      }
+      if (url.endsWith('/api/auth/profile') && method === 'POST') {
+        expect(JSON.parse(String(init?.body))).toEqual({ displayName: 'Next' })
+        return jsonResponse({ data: { ...publicUser, displayName: 'Next' } }, 200)
+      }
+      if (url.endsWith('/api/auth/password') && method === 'POST') {
+        expect(JSON.parse(String(init?.body))).toEqual({
+          currentPassword: 'oldpass1',
+          newPassword: 'newpass1',
+        })
+        return jsonResponse({ data: { ok: true } }, 200)
+      }
+      if (url.endsWith('/api/auth/delete-account') && method === 'POST') {
+        expect(JSON.parse(String(init?.body))).toEqual({ password: 'password1' })
+        return jsonResponse({ data: { ok: true } }, 200)
       }
       throw new Error(`unexpected ${method} ${url}`)
     })
@@ -98,13 +113,19 @@ describe('useAuth HTTP', () => {
       expect(result.current.user?.email).toBe('reader@example.com')
     })
 
-    await expect(result.current.updateProfile({ displayName: 'Next' })).rejects.toThrow(
-      'AUTH_PROFILE_NOT_LIVE'
-    )
-    await expect(result.current.changePassword('oldpass1', 'newpass1')).rejects.toThrow(
-      'AUTH_PROFILE_NOT_LIVE'
-    )
-    await expect(result.current.deleteAccount('password1')).rejects.toThrow('AUTH_PROFILE_NOT_LIVE')
+    await act(async () => {
+      await result.current.updateProfile({ displayName: 'Next' })
+    })
+    expect(result.current.user?.displayName).toBe('Next')
+
+    await act(async () => {
+      await result.current.changePassword('oldpass1', 'newpass1')
+    })
+
+    await act(async () => {
+      await result.current.deleteAccount('password1')
+    })
+    expect(result.current.user).toBeNull()
     expect(store.has('softgate_user')).toBe(false)
   })
 })

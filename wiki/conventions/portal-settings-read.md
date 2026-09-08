@@ -12,7 +12,7 @@ Admin list 17–18: `maintenanceMode`, `allowRegistration`, `contactEmail`. Shap
 
 ## Mock on (`VITE_USE_MOCK_API` is not `false`)
 
-`SettingsContext` uses local fail-open defaults: maintenance off, registration on, **contact email absent** → fallback `support@softgatecomic.com`. No fetch.
+`SettingsContext` uses local fail-open defaults: maintenance off, registration on, **contact email absent** → fallback `support@softgatecomic.com`. No fetch. Unset `VITE_USE_MOCK_API` stays mock. Committed `.env.example` is `false`; Vite does not load it. Local `pnpm dev` HTTP uses gitignored `.env.development.local` plus `pnpm dev:api`.
 
 ## Mock off
 

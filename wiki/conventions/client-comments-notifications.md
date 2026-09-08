@@ -30,10 +30,11 @@ tags: [comments, notifications, localStorage]
 - Row is a destination `Link` when `href` exists; mark read on click; **delete is a sibling button**.
 - Demo `new_episode` rows (`sub-{webtoonId}-{episodeNumber}`) still come from `syncSubscribeNotifications` when a subscribed unmuted series gets a later published episode. No push or email.
 - Cookies `dl` lists both the inbox key and the prefs key. `migrateUserData` / `deleteUserData` move/delete prefs with the user.
+- HTTP (`VITE_USE_MOCK_API=false`): inbox SoT is `/api/notifications` ([portal-notifications-http.md](portal-notifications-http.md)). Do **not** write `softgate_notifications_v1`. Prefs SoT is `/api/prefs` ([portal-prefs-http.md](portal-prefs-http.md)). Do **not** write `softgate_notif_prefs_v1`.
 
 ## Cross-tab sync (Impl 65)
 
-`CommentsThread` (Reader + hub) subscribes to `softgate_comments_v1` and `EngagementContext` to `softgate_engage_v1` + `softgate_notifications_v1` + `softgate_notif_prefs_v1` via `useStorageSync` — comments/likes/notifications posted in another tab appear without a refresh. The `storage` event never fires in the writing tab, so same-tab optimistic updates stay single-source (`setNotifPrefs` on the context calls `refresh`).
+`CommentsThread` (Reader + hub) subscribes to `softgate_comments_v1` and `EngagementContext` to `softgate_engage_v1` + `softgate_notifications_v1` + `softgate_notif_prefs_v1` via `useStorageSync` — comments/likes/notifications posted in another tab appear without a refresh. HTTP mode drops the inbox and prefs keys from that list (API is SoT). The `storage` event never fires in the writing tab, so same-tab optimistic updates stay single-source (`setNotifPrefs` on the context calls `refresh` in mock).
 
 ## Share
 
