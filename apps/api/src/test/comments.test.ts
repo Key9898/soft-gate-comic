@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createApp } from '../app.js'
 import { persist } from '../persist.js'
+import type { MailPort } from '../ports/mail.js'
+import type { PushPort } from '../ports/push.js'
 import { testEnv } from './helpers.js'
 
 const jsonHeaders = { 'Content-Type': 'application/json' }
@@ -194,6 +196,61 @@ describe('comments stub', () => {
       headers: { ...jsonHeaders, Cookie: b.cookie },
       body: JSON.stringify({ key: '3:1', parentId, content: 'Muted' }),
     })
+    expect(
+      (await persist.getNotifications(aId)).filter((row) => row.type === 'comment_reply')
+    ).toHaveLength(1)
+  })
+
+  it('emails the parent author on reply when mail is injected and skips muted prefs', async () => {
+    const mailed: Array<{ to: string }> = []
+    const mail: MailPort = {
+      async sendTransactional(input) {
+        mailed.push({ to: input.to })
+      },
+    }
+    const push: PushPort = {
+      async send() {},
+    }
+    const env = testEnv()
+    const app = createApp(env, { mail, push })
+    const a = await app.request('/api/auth/register', {
+      method: 'POST',
+      headers: jsonHeaders,
+      body: JSON.stringify(userA),
+    })
+    const b = await app.request('/api/auth/register', {
+      method: 'POST',
+      headers: jsonHeaders,
+      body: JSON.stringify(userB),
+    })
+    const aCookie = cookieHeader(a)
+    const bCookie = cookieHeader(b)
+    const posted = await app.request('/api/comments/add', {
+      method: 'POST',
+      headers: { ...jsonHeaders, Cookie: aCookie },
+      body: JSON.stringify({ key: '5:1', content: 'Ask' }),
+    })
+    const parentId = ((await posted.json()) as CommentsPayload).data.comments[0]!.id
+    await app.request('/api/comments/reply', {
+      method: 'POST',
+      headers: { ...jsonHeaders, Cookie: bCookie },
+      body: JSON.stringify({ key: '5:1', parentId, content: 'Answer' }),
+    })
+    expect(mailed).toEqual([{ to: 'comment-a@example.com' }])
+
+    const aMe = await app.request('/api/auth/me', { headers: { Cookie: aCookie } })
+    const aId = ((await aMe.json()) as { data: { id: string } }).data.id
+    expect(
+      (await persist.getNotifications(aId)).filter((row) => row.type === 'comment_reply')
+    ).toHaveLength(1)
+    await persist.patchNotifPrefs(aId, { commentReply: false })
+    mailed.length = 0
+    await app.request('/api/comments/reply', {
+      method: 'POST',
+      headers: { ...jsonHeaders, Cookie: bCookie },
+      body: JSON.stringify({ key: '5:1', parentId, content: 'Muted' }),
+    })
+    expect(mailed).toEqual([])
     expect(
       (await persist.getNotifications(aId)).filter((row) => row.type === 'comment_reply')
     ).toHaveLength(1)

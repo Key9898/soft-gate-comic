@@ -10,7 +10,6 @@ import {
 } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthContext'
-import { useLibrary } from './LibraryContext'
 import { authFetch } from '../lib/api/authFetch'
 import { isMockApi } from '../lib/api/isMockApi'
 import type { LibraryMe } from '../lib/api/libraryMe'
@@ -46,7 +45,6 @@ import {
   syncSubscribeNotifications,
   type AppNotification,
   type NotifPrefs,
-  type SubscribeInboxIo,
 } from '../lib/notifications'
 import { useStorageSync } from '../hooks/useStorageSync'
 import { useData } from './DataContext'
@@ -85,32 +83,6 @@ function unreadFrom(list: AppNotification[], prefs: NotifPrefs) {
   return visibleInbox(list, prefs).filter((item) => !item.isRead).length
 }
 
-function memoryInbox(list: AppNotification[], newEpisode: boolean): SubscribeInboxIo {
-  return {
-    readList: () => list,
-    persist: () => undefined,
-    newEpisode,
-  }
-}
-
-async function upsertAdded(
-  previous: AppNotification[],
-  next: AppNotification[]
-): Promise<AppNotification[]> {
-  const existing = new Set(previous.map((item) => item.id))
-  const added = next.filter((item) => !existing.has(item.id))
-  let snapshot = previous
-  for (const notification of added) {
-    snapshot = (
-      await authFetch<NotificationsMe>('/api/notifications/upsert', {
-        method: 'POST',
-        body: JSON.stringify({ notification }),
-      })
-    ).notifications
-  }
-  return snapshot
-}
-
 interface EngagementContextType {
   history: HistoryRecord[]
   likedWebtoonIds: string[]
@@ -144,7 +116,6 @@ const EngagementContext = createContext<EngagementContextType | undefined>(undef
 
 export const EngagementProvider = ({ children }: { children: ReactNode }) => {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
-  const { bookmarks, isReady: libraryReady, stampLastNotified } = useLibrary()
   const { webtoons, episodes } = useData()
   const navigate = useNavigate()
   const location = useLocation()
@@ -341,46 +312,6 @@ export const EngagementProvider = ({ children }: { children: ReactNode }) => {
     inboxHydrated,
     pendingInbox,
     notifPrefs,
-    applyInbox,
-  ])
-
-  useEffect(() => {
-    if (mock) return
-    if (!isAuthenticated || !userId || !libraryReady || !inboxHydrated || !prefsHydrated) return
-    const previous = inboxAll
-    const next = syncSubscribeNotifications(
-      userId,
-      bookmarks,
-      webtoons,
-      episodes,
-      (_uid, webtoonId, episodeNumber) => stampLastNotified(webtoonId, episodeNumber),
-      memoryInbox(previous, notifPrefs.newEpisode)
-    )
-    const added = next.filter((item) => !previous.some((row) => row.id === item.id))
-    if (added.length === 0) return
-    let cancelled = false
-    void upsertAdded(previous, next)
-      .then((snapshot) => {
-        if (cancelled) return
-        applyInbox(snapshot, notifPrefsRef.current)
-      })
-      .catch(() => undefined)
-    return () => {
-      cancelled = true
-    }
-  }, [
-    mock,
-    isAuthenticated,
-    userId,
-    libraryReady,
-    inboxHydrated,
-    prefsHydrated,
-    bookmarks,
-    webtoons,
-    episodes,
-    stampLastNotified,
-    inboxAll,
-    notifPrefs.newEpisode,
     applyInbox,
   ])
 
@@ -634,38 +565,10 @@ export const EngagementProvider = ({ children }: { children: ReactNode }) => {
           setNotifPrefsState(data.notifPrefs)
           setReaderPrefsState(toReaderPrefs(data.readerPrefs))
           applyInbox(inboxAllRef.current, data.notifPrefs)
-          if (!libraryReady || !inboxHydrated || !prefsHydrated) return
-          const next = syncSubscribeNotifications(
-            userId,
-            bookmarks,
-            webtoons,
-            episodes,
-            (_uid, webtoonId, episodeNumber) => stampLastNotified(webtoonId, episodeNumber),
-            memoryInbox(inboxAllRef.current, data.notifPrefs.newEpisode)
-          )
-          const added = next.filter(
-            (item) => !inboxAllRef.current.some((row) => row.id === item.id)
-          )
-          if (added.length === 0) return
-          void upsertAdded(inboxAllRef.current, next)
-            .then((snapshot) => applyInbox(snapshot, notifPrefsRef.current))
-            .catch(() => undefined)
         })
         .catch(() => undefined)
     },
-    [
-      userId,
-      mock,
-      refreshMock,
-      libraryReady,
-      inboxHydrated,
-      prefsHydrated,
-      bookmarks,
-      webtoons,
-      episodes,
-      stampLastNotified,
-      applyInbox,
-    ]
+    [userId, mock, refreshMock, applyInbox]
   )
 
   const setReaderPrefs = useCallback(

@@ -3,7 +3,16 @@ import { z } from 'zod'
 import type { Env } from '../env.js'
 import { persist } from '../persist.js'
 import { optionalReaderUserId } from '../auth/session.js'
-import { COMMENT_MAX_LENGTH, isCommentKey } from './keys.js'
+import {
+  COMMENT_MAX_LENGTH,
+  COMMENT_REPLY_BODY_EN,
+  COMMENT_REPLY_TITLE_KEY,
+  hrefFromCommentKey,
+  isCommentKey,
+} from './keys.js'
+import type { MailPort } from '../ports/mail.js'
+import type { PushPort } from '../ports/push.js'
+import { deliverOutOfBand } from '../notify/deliver.js'
 
 const addSchema = z.object({
   key: z.string(),
@@ -41,7 +50,7 @@ function isJsonContentType(contentType: string | undefined) {
   return (contentType ?? '').toLowerCase().includes('application/json')
 }
 
-export function createCommentsApp(env: Env) {
+export function createCommentsApp(env: Env, ports?: { mail: MailPort; push: PushPort }) {
   const comments = new Hono()
 
   comments.use('*', async (c, next) => {
@@ -85,15 +94,44 @@ export function createCommentsApp(env: Env) {
     if (!isCommentKey(key) || !parentId || !content || content.length > COMMENT_MAX_LENGTH) {
       return jsonError(c, 'VALIDATION_ERROR', 400)
     }
+    const commentsList = await persist.addReply(
+      key,
+      parentId,
+      userId,
+      content,
+      parsed.data.spoiler === true
+    )
+    if (ports) {
+      const parent = commentsList.find((row) => row.id === parentId)
+      if (parent && parent.userId !== userId) {
+        const prefs = await persist.getPrefs(parent.userId)
+        if (prefs.notifPrefs.commentReply) {
+          const parentUser = await persist.findUserById(parent.userId)
+          if (parentUser) {
+            await deliverOutOfBand({
+              env,
+              mail: ports.mail,
+              push: ports.push,
+              user: parentUser,
+              notification: {
+                id: 'comment-reply-out-of-band',
+                type: 'comment_reply',
+                titleKey: COMMENT_REPLY_TITLE_KEY,
+                message: COMMENT_REPLY_BODY_EN,
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                href: hrefFromCommentKey(key),
+              },
+              sendEmail: true,
+              sendPush: true,
+            })
+          }
+        }
+      }
+    }
     return c.json({
       data: {
-        comments: await persist.addReply(
-          key,
-          parentId,
-          userId,
-          content,
-          parsed.data.spoiler === true
-        ),
+        comments: commentsList,
       },
     })
   })

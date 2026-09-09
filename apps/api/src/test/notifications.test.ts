@@ -265,4 +265,11 @@ describe('notifications stub', () => {
     })
     expect(await empty.json()).toEqual({ data: { notifications: [] } })
   })
+
+  it('returns 503 for vapid when push is unset', async () => {
+    const { app } = await registerCookie()
+    const res = await app.request('/api/notifications/push/vapid')
+    expect(res.status).toBe(503)
+    expect(await res.json()).toEqual({ error: { code: 'PUSH_NOT_CONFIGURED' } })
+  })
 })

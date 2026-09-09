@@ -8,7 +8,16 @@ import {
 } from '@prisma/client'
 import { isEpisodeLocked } from '@softgate/shared/catalog'
 import { STUB_PORTAL_SETTINGS } from '@softgate/shared/settings'
-import { publishedCatalogFromAdmin } from './catalog/fromAdmin.js'
+import {
+  coinPackagesFromAdminRows,
+  isMissingCoinPackageTable,
+  publishedCatalogFromAdmin,
+} from './catalog/fromAdmin.js'
+import {
+  isMissingPlatformSettingsTable,
+  PLATFORM_SETTINGS_ID,
+  portalSettingsFromAdminRow,
+} from './settings/fromAdmin.js'
 import { episodeUnlockKey, redactLockedEpisodeImages } from './paywall.js'
 import {
   STUB_SEED_BALANCE,
@@ -26,7 +35,11 @@ import {
   type PersistComment,
   type PersistCommentUser,
   type PersistNotification,
+  type PersistCampaign,
+  type PersistListedReader,
+  type PersistLibrarySubscriber,
   type PersistPort,
+  type PersistPushSubscription,
   type PersistReaderPrefs,
   type PrefsSnapshot,
   type StubReaderUser,
@@ -336,13 +349,23 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
       await prisma.$disconnect()
     },
     async getUnstrippedPublishedCatalog() {
-      const [authors, genres, webtoons, episodes] = await Promise.all([
+      const loadCoinPackages = async () => {
+        try {
+          const rows = await prisma.coinPackage.findMany({ orderBy: { createdAt: 'asc' } })
+          return coinPackagesFromAdminRows(rows)
+        } catch (error) {
+          if (isMissingCoinPackageTable(error)) return undefined
+          throw error
+        }
+      }
+      const [authors, genres, webtoons, episodes, coinPackages] = await Promise.all([
         prisma.author.findMany(),
         prisma.genre.findMany(),
         prisma.webtoon.findMany({
           include: { genres: { include: { genre: true } } },
         }),
         prisma.episode.findMany(),
+        loadCoinPackages(),
       ])
       return publishedCatalogFromAdmin({
         authors,
@@ -370,6 +393,7 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
           genreSlugs: row.genres.map((item) => item.genre.slug),
         })),
         episodes,
+        coinPackages,
       })
     },
     async getPublishedCatalog(userId?: string) {
@@ -378,13 +402,23 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
       const unlocks = await prisma.walletUnlock.findMany({ where: { userId } })
       return redactLockedEpisodeImages(catalog, new Set(unlocks.map((row) => row.episodeKey)))
     },
-    getPortalSettings() {
-      return STUB_PORTAL_SETTINGS
+    async getPortalSettings() {
+      try {
+        const row = await prisma.platformSettings.findUnique({
+          where: { id: PLATFORM_SETTINGS_ID },
+        })
+        return portalSettingsFromAdminRow(row)
+      } catch (error) {
+        if (isMissingPlatformSettingsTable(error)) return STUB_PORTAL_SETTINGS
+        throw error
+      }
     },
     async clearAuth() {
       await prisma.$transaction([
         prisma.readerPasswordReset.deleteMany(),
         prisma.readerNotification.deleteMany(),
+        prisma.readerPushSubscription.deleteMany(),
+        prisma.readerNotificationCampaign.deleteMany(),
         prisma.readerUserPrefs.deleteMany(),
         prisma.libraryLike.deleteMany(),
         prisma.libraryHistory.deleteMany(),
@@ -400,8 +434,8 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
     setAuthFlags(flags: AuthFlags) {
       authFlags = { ...authFlags, ...flags }
     },
-    isRegistrationOpen() {
-      const settings = adapter.getPortalSettings()
+    async isRegistrationOpen() {
+      const settings = await adapter.getPortalSettings()
       const allowRegistration = authFlags.allowRegistration ?? settings.allowRegistration
       const maintenanceMode = authFlags.maintenanceMode ?? settings.maintenanceMode
       return allowRegistration && !maintenanceMode
@@ -533,6 +567,7 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
         }),
         prisma.readerPasswordReset.deleteMany({ where: { userId } }),
         prisma.readerNotification.deleteMany({ where: { userId } }),
+        prisma.readerPushSubscription.deleteMany({ where: { userId } }),
         prisma.readerUserPrefs.deleteMany({ where: { userId } }),
         prisma.libraryLike.deleteMany({ where: { userId } }),
         prisma.libraryHistory.deleteMany({ where: { userId } }),
@@ -704,6 +739,19 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
         return loadLibrarySnapshot(tx, userId)
       })
     },
+    async listLibrarySubscribers(webtoonId) {
+      const rows = await prisma.librarySubscribe.findMany({ where: { webtoonId } })
+      return rows.map((row): PersistLibrarySubscriber => {
+        const subscriber: PersistLibrarySubscriber = {
+          userId: row.userId,
+          notifyMuted: row.notifyMuted,
+        }
+        if (typeof row.lastNotifiedEpisodeNumber === 'number') {
+          subscriber.lastNotifiedEpisodeNumber = row.lastNotifiedEpisodeNumber
+        }
+        return subscriber
+      })
+    },
     async upsertLibraryHistory(userId, webtoonId, episodeNumber, scrollRatio) {
       return prisma.$transaction(async (tx) => {
         const existing = await tx.libraryHistory.findUnique({
@@ -817,6 +865,110 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
         where: { userId, isRead: true },
       })
       return loadNotifications(prisma, userId)
+    },
+    async hasNotification(userId, id) {
+      const row = await prisma.readerNotification.findUnique({
+        where: { userId_id: { userId, id } },
+      })
+      return Boolean(row)
+    },
+    async listReaders(input) {
+      const q = (input.q ?? '').trim()
+      const where = q
+        ? {
+            OR: [
+              { email: { contains: q, mode: 'insensitive' as const } },
+              { displayName: { contains: q, mode: 'insensitive' as const } },
+              { username: { contains: q, mode: 'insensitive' as const } },
+            ],
+          }
+        : {}
+      const [total, rows] = await Promise.all([
+        prisma.readerUser.count({ where }),
+        prisma.readerUser.findMany({
+          where,
+          orderBy: { displayName: 'asc' },
+          skip: input.offset,
+          take: input.limit,
+          select: { id: true, email: true, displayName: true },
+        }),
+      ])
+      return { total, readers: rows satisfies PersistListedReader[] }
+    },
+    async listReaderIds() {
+      const rows = await prisma.readerUser.findMany({ select: { id: true } })
+      return rows.map((row) => row.id)
+    },
+    async listPushSubscriptions(userId) {
+      const rows = await prisma.readerPushSubscription.findMany({ where: { userId } })
+      return rows.map((row): PersistPushSubscription => ({
+        endpoint: row.endpoint,
+        p256dh: row.p256dh,
+        auth: row.auth,
+      }))
+    },
+    async upsertPushSubscription(userId, subscription) {
+      await prisma.readerPushSubscription.upsert({
+        where: { userId_endpoint: { userId, endpoint: subscription.endpoint } },
+        create: {
+          userId,
+          endpoint: subscription.endpoint,
+          p256dh: subscription.p256dh,
+          auth: subscription.auth,
+        },
+        update: { p256dh: subscription.p256dh, auth: subscription.auth },
+      })
+    },
+    async deletePushSubscription(userId, endpoint) {
+      await prisma.readerPushSubscription.deleteMany({ where: { userId, endpoint } })
+    },
+    async countUsersWithPush() {
+      const rows = await prisma.readerPushSubscription.findMany({
+        distinct: ['userId'],
+        select: { userId: true },
+      })
+      return rows.length
+    },
+    async getCampaign(id) {
+      const row = await prisma.readerNotificationCampaign.findUnique({ where: { id } })
+      if (!row) return undefined
+      if (row.type !== 'system' && row.type !== 'promotion') return undefined
+      const campaign: PersistCampaign = {
+        id: row.id,
+        type: row.type,
+        titleKey: row.titleKey,
+        message: row.message,
+        inbox: row.inbox,
+        emailed: row.emailed,
+        pushed: row.pushed,
+        skippedPref: row.skippedPref,
+        createdAt: row.createdAt.toISOString(),
+      }
+      if (row.href) campaign.href = row.href
+      return campaign
+    },
+    async upsertCampaign(campaign) {
+      await prisma.readerNotificationCampaign.upsert({
+        where: { id: campaign.id },
+        create: {
+          id: campaign.id,
+          type: campaign.type,
+          titleKey: campaign.titleKey,
+          message: campaign.message,
+          href: campaign.href ?? null,
+          inbox: campaign.inbox,
+          emailed: campaign.emailed,
+          pushed: campaign.pushed,
+          skippedPref: campaign.skippedPref,
+          createdAt: new Date(campaign.createdAt),
+        },
+        update: {
+          inbox: campaign.inbox,
+          emailed: campaign.emailed,
+          pushed: campaign.pushed,
+          skippedPref: campaign.skippedPref,
+        },
+      })
     },
     async getPrefs(userId) {
       const row = await prisma.readerUserPrefs.findUnique({ where: { userId } })

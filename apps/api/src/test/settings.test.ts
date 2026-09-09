@@ -12,7 +12,7 @@ describe('GET /api/settings', () => {
     expect(res.headers.get('Set-Cookie')).toBeNull()
 
     const body: unknown = await res.json()
-    const settings = unwrapApiData<ReturnType<typeof persist.getPortalSettings>>(body)
+    const settings = unwrapApiData<Awaited<ReturnType<typeof persist.getPortalSettings>>>(body)
     expect(settings).not.toBeNull()
     expect(settings?.maintenanceMode).toBe(false)
     expect(settings?.allowRegistration).toBe(true)

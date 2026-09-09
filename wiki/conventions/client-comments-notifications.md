@@ -2,7 +2,9 @@
 title: Client comments + notifications
 type: convention
 date: 2026-08-13
+updated: 2026-09-10
 tags: [comments, notifications, localStorage]
+impl_updated: 204
 ---
 
 # Client comments + notifications
@@ -25,15 +27,15 @@ tags: [comments, notifications, localStorage]
 
 - Client list + mark-read; nav bell unread **dot only** when unread count > 0.
 - Missing user → persist **`[]`**. Do not seed fake unread rows. Existing `byUserId` lists are not wiped.
-- Prefs key `softgate_notif_prefs_v1`: `{ schemaVersion: 1, byUserId: { newEpisode, commentReply, promotion } }`. Defaults all `true`. Account/security in-app is locked on (no persist). Email + push columns are disabled (“when mail/push ships”).
+- Prefs key `softgate_notif_prefs_v1`: `{ schemaVersion: 1, byUserId: { newEpisode, commentReply, promotion } }`. Defaults all `true`. Account/security in-app is locked on (no persist). **One switch per category** applies to in-app + email + Web Push (follow-copy on email/push cells). HTTP Profile may offer “Enable lock-screen notices” (permission + subscribe) — not a fourth pref boolean. Mock: no SW, no permission prompt.
 - `listNotifications` / `unreadCount` apply prefs in lib. Profile Settings writes via `EngagementContext.setNotifPrefs` (same-tab; `storage` events do not fire in the writing tab).
 - Global `newEpisode: false` skips `syncSubscribeNotifications` the same way muted bookmarks do. Per-series `notifyMuted` stays.
 - Empty inbox: “You’re all caught up” + CTAs `/categories` and `/profile?tab=settings`.
 - Filters: All / Unread / Updates (`new_episode`) / Activity (`comment_reply`) / Promo (`promotion`).
 - Row is a destination `Link` when `href` exists; mark read on click; **delete is a sibling button**.
-- Demo `new_episode` rows (`sub-{webtoonId}-{episodeNumber}`) still come from `syncSubscribeNotifications` when a subscribed unmuted series gets a later published episode. No push or email.
-- Cookies `dl` lists both the inbox key and the prefs key. `migrateUserData` / `deleteUserData` move/delete prefs with the user.
-- HTTP (`VITE_USE_MOCK_API=false`): inbox SoT is `/api/notifications` ([portal-notifications-http.md](portal-notifications-http.md)). Do **not** write `softgate_notifications_v1`. Prefs SoT is `/api/prefs` ([portal-prefs-http.md](portal-prefs-http.md)). Do **not** write `softgate_notif_prefs_v1`. Comments SoT is `/api/comments` ([portal-comments-http.md](portal-comments-http.md)). Do **not** write `softgate_comments_v1`.
+- Mock `new_episode` rows (`sub-{webtoonId}-{episodeNumber}`) still come from `syncSubscribeNotifications` when a subscribed unmuted series gets a later published episode. HTTP inbox rows come from Admin `POST /api/internal/notifications/new-episode` (Impl **204**) and may email / Web Push when those channels are configured. HTTP must not catalog-scan.
+- Cookies `dl` lists both the inbox key and the prefs key. Push subscriptions are **server** rows (`ReaderPushSubscription`) — no new localStorage key. `migrateUserData` / `deleteUserData` move/delete prefs with the user.
+- HTTP (`VITE_USE_MOCK_API=false`): inbox SoT is `/api/notifications` ([portal-notifications-http.md](portal-notifications-http.md)). Do **not** write `softgate_notifications_v1`. Prefs SoT is `/api/prefs` ([portal-prefs-http.md](portal-prefs-http.md)). Do **not** write `softgate_notif_prefs_v1`. Comments SoT is `/api/comments` ([portal-comments-http.md](portal-comments-http.md)). Do **not** write `softgate_comments_v1`. HTTP `addReply` still inserts `comment_reply` inbox on the API; out-of-band email+push runs after persist when `commentReply` is on ([portal-notifications-deliver.md](portal-notifications-deliver.md)). Mock `addReply` still only writes mock inbox — no Brevo from the browser.
 
 ## Cross-tab sync (Impl 65)
 

@@ -19,6 +19,10 @@ const envSchema = z.object({
   R2_PUBLIC_BASE_URL: z.string().url().optional(),
   BREVO_API_KEY: optionalNonEmpty,
   BREVO_FROM_EMAIL: z.string().email().optional(),
+  ADMIN_SERVICE_TOKEN: optionalNonEmpty,
+  VAPID_PUBLIC_KEY: optionalNonEmpty,
+  VAPID_PRIVATE_KEY: optionalNonEmpty,
+  VAPID_SUBJECT: optionalNonEmpty,
 })
 
 export type Env = z.infer<typeof envSchema>
@@ -51,6 +55,10 @@ export function parseEnv(raw: NodeJS.ProcessEnv): Env {
     R2_PUBLIC_BASE_URL: emptyToUndef(raw.R2_PUBLIC_BASE_URL),
     BREVO_API_KEY: emptyToUndef(raw.BREVO_API_KEY),
     BREVO_FROM_EMAIL: emptyToUndef(raw.BREVO_FROM_EMAIL),
+    ADMIN_SERVICE_TOKEN: emptyToUndef(raw.ADMIN_SERVICE_TOKEN),
+    VAPID_PUBLIC_KEY: emptyToUndef(raw.VAPID_PUBLIC_KEY),
+    VAPID_PRIVATE_KEY: emptyToUndef(raw.VAPID_PRIVATE_KEY),
+    VAPID_SUBJECT: emptyToUndef(raw.VAPID_SUBJECT),
   })
 
   if (parsed.NODE_ENV === 'production' && parsed.JWT_SECRET === DEV_JWT_STUB) {
@@ -72,4 +80,8 @@ export function isR2Configured(env: Env): boolean {
 
 export function isMailConfigured(env: Env): boolean {
   return Boolean(env.BREVO_API_KEY && env.BREVO_FROM_EMAIL)
+}
+
+export function isPushConfigured(env: Env): boolean {
+  return Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY && env.VAPID_SUBJECT)
 }

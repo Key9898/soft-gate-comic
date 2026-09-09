@@ -116,6 +116,39 @@ export type PersistNotification = {
   }
 }
 
+export type PersistListedReader = {
+  id: string
+  email: string
+  displayName: string
+}
+
+export type PersistLibrarySubscriber = {
+  userId: string
+  notifyMuted: boolean
+  lastNotifiedEpisodeNumber?: number
+}
+
+export type PersistPushSubscription = {
+  endpoint: string
+  p256dh: string
+  auth: string
+}
+
+export type PersistCampaignType = 'system' | 'promotion'
+
+export type PersistCampaign = {
+  id: string
+  type: PersistCampaignType
+  titleKey: string
+  message: string
+  href?: string
+  inbox: number
+  emailed: number
+  pushed: number
+  skippedPref: number
+  createdAt: string
+}
+
 export function sortLibrarySnapshot(snapshot: LibrarySnapshot): LibrarySnapshot {
   return {
     bookmarks: [...snapshot.bookmarks].sort(
@@ -319,10 +352,10 @@ export type PersistPort = {
   ping(): Promise<{ ok: true }>
   getUnstrippedPublishedCatalog(): Promise<PublishedCatalog>
   getPublishedCatalog(userId?: string): Promise<PublishedCatalog>
-  getPortalSettings(): PortalSettings
+  getPortalSettings(): Promise<PortalSettings>
   clearAuth(): Promise<void>
   setAuthFlags(flags: AuthFlags): void
-  isRegistrationOpen(): boolean
+  isRegistrationOpen(): Promise<boolean>
   findUserById(id: string): Promise<StubReaderUser | undefined>
   findUserByEmail(email: string): Promise<StubReaderUser | undefined>
   findUserByUsername(username: string): Promise<StubReaderUser | undefined>
@@ -372,6 +405,7 @@ export type PersistPort = {
     webtoonId: string,
     episodeNumber: number
   ): Promise<LibrarySnapshot>
+  listLibrarySubscribers(webtoonId: string): Promise<PersistLibrarySubscriber[]>
   upsertLibraryHistory(
     userId: string,
     webtoonId: string,
@@ -391,6 +425,19 @@ export type PersistPort = {
   markAllNotificationsRead(userId: string): Promise<PersistNotification[]>
   deleteNotification(userId: string, id: string): Promise<PersistNotification[]>
   clearReadNotifications(userId: string): Promise<PersistNotification[]>
+  hasNotification(userId: string, id: string): Promise<boolean>
+  listReaders(input: {
+    q?: string
+    limit: number
+    offset: number
+  }): Promise<{ total: number; readers: PersistListedReader[] }>
+  listReaderIds(): Promise<string[]>
+  listPushSubscriptions(userId: string): Promise<PersistPushSubscription[]>
+  upsertPushSubscription(userId: string, subscription: PersistPushSubscription): Promise<void>
+  deletePushSubscription(userId: string, endpoint: string): Promise<void>
+  countUsersWithPush(): Promise<number>
+  getCampaign(id: string): Promise<PersistCampaign | undefined>
+  upsertCampaign(campaign: PersistCampaign): Promise<void>
   getPrefs(userId: string): Promise<PrefsSnapshot>
   patchNotifPrefs(userId: string, patch: PersistNotifPrefsPatch): Promise<PrefsSnapshot>
   setReaderPrefs(userId: string, reader: PersistReaderPrefs): Promise<PrefsSnapshot>
@@ -464,6 +511,8 @@ export function createStubPersist(): PersistPort {
   const notificationsByUserId = new Map<string, Map<string, PersistNotification>>()
   const prefsByUserId = new Map<string, PrefsSnapshot>()
   const commentsByKey = new Map<string, PersistComment[]>()
+  const pushByUserId = new Map<string, Map<string, PersistPushSubscription>>()
+  const campaignsById = new Map<string, PersistCampaign>()
   let authFlags: AuthFlags = {}
 
   const libraryFor = (userId: string) => {
@@ -585,7 +634,7 @@ export function createStubPersist(): PersistPort {
       const keys = userId ? (walletsByUserId.get(userId)?.unlockedEpisodeKeys ?? []) : []
       return redactLockedEpisodeImages(catalog, new Set(keys))
     },
-    getPortalSettings() {
+    async getPortalSettings() {
       return STUB_PORTAL_SETTINGS
     },
     async clearAuth() {
@@ -601,13 +650,15 @@ export function createStubPersist(): PersistPort {
       notificationsByUserId.clear()
       prefsByUserId.clear()
       commentsByKey.clear()
+      pushByUserId.clear()
+      campaignsById.clear()
       authFlags = {}
     },
     setAuthFlags(flags: AuthFlags) {
       authFlags = { ...authFlags, ...flags }
     },
-    isRegistrationOpen() {
-      const settings = stub.getPortalSettings()
+    async isRegistrationOpen() {
+      const settings = await stub.getPortalSettings()
       const allowRegistration = authFlags.allowRegistration ?? settings.allowRegistration
       const maintenanceMode = authFlags.maintenanceMode ?? settings.maintenanceMode
       return allowRegistration && !maintenanceMode
@@ -719,6 +770,7 @@ export function createStubPersist(): PersistPort {
       purgeUserComments(userId)
       notificationsByUserId.delete(userId)
       prefsByUserId.delete(userId)
+      pushByUserId.delete(userId)
       libraryLikesByUserId.delete(userId)
       libraryHistoryByUserId.delete(userId)
       libraryBookmarksByUserId.delete(userId)
@@ -848,6 +900,22 @@ export function createStubPersist(): PersistPort {
       bookmarks.set(webtoonId, { ...current, lastNotifiedEpisodeNumber: episodeNumber })
       return snapshotOf(userId)
     },
+    async listLibrarySubscribers(webtoonId) {
+      const out: PersistLibrarySubscriber[] = []
+      for (const [userId, bookmarks] of libraryBookmarksByUserId) {
+        const row = bookmarks.get(webtoonId)
+        if (!row) continue
+        const subscriber: PersistLibrarySubscriber = {
+          userId,
+          notifyMuted: row.notifyMuted === true,
+        }
+        if (typeof row.lastNotifiedEpisodeNumber === 'number') {
+          subscriber.lastNotifiedEpisodeNumber = row.lastNotifiedEpisodeNumber
+        }
+        out.push(subscriber)
+      }
+      return out
+    },
     async upsertLibraryHistory(userId, webtoonId, episodeNumber, scrollRatio) {
       const { history } = libraryFor(userId)
       history.set(
@@ -916,6 +984,59 @@ export function createStubPersist(): PersistPort {
         }
       }
       return notificationsOf(userId)
+    },
+    async hasNotification(userId, id) {
+      return notificationsByUserId.get(userId)?.has(id) === true
+    },
+    async listReaders(input) {
+      const q = (input.q ?? '').trim().toLowerCase()
+      const all = [...usersById.values()]
+        .filter((user) => {
+          if (!q) return true
+          return (
+            user.email.toLowerCase().includes(q) ||
+            user.displayName.toLowerCase().includes(q) ||
+            user.username.toLowerCase().includes(q)
+          )
+        })
+        .sort((a, b) => a.displayName.localeCompare(b.displayName))
+      const readers = all.slice(input.offset, input.offset + input.limit).map((user) => ({
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+      }))
+      return { total: all.length, readers }
+    },
+    async listReaderIds() {
+      return [...usersById.keys()]
+    },
+    async listPushSubscriptions(userId) {
+      return [...(pushByUserId.get(userId)?.values() ?? [])].map((row) => ({ ...row }))
+    },
+    async upsertPushSubscription(userId, subscription) {
+      let map = pushByUserId.get(userId)
+      if (!map) {
+        map = new Map()
+        pushByUserId.set(userId, map)
+      }
+      map.set(subscription.endpoint, { ...subscription })
+    },
+    async deletePushSubscription(userId, endpoint) {
+      pushByUserId.get(userId)?.delete(endpoint)
+    },
+    async countUsersWithPush() {
+      let count = 0
+      for (const map of pushByUserId.values()) {
+        if (map.size > 0) count += 1
+      }
+      return count
+    },
+    async getCampaign(id) {
+      const row = campaignsById.get(id)
+      return row ? { ...row } : undefined
+    },
+    async upsertCampaign(campaign) {
+      campaignsById.set(campaign.id, { ...campaign })
     },
     async getPrefs(userId) {
       const existing = prefsByUserId.get(userId)

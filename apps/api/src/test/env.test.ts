@@ -3,6 +3,7 @@ import {
   DEV_JWT_STUB,
   isDatabaseConfigured,
   isMailConfigured,
+  isPushConfigured,
   isR2Configured,
   parseEnv,
 } from '../env.js'
@@ -77,15 +78,22 @@ describe('parseEnv', () => {
       R2_PUBLIC_BASE_URL: '',
       BREVO_API_KEY: '',
       BREVO_FROM_EMAIL: '',
+      ADMIN_SERVICE_TOKEN: '',
+      VAPID_PUBLIC_KEY: '',
+      VAPID_PRIVATE_KEY: '',
+      VAPID_SUBJECT: '',
     })
     expect(env.DATABASE_URL).toBeUndefined()
     expect(env.R2_ACCOUNT_ID).toBeUndefined()
     expect(env.R2_PUBLIC_BASE_URL).toBeUndefined()
     expect(env.BREVO_API_KEY).toBeUndefined()
     expect(env.BREVO_FROM_EMAIL).toBeUndefined()
+    expect(env.ADMIN_SERVICE_TOKEN).toBeUndefined()
+    expect(env.VAPID_PUBLIC_KEY).toBeUndefined()
     expect(isDatabaseConfigured(env)).toBe(false)
     expect(isR2Configured(env)).toBe(false)
     expect(isMailConfigured(env)).toBe(false)
+    expect(isPushConfigured(env)).toBe(false)
   })
 
   it('parses postgresql and postgres DATABASE_URL without treating them as http URLs', () => {
@@ -138,5 +146,22 @@ describe('parseEnv', () => {
     })
     expect(isMailConfigured(both)).toBe(true)
     expect(both.BREVO_FROM_EMAIL).toBe('noreply@softgate.example')
+  })
+
+  it('requires all VAPID slots before isPushConfigured', async () => {
+    const partial = parseEnv({
+      ...base,
+      VAPID_PUBLIC_KEY: 'pub',
+      VAPID_PRIVATE_KEY: 'priv',
+    })
+    expect(isPushConfigured(partial)).toBe(false)
+
+    const full = parseEnv({
+      ...base,
+      VAPID_PUBLIC_KEY: 'pub',
+      VAPID_PRIVATE_KEY: 'priv',
+      VAPID_SUBJECT: 'mailto:support@softgatecomic.com',
+    })
+    expect(isPushConfigured(full)).toBe(true)
   })
 })

@@ -77,7 +77,7 @@ New team members: `git clone && pnpm install` → hooks ready.
 
 **Start here for SoftGate Comic phase history:**
 
-1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–199 (**next: 200**)
+1. [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl 1–204 (**next: 205**)
 2. [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
 3. `docs/sessions/YYYY-MM-DD-session-summary.md` — local detail (`phases: [N]`)
 

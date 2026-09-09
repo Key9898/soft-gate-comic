@@ -4,10 +4,12 @@ import { HelmetProvider } from 'react-helmet-async'
 import i18n from './lib/i18n'
 import { localeFromPathname } from './lib/locale'
 import { CommentsSsrContext, readClientCommentsSsrSeed } from './lib/ssr/commentsSsr'
+import { registerPushWorker } from './lib/push'
 import App from './App'
 import './index.css'
 
 const boot = () => {
+  registerPushWorker()
   const container = document.getElementById('root')!
   const commentsSeed = readClientCommentsSsrSeed()
   const app = (

@@ -97,7 +97,7 @@ export function createAuthApp(env: Env, options?: { mail?: MailPort }) {
   })
 
   auth.post('/register', async (c) => {
-    if (!persist.isRegistrationOpen()) {
+    if (!(await persist.isRegistrationOpen())) {
       return jsonError(c, 'REGISTRATION_CLOSED', 403)
     }
 

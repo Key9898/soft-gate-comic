@@ -138,8 +138,7 @@ describe('notifications HTTP', () => {
     vi.unstubAllGlobals()
   })
 
-  it('upserts subscribe notices without writing softgate_notifications_v1', async () => {
-    let inbox: Array<Record<string, unknown>> = []
+  it('does not catalog-scan subscribe notices; GET /me is source of truth', async () => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input)
       const method = init?.method ?? 'GET'
@@ -152,20 +151,11 @@ describe('notifications HTTP', () => {
       if (url.endsWith('/api/library/me') && method === 'GET') {
         return jsonResponse({ data: librarySnapshot }, 200)
       }
-      if (url.endsWith('/api/library/stamp-notified') && method === 'POST') {
-        return jsonResponse({ data: librarySnapshot }, 200)
-      }
       if (url.endsWith('/api/notifications/me') && method === 'GET') {
-        return jsonResponse({ data: { notifications: inbox } }, 200)
+        return jsonResponse({ data: { notifications: [] } }, 200)
       }
       if (url.endsWith('/api/prefs/me') && method === 'GET') {
         return jsonResponse({ data: emptyPrefs }, 200)
-      }
-      if (url.endsWith('/api/notifications/upsert') && method === 'POST') {
-        const body = JSON.parse(String(init?.body)) as { notification: Record<string, unknown> }
-        expect(body.notification.id).toBe('sub-wt-1-4')
-        inbox = [body.notification]
-        return jsonResponse({ data: { notifications: inbox } }, 200)
       }
       throw new Error(`unexpected ${method} ${url}`)
     })
@@ -173,8 +163,10 @@ describe('notifications HTTP', () => {
 
     const { result } = renderHook(() => useEngagement(), { wrapper })
     await waitFor(() => {
-      expect(result.current.notifications.some((item) => item.id === 'sub-wt-1-4')).toBe(true)
+      expect(result.current.isReady).toBe(true)
+      expect(result.current.prefsHydrated).toBe(true)
     })
+    expect(result.current.notifications.some((item) => item.id === 'sub-wt-1-4')).toBe(false)
     expect(store.has(NOTIFICATIONS_STORAGE_KEY)).toBe(false)
     expect(store.has(LIBRARY_STORAGE_KEY)).toBe(false)
     expect(
@@ -182,7 +174,7 @@ describe('notifications HTTP', () => {
         ([input, init]) =>
           String(input).endsWith('/api/notifications/upsert') && init?.method === 'POST'
       )
-    ).toBe(true)
+    ).toBe(false)
   })
 
   it('marks read through POST and saves prefs on the API', async () => {

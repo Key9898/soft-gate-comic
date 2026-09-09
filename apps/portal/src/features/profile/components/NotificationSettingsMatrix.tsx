@@ -1,6 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEngagement } from '../../../context/EngagementContext'
+import { isMockApi } from '../../../lib/api/isMockApi'
+import { enableLockScreenPush } from '../../../lib/push'
 import type { NotifPrefs } from '../../../lib/notifications'
 
 type PrefKey = keyof NotifPrefs
@@ -54,6 +57,10 @@ const InAppSwitch = ({
   </button>
 )
 
+const FollowChannel = ({ label }: { label: string }) => (
+  <span className="text-2xs block max-w-[9.5rem] font-semibold text-gray-600">{label}</span>
+)
+
 const LockedChannel = ({ label }: { label: string }) => (
   <span className="text-2xs block max-w-[9.5rem] font-semibold text-gray-400">{label}</span>
 )
@@ -61,6 +68,8 @@ const LockedChannel = ({ label }: { label: string }) => (
 const NotificationSettingsMatrix = () => {
   const { t } = useTranslation()
   const { notifPrefs, setNotifPrefs } = useEngagement()
+  const [pushStatus, setPushStatus] = useState<'idle' | 'ok' | 'denied' | 'unavailable'>('idle')
+  const http = !isMockApi()
 
   return (
     <div className="rounded-3xl border bg-white p-6 text-left shadow-sm">
@@ -76,6 +85,34 @@ const NotificationSettingsMatrix = () => {
           {t('profilePage.settingsInboxLink')}
         </Link>
       </div>
+
+      {http ? (
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-600">{t('profilePage.pushEnableLead')}</p>
+          <button
+            type="button"
+            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:ring-2 focus-visible:outline-none"
+            onClick={() => {
+              void enableLockScreenPush().then(setPushStatus)
+            }}
+          >
+            {t('profilePage.pushEnable')}
+          </button>
+        </div>
+      ) : null}
+      {pushStatus === 'ok' ? (
+        <p className="mb-4 text-sm font-medium text-gray-700">{t('profilePage.pushEnableOk')}</p>
+      ) : null}
+      {pushStatus === 'denied' ? (
+        <p className="mb-4 text-sm font-medium text-gray-700">
+          {t('profilePage.pushEnableDenied')}
+        </p>
+      ) : null}
+      {pushStatus === 'unavailable' ? (
+        <p className="mb-4 text-sm font-medium text-gray-700">
+          {t('profilePage.pushEnableUnavailable')}
+        </p>
+      ) : null}
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[36rem] border-separate border-spacing-y-2 text-left">
@@ -102,10 +139,10 @@ const NotificationSettingsMatrix = () => {
                   />
                 </td>
                 <td className="px-2 py-2 text-center">
-                  <LockedChannel label={t('profilePage.channelWhenMail')} />
+                  <FollowChannel label={t('profilePage.channelFollowsPref')} />
                 </td>
                 <td className="rounded-r-2xl px-2 py-2 text-center">
-                  <LockedChannel label={t('profilePage.channelWhenPush')} />
+                  <FollowChannel label={t('profilePage.channelFollowsPref')} />
                 </td>
               </tr>
             ))}
@@ -124,10 +161,10 @@ const NotificationSettingsMatrix = () => {
                 </span>
               </td>
               <td className="px-2 py-2 text-center">
-                <LockedChannel label={t('profilePage.channelWhenMail')} />
+                <LockedChannel label={t('profilePage.prefAccountLocked')} />
               </td>
               <td className="rounded-r-2xl px-2 py-2 text-center">
-                <LockedChannel label={t('profilePage.channelWhenPush')} />
+                <LockedChannel label={t('profilePage.prefAccountLocked')} />
               </td>
             </tr>
           </tbody>

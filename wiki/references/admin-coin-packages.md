@@ -2,23 +2,31 @@
 title: Admin coin packages → portal /coins
 type: reference
 date: 2026-08-23
-tags: [admin, coins, catalog, localStorage, follow-up]
+updated: 2026-09-10
+tags: [admin, coins, catalog, http, prisma, softgate]
+impl_updated: 201
 ---
 
 # Admin coin packages → portal `/coins`
 
-Admin CMS **Impl 24** (wiki item **16**) already writes shop SKUs into the shared catalog blob. This portal still hardcodes the shop from `src/features/coins/components/coinData.ts`. This file is the **consume contract** for a later portal Impl. Do not edit the Admin repo for this follow-up.
+Admin writes shop SKUs (CMS Impl 24 / Postgres `CoinPackage`). Portal `/coins` consumes optional `PublishedCatalog.coinPackages` (Impl **168** UI + Impl **201** Prisma HTTP).
 
-| Side   | Repo                              | Status           |
-| ------ | --------------------------------- | ---------------- |
-| Writer | `soft-gate-comic-admin-dashboard` | Done (schema 13) |
-| Reader | this repo (`soft-gate-comic`)     | Not started      |
+| Side   | Repo                              | Status                                  |
+| ------ | --------------------------------- | --------------------------------------- |
+| Writer | `soft-gate-comic-admin-dashboard` | Done (blob then REST + Prisma table)    |
+| Reader | this repo (`soft-gate-comic`)     | Done — UI 168, Prisma catalog field 201 |
+
+Missing packs table → omit field → `coinData.ts` fallback. Empty table → `[]` → empty shop. Metal/glow stay portal-only.
 
 Admin note: [`../soft-gate-comic-admin-dashboard/wiki/notes/2026-08-23-admin-coin-packages.md`](../../../soft-gate-comic-admin-dashboard/wiki/notes/2026-08-23-admin-coin-packages.md)
 
 Canonical list item 16: [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)
 
 Wallet honesty (do not rewrite): [client-wallet.md](../conventions/client-wallet.md)
+
+HTTP consume: [2026-09-10-coin-packages-catalog.md](../notes/2026-09-10-coin-packages-catalog.md)
+
+Portal types + `/coins` fallback shipped in Impl **168**. Prisma catalog field shipped in Impl **201**. Sections below stay as the original consume contract (blob shape, metal/glow, checkout honesty). Do not treat them as still-open work.
 
 ---
 
@@ -45,7 +53,7 @@ Same-origin only: Admin and portal share the blob only when they run on the **sa
 
 Admin `SharedData.coinPackages: CoinPackage[]`.
 
-This portal’s `SharedData` in `packages/shared/src/types.ts` **does not have `coinPackages` yet**. Runtime JSON from Admin may already contain the array; TypeScript here ignores it until you add the field.
+This portal’s `SharedData` in `packages/shared/src/types.ts` includes optional `coinPackages` (Impl 168). Prisma HTTP catalog maps Admin `CoinPackage` rows onto that field (Impl 201).
 
 ### Blob shape (JSON keys — use these, not aliases)
 
@@ -85,7 +93,7 @@ Omit `bonus` when `0`. Omit `popular` / `bestValue` when false.
 
 ---
 
-## 2. What this portal must do
+## 2. Consume contract (shipped 168 / 201)
 
 ### A. Types + load (`packages/shared`)
 
@@ -192,10 +200,10 @@ Admin `/coin-packages` change (MMK, bonus, badges, add, hard delete) → same-or
 | `src/test/CoinsCheckout.test.tsx`                   | still `demoTopUp(coins+bonus)`                    |
 | `src/test/catalogLib.test.ts`                       | `applyCatalogSeed` must not clobber packs         |
 
-After the portal Impl: wiki dual-track (`wiki/notes/YYYY-MM-DD-…md`, `wiki/architecture/implementation-phases.md`, session file) — not this reference.
+Shipped: [2026-08-23-portal-coin-packages.md](../notes/2026-08-23-portal-coin-packages.md) (168), [2026-09-10-coin-packages-catalog.md](../notes/2026-09-10-coin-packages-catalog.md) (201).
 
 ---
 
 ## 5. Out of scope here
 
-This reference does **not** implement `/coins`. Portal code stays hardcoded until a dedicated Impl follows this file.
+IAP / live PSP, website coin-table `CREATE` / migrate, Hono coin-package PATCH, Admin git merge. `/coins` UI is 168; Prisma catalog field is 201.

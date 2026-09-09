@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { z } from 'zod'
-import type { Env } from '../env.js'
+import { isPushConfigured, type Env } from '../env.js'
 import {
   persist,
   toPersistNotification,
@@ -8,6 +8,7 @@ import {
   type PersistNotificationType,
 } from '../persist.js'
 import { optionalReaderUserId } from '../auth/session.js'
+import type { PushPort } from '../ports/push.js'
 
 const NOTIFICATION_TYPES = ['new_episode', 'comment_reply', 'system', 'promotion'] as const
 
@@ -38,9 +39,9 @@ const idSchema = z.object({
 const emptySchema = z.object({})
 
 function jsonError(
-  c: { json: (body: unknown, status: 400 | 401) => Response },
+  c: { json: (body: unknown, status: 400 | 401 | 503) => Response },
   code: string,
-  status: 400 | 401
+  status: 400 | 401 | 503
 ) {
   return c.json({ error: { code } }, status)
 }
@@ -85,7 +86,19 @@ function normalizeNotification(
   })
 }
 
-export function createNotificationsApp(env: Env) {
+const subscribeSchema = z.object({
+  endpoint: z.string(),
+  keys: z.object({
+    p256dh: z.string(),
+    auth: z.string(),
+  }),
+})
+
+const unsubscribeSchema = z.object({
+  endpoint: z.string(),
+})
+
+export function createNotificationsApp(env: Env, _ports?: { push?: PushPort }) {
   const notifications = new Hono()
 
   notifications.use('*', async (c, next) => {
@@ -160,6 +173,37 @@ export function createNotificationsApp(env: Env) {
     if (!parsed.success) return jsonError(c, 'VALIDATION_ERROR', 400)
 
     return c.json({ data: snapshot(await persist.clearReadNotifications(userId)) })
+  })
+
+  notifications.get('/push/vapid', (c) => {
+    if (!isPushConfigured(env) || !env.VAPID_PUBLIC_KEY) {
+      return jsonError(c, 'PUSH_NOT_CONFIGURED', 503)
+    }
+    return c.json({ data: { publicKey: env.VAPID_PUBLIC_KEY } })
+  })
+
+  notifications.post('/push/subscribe', async (c) => {
+    const userId = await optionalReaderUserId(c, env)
+    if (!userId) return jsonError(c, 'NOT_AUTHENTICATED', 401)
+    const parsed = subscribeSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return jsonError(c, 'VALIDATION_ERROR', 400)
+    const endpoint = parsed.data.endpoint.trim()
+    const p256dh = parsed.data.keys.p256dh.trim()
+    const auth = parsed.data.keys.auth.trim()
+    if (!endpoint || !p256dh || !auth) return jsonError(c, 'VALIDATION_ERROR', 400)
+    await persist.upsertPushSubscription(userId, { endpoint, p256dh, auth })
+    return c.json({ data: { ok: true } })
+  })
+
+  notifications.post('/push/unsubscribe', async (c) => {
+    const userId = await optionalReaderUserId(c, env)
+    if (!userId) return jsonError(c, 'NOT_AUTHENTICATED', 401)
+    const parsed = unsubscribeSchema.safeParse(await c.req.json().catch(() => null))
+    if (!parsed.success) return jsonError(c, 'VALIDATION_ERROR', 400)
+    const endpoint = parsed.data.endpoint.trim()
+    if (!endpoint) return jsonError(c, 'VALIDATION_ERROR', 400)
+    await persist.deletePushSubscription(userId, endpoint)
+    return c.json({ data: { ok: true } })
   })
 
   return notifications

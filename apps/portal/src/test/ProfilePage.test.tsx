@@ -99,6 +99,8 @@ describe('ProfilePage', () => {
     )
     await user.click(screenRtl.getByRole('switch', { name: 'Promotions' }))
     expect(getNotifPrefs('u_test').promotion).toBe(false)
+    expect(screenRtl.getAllByText('Same as this switch').length).toBeGreaterThan(0)
+    expect(screenRtl.queryByText('When mail ships')).not.toBeInTheDocument()
   })
 
   it('writes reader prefs from the Preferences tab', async () => {

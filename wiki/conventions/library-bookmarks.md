@@ -2,9 +2,10 @@
 title: Library bookmarks (Subscribe)
 type: convention
 date: 2026-08-11
+updated: 2026-09-10
 tags: [library, bookmarks, subscribe, localStorage, auth]
 impl: 25
-impl_updated: 190
+impl_updated: 204
 ---
 
 # Library bookmarks (Subscribe)
@@ -24,13 +25,15 @@ Mock (`VITE_USE_MOCK_API` is not `false`):
 
 HTTP (`VITE_USE_MOCK_API=false`): cookie API is source of truth. Do **not** write this key. See [portal-library-http.md](portal-library-http.md).
 
-On subscribe, stamp `lastNotifiedEpisodeNumber` to the current latest published episode so subscribe does not spam. Mute (`notifyMuted`) hides future Demo episode notices without unsubscribing. Unsub removes the record.
+On subscribe, stamp `lastNotifiedEpisodeNumber` to the current latest published episode so subscribe does not spam. Mute (`notifyMuted`) hides future episode notices without unsubscribing. Unsub removes the record. Keep Library `POST /stamp-notified` for subscribe-add (not an HTTP catalog scan).
 
 Helpers: `src/lib/library/` (`listBookmarks`, `isBookmarked`, `toggleBookmark`, `setNotifyMuted`, `setLastNotifiedEpisodeNumber`, `removeBookmark`, `removeBookmarks`).
 
-## Notify (Demo)
+## Notify
 
-[`syncSubscribeNotifications`](../../src/lib/notifications/subscribeSync.ts) on logged-in Engagement hydrate. If latest published `episodeNumber` > `lastNotifiedEpisodeNumber` and not muted, append `new_episode` (id `sub-{webtoonId}-{episodeNumber}`) and stamp. Missing `lastNotifiedEpisodeNumber` stamps current latest with **no** notice. Global `newEpisode: false` (Profile Settings) skips the whole sync. Push/email never.
+Mock (`VITE_USE_MOCK_API` is not `false`): [`syncSubscribeNotifications`](../../apps/portal/src/lib/notifications/subscribeSync.ts) on logged-in Engagement hydrate. If latest published `episodeNumber` > `lastNotifiedEpisodeNumber` and not muted, append `new_episode` (id `sub-{webtoonId}-{episodeNumber}`) and stamp. Missing `lastNotifiedEpisodeNumber` stamps current latest with **no** notice. Global `newEpisode: false` (Profile Settings) skips the whole sync.
+
+HTTP (`VITE_USE_MOCK_API=false`): do **not** catalog-scan. Admin pings `POST /api/internal/notifications/new-episode`; this API reads `LibrarySubscribe` and may email / Web Push ([portal-notifications-deliver.md](portal-notifications-deliver.md)). Residual: turning `newEpisode` back on does not backfill.
 
 ## UI wiring
 

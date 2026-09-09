@@ -2,8 +2,10 @@
 title: Portal settings HTTP read
 type: convention
 date: 2026-08-24
+updated: 2026-09-10
 tags: [settings, api, http, maintenance, softgate]
 impl: 173
+impl_updated: 202
 ---
 
 # Portal settings HTTP read
@@ -28,6 +30,8 @@ API stub (`persist.getPortalSettings`) returns Admin seed:
   "defaultLanguage": "en"
 }
 ```
+
+Prisma persist (Impl 200) reads Admin `PlatformSettings` (`id = platform`). Envelope stays `{ data }` (never Admin `{ settings }`). Null row or missing table (`P2021`) returns the same seed. GET does not insert. Website does not `PATCH` settings. `POST /api/auth/register` uses the same read (`REGISTRATION_CLOSED` when closed or maintenance is on). `authFlags` still overlay for tests. Local join smoke is Impl **202**.
 
 Do **not** `GET` or `PUT` whole `SharedData` at `/api/data`. Settings are not on portal `SharedData` (no schema 13 bump).
 

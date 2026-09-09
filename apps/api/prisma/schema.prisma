@@ -29,6 +29,7 @@ model ReaderUser {
   prefs             ReaderUserPrefs?
   comments          ReaderComment[]
   commentLikes      ReaderCommentLike[]
+  pushSubscriptions ReaderPushSubscription[]
 }
 
 model RefreshToken {
@@ -134,6 +135,31 @@ model ReaderNotification {
   user          ReaderUser @relation(fields: [userId], references: [id])
 
   @@id([userId, id])
+}
+
+model ReaderPushSubscription {
+  userId   String
+  endpoint String
+  p256dh   String
+  auth     String
+  user     ReaderUser @relation(fields: [userId], references: [id])
+
+  @@id([userId, endpoint])
+}
+
+model ReaderNotificationCampaign {
+  id          String
+  type        ReaderNotificationType
+  titleKey    String
+  message     String
+  href        String?
+  inbox       Int
+  emailed     Int
+  pushed      Int
+  skippedPref Int
+  createdAt   DateTime
+
+  @@id([id])
 }
 
 enum ReaderFontSize {
@@ -276,4 +302,29 @@ model Episode {
   updatedAt     DateTime      @updatedAt
 
   @@unique([webtoonId, episodeNumber])
+}
+
+enum PlatformLanguage {
+  en
+  mm
+}
+
+model PlatformSettings {
+  id                 String           @id
+  maintenanceMode    Boolean
+  allowRegistration  Boolean
+  contactEmail       String
+  defaultLanguage    PlatformLanguage
+  updatedAt          DateTime         @updatedAt
+}
+
+model CoinPackage {
+  id        String   @id @default(uuid())
+  coins     Int
+  price     Int
+  bonus     Int?
+  popular   Boolean?
+  bestValue Boolean?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

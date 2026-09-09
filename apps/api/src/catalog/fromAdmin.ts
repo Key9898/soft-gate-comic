@@ -1,9 +1,11 @@
+import { Prisma } from '@prisma/client'
 import { publishedCatalogFrom, type PublishedCatalog } from '@softgate/shared/catalog'
 
 type Author = PublishedCatalog['authors'][number]
 type Genre = PublishedCatalog['genres'][number]
 type Webtoon = PublishedCatalog['webtoons'][number]
 type Episode = PublishedCatalog['episodes'][number]
+type CatalogCoinPackage = NonNullable<PublishedCatalog['coinPackages']>[number]
 type ContentRating = Webtoon['contentRating']
 
 const CONTENT_RATINGS: readonly ContentRating[] = ['all', '13', '16', '18']
@@ -64,6 +66,15 @@ export type AdminEpisodeRow = {
   scheduledAt?: Date | string | null
   createdAt: Date | string
   updatedAt: Date | string
+}
+
+export type AdminCoinPackageRow = {
+  id: string
+  coins: number
+  price: number
+  bonus?: number | null
+  popular?: boolean | null
+  bestValue?: boolean | null
 }
 
 export function asBilingual(value: unknown): { en: string; mm: string } {
@@ -138,11 +149,41 @@ const slugsFor = (row: AdminWebtoonRow, genresById: Map<string, AdminGenreRow>):
     .filter((slug): slug is string => Boolean(slug))
 }
 
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === 'string' && value.trim().length > 0
+
+const isPositiveInt = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isInteger(value) && value >= 1
+
+const isNonNegativeInt = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isInteger(value) && value >= 0
+
+export function coinPackagesFromAdminRows(rows: AdminCoinPackageRow[]): CatalogCoinPackage[] {
+  const packs: CatalogCoinPackage[] = []
+  for (const row of rows) {
+    if (!isNonEmptyString(row.id) || !isPositiveInt(row.coins) || !isPositiveInt(row.price)) {
+      continue
+    }
+    if (row.bonus != null && !isNonNegativeInt(row.bonus)) continue
+    const pack: CatalogCoinPackage = { id: row.id, coins: row.coins, price: row.price }
+    if (row.bonus && row.bonus > 0) pack.bonus = row.bonus
+    if (row.popular) pack.popular = true
+    if (row.bestValue) pack.bestValue = true
+    packs.push(pack)
+  }
+  return packs
+}
+
+export function isMissingCoinPackageTable(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
+}
+
 export function publishedCatalogFromAdmin(input: {
   authors: AdminAuthorRow[]
   genres: AdminGenreRow[]
   webtoons: AdminWebtoonRow[]
   episodes: AdminEpisodeRow[]
+  coinPackages?: CatalogCoinPackage[]
 }): PublishedCatalog {
   const authorsById = new Map(input.authors.map((row) => [row.id, row]))
   const genresById = new Map(input.genres.map((row) => [row.id, row]))
@@ -228,5 +269,11 @@ export function publishedCatalogFromAdmin(input: {
     return genre
   })
 
-  return publishedCatalogFrom({ authors, genres, webtoons, episodes, coinPackages: undefined })
+  return publishedCatalogFrom({
+    authors,
+    genres,
+    webtoons,
+    episodes,
+    coinPackages: input.coinPackages,
+  })
 }

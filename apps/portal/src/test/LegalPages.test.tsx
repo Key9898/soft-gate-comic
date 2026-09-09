@@ -10,7 +10,7 @@ const expectSharedLegalChrome = (
 ) => {
   expect(screen.getByRole('heading', { name: /at a glance/i })).toBeInTheDocument()
   expect(container.querySelector('.radial-wash-primary')).toBeTruthy()
-  expect(container.textContent).toMatch(/Last updated September 9, 2026/i)
+  expect(container.textContent).toMatch(/Last updated September 10, 2026/i)
   expect(screen.getAllByRole('link', { name: 'support@softgatecomic.com' }).length).toBeGreaterThan(
     0
   )
@@ -125,6 +125,8 @@ describe('CookiesPage', () => {
     expect(screen.getByText('Episode reports')).toBeInTheDocument()
     expect(screen.getByText('Author follows')).toBeInTheDocument()
     expect(container.textContent).not.toMatch(/Reading progress/)
+    expect(container.textContent).not.toMatch(/still in-app until that fan-out/i)
+    expect(container.textContent).not.toMatch(/New-episode (rows|notices) are still in-app/i)
   })
 
   it('declares analytics and marketing as none', () => {

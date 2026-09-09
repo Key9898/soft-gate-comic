@@ -2,8 +2,8 @@
 title: Legal pages (document shell + storage honesty)
 type: convention
 date: 2026-08-13
-updated: 2026-09-09
-tags: [legal, privacy, terms, cookies, a11y, i18n, softgate, impl-59, impl-126, impl-199]
+updated: 2026-09-10
+tags: [legal, privacy, terms, cookies, a11y, i18n, softgate, impl-59, impl-126, impl-199, impl-203]
 ---
 
 # Legal pages
@@ -57,7 +57,7 @@ Page rules:
 | 18+ age confirm         | `softgate_age_confirm_v1` (signed-in) + `softgate_age_confirm_session` (guest sessionStorage) |
 | Demo catalog            | `softgate-shared-data`                                                                        |
 
-Do not list a separate "Reading progress" row — history and `scrollRatio` live in `softgate_engage_v1`.
+Do not list a separate "Reading progress" row — history and `scrollRatio` live in `softgate_engage_v1`. Web Push subscriptions live on the API (`ReaderPushSubscription`); do **not** add a portal localStorage key for push. Marketing/analytics stay None. `LEGAL_EFFECTIVE_DATE` is **2026-09-10**.
 
 - Each page uses its own SEO description (`static.{privacy,terms,cookies}SeoDesc`), not `footer.description`
 

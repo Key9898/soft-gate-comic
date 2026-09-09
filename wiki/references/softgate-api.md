@@ -4,13 +4,14 @@ type: reference
 date: 2026-08-24
 tags: [api, health, catalog, settings, auth, wallet, library, notifications, prefs, env, softgate]
 impl: 195
+impl_updated: 203
 ---
 
 # SoftGate Comic API
 
 Runtime: [`apps/api`](../../apps/api) (`@softgate/api`). Legacy EDC HTTP lists stay in [api-contract.md](api-contract.md) and are not this product.
 
-Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/api/.env` (Impl 193). Impl 194 sets `DATABASE_URL` locally (`sslmode=require`) and migrates reader tables once. Impl 195 reads Admin catalog tables when persist is Prisma. No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Live secrets are not in this file.
+Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/api/.env` (Impl 193). Impl 194 sets `DATABASE_URL` locally (`sslmode=require`) and migrates reader tables once. Impl 195 reads Admin catalog tables when persist is Prisma. Impl 201 maps Admin `CoinPackage` onto catalog `coinPackages`. Impl **202** live join: SoftGate Hono is not Admin `:3000`. Impl **203** delivery pipe: `ADMIN_SERVICE_TOKEN` + VAPID. No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Live secrets are not in this file.
 
 ## Health
 
@@ -20,9 +21,9 @@ Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/
 { "data": { "ok": true, "persist": "stub" } }
 ```
 
-`persist` is `"stub"` (in-memory) or `"prisma"` (Postgres via Prisma). No `Set-Cookie`. `GET`/`PUT /api/data` is not implemented (404). `createApp` does not pick the adapter; boot `openPersist` does.
+`persist` is `"stub"` (in-memory) or `"prisma"` (Postgres via Prisma). No `Set-Cookie`. `GET`/`PUT /api/data` is not implemented (404). `createApp` does not pick the adapter; boot `openPersist` does. Admin Express health is `{ status, db }` — not this envelope. Boot prints `SoftGate API :<port> persist=<kind>` (Impl 202).
 
-## Published catalog (Impl 172 / 195)
+## Published catalog (Impl 172 / 195 / 201)
 
 `GET /api/catalog`
 
@@ -30,9 +31,9 @@ Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/
 { "data": { "authors": [], "genres": [], "webtoons": [], "episodes": [] } }
 ```
 
-`data` is a published read model (`PublishedCatalog`), not whole `SharedData`. Draft webtoons/episodes are omitted; scheduled episodes stay. Stub persist uses `publishedCatalogFrom(getSharedData())`. Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` (Impl 195); `coinPackages` is omitted (unset) until Admin has a table. Unlocked keys come from stub maps or `WalletUnlock`. Optional `sg_reader` cookie; never 401. Portal consumes this when `VITE_USE_MOCK_API=false`. Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
+`data` is a published read model (`PublishedCatalog`), not whole `SharedData`. Draft webtoons/episodes are omitted; scheduled episodes stay. Stub persist uses `publishedCatalogFrom(getSharedData())`. Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` (Impl 195) and Admin `CoinPackage` (Impl 201). Missing packs table omits `coinPackages` (unset, not `[]`). Empty packs table is `[]`. Unlocked keys come from stub maps or `WalletUnlock`. Optional `sg_reader` cookie; never 401. Portal consumes this when `VITE_USE_MOCK_API=false`. Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
 
-## Portal settings (Impl 173)
+## Portal settings (Impl 173 / 200)
 
 `GET /api/settings`
 
@@ -47,7 +48,7 @@ Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/
 }
 ```
 
-Stub persist returns Admin seed defaults. Portal consumes this when `VITE_USE_MOCK_API=false`. Missing/invalid payload fails open. Convention: [portal-settings-read.md](../conventions/portal-settings-read.md).
+Stub persist returns Admin seed defaults. Prisma persist reads Admin `PlatformSettings` (`id = platform`) (Impl 200); null row or missing table fail-open to the same seed. Envelope is `{ data }` (never Admin `{ settings }`). GET does not insert. Portal consumes this when `VITE_USE_MOCK_API=false`. Missing/invalid payload fails open. Convention: [portal-settings-read.md](../conventions/portal-settings-read.md).
 
 ## Reader auth (Impl 174–189)
 
@@ -65,7 +66,7 @@ Stub or Prisma ledger (seed 150). Unlock body `{ webtoonId, episodeNumber }`; de
 
 ## Named integrations (Impl 176–187)
 
-Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). Prisma catalog read from Admin tables (Impl 195); no portal catalog migration. R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Settings CMS stays stub. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
+Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). Prisma catalog read from Admin tables (Impl 195); no portal catalog migration. Prisma `CoinPackage` on catalog (Impl 201); no coin-table migration. Prisma settings read from Admin `PlatformSettings` (Impl 200); no portal settings migration or PATCH. R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Push `createPush`: all three VAPID slots → Web Push; else `PUSH_NOT_CONFIGURED`. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
 
 ## Env (`apps/api/.env.example`)
 
@@ -84,6 +85,10 @@ Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist 
 | `R2_PUBLIC_BASE_URL`   | no          | Public origin only; unset = no `publicUrl`                       |
 | `BREVO_API_KEY`        | no          | With from email enables send                                     |
 | `BREVO_FROM_EMAIL`     | no          | Required with key for `isMailConfigured`                         |
+| `ADMIN_SERVICE_TOKEN`  | no          | Admin Express internal routes; unset = those routes 401          |
+| `VAPID_PUBLIC_KEY`     | no          | With private + subject enables Web Push                          |
+| `VAPID_PRIVATE_KEY`    | no          | Web Push                                                         |
+| `VAPID_SUBJECT`        | no          | Web Push; required for `isPushConfigured`                        |
 
 ## Local
 
@@ -130,6 +135,16 @@ Cookie session required. POST JSON Content-Type. Snapshot `{ notifications }`. E
 
 401 `NOT_AUTHENTICATED`. 400 `VALIDATION_ERROR`. Convention: [portal-notifications-http.md](../conventions/portal-notifications-http.md).
 
+Push siblings on the same app (Impl 203). Do not mount a second `/api/notifications/push` route.
+
+| Method | Path                                  | Auth   |
+| ------ | ------------------------------------- | ------ |
+| GET    | `/api/notifications/push/vapid`       | none   |
+| POST   | `/api/notifications/push/subscribe`   | cookie |
+| POST   | `/api/notifications/push/unsubscribe` | cookie |
+
+GET vapid 503 `PUSH_NOT_CONFIGURED` when VAPID is unset. Delivery pipe: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md).
+
 ## Prefs (Impl 192)
 
 Cookie session required. POST JSON Content-Type. Snapshot `{ notifPrefs, readerPrefs }`. Missing row returns defaults and does not insert. Persist stub or Prisma.
@@ -144,7 +159,7 @@ Cookie session required. POST JSON Content-Type. Snapshot `{ notifPrefs, readerP
 
 ## Comments (Impl 197)
 
-Shared public thread keyed by `id:digits` or `id:series`. Guest GET. Cookie session for writes. POST JSON Content-Type. Snapshot `{ comments }` newest-first. Persist stub or Prisma. `addReply` may upsert `comment_reply` for the parent author. Report sets a flag; the row stays visible.
+Shared public thread keyed by `id:digits` or `id:series`. Guest GET. Cookie session for writes. POST JSON Content-Type. Snapshot `{ comments }` newest-first. Persist stub or Prisma. `addReply` may upsert `comment_reply` for the parent author. HTTP reply then may email/push the parent (`deliverOutOfBand`) when `commentReply` is on. Body stays `{ data: { comments } }`. Report sets a flag; the row stays visible.
 
 | Method | Path                   |
 | ------ | ---------------------- |
@@ -157,3 +172,16 @@ Shared public thread keyed by `id:digits` or `id:series`. Guest GET. Cookie sess
 | POST   | `/api/comments/report` |
 
 401 `NOT_AUTHENTICATED` on writes. 400 `VALIDATION_ERROR`. Convention: [portal-comments-http.md](../conventions/portal-comments-http.md).
+
+## Internal notifications (Impl 203–204)
+
+Service token only (`ADMIN_SERVICE_TOKEN` header). Reader cookie without that header is still 401. Envelope `{ data }`. POST JSON Content-Type.
+
+| Method | Path                                      |
+| ------ | ----------------------------------------- |
+| GET    | `/api/internal/notifications/search`      |
+| POST   | `/api/internal/notifications/preview`     |
+| POST   | `/api/internal/notifications/broadcast`   |
+| POST   | `/api/internal/notifications/new-episode` |
+
+Broadcast `type` is `system` | `promotion`. Inbox id `campaign:${campaignId}`. Sequential fan-out. `new-episode` body is `{ webtoonId, episodeNumber }` only (integer `>= 1`). Missing published pair → 200 zeros. Inbox id `sub-{webtoonId}-{episodeNumber}`. No campaign row. Convention: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md).

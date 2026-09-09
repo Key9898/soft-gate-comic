@@ -2,8 +2,10 @@
 title: Portal prefs HTTP
 type: convention
 date: 2026-09-08
+updated: 2026-09-10
 tags: [prefs, notifications, reader, http, persist, softgate]
 impl: 192
+impl_updated: 204
 ---
 
 # Portal prefs HTTP
@@ -26,7 +28,7 @@ Cookie API persist is source of truth for a **logged-in** reader. Do **not** wri
 
 Auth required. 401 `NOT_AUTHENTICATED`. 400 `VALIDATION_ERROR`. POST JSON Content-Type required. Errors `{ error: { code } }`. Every success `{ data: { notifPrefs, readerPrefs } }`. Ignore unknown keys including `schemaVersion`. `brightness` finite in `[0.25, 1]`, stored to 2 decimal places.
 
-Inbox stays 191: API stores the full list; portal filters with in-memory prefs from this snapshot (`prefsHydrated` before `applyInbox` / subscribe sync). Client still generates `new_episode`. HTTP `syncSubscribeNotifications` must pass boolean `newEpisode` on inbox IO (`typeof === 'boolean'`; never `if (!inbox.newEpisode)`).
+Inbox stays 191: API stores the full list; portal filters with in-memory prefs from this snapshot (`prefsHydrated` before `applyInbox`). HTTP does **not** generate `new_episode` (Impl 204 Admin ping). Mock still runs `syncSubscribeNotifications`. Residual: turning `newEpisode` back on in HTTP does not catalog-backfill.
 
 Guest skips prefs GET. Login GET is once per identity (`mock`, `authLoading`, `isAuthenticated`, `userId`). HTTP Profile Preferences uses account copy, not the device chip. HTTP ReaderPage / panel persist only after `prefsHydrated` and only when chrome differs from the snapshot. While `authLoading`, do not write the device key.
 

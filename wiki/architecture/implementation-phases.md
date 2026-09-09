@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `200`.**
+**Next Impl number to use: `205`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -229,6 +229,11 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 197  | 2026-09-09 | Complete comments (UI + shared HTTP + comment_reply)         | [2026-09-09-comments-complete.md](../notes/2026-09-09-comments-complete.md)                                                                                   |
 | 198  | 2026-09-09 | Catalog load-fail vs success-empty                           | [2026-09-09-catalog-load-fail-copy.md](../notes/2026-09-09-catalog-load-fail-copy.md)                                                                         |
 | 199  | 2026-09-09 | Reader reading room                                          | [2026-09-09-reader-reading-room.md](../notes/2026-09-09-reader-reading-room.md)                                                                               |
+| 200  | 2026-09-09 | Read Admin PlatformSettings on GET /api/settings             | [2026-09-09-platform-settings-read.md](../notes/2026-09-09-platform-settings-read.md)                                                                         |
+| 201  | 2026-09-10 | Read Admin CoinPackage on catalog + /coins                   | [2026-09-10-coin-packages-catalog.md](../notes/2026-09-10-coin-packages-catalog.md)                                                                           |
+| 202  | 2026-09-10 | Live join smoke (catalog + settings + coins + reader)        | [2026-09-10-live-join-smoke.md](../notes/2026-09-10-live-join-smoke.md)                                                                                       |
+| 203  | 2026-09-10 | Reader notification delivery pipe                            | [2026-09-10-notification-delivery-pipe.md](../notes/2026-09-10-notification-delivery-pipe.md)                                                                 |
+| 204  | 2026-09-10 | new_episode API fan-out                                      | [2026-09-10-new-episode-fan-out.md](../notes/2026-09-10-new-episode-fan-out.md)                                                                               |
 
 ---
 
@@ -1867,9 +1872,49 @@ WEBTOON-class calm episode reader at `/read/:id/:n`. Chrome hide is nearly edge-
 
 ---
 
+## Impl Phase 200 — Read Admin PlatformSettings on GET /api/settings (2026-09-09)
+
+**Status:** Done
+
+Prisma persist reads Admin `PlatformSettings` (`id = platform`) for `GET /api/settings` and register gating. Envelope stays `{ data }`. Null row or missing table (`P2021`) fail-open to stub defaults; GET does not insert. Stub persist and mock-on unchanged. CoinPackage is Impl **201**. Note: [2026-09-09-platform-settings-read.md](../notes/2026-09-09-platform-settings-read.md). Convention: [portal-settings-read.md](../conventions/portal-settings-read.md), [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 201 — Read Admin CoinPackage on catalog + /coins (2026-09-10)
+
+**Status:** Done
+
+Prisma persist maps Admin `CoinPackage` onto optional `GET /api/catalog` `coinPackages` (`createdAt` asc). Missing table (`P2021`) omits the field (168 fallback packs). Empty table is `[]` (empty `/coins`). Portal shop UI unchanged. Stub persist and mock-on unchanged. Note: [2026-09-10-coin-packages-catalog.md](../notes/2026-09-10-coin-packages-catalog.md). Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md), [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 202 — Live join smoke (catalog + settings + coins + reader) (2026-09-10)
+
+**Status:** Done
+
+Local HTTP join: Admin keeps `:3000`; SoftGate Hono on gitignored `PORT`; portal mock-off + `VITE_API_BASE_URL`. Boot logs port + persist kind. 200/201 mappers unchanged. Note: [2026-09-10-live-join-smoke.md](../notes/2026-09-10-live-join-smoke.md). Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md), [portal-settings-read.md](../conventions/portal-settings-read.md), [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 203 — Reader notification delivery pipe (2026-09-10)
+
+**Status:** Done
+
+Admin Express fans out through website `/api/internal/notifications` (`ADMIN_SERVICE_TOKEN`). Broadcast `system` | `promotion` writes inbox then email/Web Push. Cookie inbox routes unchanged. Push subscribe lives on the notifications app. Profile one switch per category. `comment_reply` email+push after persist insert. Impl **202** is reserved for the other agent's live join smoke (already indexed). `new_episode` API fan-out is Impl **204**. Note: [2026-09-10-notification-delivery-pipe.md](../notes/2026-09-10-notification-delivery-pipe.md). Convention: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md), [portal-notifications-http.md](../conventions/portal-notifications-http.md), [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 204 — new_episode API fan-out (2026-09-10)
+
+**Status:** Done
+
+Admin Express pings `POST /api/internal/notifications/new-episode` with `{ webtoonId, episodeNumber }` only. This API reads `LibrarySubscribe`, writes inbox id `sub-{webtoonId}-{episodeNumber}`, then reuses `deliverOutOfBand`. Missing published pair returns 200 zeros. HTTP portal stops `syncSubscribeNotifications`; mock keeps it. No campaign row. Next **205**. Note: [2026-09-10-new-episode-fan-out.md](../notes/2026-09-10-new-episode-fan-out.md). Convention: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md), [portal-notifications-http.md](../conventions/portal-notifications-http.md), [library-bookmarks.md](../conventions/library-bookmarks.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **200**).
+1. Take **next free Impl** (currently **205**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

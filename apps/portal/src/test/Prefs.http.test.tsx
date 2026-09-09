@@ -327,9 +327,8 @@ describe('prefs HTTP', () => {
     expect(store.get(READER_PREFS_KEY)).toBe(JSON.stringify(leftoverReader))
   })
 
-  it('upserts subscribe notices when leftover localStorage disabled newEpisode', async () => {
+  it('does not upsert from leftover localStorage when API newEpisode is on', async () => {
     store.set(PREFS_STORAGE_KEY, JSON.stringify(leftoverNotifStore))
-    let inbox: Array<Record<string, unknown>> = []
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input)
       const method = init?.method ?? 'GET'
@@ -342,20 +341,11 @@ describe('prefs HTTP', () => {
       if (url.endsWith('/api/library/me') && method === 'GET') {
         return jsonResponse({ data: librarySnapshot }, 200)
       }
-      if (url.endsWith('/api/library/stamp-notified') && method === 'POST') {
-        return jsonResponse({ data: librarySnapshot }, 200)
-      }
       if (url.endsWith('/api/notifications/me') && method === 'GET') {
-        return jsonResponse({ data: { notifications: inbox } }, 200)
+        return jsonResponse({ data: { notifications: [] } }, 200)
       }
       if (url.endsWith('/api/prefs/me') && method === 'GET') {
         return jsonResponse({ data: emptyPrefs }, 200)
-      }
-      if (url.endsWith('/api/notifications/upsert') && method === 'POST') {
-        const body = JSON.parse(String(init?.body)) as { notification: { id: string } }
-        expect(body.notification.id).toBe('sub-wt-1-4')
-        inbox = [body.notification]
-        return jsonResponse({ data: { notifications: inbox } }, 200)
       }
       throw new Error(`unexpected ${method} ${url}`)
     })
@@ -363,9 +353,14 @@ describe('prefs HTTP', () => {
 
     const { result } = renderHook(() => useEngagement(), { wrapper })
     await waitFor(() => {
-      expect(result.current.notifications.some((item) => item.id === 'sub-wt-1-4')).toBe(true)
+      expect(result.current.prefsHydrated).toBe(true)
+      expect(result.current.isReady).toBe(true)
     })
+    expect(result.current.notifications).toEqual([])
     expect(store.has(PREFS_STORAGE_KEY)).toBe(true)
+    expect(
+      fetchMock.mock.calls.some(([input]) => String(input).endsWith('/api/notifications/upsert'))
+    ).toBe(false)
   })
 
   it('does not upsert when API newEpisode is false even if leftover is true', async () => {

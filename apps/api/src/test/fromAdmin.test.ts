@@ -1,6 +1,9 @@
+import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
   asBilingual,
+  coinPackagesFromAdminRows,
+  isMissingCoinPackageTable,
   publishedCatalogFromAdmin,
   type AdminAuthorRow,
   type AdminEpisodeRow,
@@ -129,6 +132,28 @@ describe('publishedCatalogFromAdmin', () => {
     expect(catalog.coinPackages).toBeUndefined()
   })
 
+  it('passes through Admin coinPackages and keeps an empty shop as []', () => {
+    const catalog = publishedCatalogFromAdmin({
+      authors: [author],
+      genres: [romance],
+      webtoons: [publishedWebtoon],
+      episodes: [publishedEpisode],
+      coinPackages: [{ id: 'pack-1', coins: 100, price: 2000, bonus: 10, popular: true }],
+    })
+    expect(catalog.coinPackages).toEqual([
+      { id: 'pack-1', coins: 100, price: 2000, bonus: 10, popular: true },
+    ])
+
+    const emptyShop = publishedCatalogFromAdmin({
+      authors: [author],
+      genres: [romance],
+      webtoons: [publishedWebtoon],
+      episodes: [publishedEpisode],
+      coinPackages: [],
+    })
+    expect(emptyShop.coinPackages).toEqual([])
+  })
+
   it('maps bilingual JSON, ISO dates, and imageSizes including nulls', () => {
     const catalog = publishedCatalogFromAdmin({
       authors: [author],
@@ -154,5 +179,55 @@ describe('asBilingual', () => {
   it('returns empty strings for invalid JSON', () => {
     expect(asBilingual('nope')).toEqual({ en: '', mm: '' })
     expect(asBilingual({ en: 1, mm: 'ok' })).toEqual({ en: '', mm: 'ok' })
+  })
+})
+
+describe('coinPackagesFromAdminRows', () => {
+  it('maps valid rows and skips invalid ones', () => {
+    expect(
+      coinPackagesFromAdminRows([
+        {
+          id: 'pack-1',
+          coins: 120,
+          price: 2000,
+          bonus: 10,
+          popular: true,
+          bestValue: null,
+        },
+        {
+          id: 'pack-zero-bonus',
+          coins: 50,
+          price: 1000,
+          bonus: 0,
+          popular: false,
+          bestValue: false,
+        },
+        { id: '', coins: 300, price: 5000 },
+        { id: 'pack-bad-price', coins: 300, price: 0 },
+        { id: 'pack-bad-bonus', coins: 300, price: 5000, bonus: -1 },
+      ])
+    ).toEqual([
+      { id: 'pack-1', coins: 120, price: 2000, bonus: 10, popular: true },
+      { id: 'pack-zero-bonus', coins: 50, price: 1000 },
+    ])
+  })
+})
+
+describe('isMissingCoinPackageTable', () => {
+  it('is true for P2021', () => {
+    const error = new Prisma.PrismaClientKnownRequestError('The table does not exist', {
+      code: 'P2021',
+      clientVersion: Prisma.prismaVersion.client,
+    })
+    expect(isMissingCoinPackageTable(error)).toBe(true)
+  })
+
+  it('is false for other Prisma codes and plain errors', () => {
+    const taken = new Prisma.PrismaClientKnownRequestError('Unique constraint', {
+      code: 'P2002',
+      clientVersion: Prisma.prismaVersion.client,
+    })
+    expect(isMissingCoinPackageTable(taken)).toBe(false)
+    expect(isMissingCoinPackageTable(new Error('down'))).toBe(false)
   })
 })
