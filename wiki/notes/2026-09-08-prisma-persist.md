@@ -21,8 +21,8 @@ impl: 185
 
 ## Honesty
 
-- Catalog and settings still come from `@softgate/shared` mocks
-- Admin shared-DB table names are unknown; this SQL is this repo’s reader tables
+- Catalog and settings still came from `@softgate/shared` mocks in 185. Prisma catalog read is Impl 195; settings stay stub.
+- Admin shared-DB table names were unknown in 185; this SQL is this repo’s reader tables. Catalog models are copied in Impl 195 (no portal catalog CREATE).
 - Portal `VITE_USE_MOCK_API` default is still mock
 
 ## Out
@@ -31,5 +31,7 @@ impl: 185
 - R2 SDK, Brevo, forgot/reset, profile HTTP
 - `migrate` / `db push` inside `pnpm check`
 - Railway / Vercel prod wiring
+
+Follow-up: Prisma catalog read is [Impl 195](2026-09-09-admin-catalog-read.md) (no portal catalog CREATE). Settings stay stub.
 
 Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md).

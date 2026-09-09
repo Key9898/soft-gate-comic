@@ -1747,7 +1747,7 @@ Portal `dev` is Vite SPA again (`vite`); `dev:ssr` runs `server/dev.ts` for opti
 
 **Status:** Done
 
-Empty `DATABASE_URL` keeps in-memory stub. Non-empty URL + Prisma `$connect` uses reader tables (`ReaderUser`, refresh, wallet, unlocks). Non-empty URL + down Postgres fails boot. `GET /health` `persist` is `"stub"` | `"prisma"`. Catalog/settings stay shared mocks. Local Docker compose + committed migration SQL. `prisma generate` in api build; no migrate in check. Portal mock default unchanged. Note: [2026-09-08-prisma-persist.md](../notes/2026-09-08-prisma-persist.md). Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md).
+Empty `DATABASE_URL` keeps in-memory stub. Non-empty URL + Prisma `$connect` uses reader tables (`ReaderUser`, refresh, wallet, unlocks). Non-empty URL + down Postgres fails boot. `GET /health` `persist` is `"stub"` | `"prisma"`. Catalog/settings stay shared mocks in 185 (Prisma catalog read is Impl 195; settings stay stub). Local Docker compose + committed migration SQL. `prisma generate` in api build; no migrate in check. Portal mock default unchanged. Note: [2026-09-08-prisma-persist.md](../notes/2026-09-08-prisma-persist.md). Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md).
 
 ---
 
@@ -1819,7 +1819,7 @@ Map leader **dev** JWT / R2 / Brevo onto existing `apps/api` slots in gitignored
 
 **Status:** Done
 
-Gitignored `DATABASE_URL` with `sslmode=require`; `prisma migrate deploy` once; `GET /health` `"prisma"`. Portal gitignored `.env.development.local` sets `VITE_USE_MOCK_API=false`. Catalog still `@softgate/shared` seed. Note: [2026-09-09-leader-dev-prisma.md](../notes/2026-09-09-leader-dev-prisma.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
+Gitignored `DATABASE_URL` with `sslmode=require`; `prisma migrate deploy` once; `GET /health` `"prisma"`. Portal gitignored `.env.development.local` sets `VITE_USE_MOCK_API=false`. Catalog still `@softgate/shared` seed in 194 (Prisma Admin catalog read is Impl 195). Note: [2026-09-09-leader-dev-prisma.md](../notes/2026-09-09-leader-dev-prisma.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
 
 ---
 

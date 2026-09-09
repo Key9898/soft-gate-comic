@@ -2,13 +2,13 @@
 title: Folder Map
 type: reference
 date: 2026-08-10
-updated: 2026-09-08
+updated: 2026-09-09
 tags: [structure, folders, soft-gate]
 ---
 
 # Folder Map
 
-SoftGate Comic — Myanmar webtoon reader portal (pnpm + Turborepo workspace, Impl 188).
+SoftGate Comic — Myanmar webtoon reader portal (pnpm + Turborepo workspace, through Impl 195).
 
 ```
 soft-gate-comic/
@@ -31,7 +31,7 @@ soft-gate-comic/
 │   └── contracts/          # @softgate/contracts Zod envelope skeleton
 ├── apps/api/               # @softgate/api Hono (health + catalog + settings GET + reader auth + wallet + library + notifications + prefs; Prisma persist Impl 185/190–192; Admin catalog read Impl 195; R2 put helper Impl 186; Brevo forgot/reset Impl 187; profile writers Impl 188)
 │   ├── docker-compose.yml  # local Postgres 16
-│   └── prisma/             # schema + reader persist / password-reset migrations
+│   └── prisma/             # reader persist migrations; Admin catalog models copied (no portal catalog CREATE)
 └── apps/portal/            # Vite reader app
     ├── index.html
     ├── vite.config.ts
@@ -64,11 +64,11 @@ soft-gate-comic/
 
 ## Key entry files
 
-| Concern       | Path                                                                                                                                                                                                                                                                                       |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| App bootstrap | `apps/portal/src/main.tsx`                                                                                                                                                                                                                                                                 |
-| Routes        | `apps/portal/src/App.tsx`                                                                                                                                                                                                                                                                  |
-| Catalog       | `packages/shared` (`publishedCatalogFrom`; mock localStorage in portal)                                                                                                                                                                                                                    |
-| Settings      | `packages/shared` (`portalSettings`; portal `SettingsContext`)                                                                                                                                                                                                                             |
-| API process   | `apps/api` (`GET /health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`, `/api/library/*`, `/api/notifications/*`; persist stub or Prisma Impl 185/190/191; Admin catalog read Impl 195; R2 put helper Impl 186; Brevo forgot/reset Impl 187; profile writers Impl 188) |
-| API contracts | `packages/contracts` (envelope; Impl 170)                                                                                                                                                                                                                                                  |
+| Concern       | Path                                                                                                                                                                                                                                                                                                       |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App bootstrap | `apps/portal/src/main.tsx`                                                                                                                                                                                                                                                                                 |
+| Routes        | `apps/portal/src/App.tsx`                                                                                                                                                                                                                                                                                  |
+| Catalog       | Mock / stub seed: `packages/shared` (`publishedCatalogFrom`). Prisma persist: Admin tables via `apps/api` (Impl 195). Portal localStorage when mock on.                                                                                                                                                    |
+| Settings      | `packages/shared` (`portalSettings`; portal `SettingsContext`)                                                                                                                                                                                                                                             |
+| API process   | `apps/api` (`GET /health`, `/api/catalog`, `/api/settings`, `/api/auth/*`, `/api/wallet/*`, `/api/library/*`, `/api/notifications/*`, `/api/prefs/*`; persist stub or Prisma Impl 185/190–192; Admin catalog read Impl 195; R2 put helper Impl 186; Brevo forgot/reset Impl 187; profile writers Impl 188) |
+| API contracts | `packages/contracts` (envelope; Impl 170)                                                                                                                                                                                                                                                                  |

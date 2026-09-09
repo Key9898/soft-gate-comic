@@ -2,6 +2,7 @@
 title: Project Overview
 type: reference
 date: 2026-08-10
+updated: 2026-09-09
 tags: [overview, project]
 ---
 
@@ -52,10 +53,13 @@ Local HTTP catalog/auth/wallet: gitignored `apps/portal/.env.development.local` 
 
 ## Documentation (Impl & QA)
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–192** (next: **193**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — **SoftGate Comic Impl 1–195** (next: **196**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive only
+- [references/softgate-api.md](references/softgate-api.md) — `apps/api` health + catalog + persist (Impl 171–195)
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — historical Airtable rows (legacy-era)
 - Pre-backend Admin catalog/settings contract (do not invent conflicting portal fields): [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)
+- [conventions/named-integrations.md](conventions/named-integrations.md) — Prisma / R2 / Brevo slots; local Prisma + Admin catalog read (Impl 194–195)
+- [conventions/portal-catalog-read.md](conventions/portal-catalog-read.md) — mock vs `GET /api/catalog`; Prisma Admin tables when persist is Prisma (Impl 195)
 - [conventions/brand-color-tokens.md](conventions/brand-color-tokens.md)
 - [conventions/portal-light-and-i18n-defaults.md](conventions/portal-light-and-i18n-defaults.md)
 - [conventions/border-radius.md](conventions/border-radius.md)

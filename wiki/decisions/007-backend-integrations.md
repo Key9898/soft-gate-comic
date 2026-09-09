@@ -27,11 +27,14 @@ Impl 171 needs an API process in this monorepo without catalog HTTP, auth replac
 ## Consequences
 
 - Local boot is Node on port 3000. Cookie helper assumes split origins in production (`SameSite=None; Secure`).
-- Impl 172 serves `GET /api/catalog` from the persist stub (`publishedCatalogFrom` over shared mocks).
+- Impl 172 serves `GET /api/catalog` from the persist stub (`publishedCatalogFrom` over shared mocks). Prisma persist source is Impl 195.
 - Impl 176 names the stack in env + schema. Through 176, `GET /health` remained `{ persist: "stub" }` even if `DATABASE_URL` was set.
-- **Impl 185** (persist swap): empty URL stays stub; set URL uses Prisma after `$connect`; set URL + down Postgres fails boot. Health `"prisma"` when connected. Catalog still mock-backed. See [008-prisma-persist-boot.md](008-prisma-persist-boot.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
+- **Impl 185** (persist swap): empty URL stays stub; set URL uses Prisma after `$connect`; set URL + down Postgres fails boot. Health `"prisma"` when connected. Catalog stayed mock-backed in 185. See [008-prisma-persist-boot.md](008-prisma-persist-boot.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
 - **Impl 186** (R2 helper): four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Boot does not ping R2. See [009-r2-object-store.md](009-r2-object-store.md).
 - **Impl 187** (Brevo helper): key + from → HTML send on forgot/reset; else skip send. Boot does not ping Brevo. See [010-brevo-mail.md](010-brevo-mail.md).
+- **Impl 193** (leader-dev env): map JWT / R2 / Brevo onto named slots in gitignored local env. No `R2_ENDPOINT`.
+- **Impl 194** (local Prisma): gitignored `DATABASE_URL` + `prisma migrate deploy` once; health `"prisma"`.
+- **Impl 195** (Prisma catalog read): when persist is Prisma, `GET /api/catalog` maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` (schema copy, no portal catalog migration). Stub persist stays seed. Settings stay stub. Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
 - Portal default stays `VITE_USE_MOCK_API` localStorage; HTTP catalog consume is opt-in (`VITE_USE_MOCK_API=false`).
 
 ## Alternatives considered

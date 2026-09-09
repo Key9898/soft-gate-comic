@@ -27,8 +27,8 @@ Impl 176 named `DATABASE_URL` and a Prisma schema but kept runtime persist as an
 ## Consequences
 
 - Local `.env` with `DATABASE_URL` will refuse to listen until Postgres is up.
-- Catalog, settings, R2, and Brevo are unchanged in 185.
-- Admin schema on a shared Railway database is unknown; this repo’s migration is reader tables only.
+- Catalog, settings, R2, and Brevo are unchanged in 185. Prisma catalog read is Impl 195; settings stay stub.
+- Admin schema on a shared Railway database is unknown in 185; this repo’s migration is reader tables only. Catalog table names are copied in Impl 195 (no portal catalog CREATE).
 
 ## Alternatives considered
 

@@ -16,6 +16,7 @@ When persist is Prisma, `GET /api/catalog` reads Admin tables `Author` / `Genre`
 - [`apps/api/src/catalog/fromAdmin.ts`](../../apps/api/src/catalog/fromAdmin.ts) — `asBilingual` / `asImageSizes`, skip invalid `contentRating`, public non-draft `episodeCount`, omit `coinPackages` (unset, not `[]`).
 - `PersistPort.getUnstrippedPublishedCatalog` is `Promise<PublishedCatalog>` (stub `async`; Prisma queries Admin tables). Unlock uses the same unstripped catalog.
 - Mapper unit tests; stub catalog HTTP tests unchanged.
+- Wiki index hygiene (not a new Impl): README convention bullets, `00-overview` Impl count **1–195 / next 196**, folder-map catalog/API rows, ADR 007/008 forward pointers.
 
 ## Honesty
 
