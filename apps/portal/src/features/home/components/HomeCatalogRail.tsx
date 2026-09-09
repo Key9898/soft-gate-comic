@@ -5,6 +5,7 @@ import { motion, type MotionProps } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import type { Genre, Webtoon } from '@softgate/shared'
 import { CatalogBookCard } from '../../../components/BookCard'
+import CatalogEmptyPanel from '../../../components/CatalogEmptyPanel'
 
 export interface HomeCatalogRailProps {
   id?: string
@@ -29,6 +30,7 @@ export interface HomeCatalogRailProps {
   sectionClassName?: string
   dateKind?: 'createdAt' | 'updatedAt'
   cardTo?: (webtoon: Webtoon) => string
+  unavailable?: boolean
 }
 
 const HomeCatalogRail = ({
@@ -50,10 +52,10 @@ const HomeCatalogRail = ({
   sectionClassName = 'py-8 sm:py-10',
   dateKind = 'createdAt',
   cardTo = (webtoon) => `/webtoon/${webtoon.id}`,
+  unavailable = false,
 }: HomeCatalogRailProps) => {
   const { t } = useTranslation()
-
-  if (webtoons.length === 0) return null
+  const empty = webtoons.length === 0
 
   return (
     <section id={id} className={sectionClassName}>
@@ -73,7 +75,7 @@ const HomeCatalogRail = ({
               <p className="mt-1 text-xs text-gray-500 sm:text-sm">{description}</p>
             ) : null}
           </div>
-          {viewAllTo ? (
+          {viewAllTo && !empty ? (
             <Link
               to={viewAllTo}
               className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
@@ -83,35 +85,39 @@ const HomeCatalogRail = ({
             </Link>
           ) : null}
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
-          {webtoons.map((webtoon, index) => (
-            <motion.div
-              key={webtoon.id}
-              {...getAnimationProps(
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0 },
-                { duration: 0.3, delay: index * 0.05 }
-              )}
-            >
-              <Link
-                to={cardTo(webtoon)}
-                className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+        {empty ? (
+          <CatalogEmptyPanel title={null} showActions={false} unavailable={unavailable} />
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+            {webtoons.map((webtoon, index) => (
+              <motion.div
+                key={webtoon.id}
+                {...getAnimationProps(
+                  { opacity: 0, y: 20 },
+                  { opacity: 1, y: 0 },
+                  { duration: 0.3, delay: index * 0.05 }
+                )}
               >
-                <CatalogBookCard
-                  webtoon={webtoon}
-                  lang={lang}
-                  genres={genres}
-                  newestIds={newestIds}
-                  dateKind={dateKind}
-                  imageLoaded={loadedImages.has(webtoon.id)}
-                  imageFailed={failedImages.has(webtoon.id)}
-                  onImageLoad={() => onImageLoad(webtoon.id)}
-                  onImageError={() => onImageError(webtoon.id)}
-                />
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                <Link
+                  to={cardTo(webtoon)}
+                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                >
+                  <CatalogBookCard
+                    webtoon={webtoon}
+                    lang={lang}
+                    genres={genres}
+                    newestIds={newestIds}
+                    dateKind={dateKind}
+                    imageLoaded={loadedImages.has(webtoon.id)}
+                    imageFailed={failedImages.has(webtoon.id)}
+                    onImageLoad={() => onImageLoad(webtoon.id)}
+                    onImageError={() => onImageError(webtoon.id)}
+                  />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

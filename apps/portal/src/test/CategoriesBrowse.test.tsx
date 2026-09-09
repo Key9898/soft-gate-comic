@@ -1,7 +1,19 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Route, Routes } from 'react-router-dom'
 import { render, screen, waitFor } from './utils'
 import CategoriesPage from '../features/categories/CategoriesPage'
+
+const emptySharedData = JSON.stringify({
+  schemaVersion: 14,
+  data: {
+    webtoons: [],
+    episodes: [],
+    users: [],
+    comments: [],
+    authors: [],
+    genres: [],
+  },
+})
 
 function renderBrowse(path: string) {
   window.history.pushState({}, '', path)
@@ -67,5 +79,28 @@ describe('Categories browse polish', () => {
         'Filter by genre and status. Sorted by all-time reads — open Popular for the numbered chart.'
       )
     })
+  })
+
+  it('shows catalog-empty copy with Help and Creators when there are no published titles', async () => {
+    vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
+      key === 'softgate-shared-data' ? emptySharedData : null
+    )
+    renderBrowse('/categories')
+    expect(await screen.findByText(/no published series in the library yet/i)).toBeInTheDocument()
+    expect(screen.queryByText(/matching your criteria/i)).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /help center/i })).toHaveAttribute('href', '/help')
+    expect(screen.getByRole('link', { name: /publish with us/i })).toHaveAttribute(
+      'href',
+      '/creators'
+    )
+    expect(screen.queryByRole('heading', { name: /go here/i })).not.toBeInTheDocument()
+    vi.mocked(window.localStorage.getItem).mockImplementation(() => null)
+  })
+
+  it('keeps filter-empty recovery when titles exist but the filter misses', async () => {
+    renderBrowse('/categories/sports?status=hiatus')
+    expect(await screen.findByText(/matching your criteria/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /go here/i })).toBeInTheDocument()
+    expect(screen.queryByText(/no published series in the library yet/i)).not.toBeInTheDocument()
   })
 })

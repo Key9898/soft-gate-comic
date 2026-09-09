@@ -6,6 +6,18 @@ import SearchPage from '../features/search/SearchPage'
 
 const store = new Map<string, string>()
 
+const EMPTY_SHARED_DATA = JSON.stringify({
+  schemaVersion: 14,
+  data: {
+    webtoons: [],
+    episodes: [],
+    users: [],
+    comments: [],
+    authors: [],
+    genres: [],
+  },
+})
+
 function installStorage() {
   store.clear()
   Object.defineProperty(window, 'localStorage', {
@@ -113,5 +125,24 @@ describe('Search destination', () => {
     expect(window.location.search).toContain('q=Horizon')
     expect(screen.queryByRole('heading', { name: 'Demo searches' })).not.toBeInTheDocument()
     expect(screen.queryByText('Trending Searches')).not.toBeInTheDocument()
+  })
+
+  it('keeps Popular and New headings with catalog-empty chrome when there are no titles', async () => {
+    store.set('softgate-shared-data', EMPTY_SHARED_DATA)
+    renderSearch()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Browse genres' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Demo searches' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { name: 'Popular' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'New Releases' }).length).toBeGreaterThan(0)
+    expect(
+      await screen.findByText(/there are no published series to search yet/i)
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /help center/i })).toHaveAttribute('href', '/help')
+    expect(screen.getByRole('link', { name: /publish with us/i })).toHaveAttribute(
+      'href',
+      '/creators'
+    )
+    expect(screen.queryByRole('heading', { name: /go here/i })).not.toBeInTheDocument()
   })
 })

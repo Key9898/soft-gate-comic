@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import type { Genre, Webtoon } from '@softgate/shared'
 import { CatalogBookCard } from '../../components/BookCard'
+import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
 import GenreRailChevron from '../../components/GenreRailChevron'
 import SearchAutocomplete from '../../components/SearchAutocomplete'
 import SEO from '../../components/SEO/SEO'
@@ -63,7 +64,7 @@ import {
 const SearchPage = () => {
   const { t, i18n } = useTranslation()
   const lang = (i18n.language === 'mm' ? 'mm' : 'en') as 'mm' | 'en'
-  const { webtoons, authors, episodes, genres, isLoading } = useData()
+  const { webtoons, authors, episodes, genres, isLoading, error } = useData()
   const { isEpisodeUnlocked } = useWallet()
   const [searchParams, setSearchParams] = useSearchParams()
   const {
@@ -214,6 +215,9 @@ const SearchPage = () => {
     return <SearchPageSkeleton hasQuery={Boolean(query)} tab={tab} />
   }
 
+  const loadFailed = Boolean(error)
+  const catalogEmpty = !error && webtoons.length === 0
+
   const resultCount =
     tab === 'webtoons'
       ? webtoonHits.length
@@ -302,28 +306,43 @@ const SearchPage = () => {
               <div className="mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">{t('search.browseGenres')}</h2>
               </div>
-              <div className="mb-8 flex items-center gap-2">
-                <div
-                  ref={genreScrollRef}
-                  className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain"
-                >
-                  {browseGenres.map((g) => (
-                    <Link
-                      key={g.id}
-                      to={`/categories/${g.slug}`}
-                      className="bg-primary-50 text-primary-700 hover:bg-primary-100 inline-flex min-h-11 shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium transition"
-                    >
-                      {g.name[lang]}
-                    </Link>
-                  ))}
+              {browseGenres.length === 0 ? (
+                <div className="mb-8">
+                  <CatalogEmptyPanel title={null} showActions={false} unavailable={loadFailed} />
                 </div>
-                <GenreRailChevron
-                  enabled={canScrollRight}
-                  size="sm"
-                  onClick={() => scrollByPage('right')}
-                  label={t('a11y.scrollGenresRight')}
-                />
-              </div>
+              ) : (
+                <div className="mb-8 flex items-center gap-2">
+                  <div
+                    ref={genreScrollRef}
+                    className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain"
+                  >
+                    {browseGenres.map((g) => (
+                      <Link
+                        key={g.id}
+                        to={`/categories/${g.slug}`}
+                        className="bg-primary-50 text-primary-700 hover:bg-primary-100 inline-flex min-h-11 shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium transition"
+                      >
+                        {g.name[lang]}
+                      </Link>
+                    ))}
+                  </div>
+                  <GenreRailChevron
+                    enabled={canScrollRight}
+                    size="sm"
+                    onClick={() => scrollByPage('right')}
+                    label={t('a11y.scrollGenresRight')}
+                  />
+                </div>
+              )}
+              {loadFailed ? (
+                <div className="mb-8">
+                  <CatalogEmptyPanel unavailable />
+                </div>
+              ) : catalogEmpty ? (
+                <div className="mb-8">
+                  <CatalogEmptyPanel description={t('search.catalogEmpty')} showActions />
+                </div>
+              ) : null}
 
               <div>
                 <div className="mb-4 flex items-center justify-between gap-3">
@@ -363,7 +382,7 @@ const SearchPage = () => {
                   )}
                 </div>
               </div>
-              {recovery}
+              {catalogEmpty || loadFailed ? null : recovery}
             </div>
           </section>
 
@@ -381,6 +400,7 @@ const SearchPage = () => {
             onImageError={handleImageError}
             getAnimationProps={getAnimationProps}
             sectionClassName="py-8"
+            unavailable={loadFailed}
           />
           <HomeCatalogRail
             title={t('home.newReleases')}
@@ -396,6 +416,7 @@ const SearchPage = () => {
             onImageError={handleImageError}
             getAnimationProps={getAnimationProps}
             sectionClassName="py-8"
+            unavailable={loadFailed}
           />
         </>
       ) : (
@@ -547,6 +568,8 @@ const SearchPage = () => {
               ) : (
                 <SearchNoResults
                   query={query}
+                  loadFailed={loadFailed}
+                  catalogEmpty={catalogEmpty}
                   popular={popularRecover}
                   lang={lang}
                   genres={genres}
@@ -594,6 +617,8 @@ const SearchPage = () => {
               ) : (
                 <SearchNoResults
                   query={query}
+                  loadFailed={loadFailed}
+                  catalogEmpty={catalogEmpty}
                   popular={popularRecover}
                   lang={lang}
                   genres={genres}
@@ -646,6 +671,8 @@ const SearchPage = () => {
               ) : (
                 <SearchNoResults
                   query={query}
+                  loadFailed={loadFailed}
+                  catalogEmpty={catalogEmpty}
                   popular={popularRecover}
                   lang={lang}
                   genres={genres}
@@ -666,6 +693,8 @@ const SearchPage = () => {
 
 function SearchNoResults({
   query,
+  loadFailed,
+  catalogEmpty,
   popular,
   lang,
   genres,
@@ -677,6 +706,8 @@ function SearchNoResults({
   recovery,
 }: {
   query: string
+  loadFailed: boolean
+  catalogEmpty: boolean
   popular: Webtoon[]
   lang: 'mm' | 'en'
   genres: Genre[]
@@ -688,6 +719,12 @@ function SearchNoResults({
   recovery: ReactNode
 }) {
   const { t } = useTranslation()
+  if (loadFailed) {
+    return <CatalogEmptyPanel unavailable />
+  }
+  if (catalogEmpty) {
+    return <CatalogEmptyPanel description={t('search.catalogEmpty')} showActions />
+  }
   return (
     <div>
       <div className="rounded-2xl border border-dashed border-gray-200 bg-white py-12 text-center">

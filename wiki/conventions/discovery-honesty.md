@@ -42,6 +42,10 @@ Catalog titles follow cover lettering (do not edit cover PNGs to match the datab
 
 Do not derive Trending from `viewCount`. Do not strip Hero ids from Ranking / Trending / Updated / New. Start here **does** strip Hero ids so the guest start pack is not the spotlight carousel. Home Updated may strip New-rail ids so the return-loop jobs do not share titles.
 
+Empty catalog (`!error` and `webtoons.length === 0` after a successful load) is **empty chrome**, not seed. Keep Home / Categories / Search layout; fill module bodies with `CatalogEmptyPanel`. Do not invent covers or HeroBook3D slides. Do not use “matching your criteria” / “no results for `{query}`” as if a title library exists. Filter or query misses while titles exist stay those no-match recoveries. For You stays hidden when its list is empty. See [loading-states.md](loading-states.md) (Impl 196).
+
+Catalog **load-fail** (`error` and zero titles) is not unpublished. Use `errors.catalogUnavailable` in-page and `errors.catalogLoad` on the banner. Help/Creators stay success-empty only. Do not fall back to seed. See Impl 198.
+
 Empty `/search` **Demo searches** are a frozen chip list in [`src/lib/search/demoSearches.ts`](../../src/lib/search/demoSearches.ts). Do not fill them from `weeklyViewCount`. Do not label them Trending Searches. Browse genres stays a separate catalog job.
 
 Author Follow is `softgate_follows_v1` per signed-in user. Do not show `author.followerCount` as a live public count. Do not mix Follow with series Subscribe (`softgate_library_v1`). For You does not use author follows yet.

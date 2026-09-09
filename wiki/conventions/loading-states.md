@@ -31,16 +31,16 @@ Every async surface resolves through the UI state stack: **loading → (empty | 
 
 ## Pattern per situation
 
-| Situation                                                  | Pattern                                                                      |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Content page, predictable layout (`DataContext.isLoading`) | Page skeleton mirroring the real layout                                      |
-| Form submit / auth action                                  | `Button isLoading` inline spinner (unchanged)                                |
-| Like / bookmark / toggle                                   | Optimistic, no indicator (unchanged)                                         |
-| Sub-100ms resolution (ProtectedRoute auth check)           | Nothing visible — quiet `min-h-screen` shell with `aria-busy`                |
-| Request resolved, zero items                               | Dedicated empty state: icon + why + CTA (never a skeleton/spinner)           |
-| Catalog fetch failed (API mode)                            | `CatalogStatus` banner + Retry; keep cached/demo data                        |
-| Catalog still loading after 10s                            | Same Retry control (banner, not a new page)                                  |
-| Cover URL known, image not loaded                          | Cover `animate-pulse` until `onLoad` (only if the page passes `imageLoaded`) |
+| Situation                                                  | Pattern                                                                                                                                                                                      |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Content page, predictable layout (`DataContext.isLoading`) | Page skeleton mirroring the real layout                                                                                                                                                      |
+| Form submit / auth action                                  | `Button isLoading` inline spinner (unchanged)                                                                                                                                                |
+| Like / bookmark / toggle                                   | Optimistic, no indicator (unchanged)                                                                                                                                                         |
+| Sub-100ms resolution (ProtectedRoute auth check)           | Nothing visible — quiet `min-h-screen` shell with `aria-busy`                                                                                                                                |
+| Request resolved, zero items                               | Dedicated empty state: icon + why + CTA (never a skeleton/spinner)                                                                                                                           |
+| Catalog fetch failed (API mode)                            | `CatalogStatus` banner + Retry; live chrome + `errors.catalogUnavailable` when the list is empty. Do not claim unpublished or cached/demo. Keep in-memory titles if a prior 200 filled them. |
+| Catalog still loading after 10s                            | Same Retry control (banner, not a new page)                                                                                                                                                  |
+| Cover URL known, image not loaded                          | Cover `animate-pulse` until `onLoad` (only if the page passes `imageLoaded`)                                                                                                                 |
 
 No splash screen. No `/loading` route. No spinner on top of a skeleton.
 
@@ -76,9 +76,10 @@ One Impl number, two same-day passes in this repo. **155a** / **155b** are label
 
 ## Empty-state rules
 
-- Explain why it's empty + give a next action + an icon ([HomeEmptyState](../../src/features/home/components/HomeEmptyState.tsx), [LibraryEmptyState](../../src/features/library/components/LibraryEmptyState.tsx) are the references).
+- Catalog **success** with zero published titles keeps **live page chrome** (Home hero banner + rails, Categories masthead/filters, Search landing/query). Module bodies use [`CatalogEmptyPanel`](../../apps/portal/src/components/CatalogEmptyPanel/CatalogEmptyPanel.tsx) — icon well, honest “library not published yet” copy, not a full-page Refresh card, not skeleton pulse. Help (`/help`) and Creators (`/creators`) only on empty Hero, Categories catalog-empty grid, and Search catalog-empty landing/query — not on every rail, **never on load-fail**. Filter/query misses while titles exist stay the existing no-match recovery. Library tab empty still uses [LibraryEmptyState](../../src/features/library/components/LibraryEmptyState.tsx).
+- Catalog **load-fail** (`error` set, zero titles in memory) is a different story: same live chrome, `CatalogEmptyPanel unavailable` / Hero `unavailable` use `errors.catalogUnavailable` and point at Retry on `CatalogStatus`. Do not use `home.emptyDesc` / `categories.catalogEmpty` / `search.catalogEmpty`. Banner `errors.catalogLoad` does not mention cached or demo data. `error` with titles still in memory keeps those cards + banner only.
 - Resolved state: no `aria-busy`, no pulse animation.
-- Honest copy per [discovery-honesty.md](discovery-honesty.md) — reader-facing portal never fakes content.
+- Honest copy per [discovery-honesty.md](discovery-honesty.md) — reader-facing portal never fakes content. Empty catalog is empty chrome, not seed. Load-fail is not empty.
 
 ## Parked (do not redo blindly)
 
@@ -103,3 +104,5 @@ One Impl number, two same-day passes in this repo. **155a** / **155b** are label
 - Impl 163 Search query live chrome: [2026-08-22-search-query-skeleton-chrome.md](../notes/2026-08-22-search-query-skeleton-chrome.md)
 - Impl 164 Categories skeleton live chrome: [2026-08-22-categories-skeleton-chrome.md](../notes/2026-08-22-categories-skeleton-chrome.md)
 - Impl 169 reserved genre-rail chevron slot: [2026-08-23-genre-rail-chevron-slot.md](../notes/2026-08-23-genre-rail-chevron-slot.md)
+- Impl 196 catalog-empty live chrome: [2026-09-09-catalog-empty-chrome.md](../notes/2026-09-09-catalog-empty-chrome.md)
+- Impl 198 catalog load-fail vs success-empty: [2026-09-09-catalog-load-fail-copy.md](../notes/2026-09-09-catalog-load-fail-copy.md)

@@ -13,9 +13,16 @@ export interface HeroSpotlightProps {
   lang: 'mm' | 'en'
   isBookmarked: (webtoonId: string) => boolean
   toggleBookmark: (webtoonId: string) => void
+  unavailable?: boolean
 }
 
-const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotlightProps) => {
+const HeroSpotlight = ({
+  slides,
+  lang,
+  isBookmarked,
+  toggleBookmark,
+  unavailable = false,
+}: HeroSpotlightProps) => {
   const { t } = useTranslation()
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const [index, setIndex] = useState(0)
@@ -64,7 +71,47 @@ const HeroSpotlight = ({ slides, lang, isBookmarked, toggleBookmark }: HeroSpotl
     setHoverPaused(false)
   }
 
-  if (!current) return null
+  if (!current) {
+    return (
+      <section className="safe-top relative -mt-16 overflow-visible pt-16 text-white">
+        <div
+          className="pointer-events-none absolute inset-0 overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url('/banner/banner.png')` }}
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
+          aria-hidden="true"
+        />
+        <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
+          <div className="relative z-10 flex w-full max-w-2xl min-w-0 flex-col text-center lg:text-left">
+            <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              {t('home.pageHeading')}
+            </h1>
+            <p className="mx-auto mb-8 max-w-md text-base text-white/80 sm:text-lg lg:mx-0">
+              {unavailable ? t('errors.catalogUnavailable') : t('home.emptyDesc')}
+            </p>
+            {unavailable ? null : (
+              <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                <Link
+                  to="/help"
+                  className="focus:ring-offset-primary-700 rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+                >
+                  <Button variant="secondary">{t('footer.help')}</Button>
+                </Link>
+                <Link
+                  to="/creators"
+                  className="focus:ring-offset-primary-700 rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+                >
+                  <Button variant="heroOutline">{t('footer.creators')}</Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   const showControls = count > 1
 

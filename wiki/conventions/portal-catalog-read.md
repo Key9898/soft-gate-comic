@@ -5,6 +5,7 @@ date: 2026-08-24
 updated: 2026-09-09
 tags: [catalog, api, http, softgate]
 impl: 195
+impl_updated: 198
 ---
 
 # Portal catalog HTTP read
@@ -19,7 +20,7 @@ Catalog **read** is `GET /api/catalog` → `{ data: PublishedCatalog }`. Unwrap 
 
 `PublishedCatalog` is authors, genres, webtoons, episodes, optional `coinPackages`. Field names unchanged (`spotlight`, `freeAt`, `imageSizes?`, …). Draft webtoons/episodes are omitted; `scheduled` episodes stay for Daily. HTTP catalog `fetch` uses `credentials: 'include'` (not `authFetch`). Locked premium episodes have `images: []` and keep `imageSizes` ([portal-wallet-http.md](portal-wallet-http.md)). Mock catalog still ships premium panel URLs.
 
-When mock is off, `GET /api/catalog` source depends on persist: stub still uses `@softgate/shared` seed; Prisma maps Admin catalog tables (Impl 195). Omit `coinPackages` when Admin has no table (`undefined`, not `[]` — empty array would empty `/coins`). Unlock uses Admin ids, not seed `'1'` / `'2'`.
+When mock is off, `GET /api/catalog` source depends on persist: stub still uses `@softgate/shared` seed; Prisma maps Admin catalog tables (Impl 195). Omit `coinPackages` when Admin has no table (`undefined`, not `[]` — empty array would empty `/coins`). Unlock uses Admin ids, not seed `'1'` / `'2'`. Empty published `webtoons` is a successful empty catalog: portal discovery keeps live chrome (Impl 196, [loading-states.md](loading-states.md)). A **failed** catalog request is not that empty: live chrome + fail copy (Impl 198). Do not fall back to seed. Local HTTP: gitignored `VITE_USE_MOCK_API=false` plus `VITE_API_BASE_URL` when SoftGate API is not on `:3000` (do not steal Admin’s port).
 
 `applyCatalogSeed` is identity. Do not reintroduce a seed wipe.
 

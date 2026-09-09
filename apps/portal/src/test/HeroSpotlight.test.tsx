@@ -82,6 +82,59 @@ describe('HeroSpotlight', () => {
     expect(screen.getByRole('button', { name: /subscribe/i })).toBeInTheDocument()
   })
 
+  it('still paints banner chrome and the site heading when slides are empty', () => {
+    render(
+      <HeroSpotlight
+        slides={[]}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    expect(
+      screen.getByRole('heading', { level: 1, name: /softgate comic — myanmar webtoons/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/published series will appear here when softgate comic adds titles/i)
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /help center/i }).closest('a')).toHaveAttribute(
+      'href',
+      '/help'
+    )
+    expect(screen.getByRole('button', { name: /publish with us/i }).closest('a')).toHaveAttribute(
+      'href',
+      '/creators'
+    )
+    expect(screen.queryByRole('button', { name: /start reading/i })).not.toBeInTheDocument()
+    expect(screen.queryByTestId('hero-book-cover-link')).not.toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: /featured webtoons/i })).not.toBeInTheDocument()
+  })
+
+  it('uses load-fail copy and omits Help/Creators when unavailable', () => {
+    render(
+      <HeroSpotlight
+        slides={[]}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+        unavailable
+      />
+    )
+    expect(
+      screen.getByRole('heading', { level: 1, name: /softgate comic — myanmar webtoons/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/titles cannot show until the catalog request succeeds/i)
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(/published series will appear here when softgate comic adds titles/i)
+    ).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /help center/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /publish with us/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /start reading/i })).not.toBeInTheDocument()
+    expect(screen.queryByTestId('hero-book-cover-link')).not.toBeInTheDocument()
+  })
+
   it('jumps to a slide when a dot is clicked', () => {
     render(
       <HeroSpotlight

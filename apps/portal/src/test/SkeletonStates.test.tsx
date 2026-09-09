@@ -304,13 +304,27 @@ describe('page skeletons', () => {
 })
 
 describe('HomePage loading vs empty resolution', () => {
-  it('shows the empty state, not a skeleton, when shared data has zero webtoons', () => {
+  it('keeps live Home chrome with empty panels when shared data has zero webtoons', async () => {
     vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
       key === 'softgate-shared-data' ? emptySharedData : null
     )
     render(<HomePage />)
-    expect(screen.getByText(/no webtoons here yet/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /refresh/i })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: /softgate comic — myanmar webtoons/i,
+      })
+    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /start here/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^popular$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /trending now/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^daily$/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /for you/i })).not.toBeInTheDocument()
+    expect(
+      screen.getAllByText(/published series will appear here when softgate comic adds titles/i)
+        .length
+    ).toBeGreaterThan(0)
+    expect(screen.queryByRole('button', { name: /refresh/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 

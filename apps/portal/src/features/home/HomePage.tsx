@@ -36,7 +36,7 @@ import HomeCatalogRail from './components/HomeCatalogRail'
 import HomeDailyBoard from './components/HomeDailyBoard'
 import HomeRankingChart from './components/HomeRankingChart'
 import HomePageSkeleton from './components/HomePageSkeleton'
-import HomeEmptyState from './components/HomeEmptyState'
+import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
 
 const CONTINUE_CAP = 12
 
@@ -45,7 +45,8 @@ const HomePage = () => {
   const lang = i18n.language as 'mm' | 'en'
   const prefersReducedMotion = useReducedMotion()
 
-  const { webtoons, genres, episodes, isLoading } = useData()
+  const { webtoons, genres, episodes, isLoading, error } = useData()
+  const catalogUnavailable = Boolean(error)
   const { isBookmarked, toggleBookmark, bookmarkIds } = useLibrary()
   const { isAuthenticated, user } = useAuth()
   const { maintenanceMode, allowRegistration } = useSettings()
@@ -137,10 +138,6 @@ const HomePage = () => {
     )
   }
 
-  if (webtoons.length === 0) {
-    return <HomeEmptyState />
-  }
-
   // Fix 13: Reduced motion helper
   const getAnimationProps = (
     initial: MotionProps['initial'],
@@ -166,6 +163,7 @@ const HomePage = () => {
         lang={lang}
         isBookmarked={isBookmarked}
         toggleBookmark={toggleBookmark}
+        unavailable={catalogUnavailable}
       />
 
       <section className="border-b border-gray-200 bg-white">
@@ -178,20 +176,30 @@ const HomePage = () => {
               ref={genreScrollRef}
               className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-3 overflow-x-auto overscroll-x-contain pb-2"
             >
-              {genres.map((genre) => (
-                <Link
-                  key={genre.id}
-                  to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
-                  onClick={() => setSelectedGenre(genre.slug)}
-                  className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition focus:ring-2 focus:ring-offset-2 focus:outline-none ${
-                    selectedGenre === genre.slug
-                      ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {genre.name[lang]}
-                </Link>
-              ))}
+              {genres.length === 0 ? (
+                <div className="min-w-0 flex-1 py-2">
+                  <CatalogEmptyPanel
+                    title={null}
+                    showActions={false}
+                    unavailable={catalogUnavailable}
+                  />
+                </div>
+              ) : (
+                genres.map((genre) => (
+                  <Link
+                    key={genre.id}
+                    to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
+                    onClick={() => setSelectedGenre(genre.slug)}
+                    className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition focus:ring-2 focus:ring-offset-2 focus:outline-none ${
+                      selectedGenre === genre.slug
+                        ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {genre.name[lang]}
+                  </Link>
+                ))
+              )}
             </div>
             <GenreRailChevron
               enabled={canScrollGenreRight}
@@ -265,24 +273,28 @@ const HomePage = () => {
           getAnimationProps={getAnimationProps}
           sectionClassName="bg-white py-8 sm:py-10"
           cardTo={(webtoon) => `/read/${webtoon.id}/1`}
+          unavailable={catalogUnavailable}
         />
       )}
 
-      <HomeCatalogRail
-        id="home-for-you"
-        title={t('home.forYou')}
-        description={t('home.forYouDesc')}
-        icon={<Heart className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
-        webtoons={forYouList}
-        lang={lang}
-        genres={genres}
-        newestIds={newestIds}
-        loadedImages={loadedImages}
-        failedImages={failedImages}
-        onImageLoad={handleImageLoad}
-        onImageError={handleImageError}
-        getAnimationProps={getAnimationProps}
-      />
+      {forYouList.length > 0 ? (
+        <HomeCatalogRail
+          id="home-for-you"
+          title={t('home.forYou')}
+          description={t('home.forYouDesc')}
+          icon={<Heart className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
+          webtoons={forYouList}
+          lang={lang}
+          genres={genres}
+          newestIds={newestIds}
+          loadedImages={loadedImages}
+          failedImages={failedImages}
+          onImageLoad={handleImageLoad}
+          onImageError={handleImageError}
+          getAnimationProps={getAnimationProps}
+          unavailable={catalogUnavailable}
+        />
+      ) : null}
 
       <HomeRankingChart
         id="home-ranking"
@@ -298,6 +310,7 @@ const HomePage = () => {
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
         getAnimationProps={getAnimationProps}
+        unavailable={catalogUnavailable}
       />
 
       <HomeCatalogRail
@@ -314,6 +327,7 @@ const HomePage = () => {
         onImageError={handleImageError}
         getAnimationProps={getAnimationProps}
         sectionClassName="bg-white py-8 sm:py-10"
+        unavailable={catalogUnavailable}
       />
 
       <HomeDailyBoard
@@ -325,6 +339,7 @@ const HomePage = () => {
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
         getAnimationProps={getAnimationProps}
+        unavailable={catalogUnavailable}
       />
 
       <HomeCatalogRail
@@ -342,6 +357,7 @@ const HomePage = () => {
         onImageLoad={handleImageLoad}
         onImageError={handleImageError}
         getAnimationProps={getAnimationProps}
+        unavailable={catalogUnavailable}
       />
 
       <HomeCatalogRail
@@ -359,6 +375,7 @@ const HomePage = () => {
         onImageError={handleImageError}
         getAnimationProps={getAnimationProps}
         sectionClassName="bg-white py-8 sm:py-10"
+        unavailable={catalogUnavailable}
       />
 
       <section className="py-10 sm:py-12">

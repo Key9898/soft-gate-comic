@@ -5,6 +5,7 @@ import { CalendarDays } from 'lucide-react'
 import type { Episode, UploadDay, Webtoon } from '@softgate/shared'
 import { dailyDrops, todayWeekday, UPLOAD_DAY_ORDER } from '../../../lib/catalog'
 import DailyDropCard from './DailyDropCard'
+import CatalogEmptyPanel from '../../../components/CatalogEmptyPanel'
 
 const WEEKDAY_KEYS = [
   'home.weekdaySun',
@@ -29,6 +30,7 @@ interface HomeDailyBoardProps {
     animate: MotionProps['animate'],
     transition: MotionProps['transition']
   ) => MotionProps
+  unavailable?: boolean
 }
 
 const HomeDailyBoard = ({
@@ -40,6 +42,7 @@ const HomeDailyBoard = ({
   onImageLoad,
   onImageError,
   getAnimationProps,
+  unavailable = false,
 }: HomeDailyBoardProps) => {
   const { t } = useTranslation()
   const [day, setDay] = useState<UploadDay>(() => todayWeekday())
@@ -106,6 +109,8 @@ const HomeDailyBoard = ({
               </motion.li>
             ))}
           </ul>
+        ) : webtoons.length === 0 ? (
+          <CatalogEmptyPanel title={null} showActions={false} unavailable={unavailable} />
         ) : (
           <p className="text-sm text-gray-500">{t('home.dailyEmpty')}</p>
         )}

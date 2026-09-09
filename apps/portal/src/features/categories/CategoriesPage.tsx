@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import type { Webtoon } from '@softgate/shared'
 import { CatalogBookCard } from '../../components/BookCard'
+import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
 import GenreRailChevron from '../../components/GenreRailChevron'
 import SearchAutocomplete from '../../components/SearchAutocomplete'
 import SEO from '../../components/SEO/SEO'
@@ -64,7 +65,7 @@ const CategoriesPage = () => {
   const sortMenuId = useId()
   const sortButtonRef = useRef<HTMLButtonElement>(null)
 
-  const { webtoons, genres, isLoading } = useData()
+  const { webtoons, genres, isLoading, error } = useData()
   const [searchParams] = useSearchParams()
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
@@ -539,98 +540,11 @@ const CategoriesPage = () => {
 
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {showRanks ? (
-            <ol className="m-0 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {pagedWebtoons.map((webtoon, index) => {
-                const rank = rankOnPage(currentPage, index)
-                return (
-                  <motion.li
-                    key={webtoon.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.03 }}
-                  >
-                    <Link
-                      to={`/webtoon/${webtoon.id}`}
-                      className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                      aria-label={`${rank}. ${webtoon.title[lang]}`}
-                    >
-                      <CatalogBookCard
-                        webtoon={webtoon}
-                        lang={lang}
-                        genres={genres}
-                        newestIds={newestIds}
-                        imageLoaded={loadedImages.has(webtoon.id)}
-                        imageFailed={failedImages.has(webtoon.id)}
-                        onImageLoad={() => handleImageLoad(webtoon.id)}
-                        onImageError={() => handleImageError(webtoon.id)}
-                        rank={rank}
-                        overlay={statusBadge(webtoon)}
-                        dateKind="createdAt"
-                      />
-                    </Link>
-                  </motion.li>
-                )
-              })}
-            </ol>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {pagedWebtoons.map((webtoon, index) => (
-                <motion.div
-                  key={webtoon.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                >
-                  <Link
-                    to={`/webtoon/${webtoon.id}`}
-                    className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                  >
-                    <CatalogBookCard
-                      webtoon={webtoon}
-                      lang={lang}
-                      genres={genres}
-                      newestIds={newestIds}
-                      imageLoaded={loadedImages.has(webtoon.id)}
-                      imageFailed={failedImages.has(webtoon.id)}
-                      onImageLoad={() => handleImageLoad(webtoon.id)}
-                      onImageError={() => handleImageError(webtoon.id)}
-                      overlay={statusBadge(webtoon)}
-                      dateKind={effectiveSort === 'recentlyUpdated' ? 'updatedAt' : 'createdAt'}
-                    />
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
-          {pagerVisible ? (
-            <div className="mt-8 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage <= 1}
-                aria-label={t('common.previous')}
-                className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft className="h-5 w-5" aria-hidden />
-              </button>
-              <p className="text-sm font-semibold text-gray-700">
-                {t('categories.pageOf', { current: currentPage, total: totalPages })}
-              </p>
-              <button
-                type="button"
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage >= totalPages}
-                aria-label={t('common.next')}
-                className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronRight className="h-5 w-5" aria-hidden />
-              </button>
-            </div>
-          ) : null}
-
-          {sortedAndFilteredWebtoons.length === 0 && (
+          {error && webtoons.length === 0 ? (
+            <CatalogEmptyPanel unavailable />
+          ) : !error && webtoons.length === 0 ? (
+            <CatalogEmptyPanel description={t('categories.catalogEmpty')} showActions />
+          ) : sortedAndFilteredWebtoons.length === 0 ? (
             <div className="mx-auto max-w-2xl py-12 text-center">
               <p className="text-sm font-bold text-gray-500">{t('categories.noWebtoons')}</p>
               <div className="mt-6">
@@ -657,6 +571,99 @@ const CategoriesPage = () => {
                 {t('categories.clearFilters')}
               </button>
             </div>
+          ) : (
+            <>
+              {showRanks ? (
+                <ol className="m-0 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                  {pagedWebtoons.map((webtoon, index) => {
+                    const rank = rankOnPage(currentPage, index)
+                    return (
+                      <motion.li
+                        key={webtoon.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.03 }}
+                      >
+                        <Link
+                          to={`/webtoon/${webtoon.id}`}
+                          className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                          aria-label={`${rank}. ${webtoon.title[lang]}`}
+                        >
+                          <CatalogBookCard
+                            webtoon={webtoon}
+                            lang={lang}
+                            genres={genres}
+                            newestIds={newestIds}
+                            imageLoaded={loadedImages.has(webtoon.id)}
+                            imageFailed={failedImages.has(webtoon.id)}
+                            onImageLoad={() => handleImageLoad(webtoon.id)}
+                            onImageError={() => handleImageError(webtoon.id)}
+                            rank={rank}
+                            overlay={statusBadge(webtoon)}
+                            dateKind="createdAt"
+                          />
+                        </Link>
+                      </motion.li>
+                    )
+                  })}
+                </ol>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                  {pagedWebtoons.map((webtoon, index) => (
+                    <motion.div
+                      key={webtoon.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.03 }}
+                    >
+                      <Link
+                        to={`/webtoon/${webtoon.id}`}
+                        className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      >
+                        <CatalogBookCard
+                          webtoon={webtoon}
+                          lang={lang}
+                          genres={genres}
+                          newestIds={newestIds}
+                          imageLoaded={loadedImages.has(webtoon.id)}
+                          imageFailed={failedImages.has(webtoon.id)}
+                          onImageLoad={() => handleImageLoad(webtoon.id)}
+                          onImageError={() => handleImageError(webtoon.id)}
+                          overlay={statusBadge(webtoon)}
+                          dateKind={effectiveSort === 'recentlyUpdated' ? 'updatedAt' : 'createdAt'}
+                        />
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {pagerVisible ? (
+                <div className="mt-8 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    aria-label={t('common.previous')}
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft className="h-5 w-5" aria-hidden />
+                  </button>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {t('categories.pageOf', { current: currentPage, total: totalPages })}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                    aria-label={t('common.next')}
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronRight className="h-5 w-5" aria-hidden />
+                  </button>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       </section>
