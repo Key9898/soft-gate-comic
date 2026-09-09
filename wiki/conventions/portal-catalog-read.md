@@ -2,8 +2,9 @@
 title: Portal catalog HTTP read
 type: convention
 date: 2026-08-24
+updated: 2026-09-09
 tags: [catalog, api, http, softgate]
-impl: 172
+impl: 195
 ---
 
 # Portal catalog HTTP read
@@ -17,6 +18,8 @@ Portal `DataContext` reads and writes the schema-14 catalog envelope through `lo
 Catalog **read** is `GET /api/catalog` → `{ data: PublishedCatalog }`. Unwrap with `unwrapApiData`. Do **not** `GET` or `PUT` whole `SharedData` at `/api/data`.
 
 `PublishedCatalog` is authors, genres, webtoons, episodes, optional `coinPackages`. Field names unchanged (`spotlight`, `freeAt`, `imageSizes?`, …). Draft webtoons/episodes are omitted; `scheduled` episodes stay for Daily. HTTP catalog `fetch` uses `credentials: 'include'` (not `authFetch`). Locked premium episodes have `images: []` and keep `imageSizes` ([portal-wallet-http.md](portal-wallet-http.md)). Mock catalog still ships premium panel URLs.
+
+When mock is off, `GET /api/catalog` source depends on persist: stub still uses `@softgate/shared` seed; Prisma maps Admin catalog tables (Impl 195). Omit `coinPackages` when Admin has no table (`undefined`, not `[]` — empty array would empty `/coins`). Unlock uses Admin ids, not seed `'1'` / `'2'`.
 
 `applyCatalogSeed` is identity. Do not reintroduce a seed wipe.
 

@@ -265,7 +265,7 @@ export function clonePrefsSnapshot(snapshot: PrefsSnapshot): PrefsSnapshot {
 export type PersistPort = {
   kind: PersistKind
   ping(): Promise<{ ok: true }>
-  getUnstrippedPublishedCatalog(): PublishedCatalog
+  getUnstrippedPublishedCatalog(): Promise<PublishedCatalog>
   getPublishedCatalog(userId?: string): Promise<PublishedCatalog>
   getPortalSettings(): PortalSettings
   clearAuth(): Promise<void>
@@ -444,11 +444,11 @@ export function createStubPersist(): PersistPort {
     async ping() {
       return { ok: true as const }
     },
-    getUnstrippedPublishedCatalog() {
+    async getUnstrippedPublishedCatalog() {
       return publishedCatalogFrom(getSharedData())
     },
     async getPublishedCatalog(userId?: string) {
-      const catalog = stub.getUnstrippedPublishedCatalog()
+      const catalog = await stub.getUnstrippedPublishedCatalog()
       const keys = userId ? (walletsByUserId.get(userId)?.unlockedEpisodeKeys ?? []) : []
       return redactLockedEpisodeImages(catalog, new Set(keys))
     },
@@ -643,7 +643,7 @@ export function createStubPersist(): PersistPort {
       return toPublicWallet(next)
     },
     async unlockEpisode(userId, webtoonId, episodeNumber) {
-      const catalog = stub.getUnstrippedPublishedCatalog()
+      const catalog = await stub.getUnstrippedPublishedCatalog()
       const episode = catalog.episodes.find(
         (row) => row.webtoonId === webtoonId && row.episodeNumber === episodeNumber
       )

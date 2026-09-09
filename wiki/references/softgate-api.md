@@ -3,14 +3,14 @@ title: SoftGate Comic API
 type: reference
 date: 2026-08-24
 tags: [api, health, catalog, settings, auth, wallet, library, notifications, prefs, env, softgate]
-impl: 193
+impl: 195
 ---
 
 # SoftGate Comic API
 
 Runtime: [`apps/api`](../../apps/api) (`@softgate/api`). Legacy EDC HTTP lists stay in [api-contract.md](api-contract.md) and are not this product.
 
-Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/api/.env` (Impl 193). Omit `DATABASE_URL` until the database name is known. No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Live secrets are not in this file.
+Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/api/.env` (Impl 193). Impl 194 sets `DATABASE_URL` locally (`sslmode=require`) and migrates reader tables once. Impl 195 reads Admin catalog tables when persist is Prisma. No `R2_ENDPOINT`. Sender name stays SoftGate Comic. Live secrets are not in this file.
 
 ## Health
 
@@ -22,15 +22,15 @@ Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/
 
 `persist` is `"stub"` (in-memory) or `"prisma"` (Postgres via Prisma). No `Set-Cookie`. `GET`/`PUT /api/data` is not implemented (404). `createApp` does not pick the adapter; boot `openPersist` does.
 
-## Published catalog (Impl 172)
+## Published catalog (Impl 172 / 195)
 
 `GET /api/catalog`
 
 ```json
-{ "data": { "authors": [], "genres": [], "webtoons": [], "episodes": [], "coinPackages": [] } }
+{ "data": { "authors": [], "genres": [], "webtoons": [], "episodes": [] } }
 ```
 
-`data` is a published read model (`PublishedCatalog`), not whole `SharedData`. Draft webtoons/episodes are omitted; scheduled episodes stay. Catalog rows still come from `publishedCatalogFrom(getSharedData())`; unlocked keys come from stub maps or `WalletUnlock` when persist is Prisma. Optional `sg_reader` cookie; never 401. Portal consumes this when `VITE_USE_MOCK_API=false`. Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
+`data` is a published read model (`PublishedCatalog`), not whole `SharedData`. Draft webtoons/episodes are omitted; scheduled episodes stay. Stub persist uses `publishedCatalogFrom(getSharedData())`. Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` (Impl 195); `coinPackages` is omitted (unset) until Admin has a table. Unlocked keys come from stub maps or `WalletUnlock`. Optional `sg_reader` cookie; never 401. Portal consumes this when `VITE_USE_MOCK_API=false`. Convention: [portal-catalog-read.md](../conventions/portal-catalog-read.md).
 
 ## Portal settings (Impl 173)
 
@@ -65,7 +65,7 @@ Stub or Prisma ledger (seed 150). Unlock body `{ webtoonId, episodeNumber }`; de
 
 ## Named integrations (Impl 176–187)
 
-Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Catalog CMS stays unwired. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
+Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). Prisma catalog read from Admin tables (Impl 195); no portal catalog migration. R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Settings CMS stays stub. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
 
 ## Env (`apps/api/.env.example`)
 

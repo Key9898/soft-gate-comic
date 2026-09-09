@@ -6,8 +6,9 @@ import {
   type ReaderUser,
   type WalletTransaction,
 } from '@prisma/client'
-import { getSharedData, isEpisodeLocked, publishedCatalogFrom } from '@softgate/shared/catalog'
+import { isEpisodeLocked } from '@softgate/shared/catalog'
 import { STUB_PORTAL_SETTINGS } from '@softgate/shared/settings'
+import { publishedCatalogFromAdmin } from './catalog/fromAdmin.js'
 import { episodeUnlockKey, redactLockedEpisodeImages } from './paywall.js'
 import {
   STUB_SEED_BALANCE,
@@ -242,11 +243,45 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
     async close() {
       await prisma.$disconnect()
     },
-    getUnstrippedPublishedCatalog() {
-      return publishedCatalogFrom(getSharedData())
+    async getUnstrippedPublishedCatalog() {
+      const [authors, genres, webtoons, episodes] = await Promise.all([
+        prisma.author.findMany(),
+        prisma.genre.findMany(),
+        prisma.webtoon.findMany({
+          include: { genres: { include: { genre: true } } },
+        }),
+        prisma.episode.findMany(),
+      ])
+      return publishedCatalogFromAdmin({
+        authors,
+        genres,
+        webtoons: webtoons.map((row) => ({
+          id: row.id,
+          title: row.title,
+          description: row.description,
+          coverImage: row.coverImage,
+          coverColor: row.coverColor,
+          authorId: row.authorId,
+          tags: row.tags,
+          status: row.status,
+          isPremium: row.isPremium,
+          viewCount: row.viewCount,
+          likeCount: row.likeCount,
+          rating: row.rating,
+          contentRating: row.contentRating,
+          spotlight: row.spotlight,
+          spotlightOrder: row.spotlightOrder,
+          weeklyViewCount: row.weeklyViewCount,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+          genreIds: row.genres.map((item) => item.genreId),
+          genreSlugs: row.genres.map((item) => item.genre.slug),
+        })),
+        episodes,
+      })
     },
     async getPublishedCatalog(userId?: string) {
-      const catalog = adapter.getUnstrippedPublishedCatalog()
+      const catalog = await adapter.getUnstrippedPublishedCatalog()
       if (!userId) return redactLockedEpisodeImages(catalog, new Set())
       const unlocks = await prisma.walletUnlock.findMany({ where: { userId } })
       return redactLockedEpisodeImages(catalog, new Set(unlocks.map((row) => row.episodeKey)))
@@ -459,7 +494,7 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
       })
     },
     async unlockEpisode(userId, webtoonId, episodeNumber): Promise<StubUnlockResult> {
-      const catalog = adapter.getUnstrippedPublishedCatalog()
+      const catalog = await adapter.getUnstrippedPublishedCatalog()
       const episode = catalog.episodes.find(
         (row) => row.webtoonId === webtoonId && row.episodeNumber === episodeNumber
       )

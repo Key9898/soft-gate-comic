@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `194`.**
+**Next Impl number to use: `196`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -223,6 +223,8 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 191  | 2026-09-08 | Notifications inbox HTTP persist                             | [2026-09-08-notifications-http-persist.md](../notes/2026-09-08-notifications-http-persist.md)                                                                 |
 | 192  | 2026-09-08 | Notif toggles + reader prefs HTTP persist                    | [2026-09-08-prefs-http-persist.md](../notes/2026-09-08-prefs-http-persist.md)                                                                                 |
 | 193  | 2026-09-08 | Leader dev env mapping (no runtime change)                   | [2026-09-08-leader-dev-env-mapping.md](../notes/2026-09-08-leader-dev-env-mapping.md)                                                                         |
+| 194  | 2026-09-09 | Leader-dev Prisma persist + local mock-off                   | [2026-09-09-leader-dev-prisma.md](../notes/2026-09-09-leader-dev-prisma.md)                                                                                   |
+| 195  | 2026-09-09 | Admin published catalog on GET /api/catalog                  | [2026-09-09-admin-catalog-read.md](../notes/2026-09-09-admin-catalog-read.md)                                                                                 |
 
 ---
 
@@ -1813,9 +1815,25 @@ Map leader **dev** JWT / R2 / Brevo onto existing `apps/api` slots in gitignored
 
 ---
 
+## Impl Phase 194 — Leader-dev Prisma persist + local mock-off (2026-09-09)
+
+**Status:** Done
+
+Gitignored `DATABASE_URL` with `sslmode=require`; `prisma migrate deploy` once; `GET /health` `"prisma"`. Portal gitignored `.env.development.local` sets `VITE_USE_MOCK_API=false`. Catalog still `@softgate/shared` seed. Note: [2026-09-09-leader-dev-prisma.md](../notes/2026-09-09-leader-dev-prisma.md). Convention: [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 195 — Admin published catalog on GET /api/catalog (2026-09-09)
+
+**Status:** Done
+
+Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` into `PublishedCatalog` (schema copy, no portal catalog migration). Stub + mock-on stay seed. Invalid `contentRating` skipped; public `episodeCount` is non-draft; `coinPackages` omitted. Note: [2026-09-09-admin-catalog-read.md](../notes/2026-09-09-admin-catalog-read.md). Convention: [named-integrations.md](../conventions/named-integrations.md), [portal-catalog-read.md](../conventions/portal-catalog-read.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **194**).
+1. Take **next free Impl** (currently **196**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

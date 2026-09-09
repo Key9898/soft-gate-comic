@@ -29,14 +29,12 @@ Sender display name in code stays **SoftGate Comic**. There is no `BREVO_FROM_NA
 
 ## `DATABASE_URL`
 
-Leave unset on this machine until the leader **database name** is known. Host/user/password alone is not a URL. A set URL with unreachable Postgres fails boot (stub is not a fallback). Committed `.env.example` has a fake placeholder only (`CHANGE_ME_DBNAME` on `127.0.0.1`). Live values never go in git or wiki.
-
-Later (not this running config): `postgresql://USER:PASS@HOST:PORT/DBNAME?sslmode=require` on a public Railway proxy.
+Impl **194** sets this in gitignored `apps/api/.env` with `sslmode=require` and runs `prisma migrate deploy` once. A set URL with unreachable Postgres fails boot (stub is not a fallback). Committed `.env.example` has a fake placeholder only (`CHANGE_ME_DBNAME` on `127.0.0.1`). Live values never go in git or wiki.
 
 ## Out
 
-- Prisma migrate / `db push` on the shared leader DB
-- Mock catalog off, Vercel, prod keys, Admin merge
-- `VITE_USE_MOCK_API`, catalog CMS tables
+- Catalog CMS tables (shipped Impl 195)
+- `db push`
+- Vercel, prod keys, Admin merge
 
-Convention: [named-integrations.md](../conventions/named-integrations.md). Git: [02-workflow.md](../02-workflow.md).
+Convention: [named-integrations.md](../conventions/named-integrations.md). Git: [02-workflow.md](../02-workflow.md). Follow-up: [2026-09-09-leader-dev-prisma.md](2026-09-09-leader-dev-prisma.md).

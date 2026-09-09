@@ -2,14 +2,14 @@
 title: Named backend integrations
 type: convention
 date: 2026-08-25
-updated: 2026-09-08
+updated: 2026-09-09
 tags: [api, prisma, r2, brevo, env, softgate]
-impl: 193
+impl: 195
 ---
 
 # Named backend integrations
 
-PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Impl 185 swaps reader persist when `DATABASE_URL` is set. Impl 186 adds an R2 put helper. Impl 187 adds forgot/reset mail + token API. Catalog/CMS stay unwired. Impl 193 maps leader **dev** fields onto these slots in gitignored local env; omit `DATABASE_URL` until the database name is known.
+PostgreSQL + Prisma, Cloudflare R2, and Brevo are **named** on `apps/api`. Impl 185 swaps reader persist when `DATABASE_URL` is set. Impl 186 adds an R2 put helper. Impl 187 adds forgot/reset mail + token API. Impl 193 maps leader **dev** fields onto these slots in gitignored local env. Impl 194 sets `DATABASE_URL` locally and runs `prisma migrate deploy` once. Impl 195 reads Admin catalog tables when persist is Prisma (no portal catalog migration). Never commit a live URL.
 
 ## Env slots
 
@@ -64,13 +64,13 @@ Helpers: `isDatabaseConfigured` (URL set) / `isR2Configured` (account + access +
 | URL set + Postgres up        | Prisma on existing reader models    | `"prisma"`                   |
 | URL set + Postgres down      | **do not boot** (`process.exit(1)`) | no silent stub               |
 
-- Models: `ReaderUser`, `RefreshToken`, `ReaderPasswordReset`, `Wallet`, `WalletTransaction`, `WalletUnlock`, `LibrarySubscribe`, `LibraryHistory`, `LibraryLike`, `ReaderNotification`, `ReaderUserPrefs`. No catalog CMS tables.
-- Catalog and portal settings still come from `@softgate/shared` mocks on both adapters.
+- Reader models: `ReaderUser`, `RefreshToken`, `ReaderPasswordReset`, `Wallet`, `WalletTransaction`, `WalletUnlock`, `LibrarySubscribe`, `LibraryHistory`, `LibraryLike`, `ReaderNotification`, `ReaderUserPrefs`. This repo commits reader-table SQL only.
+- Catalog **read** (Impl 195): Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Episode` (schema copy, no portal catalog migration). Stub persist still uses `publishedCatalogFrom(getSharedData())`. Missing catalog tables must not fall back to seed. Portal settings stay stub on both adapters. Do not `migrate` catalog tables from this repo.
 - `authFlags` (`setAuthFlags`) stay in-memory on both adapters.
 - Username lookup is case-insensitive (stub maps + Prisma `mode: 'insensitive'`).
 - Local Docker: `apps/api/docker-compose.yml` (`pnpm --filter @softgate/api db:up`) then `db:migrate`.
-- Shared Railway DB vs Admin schema is **not** assumed identical. This repo commits reader-table SQL only.
-- Leader public proxy still needs a **database name**. Omit `DATABASE_URL` until that name exists (set URL + down Postgres = boot fail). `.env.example` placeholder is fake (`CHANGE_ME_DBNAME` on `127.0.0.1`), not a live server.
+- Catalog table names match Admin SQL (`"Author"` etc.). This repo does not CREATE them. Confirm they exist on the same `DATABASE_URL` before Prisma catalog reads.
+- Leader-dev URL lives in gitignored `apps/api/.env`. Public proxy uses `sslmode=require`. Set URL + down Postgres = boot fail. `.env.example` placeholder is fake (`CHANGE_ME_DBNAME` on `127.0.0.1`), not a live server. Migrate with `pnpm --filter @softgate/api db:migrate` once — not in `pnpm check` or `pnpm dev`.
 
 ## Schema vs check
 
