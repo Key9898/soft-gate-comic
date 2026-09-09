@@ -6,6 +6,12 @@ import i18n from './lib/i18n'
 import { AppRoutes } from './App'
 import { LocaleProvider, localeFromPathname, routerBasename } from './lib/locale'
 import { SsrResponseContext, type SsrResponseState } from './lib/ssr/ssrResponse'
+import {
+  CommentsSsrContext,
+  commentsSsrInlineScript,
+  loadCommentsSsrSeed,
+  type CommentsSsrSeed,
+} from './lib/ssr/commentsSsr'
 
 const APP_HEAD_PLACEHOLDER = '<!--app-head-->'
 const APP_HTML_PLACEHOLDER = '<!--app-html-->'
@@ -16,7 +22,8 @@ export interface RenderResult {
   status: number
 }
 
-export function render(url: string): RenderResult {
+export async function render(url: string, seed?: CommentsSsrSeed): Promise<RenderResult> {
+  const commentsSeed = seed === undefined ? await loadCommentsSsrSeed(url) : seed
   const locale = localeFromPathname(url)
   const i18nInstance = i18n.cloneInstance({ lng: locale === 'mm' ? 'mm' : 'en' })
   const helmetContext: { helmet?: HelmetServerState } = {}
@@ -26,9 +33,11 @@ export function render(url: string): RenderResult {
       <I18nextProvider i18n={i18nInstance}>
         <LocaleProvider value={locale}>
           <SsrResponseContext.Provider value={response}>
-            <StaticRouter location={url} basename={routerBasename(locale)}>
-              <AppRoutes />
-            </StaticRouter>
+            <CommentsSsrContext.Provider value={commentsSeed}>
+              <StaticRouter location={url} basename={routerBasename(locale)}>
+                <AppRoutes />
+              </StaticRouter>
+            </CommentsSsrContext.Provider>
           </SsrResponseContext.Provider>
         </LocaleProvider>
       </I18nextProvider>
@@ -42,18 +51,20 @@ export interface RenderedPage {
   status: number
 }
 
-export function renderPage(template: string, url: string): RenderedPage {
-  const { html, helmet, status } = render(url)
+export async function renderPage(template: string, url: string): Promise<RenderedPage> {
+  const commentsSeed = await loadCommentsSsrSeed(url)
+  const { html, helmet, status } = await render(url, commentsSeed)
   const head = helmet
     ? [
         helmet.title.toString(),
         helmet.meta.toString(),
         helmet.link.toString(),
         helmet.script.toString(),
+        commentsSsrInlineScript(commentsSeed),
       ]
         .filter(Boolean)
         .join('\n    ')
-    : ''
+    : commentsSsrInlineScript(commentsSeed)
   const htmlAttributes = helmet?.htmlAttributes.toString() ?? ''
   let page = template
     .replace(APP_HEAD_PLACEHOLDER, () => head)

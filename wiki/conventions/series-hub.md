@@ -32,7 +32,7 @@ Helpers in [`src/lib/catalog/seriesReading.ts`](../../src/lib/catalog/seriesRead
 - Episode rows: Demo thumb `aspect-[202/142]` via `episodeThumbSrc` (first strip, else series cover). Date and views are visible at every breakpoint (no `hidden sm:block`). Premium still waiting shows coins + Demo `freeAt` (UTC). Wait-free now shows **Free now** and no lock / no coin chip. Coins-only premium (no `freeAt`) stays lock + coins.
 - Related: shared genre, exclude self/draft, popularity, max 6. Heading `webtoonDetail.youMayAlsoLike` — never `home.featured`.
 - Other works: same `author.id`, exclude self/draft, popularity, max 6. Hide when empty. Heading `webtoonDetail.otherWorks`. `common.viewAll` → `/author/:id`.
-- Series discussion: after the episode list, before Other works / Related. `data-testid="hub-comments"`. `h2` is `webtoonDetail.comments` (Series discussion). Thread key [`seriesCommentKey`](../../src/lib/comments/comments.ts). Reuses [`CommentsThread`](../../src/components/Comments/CommentsThread.tsx). Always mounted. Not the Reader episode thread. 18+ titles stay open here.
+- Series discussion: after the episode list, before Other works / Related. `data-testid="hub-comments"`. `h2` is `webtoonDetail.comments` (Series discussion). Thread key [`seriesCommentKey`](../../apps/portal/src/lib/comments/comments.ts). Reuses [`CommentsThread`](../../apps/portal/src/components/Comments/CommentsThread.tsx) **inline** (not a sheet). Inner heading is count only. Always mounted. Not the Reader episode thread. 18+ titles stay open here. Guest GET; writes need login. HTTP: [portal-comments-http.md](portal-comments-http.md).
 
 ## Stats
 

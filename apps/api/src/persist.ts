@@ -9,6 +9,14 @@ import { STUB_PORTAL_SETTINGS, type PortalSettings } from '@softgate/shared/sett
 import type { ReaderPublicUser } from './auth/types.js'
 import { isDatabaseConfigured, type Env } from './env.js'
 import { episodeUnlockKey, redactLockedEpisodeImages } from './paywall.js'
+import {
+  COMMENT_MAX_LENGTH,
+  COMMENT_REPLY_BODY_EN,
+  COMMENT_REPLY_TITLE_KEY,
+  episodeNumberFromCommentKey,
+  hrefFromCommentKey,
+  webtoonIdFromCommentKey,
+} from './comments/keys.js'
 
 export type PersistKind = 'stub' | 'prisma'
 
@@ -163,6 +171,50 @@ export function nextLibraryHistoryRecord(
 
 export function sortNotifications(list: PersistNotification[]): PersistNotification[] {
   return [...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+}
+
+export type PersistCommentUser = {
+  id: string
+  username: string
+  displayName: string
+  avatar?: string
+}
+
+export type PersistComment = {
+  id: string
+  episodeKey: string
+  userId: string
+  user: PersistCommentUser
+  content: string
+  likeCount: number
+  likedByUserIds: string[]
+  createdAt: string
+  isEdited?: boolean
+  parentId?: string
+  spoiler?: boolean
+  reported?: boolean
+}
+
+export function sortComments(list: PersistComment[]): PersistComment[] {
+  return [...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+}
+
+export function clonePersistComment(comment: PersistComment): PersistComment {
+  const next: PersistComment = {
+    id: comment.id,
+    episodeKey: comment.episodeKey,
+    userId: comment.userId,
+    user: { ...comment.user },
+    content: comment.content,
+    likeCount: comment.likedByUserIds.length,
+    likedByUserIds: [...comment.likedByUserIds],
+    createdAt: comment.createdAt,
+  }
+  if (comment.isEdited) next.isEdited = true
+  if (comment.parentId) next.parentId = comment.parentId
+  if (comment.spoiler) next.spoiler = true
+  if (comment.reported) next.reported = true
+  return next
 }
 
 export function toPersistNotification(row: {
@@ -342,6 +394,33 @@ export type PersistPort = {
   getPrefs(userId: string): Promise<PrefsSnapshot>
   patchNotifPrefs(userId: string, patch: PersistNotifPrefsPatch): Promise<PrefsSnapshot>
   setReaderPrefs(userId: string, reader: PersistReaderPrefs): Promise<PrefsSnapshot>
+  listComments(episodeKey: string): Promise<PersistComment[]>
+  addComment(
+    episodeKey: string,
+    userId: string,
+    content: string,
+    spoiler: boolean
+  ): Promise<PersistComment[]>
+  addReply(
+    episodeKey: string,
+    parentId: string,
+    userId: string,
+    content: string,
+    spoiler: boolean
+  ): Promise<PersistComment[]>
+  updateComment(
+    episodeKey: string,
+    commentId: string,
+    userId: string,
+    content: string
+  ): Promise<PersistComment[]>
+  deleteComment(episodeKey: string, commentId: string, userId: string): Promise<PersistComment[]>
+  toggleCommentLike(
+    episodeKey: string,
+    commentId: string,
+    userId: string
+  ): Promise<PersistComment[]>
+  reportComment(episodeKey: string, commentId: string, userId: string): Promise<PersistComment[]>
 }
 
 export function toPublicUser(user: StubReaderUser): ReaderPublicUser {
@@ -384,6 +463,7 @@ export function createStubPersist(): PersistPort {
   const libraryLikesByUserId = new Map<string, string[]>()
   const notificationsByUserId = new Map<string, Map<string, PersistNotification>>()
   const prefsByUserId = new Map<string, PrefsSnapshot>()
+  const commentsByKey = new Map<string, PersistComment[]>()
   let authFlags: AuthFlags = {}
 
   const libraryFor = (userId: string) => {
@@ -439,6 +519,59 @@ export function createStubPersist(): PersistPort {
     })
   }
 
+  const commentsOf = (episodeKey: string): PersistComment[] =>
+    sortComments((commentsByKey.get(episodeKey) ?? []).map(clonePersistComment))
+
+  const commentUserOf = (user: StubReaderUser): PersistCommentUser => {
+    const next: PersistCommentUser = {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName,
+    }
+    if (user.avatar) next.avatar = user.avatar
+    return next
+  }
+
+  const writeComments = (episodeKey: string, list: PersistComment[]) => {
+    if (list.length === 0) commentsByKey.delete(episodeKey)
+    else commentsByKey.set(episodeKey, list)
+  }
+
+  const maybeNotifyCommentReply = (parent: PersistComment, actorId: string, episodeKey: string) => {
+    if (parent.userId === actorId) return
+    const prefs = prefsByUserId.get(parent.userId) ?? defaultPrefsSnapshot()
+    if (!prefs.notifPrefs.commentReply) return
+    const episodeNumber = episodeNumberFromCommentKey(episodeKey)
+    const notification: PersistNotification = {
+      id: `c-reply-${randomUUID()}`,
+      type: 'comment_reply',
+      titleKey: COMMENT_REPLY_TITLE_KEY,
+      message: COMMENT_REPLY_BODY_EN,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+      href: hrefFromCommentKey(episodeKey),
+      data: {
+        webtoonId: webtoonIdFromCommentKey(episodeKey),
+        ...(episodeNumber !== undefined ? { episodeNumber } : {}),
+      },
+    }
+    notificationMapOf(parent.userId).set(notification.id, clonePersistNotification(notification))
+  }
+
+  const purgeUserComments = (userId: string) => {
+    for (const [episodeKey, list] of commentsByKey) {
+      const ownIds = new Set(list.filter((c) => c.userId === userId).map((c) => c.id))
+      const kept = list
+        .filter((c) => c.userId !== userId && !(c.parentId && ownIds.has(c.parentId)))
+        .map((c) => {
+          if (!c.likedByUserIds.includes(userId)) return c
+          const likedByUserIds = c.likedByUserIds.filter((id) => id !== userId)
+          return { ...c, likedByUserIds, likeCount: likedByUserIds.length }
+        })
+      writeComments(episodeKey, kept)
+    }
+  }
+
   const stub: PersistPort = {
     kind: 'stub',
     async ping() {
@@ -467,6 +600,7 @@ export function createStubPersist(): PersistPort {
       libraryLikesByUserId.clear()
       notificationsByUserId.clear()
       prefsByUserId.clear()
+      commentsByKey.clear()
       authFlags = {}
     },
     setAuthFlags(flags: AuthFlags) {
@@ -582,6 +716,7 @@ export function createStubPersist(): PersistPort {
       for (const [jti, id] of refreshUserByJti) {
         if (id === userId) refreshUserByJti.delete(jti)
       }
+      purgeUserComments(userId)
       notificationsByUserId.delete(userId)
       prefsByUserId.delete(userId)
       libraryLikesByUserId.delete(userId)
@@ -808,6 +943,95 @@ export function createStubPersist(): PersistPort {
       }
       prefsByUserId.set(userId, next)
       return clonePrefsSnapshot(next)
+    },
+    async listComments(episodeKey) {
+      return commentsOf(episodeKey)
+    },
+    async addComment(episodeKey, userId, content, spoiler) {
+      const user = usersById.get(userId)
+      const trimmed = content.trim()
+      if (!user || !trimmed || trimmed.length > COMMENT_MAX_LENGTH) return commentsOf(episodeKey)
+      const comment: PersistComment = {
+        id: `c-${Date.now()}-${randomUUID().slice(0, 8)}`,
+        episodeKey,
+        userId,
+        user: commentUserOf(user),
+        content: trimmed,
+        likeCount: 0,
+        likedByUserIds: [],
+        createdAt: new Date().toISOString(),
+        ...(spoiler ? { spoiler: true } : {}),
+      }
+      writeComments(episodeKey, [comment, ...(commentsByKey.get(episodeKey) ?? [])])
+      return commentsOf(episodeKey)
+    },
+    async addReply(episodeKey, parentId, userId, content, spoiler) {
+      const user = usersById.get(userId)
+      const trimmed = content.trim()
+      if (!user || !trimmed || trimmed.length > COMMENT_MAX_LENGTH) return commentsOf(episodeKey)
+      const existing = commentsByKey.get(episodeKey) ?? []
+      const parent = existing.find((c) => c.id === parentId)
+      if (!parent) return commentsOf(episodeKey)
+      const reply: PersistComment = {
+        id: `c-${Date.now()}-${randomUUID().slice(0, 8)}`,
+        episodeKey,
+        userId,
+        user: commentUserOf(user),
+        content: trimmed,
+        likeCount: 0,
+        likedByUserIds: [],
+        createdAt: new Date().toISOString(),
+        parentId: parent.parentId ?? parent.id,
+        ...(spoiler ? { spoiler: true } : {}),
+      }
+      writeComments(episodeKey, [reply, ...existing])
+      maybeNotifyCommentReply(parent, userId, episodeKey)
+      return commentsOf(episodeKey)
+    },
+    async updateComment(episodeKey, commentId, userId, content) {
+      const trimmed = content.trim()
+      if (!trimmed || trimmed.length > COMMENT_MAX_LENGTH) return commentsOf(episodeKey)
+      const existing = commentsByKey.get(episodeKey) ?? []
+      writeComments(
+        episodeKey,
+        existing.map((c) =>
+          c.id === commentId && c.userId === userId ? { ...c, content: trimmed, isEdited: true } : c
+        )
+      )
+      return commentsOf(episodeKey)
+    },
+    async deleteComment(episodeKey, commentId, userId) {
+      const existing = commentsByKey.get(episodeKey) ?? []
+      const target = existing.find((c) => c.id === commentId && c.userId === userId)
+      if (!target) return commentsOf(episodeKey)
+      writeComments(
+        episodeKey,
+        existing.filter((c) => c.id !== target.id && c.parentId !== target.id)
+      )
+      return commentsOf(episodeKey)
+    },
+    async toggleCommentLike(episodeKey, commentId, userId) {
+      const existing = commentsByKey.get(episodeKey) ?? []
+      writeComments(
+        episodeKey,
+        existing.map((c) => {
+          if (c.id !== commentId) return c
+          const liked = c.likedByUserIds.includes(userId)
+            ? c.likedByUserIds.filter((id) => id !== userId)
+            : [...c.likedByUserIds, userId]
+          return { ...c, likedByUserIds: liked, likeCount: liked.length }
+        })
+      )
+      return commentsOf(episodeKey)
+    },
+    async reportComment(episodeKey, commentId, userId) {
+      if (!usersById.has(userId)) return commentsOf(episodeKey)
+      const existing = commentsByKey.get(episodeKey) ?? []
+      writeComments(
+        episodeKey,
+        existing.map((c) => (c.id === commentId ? { ...c, reported: true } : c))
+      )
+      return commentsOf(episodeKey)
     },
   }
 

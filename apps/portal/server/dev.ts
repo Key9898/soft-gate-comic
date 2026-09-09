@@ -4,7 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer as createViteServer } from 'vite'
 
-type RenderPage = (template: string, url: string) => { html: string; status: number }
+type RenderPage = (template: string, url: string) => Promise<{ html: string; status: number }>
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(dirname, '..')
@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
         const mod = (await vite.ssrLoadModule('/src/entry-server.tsx')) as {
           renderPage: RenderPage
         }
-        const { html, status } = mod.renderPage(template, url)
+        const { html, status } = await mod.renderPage(template, url)
         res.statusCode = status
         res.setHeader('Content-Type', 'text/html; charset=utf-8')
         res.end(html)

@@ -141,3 +141,19 @@ Cookie session required. POST JSON Content-Type. Snapshot `{ notifPrefs, readerP
 | POST   | `/api/prefs/reader` |
 
 401 `NOT_AUTHENTICATED`. 400 `VALIDATION_ERROR`. Empty `{}` on `/notif` is 400. Convention: [portal-prefs-http.md](../conventions/portal-prefs-http.md).
+
+## Comments (Impl 197)
+
+Shared public thread keyed by `id:digits` or `id:series`. Guest GET. Cookie session for writes. POST JSON Content-Type. Snapshot `{ comments }` newest-first. Persist stub or Prisma. `addReply` may upsert `comment_reply` for the parent author. Report sets a flag; the row stays visible.
+
+| Method | Path                   |
+| ------ | ---------------------- |
+| GET    | `/api/comments?key=`   |
+| POST   | `/api/comments/add`    |
+| POST   | `/api/comments/reply`  |
+| POST   | `/api/comments/edit`   |
+| POST   | `/api/comments/delete` |
+| POST   | `/api/comments/like`   |
+| POST   | `/api/comments/report` |
+
+401 `NOT_AUTHENTICATED` on writes. 400 `VALIDATION_ERROR`. Convention: [portal-comments-http.md](../conventions/portal-comments-http.md).

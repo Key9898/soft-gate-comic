@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { render, screen } from './utils'
 import ReaderCommentsPanel from '../features/reader/components/ReaderCommentsPanel'
 import { addComment, episodeCommentKey } from '../lib/comments'
+import { listNotifications } from '../lib/notifications'
 
 const store = new Map<string, string>()
 
@@ -70,7 +71,6 @@ describe('ReaderCommentsPanel', () => {
 
     unmount()
     render(<ReaderCommentsPanel webtoonId="1" episodeNumber={2} />)
-    await user.click(screen.getByRole('button', { name: /1 reply/i }))
     expect(screen.getByText('Nice one')).toBeInTheDocument()
   })
 
@@ -110,6 +110,7 @@ describe('ReaderCommentsPanel', () => {
 
     await user.click(screen.getAllByRole('button', { name: /more options/i })[0])
     await user.click(screen.getByRole('button', { name: /^delete$/i }))
+    await user.click(screen.getByRole('button', { name: /confirm delete/i }))
 
     expect(screen.queryByText('Doomed parent')).not.toBeInTheDocument()
     expect(screen.queryByText('Doomed reply')).not.toBeInTheDocument()
@@ -160,5 +161,66 @@ describe('ReaderCommentsPanel', () => {
     )
     render(<ReaderCommentsPanel webtoonId="1" episodeNumber={8} />)
     expect(screen.getByRole('button', { name: /^like$/i })).toBeDisabled()
+  })
+
+  it('hides spoiler body until reveal', async () => {
+    signIn()
+    const user = userEvent.setup()
+    render(<ReaderCommentsPanel webtoonId="1" episodeNumber={9} />)
+
+    await user.click(screen.getByRole('checkbox', { name: /spoiler/i }))
+    await user.type(screen.getByLabelText('Share your thoughts...'), 'Twist ending')
+    await user.click(screen.getByRole('button', { name: /post comment/i }))
+
+    expect(screen.queryByText('Twist ending')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /reveal spoiler/i }))
+    expect(screen.getByText('Twist ending')).toBeInTheDocument()
+  })
+
+  it('sorts top-level comments by best likes', async () => {
+    signIn()
+    const user = userEvent.setup()
+    render(<ReaderCommentsPanel webtoonId="1" episodeNumber={10} />)
+
+    await user.type(screen.getByLabelText('Share your thoughts...'), 'Quiet first')
+    await user.click(screen.getByRole('button', { name: /post comment/i }))
+    await user.type(screen.getByLabelText('Share your thoughts...'), 'Loud second')
+    await user.click(screen.getByRole('button', { name: /post comment/i }))
+    const likeButtons = screen.getAllByRole('button', { name: /^like$/i })
+    await user.click(likeButtons[0])
+    await user.click(screen.getByRole('button', { name: /^best$/i }))
+
+    const articles = screen.getAllByText(/Quiet first|Loud second/)
+    expect(articles[0]).toHaveTextContent('Loud second')
+  })
+
+  it('notifies the parent author on mock reply', async () => {
+    signIn()
+    const user = userEvent.setup()
+    const { unmount } = render(<ReaderCommentsPanel webtoonId="1" episodeNumber={11} />)
+
+    await user.type(screen.getByLabelText('Share your thoughts...'), 'Need replies')
+    await user.click(screen.getByRole('button', { name: /post comment/i }))
+    unmount()
+
+    store.set(
+      'softgate_user',
+      JSON.stringify({
+        ...sessionUser,
+        id: 'u_other',
+        email: 'other@example.com',
+        username: 'other',
+        displayName: 'Other',
+      })
+    )
+    render(<ReaderCommentsPanel webtoonId="1" episodeNumber={11} />)
+    await user.click(screen.getByRole('button', { name: /^reply$/i }))
+    await user.type(screen.getByLabelText('Write a reply...'), 'On it{Enter}')
+
+    const inbox = listNotifications('u_tester')
+    expect(inbox.some((item) => item.type === 'comment_reply')).toBe(true)
+    expect(inbox.find((item) => item.type === 'comment_reply')?.titleKey).toBe(
+      'notificationsPage.commentReply'
+    )
   })
 })

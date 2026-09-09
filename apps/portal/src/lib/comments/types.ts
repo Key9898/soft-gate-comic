@@ -16,6 +16,8 @@ export interface StoredComment {
   isEdited?: boolean
   parentId?: string
   likedByUserIds?: string[]
+  spoiler?: boolean
+  reported?: boolean
 }
 
 export const COMMENTS_SCHEMA_VERSION = 1

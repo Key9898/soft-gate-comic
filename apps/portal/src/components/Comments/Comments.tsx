@@ -1,18 +1,21 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
-  MessageCircle,
-  Heart,
-  Reply,
-  MoreHorizontal,
-  Send,
-  Trash2,
-  Edit3,
   ChevronDown,
-  ChevronUp,
+  Edit3,
+  Flag,
+  Heart,
+  MessageCircle,
+  MoreHorizontal,
+  Reply,
+  Send,
+  Smile,
+  Trash2,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../Button'
+import { isMockApi } from '../../lib/api/isMockApi'
+import { COMMENT_MAX_LENGTH, DEMO_COMMENT_STICKERS } from '../../lib/comments'
 
 interface User {
   id: string
@@ -21,7 +24,7 @@ interface User {
   avatar?: string
 }
 
-interface Comment {
+export interface Comment {
   id: string
   userId: string
   user: User
@@ -31,27 +34,39 @@ interface Comment {
   replies?: Comment[]
   createdAt: string
   isEdited?: boolean
+  spoiler?: boolean
+  reported?: boolean
 }
+
+export type CommentSort = 'best' | 'newest' | 'oldest'
+export type CommentsHeadingMode = 'title' | 'count'
 
 interface CommentsProps {
   comments: Comment[]
+  totalCount?: number
   currentUserId?: string
   currentUserName?: string
-  onAddComment?: (content: string) => void
-  onReply?: (commentId: string, content: string) => void
+  currentUserAvatar?: string
+  headingMode?: CommentsHeadingMode
+  darkMode?: boolean
+  onAddComment?: (content: string, spoiler: boolean) => void
+  onReply?: (commentId: string, content: string, spoiler: boolean) => void
   onLike?: (commentId: string) => void
   onDelete?: (commentId: string) => void
   onEdit?: (commentId: string, content: string) => void
+  onReport?: (commentId: string) => void
 }
 
 interface CommentItemProps {
   comment: Comment
   isReply?: boolean
   currentUserId?: string
-  onReply?: (commentId: string, content: string) => void
+  darkMode?: boolean
+  onReply?: (commentId: string, content: string, spoiler: boolean) => void
   onLike?: (commentId: string) => void
   onDelete?: (commentId: string) => void
   onEdit?: (commentId: string, content: string) => void
+  onReport?: (commentId: string) => void
 }
 
 const useTimeFormatter = () => {
@@ -75,33 +90,205 @@ const useTimeFormatter = () => {
   }
 }
 
+function sortComments(list: Comment[], sort: CommentSort): Comment[] {
+  const copy = [...list]
+  if (sort === 'oldest') {
+    return copy.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  }
+  if (sort === 'best') {
+    return copy.sort((a, b) => {
+      if (b.likeCount !== a.likeCount) return b.likeCount - a.likeCount
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+  }
+  return copy.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+}
+
+function ComposerAvatar({
+  name,
+  avatar,
+  darkMode,
+}: {
+  name?: string
+  avatar?: string
+  darkMode?: boolean
+}) {
+  if (avatar) {
+    return <img src={avatar} alt="" className="shape-circle h-10 w-10 object-cover" />
+  }
+  if (name) {
+    return (
+      <div className="from-primary-400 to-primary-600 shape-circle flex h-10 w-10 items-center justify-center bg-gradient-to-br">
+        <span className="font-semibold text-white">{name.charAt(0).toUpperCase()}</span>
+      </div>
+    )
+  }
+  return (
+    <div
+      className={`shape-circle flex h-10 w-10 items-center justify-center ${
+        darkMode ? 'bg-white/10' : 'bg-gray-100'
+      }`}
+    >
+      <MessageCircle
+        className={`h-5 w-5 ${darkMode ? 'text-white' : 'text-gray-500'}`}
+        aria-hidden="true"
+      />
+    </div>
+  )
+}
+
+function StickerTray({
+  onPick,
+  darkMode,
+}: {
+  onPick: (sticker: string) => void
+  darkMode?: boolean
+}) {
+  const { t } = useTranslation()
+  return (
+    <div
+      className={`mt-2 flex flex-wrap gap-1 rounded-2xl p-2 ${
+        darkMode ? 'bg-white/5' : 'bg-gray-50'
+      }`}
+      role="listbox"
+      aria-label={t('comments.stickerTray')}
+    >
+      {DEMO_COMMENT_STICKERS.map((sticker) => (
+        <button
+          key={sticker}
+          type="button"
+          className="flex min-h-11 min-w-11 items-center justify-center rounded-2xl text-lg"
+          onClick={() => onPick(sticker)}
+          aria-label={t('comments.insertSticker', { sticker })}
+        >
+          {sticker}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function ComposerFields({
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled,
+  darkMode,
+  onSubmit,
+}: {
+  value: string
+  onChange: (next: string) => void
+  placeholder: string
+  label: string
+  disabled: boolean
+  darkMode?: boolean
+  onSubmit: () => void
+}) {
+  const { t } = useTranslation()
+  const [stickersOpen, setStickersOpen] = useState(false)
+  const remaining = COMMENT_MAX_LENGTH - value.length
+  const fieldClass = darkMode
+    ? 'border-white/10 bg-white/5 text-white placeholder:text-gray-500 focus:ring-primary-500'
+    : 'border-gray-200 bg-white text-gray-900 focus:ring-primary-500'
+
+  const appendSticker = (sticker: string) => {
+    if (disabled) return
+    onChange((value + sticker).slice(0, COMMENT_MAX_LENGTH))
+  }
+
+  return (
+    <div className="flex-1">
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
+        placeholder={placeholder}
+        aria-label={label}
+        disabled={disabled}
+        maxLength={COMMENT_MAX_LENGTH}
+        className={`w-full resize-none rounded-2xl border px-4 py-3 focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${fieldClass}`}
+        rows={3}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
+            e.preventDefault()
+            onSubmit()
+          }
+        }}
+      />
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => setStickersOpen((open) => !open)}
+            className={`flex min-h-11 min-w-11 items-center justify-center rounded-2xl ${
+              darkMode ? 'text-gray-300 hover:bg-white/10' : 'text-gray-500 hover:bg-gray-100'
+            }`}
+            aria-label={t('comments.stickers')}
+            aria-expanded={stickersOpen}
+          >
+            <Smile className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <span
+            className={`text-xs ${remaining < 20 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}
+          >
+            {value.length}/{COMMENT_MAX_LENGTH}
+          </span>
+        </div>
+      </div>
+      {stickersOpen ? <StickerTray onPick={appendSticker} darkMode={darkMode} /> : null}
+    </div>
+  )
+}
+
 const CommentItem = ({
   comment,
   isReply = false,
   currentUserId,
+  darkMode,
   onReply,
   onLike,
   onDelete,
   onEdit,
+  onReport,
 }: CommentItemProps) => {
   const { t } = useTranslation()
   const formatTime = useTimeFormatter()
+  const menuRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState('')
   const [replyOpen, setReplyOpen] = useState(false)
   const [replyContent, setReplyContent] = useState('')
-  const [showReplies, setShowReplies] = useState(false)
+  const [replySpoiler, setReplySpoiler] = useState(false)
+  const [spoilerOpen, setSpoilerOpen] = useState(false)
+  const [confirm, setConfirm] = useState<'delete' | 'report' | null>(null)
+  const [visibleReplies, setVisibleReplies] = useState(2)
 
   const isOwner = Boolean(currentUserId) && comment.userId === currentUserId
-  const replyCount = comment.replies?.length || 0
+  const replies = comment.replies ?? []
+  const replyCount = replies.length
+  const shownReplies = replies.slice(0, visibleReplies)
+  const muted = darkMode ? 'text-gray-400' : 'text-gray-400'
+  const body = darkMode ? 'text-gray-200' : 'text-gray-700'
+  const name = darkMode ? 'text-white' : 'text-gray-900'
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onDoc = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [menuOpen])
 
   const submitReply = () => {
     if (!replyContent.trim()) return
-    onReply?.(comment.id, replyContent)
+    onReply?.(comment.id, replyContent, replySpoiler)
     setReplyContent('')
+    setReplySpoiler(false)
     setReplyOpen(false)
-    setShowReplies(true)
+    setVisibleReplies((count) => Math.max(count, replyCount + 1))
   }
 
   const submitEdit = () => {
@@ -112,7 +299,7 @@ const CommentItem = ({
   }
 
   return (
-    <div className={`${isReply ? 'ml-12 sm:ml-16' : ''}`}>
+    <div className={`${isReply ? 'ml-10 sm:ml-14' : ''}`}>
       <div className="flex gap-3">
         <div className="flex-shrink-0">
           <div
@@ -123,7 +310,7 @@ const CommentItem = ({
             {comment.user.avatar ? (
               <img
                 src={comment.user.avatar}
-                alt={comment.user.displayName}
+                alt=""
                 className="shape-circle h-full w-full object-cover"
               />
             ) : (
@@ -135,31 +322,46 @@ const CommentItem = ({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="truncate text-sm font-semibold text-gray-900">
+            <span className={`truncate text-sm font-semibold ${name}`}>
               {comment.user.displayName}
             </span>
-            <span className="text-xs text-gray-400">{formatTime(comment.createdAt)}</span>
-            {comment.isEdited && (
-              <span className="text-xs text-gray-400">{t('comments.edited')}</span>
-            )}
+            <span className={`text-xs ${muted}`}>{formatTime(comment.createdAt)}</span>
+            {comment.isEdited ? (
+              <span className={`text-xs ${muted}`}>{t('comments.edited')}</span>
+            ) : null}
+            {comment.reported ? (
+              <span className={`text-xs ${muted}`}>{t('comments.reported')}</span>
+            ) : null}
           </div>
 
           {isEditing ? (
             <div className="mt-2">
               <textarea
                 value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
+                onChange={(e) => setEditContent(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
                 aria-label={t('comments.editComment')}
-                className="focus:ring-primary-500 w-full resize-none rounded-2xl border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:ring-2"
+                maxLength={COMMENT_MAX_LENGTH}
+                className={`focus:ring-primary-500 w-full resize-none rounded-2xl border px-3 py-2 text-sm focus:border-transparent focus:ring-2 ${
+                  darkMode
+                    ? 'border-white/10 bg-white/5 text-white'
+                    : 'border-gray-200 bg-white text-gray-900'
+                }`}
                 rows={2}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
+                    e.preventDefault()
+                    submitEdit()
+                  }
+                }}
               />
               <div className="mt-2 flex gap-2">
-                <Button size="sm" variant="primary" onClick={submitEdit}>
+                <Button size="sm" variant="primary" className="min-h-11" onClick={submitEdit}>
                   {t('common.save')}
                 </Button>
                 <Button
                   size="sm"
                   variant="ghost"
+                  className="min-h-11"
                   onClick={() => {
                     setIsEditing(false)
                     setEditContent('')
@@ -169,20 +371,67 @@ const CommentItem = ({
                 </Button>
               </div>
             </div>
+          ) : comment.spoiler && !spoilerOpen ? (
+            <button
+              type="button"
+              onClick={() => setSpoilerOpen(true)}
+              className={`mt-2 min-h-11 rounded-2xl px-3 text-sm font-semibold ${
+                darkMode ? 'bg-white/10 text-white' : 'bg-gray-100 text-gray-800'
+              }`}
+            >
+              {t('comments.revealSpoiler')}
+            </button>
           ) : (
-            <p className="mt-1 text-sm leading-relaxed wrap-anywhere text-gray-700">
+            <p className={`mt-1 text-sm leading-relaxed wrap-anywhere ${body}`}>
+              {comment.spoiler ? (
+                <span className={`mr-2 text-xs font-semibold uppercase ${muted}`}>
+                  {t('comments.spoiler')}
+                </span>
+              ) : null}
               {comment.content}
             </p>
           )}
 
-          <div className="mt-2 flex items-center gap-4">
+          {confirm ? (
+            <div
+              className={`mt-3 rounded-2xl p-3 text-sm ${darkMode ? 'bg-white/5' : 'bg-gray-50'}`}
+            >
+              <p className={body}>
+                {confirm === 'delete' ? t('comments.deleteConfirm') : t('comments.reportConfirm')}
+              </p>
+              <div className="mt-2 flex gap-2">
+                <Button
+                  size="sm"
+                  variant={confirm === 'delete' ? 'danger' : 'primary'}
+                  className="min-h-11"
+                  onClick={() => {
+                    if (confirm === 'delete') onDelete?.(comment.id)
+                    else onReport?.(comment.id)
+                    setConfirm(null)
+                  }}
+                >
+                  {confirm === 'delete' ? t('comments.confirmDelete') : t('comments.confirmReport')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="min-h-11"
+                  onClick={() => setConfirm(null)}
+                >
+                  {t('common.cancel')}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-2 flex flex-wrap items-center gap-1">
             <button
               type="button"
               onClick={() => onLike?.(comment.id)}
               disabled={!currentUserId}
               aria-label={comment.isLiked ? t('comments.unlike') : t('comments.like')}
-              className={`flex items-center gap-1 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                comment.isLiked ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'
+              className={`flex min-h-11 items-center gap-1 rounded-2xl px-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                comment.isLiked ? 'text-red-500' : muted
               }`}
             >
               <Heart
@@ -196,33 +445,37 @@ const CommentItem = ({
               <button
                 type="button"
                 onClick={() => setReplyOpen((prev) => !prev)}
-                className="flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-gray-600"
+                className={`flex min-h-11 items-center gap-1 rounded-2xl px-2 text-sm ${muted}`}
               >
                 <Reply className="h-4 w-4" aria-hidden="true" />
                 <span>{t('comments.reply')}</span>
               </button>
             ) : null}
 
-            {isOwner && !isEditing && (
-              <div className="relative">
+            {currentUserId && !isEditing ? (
+              <div className="relative" ref={menuRef}>
                 <button
                   type="button"
                   title={t('comments.moreOptions')}
                   aria-label={t('comments.moreOptions')}
                   onClick={() => setMenuOpen((prev) => !prev)}
-                  className="p-1 text-gray-400 transition-colors hover:text-gray-600"
+                  className={`flex min-h-11 min-w-11 items-center justify-center rounded-2xl ${muted}`}
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </button>
                 <AnimatePresence>
-                  {menuOpen && (
+                  {menuOpen ? (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="absolute right-0 z-10 mt-1 w-32 rounded-2xl border border-gray-100 bg-white py-1 shadow-lg"
+                      className={`absolute right-0 z-10 mt-1 w-36 rounded-2xl py-1 shadow-lg ${
+                        darkMode
+                          ? 'border border-white/10 bg-gray-900'
+                          : 'border border-gray-100 bg-white'
+                      }`}
                     >
-                      {onEdit ? (
+                      {isOwner && onEdit ? (
                         <button
                           type="button"
                           onClick={() => {
@@ -230,158 +483,222 @@ const CommentItem = ({
                             setEditContent(comment.content)
                             setMenuOpen(false)
                           }}
-                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className={`flex min-h-11 w-full items-center gap-2 px-3 text-sm ${
+                            darkMode
+                              ? 'text-gray-100 hover:bg-white/5'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
                         >
                           <Edit3 className="h-4 w-4" />
                           {t('comments.edit')}
                         </button>
                       ) : null}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMenuOpen(false)
-                          onDelete?.(comment.id)
-                        }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        {t('comments.delete')}
-                      </button>
+                      {isOwner ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMenuOpen(false)
+                            setConfirm('delete')
+                          }}
+                          className="flex min-h-11 w-full items-center gap-2 px-3 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                          {t('comments.delete')}
+                        </button>
+                      ) : onReport ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMenuOpen(false)
+                            setConfirm('report')
+                          }}
+                          className={`flex min-h-11 w-full items-center gap-2 px-3 text-sm ${
+                            darkMode
+                              ? 'text-gray-100 hover:bg-white/5'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          <Flag className="h-4 w-4" aria-hidden="true" />
+                          {t('comments.report')}
+                        </button>
+                      ) : null}
                     </motion.div>
-                  )}
+                  ) : null}
                 </AnimatePresence>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {replyOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-3"
-            >
-              <div className="flex gap-2">
+          {replyOpen ? (
+            <div className="mt-3">
+              <ComposerFields
+                value={replyContent}
+                onChange={setReplyContent}
+                placeholder={t('comments.replyPlaceholder')}
+                label={t('comments.replyPlaceholder')}
+                disabled={false}
+                darkMode={darkMode}
+                onSubmit={submitReply}
+              />
+              <label className={`mt-2 flex min-h-11 items-center gap-2 text-sm ${body}`}>
                 <input
-                  type="text"
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder={t('comments.replyPlaceholder')}
-                  aria-label={t('comments.replyPlaceholder')}
-                  className="focus:ring-primary-500 flex-1 rounded-2xl border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:ring-2"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      submitReply()
-                    }
-                  }}
+                  type="checkbox"
+                  checked={replySpoiler}
+                  onChange={(e) => setReplySpoiler(e.target.checked)}
                 />
-                <Button size="sm" variant="primary" onClick={submitReply}>
+                {t('comments.markSpoiler')}
+              </label>
+              <div className="mt-2 flex justify-end">
+                <Button
+                  size="sm"
+                  variant="primary"
+                  className="min-h-11"
+                  onClick={submitReply}
+                  disabled={!replyContent.trim()}
+                >
                   <Send className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
-            </motion.div>
-          )}
+            </div>
+          ) : null}
 
-          {replyCount > 0 && !isReply && (
+          {replyCount > 2 && visibleReplies < replyCount && !isReply ? (
             <button
               type="button"
-              onClick={() => setShowReplies((prev) => !prev)}
-              className="text-primary-600 hover:text-primary-700 mt-3 flex items-center gap-1 text-sm font-medium"
+              onClick={() => setVisibleReplies(replyCount)}
+              className="text-primary-600 mt-3 flex min-h-11 items-center gap-1 text-sm font-medium"
             >
-              {showReplies ? (
-                <ChevronUp className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                <ChevronDown className="h-4 w-4" aria-hidden="true" />
-              )}
-              {t('comments.replyCount', { count: replyCount })}
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+              {t('comments.loadMoreReplies', { count: replyCount - visibleReplies })}
             </button>
-          )}
+          ) : null}
         </div>
       </div>
 
-      <AnimatePresence>
-        {showReplies && comment.replies && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-4 space-y-4"
-          >
-            {comment.replies.map((reply) => (
-              <CommentItem
-                key={reply.id}
-                comment={reply}
-                isReply
-                currentUserId={currentUserId}
-                onLike={onLike}
-                onDelete={onDelete}
-                onEdit={onEdit}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {shownReplies.length > 0 && !isReply ? (
+        <div className="mt-4 space-y-4">
+          {shownReplies.map((reply) => (
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              isReply
+              currentUserId={currentUserId}
+              darkMode={darkMode}
+              onLike={onLike}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              onReport={onReport}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   )
 }
 
 const Comments = ({
   comments = [],
+  totalCount,
   currentUserId,
   currentUserName,
+  currentUserAvatar,
+  headingMode = 'title',
+  darkMode = false,
   onAddComment,
   onReply,
   onLike,
   onDelete,
   onEdit,
+  onReport,
 }: CommentsProps) => {
   const { t } = useTranslation()
   const [newComment, setNewComment] = useState('')
+  const [spoiler, setSpoiler] = useState(false)
+  const [sort, setSort] = useState<CommentSort>('newest')
   const canComment = Boolean(currentUserId)
+  const count =
+    totalCount ?? comments.reduce((sum, item) => sum + 1 + (item.replies?.length ?? 0), 0)
+  const sorted = useMemo(() => sortComments(comments, sort), [comments, sort])
+  const surface = darkMode ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'
+  const border = darkMode ? 'border-white/10' : 'border-gray-100'
+  const muted = darkMode ? 'text-gray-400' : 'text-gray-500'
 
   const handleSubmitComment = () => {
     if (!canComment || !newComment.trim()) return
-    onAddComment?.(newComment)
+    onAddComment?.(newComment, spoiler)
     setNewComment('')
+    setSpoiler(false)
   }
 
+  const sorts: CommentSort[] = ['best', 'newest', 'oldest']
+
   return (
-    <div className="rounded-2xl bg-white shadow-sm">
-      <div className="border-b border-gray-100 p-4 sm:p-6">
-        <div className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5 text-gray-600" aria-hidden="true" />
-          <h3 className="text-lg font-semibold text-gray-900">
-            {t('comments.title')} ({comments.length})
-          </h3>
+    <div className={`rounded-2xl ${surface}`}>
+      <div className={`border-b ${border} p-4 sm:p-6`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {headingMode === 'title' ? (
+            <div className="flex items-center gap-2">
+              <MessageCircle className={`h-5 w-5 ${muted}`} aria-hidden="true" />
+              <h3 className="text-lg font-semibold">
+                {t('comments.title')} ({count})
+              </h3>
+            </div>
+          ) : (
+            <h3 className="text-sm font-semibold">
+              <span className="sr-only">{t('comments.title')}</span>
+              {t('comments.count', { count })}
+            </h3>
+          )}
+          <div className="flex gap-1" role="group" aria-label={t('comments.sort')}>
+            {sorts.map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setSort(value)}
+                aria-pressed={sort === value}
+                className={`min-h-11 rounded-2xl px-3 text-sm font-semibold ${
+                  sort === value
+                    ? 'bg-primary-600 text-white'
+                    : darkMode
+                      ? 'text-gray-300 hover:bg-white/10'
+                      : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {t(`comments.sort${value.charAt(0).toUpperCase()}${value.slice(1)}`)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="border-b border-gray-100 p-4 sm:p-6">
+      <div className={`border-b ${border} p-4 sm:p-6`}>
         <div className="flex gap-3">
           <div className="flex-shrink-0">
-            <div className="from-primary-400 to-primary-600 shape-circle flex h-10 w-10 items-center justify-center bg-gradient-to-br">
-              {currentUserName ? (
-                <span className="font-semibold text-white">
-                  {currentUserName.charAt(0).toUpperCase()}
-                </span>
-              ) : (
-                <MessageCircle className="h-5 w-5 text-white" aria-hidden="true" />
-              )}
-            </div>
+            <ComposerAvatar name={currentUserName} avatar={currentUserAvatar} darkMode={darkMode} />
           </div>
           <div className="flex-1">
-            <textarea
+            <ComposerFields
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={setNewComment}
               placeholder={canComment ? t('comments.placeholder') : t('comments.loginToComment')}
-              aria-label={t('comments.placeholder')}
+              label={t('comments.placeholder')}
               disabled={!canComment}
-              className="focus:ring-primary-500 w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:bg-gray-50"
-              rows={3}
+              darkMode={darkMode}
+              onSubmit={handleSubmitComment}
             />
-            <div className="mt-2 flex justify-end">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <label className={`flex min-h-11 items-center gap-2 text-sm ${muted}`}>
+                <input
+                  type="checkbox"
+                  checked={spoiler}
+                  disabled={!canComment}
+                  onChange={(e) => setSpoiler(e.target.checked)}
+                />
+                {t('comments.markSpoiler')}
+              </label>
               <Button
                 variant="primary"
+                className="min-h-11"
                 onClick={handleSubmitComment}
                 disabled={!canComment || !newComment.trim()}
               >
@@ -394,24 +711,28 @@ const Comments = ({
       </div>
 
       <div className="space-y-6 p-4 sm:p-6">
-        {comments.map((comment) => (
+        {sorted.map((comment) => (
           <CommentItem
             key={comment.id}
             comment={comment}
             currentUserId={currentUserId}
+            darkMode={darkMode}
             onReply={onReply}
             onLike={onLike}
             onDelete={onDelete}
             onEdit={onEdit}
+            onReport={onReport}
           />
         ))}
 
-        {comments.length === 0 && (
+        {comments.length === 0 ? (
           <div className="py-8 text-center">
-            <MessageCircle className="mx-auto mb-3 h-12 w-12 text-gray-300" aria-hidden="true" />
-            <p className="text-gray-500">{t('comments.noComments')}</p>
+            <MessageCircle className={`mx-auto mb-3 h-12 w-12 ${muted}`} aria-hidden="true" />
+            <p className={muted}>
+              {isMockApi() ? t('comments.emptyMock') : t('comments.emptyHttp')}
+            </p>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   )

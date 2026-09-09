@@ -3,15 +3,19 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import i18n from './lib/i18n'
 import { localeFromPathname } from './lib/locale'
+import { CommentsSsrContext, readClientCommentsSsrSeed } from './lib/ssr/commentsSsr'
 import App from './App'
 import './index.css'
 
 const boot = () => {
   const container = document.getElementById('root')!
+  const commentsSeed = readClientCommentsSsrSeed()
   const app = (
     <StrictMode>
       <HelmetProvider>
-        <App />
+        <CommentsSsrContext.Provider value={commentsSeed}>
+          <App />
+        </CommentsSsrContext.Provider>
       </HelmetProvider>
     </StrictMode>
   )

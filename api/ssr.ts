@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
-type RenderPage = (template: string, url: string) => { html: string; status: number }
+type RenderPage = (template: string, url: string) => Promise<{ html: string; status: number }>
 
 let cached: { template: string; renderPage: RenderPage } | null = null
 
@@ -22,7 +22,7 @@ const loadRenderer = async (): Promise<{ template: string; renderPage: RenderPag
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
   try {
     const { template, renderPage } = await loadRenderer()
-    const { html, status } = renderPage(template, req.url ?? '/')
+    const { html, status } = await renderPage(template, req.url ?? '/')
     res.statusCode = status
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')

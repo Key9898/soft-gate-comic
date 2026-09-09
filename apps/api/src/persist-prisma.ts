@@ -19,8 +19,12 @@ import {
   toPublicUser,
   defaultPrefsSnapshot,
   normalizeBrightness,
+  clonePersistComment,
+  sortComments,
   type AuthFlags,
   type LibrarySnapshot,
+  type PersistComment,
+  type PersistCommentUser,
   type PersistNotification,
   type PersistPort,
   type PersistReaderPrefs,
@@ -31,6 +35,14 @@ import {
   type StubWalletPublic,
   type StubWalletTransaction,
 } from './persist.js'
+import {
+  COMMENT_MAX_LENGTH,
+  COMMENT_REPLY_BODY_EN,
+  COMMENT_REPLY_TITLE_KEY,
+  episodeNumberFromCommentKey,
+  hrefFromCommentKey,
+  webtoonIdFromCommentKey,
+} from './comments/keys.js'
 
 type Tx = Prisma.TransactionClient
 
@@ -222,6 +234,86 @@ function fromPrefsRow(row: {
       imageFit: row.imageFit,
     },
   }
+}
+
+type CommentWithJoins = {
+  id: string
+  episodeKey: string
+  userId: string
+  content: string
+  parentId: string | null
+  spoiler: boolean
+  reported: boolean
+  isEdited: boolean
+  createdAt: Date
+  user: { id: string; username: string; displayName: string; avatar: string | null }
+  likes: { userId: string }[]
+}
+
+function commentUserFromRow(user: CommentWithJoins['user']): PersistCommentUser {
+  const next: PersistCommentUser = {
+    id: user.id,
+    username: user.username,
+    displayName: user.displayName,
+  }
+  if (user.avatar) next.avatar = user.avatar
+  return next
+}
+
+function fromCommentRow(row: CommentWithJoins): PersistComment {
+  const likedByUserIds = row.likes.map((like) => like.userId)
+  return clonePersistComment({
+    id: row.id,
+    episodeKey: row.episodeKey,
+    userId: row.userId,
+    user: commentUserFromRow(row.user),
+    content: row.content,
+    likeCount: likedByUserIds.length,
+    likedByUserIds,
+    createdAt: row.createdAt.toISOString(),
+    isEdited: row.isEdited || undefined,
+    parentId: row.parentId ?? undefined,
+    spoiler: row.spoiler || undefined,
+    reported: row.reported || undefined,
+  })
+}
+
+async function loadComments(db: PrismaClient | Tx, episodeKey: string): Promise<PersistComment[]> {
+  const rows = await db.readerComment.findMany({
+    where: { episodeKey },
+    include: { user: true, likes: true },
+  })
+  return sortComments(rows.map(fromCommentRow))
+}
+
+async function maybeNotifyCommentReply(
+  db: PrismaClient | Tx,
+  parent: { userId: string },
+  actorId: string,
+  episodeKey: string
+) {
+  if (parent.userId === actorId) return
+  const prefs = await db.readerUserPrefs.findUnique({ where: { userId: parent.userId } })
+  const commentReply = prefs?.commentReply ?? true
+  if (!commentReply) return
+  const episodeNumber = episodeNumberFromCommentKey(episodeKey)
+  const id = `c-reply-${randomUUID()}`
+  await db.readerNotification.upsert({
+    where: { userId_id: { userId: parent.userId, id } },
+    create: {
+      userId: parent.userId,
+      id,
+      type: 'comment_reply',
+      titleKey: COMMENT_REPLY_TITLE_KEY,
+      message: COMMENT_REPLY_BODY_EN,
+      isRead: false,
+      createdAt: new Date(),
+      href: hrefFromCommentKey(episodeKey),
+      webtoonId: webtoonIdFromCommentKey(episodeKey),
+      episodeNumber: episodeNumber ?? null,
+    },
+    update: {},
+  })
 }
 
 export type PrismaPersistPort = PersistPort & { close(): Promise<void> }
@@ -430,7 +522,15 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
     async deleteReaderUser(userId) {
       const user = await prisma.readerUser.findUnique({ where: { id: userId } })
       if (!user) return 'not_found'
+      const own = await prisma.readerComment.findMany({ where: { userId }, select: { id: true } })
+      const ownIds = own.map((row) => row.id)
       await prisma.$transaction([
+        prisma.readerCommentLike.deleteMany({
+          where: { OR: [{ userId }, { commentId: { in: ownIds } }] },
+        }),
+        prisma.readerComment.deleteMany({
+          where: { OR: [{ userId }, { parentId: { in: ownIds } }] },
+        }),
         prisma.readerPasswordReset.deleteMany({ where: { userId } }),
         prisma.readerNotification.deleteMany({ where: { userId } }),
         prisma.readerUserPrefs.deleteMany({ where: { userId } }),
@@ -760,6 +860,103 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
         update: readerPrefs,
       })
       return fromPrefsRow(row)
+    },
+    async listComments(episodeKey) {
+      return loadComments(prisma, episodeKey)
+    },
+    async addComment(episodeKey, userId, content, spoiler) {
+      const user = await prisma.readerUser.findUnique({ where: { id: userId } })
+      const trimmed = content.trim()
+      if (!user || !trimmed || trimmed.length > COMMENT_MAX_LENGTH) {
+        return loadComments(prisma, episodeKey)
+      }
+      await prisma.readerComment.create({
+        data: {
+          id: `c-${Date.now()}-${randomUUID().slice(0, 8)}`,
+          episodeKey,
+          userId,
+          content: trimmed,
+          spoiler,
+          createdAt: new Date(),
+        },
+      })
+      return loadComments(prisma, episodeKey)
+    },
+    async addReply(episodeKey, parentId, userId, content, spoiler) {
+      const user = await prisma.readerUser.findUnique({ where: { id: userId } })
+      const trimmed = content.trim()
+      if (!user || !trimmed || trimmed.length > COMMENT_MAX_LENGTH) {
+        return loadComments(prisma, episodeKey)
+      }
+      const parent = await prisma.readerComment.findFirst({
+        where: { id: parentId, episodeKey },
+      })
+      if (!parent) return loadComments(prisma, episodeKey)
+      await prisma.$transaction(async (tx) => {
+        await tx.readerComment.create({
+          data: {
+            id: `c-${Date.now()}-${randomUUID().slice(0, 8)}`,
+            episodeKey,
+            userId,
+            content: trimmed,
+            parentId: parent.parentId ?? parent.id,
+            spoiler,
+            createdAt: new Date(),
+          },
+        })
+        await maybeNotifyCommentReply(tx, parent, userId, episodeKey)
+      })
+      return loadComments(prisma, episodeKey)
+    },
+    async updateComment(episodeKey, commentId, userId, content) {
+      const trimmed = content.trim()
+      if (!trimmed || trimmed.length > COMMENT_MAX_LENGTH) {
+        return loadComments(prisma, episodeKey)
+      }
+      await prisma.readerComment.updateMany({
+        where: { id: commentId, episodeKey, userId },
+        data: { content: trimmed, isEdited: true },
+      })
+      return loadComments(prisma, episodeKey)
+    },
+    async deleteComment(episodeKey, commentId, userId) {
+      const target = await prisma.readerComment.findFirst({
+        where: { id: commentId, episodeKey, userId },
+      })
+      if (!target) return loadComments(prisma, episodeKey)
+      await prisma.readerComment.deleteMany({
+        where: {
+          episodeKey,
+          OR: [{ id: target.id }, { parentId: target.id }],
+        },
+      })
+      return loadComments(prisma, episodeKey)
+    },
+    async toggleCommentLike(episodeKey, commentId, userId) {
+      const comment = await prisma.readerComment.findFirst({
+        where: { id: commentId, episodeKey },
+      })
+      if (!comment) return loadComments(prisma, episodeKey)
+      const existing = await prisma.readerCommentLike.findUnique({
+        where: { commentId_userId: { commentId, userId } },
+      })
+      if (existing) {
+        await prisma.readerCommentLike.delete({
+          where: { commentId_userId: { commentId, userId } },
+        })
+      } else {
+        await prisma.readerCommentLike.create({ data: { commentId, userId } })
+      }
+      return loadComments(prisma, episodeKey)
+    },
+    async reportComment(episodeKey, commentId, userId) {
+      const user = await prisma.readerUser.findUnique({ where: { id: userId } })
+      if (!user) return loadComments(prisma, episodeKey)
+      await prisma.readerComment.updateMany({
+        where: { id: commentId, episodeKey },
+        data: { reported: true },
+      })
+      return loadComments(prisma, episodeKey)
     },
   }
 

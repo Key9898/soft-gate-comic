@@ -6,7 +6,7 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
-type RenderPage = (template: string, url: string) => { html: string; status: number }
+type RenderPage = (template: string, url: string) => Promise<{ html: string; status: number }>
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const clientDir = path.resolve(dirname, '../dist/client')
@@ -37,8 +37,8 @@ for (const prefix of STATIC_PREFIXES) {
 app.use('/robots.txt', serveStatic({ root: staticRoot }))
 app.use('/sitemap.xml', serveStatic({ root: staticRoot }))
 
-app.get('*', (c) => {
-  const { html, status } = renderPage(template, new URL(c.req.url).pathname)
+app.get('*', async (c) => {
+  const { html, status } = await renderPage(template, new URL(c.req.url).pathname)
   return c.html(html, status as ContentfulStatusCode)
 })
 

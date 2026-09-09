@@ -1,24 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Comments from './Comments'
 import { useAuth } from '../../context/AuthContext'
-import {
-  STORAGE_KEY as COMMENTS_STORAGE_KEY,
-  addComment,
-  addReply,
-  deleteComment,
-  listComments,
-  toggleCommentLike,
-  updateComment,
-  type StoredComment,
-} from '../../lib/comments'
-import { useStorageSync } from '../../hooks/useStorageSync'
-
-const COMMENTS_SYNC_KEYS = [COMMENTS_STORAGE_KEY]
+import { useCommentsThread, type CommentsThreadController } from '../../hooks/useCommentsThread'
+import type { StoredComment } from '../../lib/comments'
 
 interface CommentsThreadProps {
   commentKey: string
+  controller?: CommentsThreadController
+  headingMode?: 'title' | 'count'
+  darkMode?: boolean
 }
 
 interface UiComment {
@@ -30,18 +21,25 @@ interface UiComment {
   isLiked: boolean
   createdAt: string
   isEdited?: boolean
+  spoiler?: boolean
+  reported?: boolean
   replies?: UiComment[]
 }
+
+const likeCountOf = (c: StoredComment) =>
+  Array.isArray(c.likedByUserIds) ? c.likedByUserIds.length : c.likeCount
 
 const toUiComment = (c: StoredComment, viewerId?: string): UiComment => ({
   id: c.id,
   userId: c.userId,
   user: c.user,
   content: c.content,
-  likeCount: (c.likedByUserIds ?? []).length,
+  likeCount: likeCountOf(c),
   isLiked: viewerId ? (c.likedByUserIds ?? []).includes(viewerId) : false,
   createdAt: c.createdAt,
   isEdited: c.isEdited,
+  spoiler: c.spoiler,
+  reported: c.reported,
 })
 
 const groupComments = (flat: StoredComment[], viewerId?: string): UiComment[] => {
@@ -58,38 +56,28 @@ const groupComments = (flat: StoredComment[], viewerId?: string): UiComment[] =>
   return topLevel
 }
 
-const CommentsThread = ({ commentKey }: CommentsThreadProps) => {
+const CommentsThread = ({
+  commentKey,
+  controller,
+  headingMode = 'count',
+  darkMode = false,
+}: CommentsThreadProps) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { user, isAuthenticated } = useAuth()
-  const [comments, setComments] = useState<StoredComment[]>([])
-
-  const refresh = useCallback(() => {
-    setComments(listComments(commentKey))
-  }, [commentKey])
-
-  useEffect(() => {
-    refresh()
-  }, [refresh])
-
-  useStorageSync(COMMENTS_SYNC_KEYS, refresh)
-
-  const uiComments = useMemo(() => groupComments(comments, user?.id), [comments, user?.id])
-
-  const commentUser = user
-    ? {
-        id: user.id,
-        username: user.username,
-        displayName: user.displayName,
-        avatar: user.avatar,
-      }
-    : null
+  const owned = useCommentsThread(controller ? '' : commentKey)
+  const thread = controller ?? owned
+  const uiComments = groupComments(thread.comments, user?.id)
 
   return (
     <div className="space-y-3">
       {!isAuthenticated ? (
-        <p className="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-600">
+        <p
+          className={`rounded-2xl px-4 py-3 text-sm ${
+            darkMode ? 'bg-white/5 text-gray-300' : 'bg-gray-50 text-gray-600'
+          }`}
+        >
           {t('comments.loginToComment')}{' '}
           <button
             type="button"
@@ -102,28 +90,18 @@ const CommentsThread = ({ commentKey }: CommentsThreadProps) => {
       ) : null}
       <Comments
         comments={uiComments}
+        totalCount={thread.comments.length}
         currentUserId={user?.id}
         currentUserName={user?.displayName}
-        onAddComment={(content) => {
-          if (!commentUser) return
-          setComments(addComment(commentKey, commentUser, content))
-        }}
-        onReply={(commentId, content) => {
-          if (!commentUser) return
-          setComments(addReply(commentKey, commentId, commentUser, content))
-        }}
-        onEdit={(commentId, content) => {
-          if (!user) return
-          setComments(updateComment(commentKey, commentId, user.id, content))
-        }}
-        onLike={(commentId) => {
-          if (!user) return
-          setComments(toggleCommentLike(commentKey, commentId, user.id))
-        }}
-        onDelete={(commentId) => {
-          if (!user) return
-          setComments(deleteComment(commentKey, commentId, user.id))
-        }}
+        currentUserAvatar={user?.avatar}
+        headingMode={headingMode}
+        darkMode={darkMode}
+        onAddComment={(content, spoiler) => thread.add(content, spoiler)}
+        onReply={(commentId, content, spoiler) => thread.reply(commentId, content, spoiler)}
+        onEdit={(commentId, content) => thread.edit(commentId, content)}
+        onLike={(commentId) => thread.like(commentId)}
+        onDelete={(commentId) => thread.remove(commentId)}
+        onReport={(commentId) => thread.report(commentId)}
       />
     </div>
   )

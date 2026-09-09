@@ -137,6 +137,7 @@ interface EngagementContextType {
   clearReadNotifications: () => void
   setNotifPrefs: (patch: Partial<NotifPrefs>) => void
   setReaderPrefs: (prefs: ReaderPrefs) => void
+  reloadInbox: () => void
 }
 
 const EngagementContext = createContext<EngagementContextType | undefined>(undefined)
@@ -538,6 +539,17 @@ export const EngagementProvider = ({ children }: { children: ReactNode }) => {
     setUnreadNotificationCount(unreadCountStore(userId))
   }, [userId])
 
+  const reloadInbox = useCallback(() => {
+    if (!userId) return
+    if (mock) {
+      refreshNotifications()
+      return
+    }
+    void authFetch<NotificationsMe>('/api/notifications/me')
+      .then((data) => applyInbox(data.notifications, notifPrefsRef.current))
+      .catch(() => undefined)
+  }, [userId, mock, refreshNotifications, applyInbox])
+
   const markNotificationRead = useCallback(
     (id: string) => {
       if (!userId) return
@@ -707,6 +719,7 @@ export const EngagementProvider = ({ children }: { children: ReactNode }) => {
       clearReadNotifications,
       setNotifPrefs,
       setReaderPrefs,
+      reloadInbox,
     }),
     [
       history,
@@ -734,6 +747,7 @@ export const EngagementProvider = ({ children }: { children: ReactNode }) => {
       clearReadNotifications,
       setNotifPrefs,
       setReaderPrefs,
+      reloadInbox,
     ]
   )
 

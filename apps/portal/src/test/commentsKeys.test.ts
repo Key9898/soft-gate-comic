@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { addComment, episodeCommentKey, listComments, seriesCommentKey } from '../lib/comments'
+import {
+  addComment,
+  COMMENT_MAX_LENGTH,
+  episodeCommentKey,
+  listComments,
+  seriesCommentKey,
+} from '../lib/comments'
 
 const memory = new Map<string, string>()
 
@@ -40,5 +46,13 @@ describe('comment keys', () => {
     addComment(episodeCommentKey('1', 1), commentUser, 'Episode only')
     expect(listComments(seriesCommentKey('1')).map((c) => c.content)).toEqual(['Hub only'])
     expect(listComments(episodeCommentKey('1', 1)).map((c) => c.content)).toEqual(['Episode only'])
+  })
+
+  it('rejects mock writes over 500 characters', () => {
+    const key = episodeCommentKey('1', 9)
+    expect(addComment(key, commentUser, 'x'.repeat(COMMENT_MAX_LENGTH + 1))).toEqual([])
+    expect(addComment(key, commentUser, 'x'.repeat(COMMENT_MAX_LENGTH))[0]?.content).toHaveLength(
+      COMMENT_MAX_LENGTH
+    )
   })
 })

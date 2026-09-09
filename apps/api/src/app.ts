@@ -11,6 +11,7 @@ import { createWalletApp } from './wallet/routes.js'
 import { createLibraryApp } from './library/routes.js'
 import { createNotificationsApp } from './notifications/routes.js'
 import { createPrefsApp } from './prefs/routes.js'
+import { createCommentsApp } from './comments/routes.js'
 
 export function createApp(env: Env, options?: { mail?: MailPort }) {
   const app = new Hono()
@@ -35,6 +36,7 @@ export function createApp(env: Env, options?: { mail?: MailPort }) {
   app.route('/api/library', createLibraryApp(env))
   app.route('/api/notifications', createNotificationsApp(env))
   app.route('/api/prefs', createPrefsApp(env))
+  app.route('/api/comments', createCommentsApp(env))
 
   return app
 }
