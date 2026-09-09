@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `196`.**
+**Next Impl number to use: `200`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -225,6 +225,10 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 193  | 2026-09-08 | Leader dev env mapping (no runtime change)                   | [2026-09-08-leader-dev-env-mapping.md](../notes/2026-09-08-leader-dev-env-mapping.md)                                                                         |
 | 194  | 2026-09-09 | Leader-dev Prisma persist + local mock-off                   | [2026-09-09-leader-dev-prisma.md](../notes/2026-09-09-leader-dev-prisma.md)                                                                                   |
 | 195  | 2026-09-09 | Admin published catalog on GET /api/catalog                  | [2026-09-09-admin-catalog-read.md](../notes/2026-09-09-admin-catalog-read.md)                                                                                 |
+| 196  | 2026-09-09 | Honest catalog-empty chrome                                  | [2026-09-09-catalog-empty-chrome.md](../notes/2026-09-09-catalog-empty-chrome.md)                                                                             |
+| 197  | 2026-09-09 | Complete comments (UI + shared HTTP + comment_reply)         | [2026-09-09-comments-complete.md](../notes/2026-09-09-comments-complete.md)                                                                                   |
+| 198  | 2026-09-09 | Catalog load-fail vs success-empty                           | [2026-09-09-catalog-load-fail-copy.md](../notes/2026-09-09-catalog-load-fail-copy.md)                                                                         |
+| 199  | 2026-09-09 | Reader reading room                                          | [2026-09-09-reader-reading-room.md](../notes/2026-09-09-reader-reading-room.md)                                                                               |
 
 ---
 
@@ -1831,9 +1835,41 @@ Prisma persist maps Admin `Author` / `Genre` / `Webtoon` / `WebtoonGenre` / `Epi
 
 ---
 
+## Impl Phase 196 — Honest catalog-empty chrome (2026-09-09)
+
+**Status:** Done
+
+Home / Categories / Search keep live chrome when published `webtoons.length === 0`. Shared `CatalogEmptyPanel`; Help/Creators only on empty Hero, Categories catalog-empty grid, and Search catalog-empty landing/query. No mock seed, no fake covers, no full-page Refresh card. Note: [2026-09-09-catalog-empty-chrome.md](../notes/2026-09-09-catalog-empty-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md), [hero-spotlight.md](../conventions/hero-spotlight.md), [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 197 — Complete comments (UI + shared HTTP + comment_reply) (2026-09-09)
+
+**Status:** Done
+
+Shared public comment threads (guest GET, auth writes) on stub + Prisma, WEBTOON-class reader sheet + hub inline thread, `comment_reply` inbox, fail-open SSR seeds on hub/read. Mock stays `softgate_comments_v1`; HTTP does not write that key. Impl **196** already shipped (catalog-empty chrome) — this number is **197** as mandated; next is **198**. Note: [2026-09-09-comments-complete.md](../notes/2026-09-09-comments-complete.md). Convention: [portal-comments-http.md](../conventions/portal-comments-http.md), [client-comments-notifications.md](../conventions/client-comments-notifications.md).
+
+---
+
+## Impl Phase 198 — Catalog load-fail vs success-empty (2026-09-09)
+
+**Status:** Done
+
+Local HTTP must hit SoftGate `apps/api` (other port + `VITE_API_BASE_URL` if 3000 is taken). Portal copy splits catalog **load-fail** (`error`, zero titles) from Impl 196 **success-empty**. Fail decks use `errors.catalogUnavailable`; banner `errors.catalogLoad` no longer claims cached/demo. Help/Creators stay success-empty only. Retry stays on `CatalogStatus`. Note: [2026-09-09-catalog-load-fail-copy.md](../notes/2026-09-09-catalog-load-fail-copy.md). Convention: [loading-states.md](../conventions/loading-states.md), [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 199 — Reader reading room (2026-09-09)
+
+**Status:** Done
+
+WEBTOON-class calm episode reader at `/read/:id/:n`. Chrome hide is nearly edge-to-edge; brightness sits under chrome; episode list + settings use `ReaderSheet` (mobile sheet / desktop drawer); pinch can pan; in-flow Demo ads (end always, mid only at 6+ panels); quiet chapter-end with related titles, creator-note Demo, and a device episode-report flag. Impl **198** is catalog load-fail copy (other agent). Next is **200**. Note: [2026-09-09-reader-reading-room.md](../notes/2026-09-09-reader-reading-room.md). Convention: [reader-chrome.md](../conventions/reader-chrome.md), [forced-product-motion.md](../conventions/forced-product-motion.md), [guest-access.md](../conventions/guest-access.md), [legal-pages.md](../conventions/legal-pages.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **196**).
+1. Take **next free Impl** (currently **200**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

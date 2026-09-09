@@ -48,7 +48,7 @@ const ReaderSkeleton = ({
                   href={`/webtoon/${webtoonId}`}
                   title={t('readerPage.closeReader')}
                   aria-label={t('readerPage.closeReader')}
-                  className={`rounded-2xl p-2.5 transition ${chromeHover}`}
+                  className={`flex min-h-11 min-w-11 items-center justify-center rounded-2xl transition ${chromeHover}`}
                 >
                   <X className="h-5 w-5" />
                 </a>
@@ -67,7 +67,7 @@ const ReaderSkeleton = ({
                 aria-disabled="true"
                 title={t('readerPage.settings')}
                 aria-label={t('readerPage.settings')}
-                className={`rounded-2xl p-2.5 ${chromeHover}`}
+                className={`flex min-h-11 min-w-11 items-center justify-center rounded-2xl ${chromeHover}`}
               >
                 <Settings className="h-5 w-5" />
               </button>
@@ -100,7 +100,7 @@ const ReaderSkeleton = ({
       <main
         className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 pt-20 pb-16 sm:px-2 md:pt-24`}
       >
-        <div className="w-full" aria-hidden="true" />
+        <div className="min-h-[50dvh] w-full" aria-hidden="true" />
       </main>
 
       <div
@@ -120,6 +120,7 @@ const ReaderSkeleton = ({
               <span className="hidden sm:inline">{t('readerPage.prevEpisode')}</span>
             </button>
             <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold tabular-nums opacity-70">0 / 0</span>
               <button
                 type="button"
                 tabIndex={-1}

@@ -165,4 +165,12 @@ describe('Reader chrome', () => {
       expect(img).not.toHaveAttribute('height')
     }
   })
+
+  it('shows episode index and an in-flow end ad without a mid slot on a four-panel demo', async () => {
+    renderReader('/read/1/1')
+    expect(await screen.findByRole('heading', { name: 'The Beginning' })).toBeInTheDocument()
+    expect(screen.getByText(/1 \/ \d+/)).toBeInTheDocument()
+    expect(screen.getByTestId('reader-ad-end')).toBeInTheDocument()
+    expect(screen.queryByTestId('reader-ad-mid')).not.toBeInTheDocument()
+  })
 })

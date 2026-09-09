@@ -2,7 +2,8 @@
 title: Legal pages (document shell + storage honesty)
 type: convention
 date: 2026-08-13
-tags: [legal, privacy, terms, cookies, a11y, i18n, softgate, impl-59, impl-126]
+updated: 2026-09-09
+tags: [legal, privacy, terms, cookies, a11y, i18n, softgate, impl-59, impl-126, impl-199]
 ---
 
 # Legal pages
@@ -52,6 +53,7 @@ Page rules:
 | Recent searches         | `softgate_recent_searches`                                                                    |
 | Legal readability       | `softgate.legalReadability`                                                                   |
 | Reader display          | `softgate_reader_prefs_v1`                                                                    |
+| Episode reports         | `softgate_episode_reports_v1` (`id:n` keys; Demo device flag, not a queue)                    |
 | 18+ age confirm         | `softgate_age_confirm_v1` (signed-in) + `softgate_age_confirm_session` (guest sessionStorage) |
 | Demo catalog            | `softgate-shared-data`                                                                        |
 
@@ -71,5 +73,5 @@ Do not list a separate "Reading progress" row — history and `scrollRatio` live
 
 ## Related
 
-- Impl notes: [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md), [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md), [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md)
+- Impl notes: [2026-08-13-legal-shell-extract.md](../notes/2026-08-13-legal-shell-extract.md), [2026-08-13-legal-content-honesty.md](../notes/2026-08-13-legal-content-honesty.md), [2026-08-19-legal-layered-notice.md](../notes/2026-08-19-legal-layered-notice.md), [2026-09-09-reader-reading-room.md](../notes/2026-09-09-reader-reading-room.md)
 - Info chrome: [info-page-chrome.md](info-page-chrome.md)

@@ -45,10 +45,11 @@ describe('Reader celebration honesty', () => {
     expect(screen.queryByText(/chapter continuation/i)).not.toBeInTheDocument()
   })
 
-  it('shows a computed reading time instead of a hardcoded 3 mins', () => {
+  it('does not sell a pixel-heuristic reading time', () => {
     renderReader('/read/1/1')
-    expect(screen.getByText(/reading time/i).textContent).toMatch(/\d+ mins/)
-    expect(screen.queryByText(/: 3 mins/)).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Chapter complete' })).toBeInTheDocument()
+    expect(screen.queryByText(/🎉/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/reading time/i)).not.toBeInTheDocument()
   })
 
   it('exposes series rating in the chapter complete portal', () => {

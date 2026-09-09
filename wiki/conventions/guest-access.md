@@ -2,7 +2,8 @@
 title: Guest access policy (WEBTOON-style)
 type: convention
 date: 2026-08-13
-tags: [guest, auth, gating, reader, conversion, softgate, impl-67]
+updated: 2026-09-09
+tags: [guest, auth, gating, reader, conversion, softgate, impl-67, impl-199]
 ---
 
 # Guest access policy
@@ -14,21 +15,23 @@ SoftGate Comic follows the **WEBTOON-style freemium model**: discovery and free 
 - Browse everything: `/`, `/categories`, `/categories/:slug`, `/search`, `/webtoon/:id`, `/author/:id`
 - Read **free** episodes and Demo **wait-for-free** episodes after `freeAt`: `/read/:webtoonId/:episodeNumber` is deliberately NOT a ProtectedRoute
 - Read comments in the reader panel and on the series hub discussion
+- Share the current episode URL from the reader footer
 - All info/legal pages, auth pages, 404
 
 ## Guest CANNOT
 
-| Action                                             | Gate location                                             | Behavior                                                                           |
-| -------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `/profile`, `/library`, `/notifications`, `/coins` | `ProtectedRoute` in [App.tsx](../../src/App.tsx)          | `Navigate` to `/login` with `state.from`                                           |
-| Like                                               | `EngagementContext.toggleLike`                            | `navigate('/login', { state: { from } })`                                          |
-| Rate series                                        | `EngagementContext.setRating` / `clearRating`             | same; control stays visible for guests                                             |
-| Bookmark/Subscribe                                 | `LibraryContext.toggleBookmark`                           | same                                                                               |
-| Author Follow                                      | `FollowsContext.toggleFollow`                             | same                                                                               |
-| Coin top-up                                        | `WalletContext.demoTopUp`                                 | same                                                                               |
-| Premium unlock                                     | `WalletContext.unlockEpisode` + `ReaderPage.handleUnlock` | same, `from` = the `/read/...` path                                                |
-| Wait-for-free skip (coins)                         | same coins unlock                                         | Guest cannot skip the wait with coins; after `freeAt` the episode is actually free |
-| Post comment                                       | `CommentsThread` (Reader + hub)                           | inline `comments.loginToComment` prompt (no redirect)                              |
+| Action                                             | Gate location                                             | Behavior                                                                                                           |
+| -------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/profile`, `/library`, `/notifications`, `/coins` | `ProtectedRoute` in [App.tsx](../../src/App.tsx)          | `Navigate` to `/login` with `state.from`                                                                           |
+| Like                                               | `EngagementContext.toggleLike`                            | `navigate('/login', { state: { from } })`                                                                          |
+| Rate series                                        | `EngagementContext.setRating` / `clearRating`             | same; control stays visible for guests                                                                             |
+| Bookmark/Subscribe                                 | `LibraryContext.toggleBookmark`                           | same                                                                                                               |
+| Author Follow                                      | `FollowsContext.toggleFollow`                             | same                                                                                                               |
+| Coin top-up                                        | `WalletContext.demoTopUp`                                 | same                                                                                                               |
+| Premium unlock                                     | `WalletContext.unlockEpisode` + `ReaderPage.handleUnlock` | same, `from` = the `/read/...` path                                                                                |
+| Wait-for-free skip (coins)                         | same coins unlock                                         | Guest cannot skip the wait with coins; after `freeAt` the episode is actually free                                 |
+| Post comment                                       | `CommentsThread` (Reader + hub)                           | inline `comments.loginToComment` prompt (no redirect). Guest **read** is open (GET `/api/comments` when mock off). |
+| Report episode                                     | `ReaderCompletePortal`                                    | `navigate('/login', { state: { from } })` with `from` = `/read/:id/:n`                                             |
 
 ## Rules
 
@@ -40,5 +43,5 @@ SoftGate Comic follows the **WEBTOON-style freemium model**: discovery and free 
 
 ## Related
 
-- Impl note: [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md)
+- Impl note: [2026-08-13-reader-guest-nudges.md](../notes/2026-08-13-reader-guest-nudges.md), [2026-09-09-reader-reading-room.md](../notes/2026-09-09-reader-reading-room.md)
 - Auth store / reading-room pages: [client-auth.md](client-auth.md); wallet: [client-wallet.md](client-wallet.md)

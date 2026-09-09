@@ -39,6 +39,11 @@ const CookiesPage = () => {
       descKey: 'static.storageReaderDesc',
     },
     {
+      id: 'episodeReports',
+      labelKey: 'static.storageEpisodeReports',
+      descKey: 'static.storageEpisodeReportsDesc',
+    },
+    {
       id: 'ageConfirm',
       labelKey: 'static.storageAgeConfirm',
       descKey: 'static.storageAgeConfirmDesc',
