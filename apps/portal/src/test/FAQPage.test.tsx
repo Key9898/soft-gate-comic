@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { render, screen } from '@testing-library/react'
@@ -28,6 +28,23 @@ function renderFaqAt(path: string) {
       </DataProvider>
     </HelmetProvider>
   )
+}
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+  vi.unstubAllGlobals()
+})
+
+function faqFetch(payload: unknown, status = 200) {
+  return vi.fn(async (input: RequestInfo | URL) => {
+    if (!String(input).includes('/api/faq')) {
+      return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+    }
+    return new Response(JSON.stringify(payload), {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  })
 }
 
 describe('FAQPage', () => {
@@ -159,5 +176,65 @@ describe('FAQPage', () => {
   it('does not render raw i18n keys', () => {
     const { container } = renderApp(<FAQPage />)
     expect(container.textContent).not.toMatch(/faq\.[a-zA-Z]/)
+  })
+})
+
+describe('FAQPage live consume', () => {
+  it('fails open to i18n catalog when live FAQ fetch fails', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (!String(input).includes('/api/faq')) {
+          return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+        }
+        throw new Error('down')
+      })
+    )
+    renderApp(<FAQPage />)
+    expect(
+      await screen.findByRole('button', { name: /what is softgate comic\?/i })
+    ).toBeInTheDocument()
+    expect(screen.getByRole('searchbox', { name: /search questions/i })).toBeInTheDocument()
+  })
+
+  it('uses live FAQ payload when fetch succeeds', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      faqFetch({
+        data: {
+          items: [
+            {
+              id: 'live-1',
+              category: 'general',
+              question: { en: 'Live FAQ question?', mm: 'Live FAQ question?' },
+              answer: { en: 'Live FAQ answer.', mm: 'Live FAQ answer.' },
+              relatedTo: '/coins',
+              relatedLabel: { en: 'Coins', mm: 'ဒင်္ဂါး' },
+              sortOrder: 1,
+            },
+          ],
+        },
+      })
+    )
+    renderApp(<FAQPage />)
+    const liveQuestion = await screen.findByRole('button', { name: /live faq question\?/i })
+    fireApp.click(liveQuestion)
+    expect(screen.getByText('Live FAQ answer.')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Coins' })).toHaveAttribute('href', '/coins')
+    expect(
+      screen.queryByRole('button', { name: /what is softgate comic\?/i })
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows an honest empty list when live FAQ items are empty', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal('fetch', faqFetch({ data: { items: [] } }))
+    renderApp(<FAQPage />)
+    expect(await screen.findByText(/no questions match your search/i)).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /what is softgate comic\?/i })
+    ).not.toBeInTheDocument()
   })
 })

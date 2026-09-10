@@ -2,9 +2,24 @@
 title: SoftGate Comic API
 type: reference
 date: 2026-08-24
-tags: [api, health, catalog, settings, auth, wallet, library, notifications, prefs, env, softgate]
+tags:
+  [
+    api,
+    health,
+    catalog,
+    settings,
+    about,
+    press,
+    auth,
+    wallet,
+    library,
+    notifications,
+    prefs,
+    env,
+    softgate,
+  ]
 impl: 195
-impl_updated: 203
+impl_updated: 211
 ---
 
 # SoftGate Comic API
@@ -50,6 +65,104 @@ Leader **dev** JWT / R2 / Brevo map onto existing env slots in gitignored `apps/
 
 Stub persist returns Admin seed defaults. Prisma persist reads Admin `PlatformSettings` (`id = platform`) (Impl 200); null row or missing table fail-open to the same seed. Envelope is `{ data }` (never Admin `{ settings }`). GET does not insert. Portal consumes this when `VITE_USE_MOCK_API=false`. Missing/invalid payload fails open. Convention: [portal-settings-read.md](../conventions/portal-settings-read.md).
 
+## Portal about (Impl 205)
+
+`GET /api/about`
+
+```json
+{
+  "data": {
+    "histories": [],
+    "members": [],
+    "meta": {
+      "deck": { "en": "The public-facing studio roles for this portal.", "mm": "…" },
+      "standInNote": {
+        "en": "Portraits and names are stand-ins until the studio publishes its public roster.",
+        "mm": "…"
+      },
+      "standInVisible": true
+    }
+  }
+}
+```
+
+Stub persist returns four seed histories (year 2026, months 1 / 3 / 6 / 12) and four people plus portal meta. Prisma persist reads Admin `AboutHistory` / `AboutTeamMember` / `AboutTeamMeta` (`id = about-team`) (Impl 205). Empty published lists stay `[]`. Missing list table (`P2021`) is `[]` for that list. Null meta or missing meta table fail-open to stub meta. Envelope is `{ data }` (never Admin `{ histories }` / `{ members }`). GET does not insert. Published rows only; omit `published` and empty `photoUrl`. Optional cookie; never 401. Portal History consumes this when `VITE_USE_MOCK_API=false` (Impl 206). Portal Team consumes `members` + `meta` on the same GET (Impl 207). Convention: [portal-about-read.md](../conventions/portal-about-read.md).
+
+## Portal press (Impl 211)
+
+`GET /api/press`
+
+```json
+{
+  "data": {
+    "copy": { "boilerplateTitle": { "en": "About SoftGate Comic", "mm": "…" } },
+    "zipUrl": "/press-kit/softgate-comic-press-kit.zip",
+    "contactEmail": "press@softgatecomic.com",
+    "facts": [],
+    "palette": [],
+    "assets": [],
+    "news": [],
+    "stills": []
+  }
+}
+```
+
+Stub persist returns `STUB_PRESS` (today’s kit copy, empty news/stills). Prisma persist reads Admin `PressMeta` (`id = press`) / `PressNews` / `PressStill` (Impl 211). Missing table (`P2021`) fail-opens to stub. Envelope is `{ data }` (never Admin `{ meta }` / `{ news }`). GET does not insert. Published rows only; omit `published`. Spokesperson is a published About member or omitted. Optional cookie; never 401. Portal `/press` consumes this when `VITE_USE_MOCK_API=false`; fail keeps `t('press.*')`. Convention: [portal-press-read.md](../conventions/portal-press-read.md).
+
+## Portal legal (Impl 212)
+
+`GET /api/legal/privacy` · `GET /api/legal/terms`
+
+```json
+{
+  "data": {
+    "seoDesc": { "en": "…", "mm": "…" },
+    "glance": [{ "en": "…", "mm": "…" }],
+    "effectiveDate": "2026-09-10",
+    "sections": [
+      {
+        "id": "privacy-collect",
+        "slug": "collect",
+        "kind": "body",
+        "headingLevel": "h2",
+        "title": { "en": "…", "mm": "…" },
+        "body": { "en": "…", "mm": "…" },
+        "bullets": [],
+        "sortOrder": 0
+      }
+    ]
+  }
+}
+```
+
+Stub persist returns `STUB_PRIVACY` / `STUB_TERMS` (today’s copy). Prisma persist reads Admin `PrivacyMeta` / `PrivacySection` / `TermsMeta` / `TermsSection` (Impl 212). Missing table (`P2021`) fail-opens to stub. Envelope is `{ data }` (never Admin `{ meta }` / `{ sections }`). GET does not insert. Published rows only; omit `published`. Optional cookie; never 401. Portal `/privacy` `/terms` consume this when `VITE_USE_MOCK_API=false`; fail keeps `t('static.*')`. Convention: [portal-legal-read.md](../conventions/portal-legal-read.md).
+
+## Portal FAQ and Cookie Policy (Impl 213)
+
+`GET /api/faq` · `GET /api/cookies`
+
+```json
+{
+  "data": {
+    "items": [
+      {
+        "id": "q1",
+        "category": "general",
+        "question": { "en": "…", "mm": "…" },
+        "answer": { "en": "…", "mm": "…" },
+        "relatedTo": "/profile",
+        "relatedLabel": { "en": "Profile", "mm": "…" },
+        "sortOrder": 1
+      }
+    ]
+  }
+}
+```
+
+Cookie Policy envelope is `{ data: { effectiveDate, copy, glance, rows } }` — 22 copy keys, glance length 5, rows `{ id, storageKey, label, description, sortOrder }`.
+
+Stub persist returns `STUB_FAQ` / `STUB_COOKIES` (today’s copy). Prisma persist reads Admin `FaqMeta` / `FaqItem` / `CookieMeta` / `CookieStorageRow` (Impl 213). Missing table (`P2021`) fail-opens to stub. Meta present + empty lists stay empty. Envelope is `{ data }` (never Admin `{ items }` / `{ meta, rows }`). GET does not insert. FAQ published rows only; omit `published`. Optional cookie; never 401. Portal `/faq` `/cookies` consume this when `VITE_USE_MOCK_API=false`; fail keeps today’s i18n. Help hub stays catalog. HTTP session cookies are not this route. Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md).
+
 ## Reader auth (Impl 174–189)
 
 `POST /api/auth/register` · `POST /api/auth/login` · `POST /api/auth/logout` · `GET /api/auth/me` · `POST /api/auth/refresh` · `POST /api/auth/forgot` · `POST /api/auth/reset` · `POST /api/auth/profile` · `POST /api/auth/password` · `POST /api/auth/delete-account`
@@ -66,7 +179,7 @@ Stub or Prisma ledger (seed 150). Unlock body `{ webtoonId, episodeNumber }`; de
 
 ## Named integrations (Impl 176–187)
 
-Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). Prisma catalog read from Admin tables (Impl 195); no portal catalog migration. Prisma `CoinPackage` on catalog (Impl 201); no coin-table migration. Prisma settings read from Admin `PlatformSettings` (Impl 200); no portal settings migration or PATCH. R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Push `createPush`: all three VAPID slots → Web Push; else `PUSH_NOT_CONFIGURED`. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
+Optional env slots for `DATABASE_URL`, Cloudflare R2, and Brevo. Prisma persist when `DATABASE_URL` is set (boot fails if Postgres is down). Prisma catalog read from Admin tables (Impl 195); no portal catalog migration. Prisma `CoinPackage` on catalog (Impl 201); no coin-table migration. Prisma settings read from Admin `PlatformSettings` (Impl 200); no portal settings migration or PATCH. Prisma about read from Admin About CMS (Impl 205); no portal about migration or write. Prisma press read from Admin Press CMS (Impl 211); no portal press migration or write. Prisma Privacy/Terms read from Admin legal CMS (Impl 212); no portal legal migration or write. Prisma FAQ/Cookies read from Admin FAQ/Cookies CMS (Impl 213); no portal FAQ/Cookies migration or write. R2 `createObjectStore`: four core slots → `PutObject` under `portal/`; else `R2_NOT_CONFIGURED`. Mail `createMail`: key + from → HTML send; else `MAIL_NOT_CONFIGURED`. Push `createPush`: all three VAPID slots → Web Push; else `PUSH_NOT_CONFIGURED`. Convention: [named-integrations.md](../conventions/named-integrations.md). ADR: [008-prisma-persist-boot.md](../decisions/008-prisma-persist-boot.md), [009-r2-object-store.md](../decisions/009-r2-object-store.md), [010-brevo-mail.md](../decisions/010-brevo-mail.md).
 
 ## Env (`apps/api/.env.example`)
 
@@ -100,7 +213,7 @@ pnpm --filter @softgate/api db:migrate
 # then set DATABASE_URL in apps/api/.env (do not commit)
 ```
 
-Portal `pnpm dev` is HTTP only when gitignored `.env.development.local` sets `VITE_USE_MOCK_API=false` **and** `pnpm dev:api` is running. Committed `.env.example` is `false` but Vite does not load it. Unset (Vercel without the var) stays mock. ADR: [011-portal-http-local.md](../decisions/011-portal-http-local.md).
+Portal `pnpm dev` is HTTP only when gitignored `.env.development.local` sets `VITE_USE_MOCK_API=false` **and** `pnpm dev:api` is **listening** on `VITE_API_BASE_URL`. Confirm `GET /health` `{ data: { ok, persist } }`. `ERR_CONNECTION_REFUSED` on that origin is SoftGate down — restart `pnpm dev:api`; do not retarget Admin; do not turn mock on. Committed `.env.example` is `false` but Vite does not load it. Unset (Vercel without the var) stays mock. ADR: [011-portal-http-local.md](../decisions/011-portal-http-local.md). Note: [2026-09-10-live-join-api-listen.md](../notes/2026-09-10-live-join-api-listen.md).
 
 ## Library (Impl 190)
 

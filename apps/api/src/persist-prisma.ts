@@ -14,6 +14,32 @@ import {
   publishedCatalogFromAdmin,
 } from './catalog/fromAdmin.js'
 import {
+  ABOUT_TEAM_META_ID,
+  isMissingAboutTable,
+  portalHistoriesFromAdminRows,
+  portalMembersFromAdminRows,
+  portalMetaFromAdminRow,
+  STUB_ABOUT,
+} from './about/fromAdmin.js'
+import {
+  isMissingPressTable,
+  portalPressFromAdmin,
+  PRESS_META_ID,
+  STUB_PRESS,
+} from './press/fromAdmin.js'
+import {
+  isMissingLegalTable,
+  portalLegalFromAdmin,
+  STUB_PRIVACY,
+  STUB_TERMS,
+} from './legal/fromAdmin.js'
+import { isMissingFaqTable, portalFaqFromAdmin, STUB_FAQ } from './faq/fromAdmin.js'
+import {
+  isMissingCookieTable,
+  portalCookiesFromAdmin,
+  STUB_COOKIES,
+} from './cookiePolicy/fromAdmin.js'
+import {
   isMissingPlatformSettingsTable,
   PLATFORM_SETTINGS_ID,
   portalSettingsFromAdminRow,
@@ -410,6 +436,208 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
         return portalSettingsFromAdminRow(row)
       } catch (error) {
         if (isMissingPlatformSettingsTable(error)) return STUB_PORTAL_SETTINGS
+        throw error
+      }
+    },
+    async getAbout() {
+      const loadHistories = async () => {
+        try {
+          const rows = await prisma.aboutHistory.findMany({
+            where: { published: true },
+            orderBy: [{ year: 'asc' }, { month: 'asc' }, { sortOrder: 'asc' }, { id: 'asc' }],
+          })
+          return portalHistoriesFromAdminRows(rows)
+        } catch (error) {
+          if (isMissingAboutTable(error)) return []
+          throw error
+        }
+      }
+      const loadMembers = async () => {
+        try {
+          const rows = await prisma.aboutTeamMember.findMany({
+            where: { published: true },
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+          return portalMembersFromAdminRows(rows)
+        } catch (error) {
+          if (isMissingAboutTable(error)) return []
+          throw error
+        }
+      }
+      const loadMeta = async () => {
+        try {
+          const row = await prisma.aboutTeamMeta.findUnique({
+            where: { id: ABOUT_TEAM_META_ID },
+          })
+          return portalMetaFromAdminRow(row)
+        } catch (error) {
+          if (isMissingAboutTable(error)) return STUB_ABOUT.meta
+          throw error
+        }
+      }
+      const [histories, members, meta] = await Promise.all([
+        loadHistories(),
+        loadMembers(),
+        loadMeta(),
+      ])
+      return { histories, members, meta }
+    },
+    async getPress() {
+      const loadMeta = async () => {
+        try {
+          return await prisma.pressMeta.findUnique({ where: { id: PRESS_META_ID } })
+        } catch (error) {
+          if (isMissingPressTable(error)) return null
+          throw error
+        }
+      }
+      const loadNews = async () => {
+        try {
+          return await prisma.pressNews.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingPressTable(error)) return []
+          throw error
+        }
+      }
+      const loadStills = async () => {
+        try {
+          return await prisma.pressStill.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingPressTable(error)) return []
+          throw error
+        }
+      }
+      const loadMembers = async () => {
+        try {
+          return await prisma.aboutTeamMember.findMany()
+        } catch (error) {
+          if (isMissingAboutTable(error) || isMissingPressTable(error)) return []
+          throw error
+        }
+      }
+      try {
+        const [meta, news, stills, members] = await Promise.all([
+          loadMeta(),
+          loadNews(),
+          loadStills(),
+          loadMembers(),
+        ])
+        if (!meta && news.length === 0 && stills.length === 0) return STUB_PRESS
+        return portalPressFromAdmin({ meta, news, stills, members })
+      } catch (error) {
+        if (isMissingPressTable(error)) return STUB_PRESS
+        throw error
+      }
+    },
+    async getPrivacy() {
+      const loadMeta = async () => {
+        try {
+          return await prisma.privacyMeta.findUnique({ where: { id: 'privacy' } })
+        } catch (error) {
+          if (isMissingLegalTable(error)) return null
+          throw error
+        }
+      }
+      const loadSections = async () => {
+        try {
+          return await prisma.privacySection.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingLegalTable(error)) return []
+          throw error
+        }
+      }
+      try {
+        const [meta, sections] = await Promise.all([loadMeta(), loadSections()])
+        return portalLegalFromAdmin(STUB_PRIVACY, { meta, sections })
+      } catch (error) {
+        if (isMissingLegalTable(error)) return STUB_PRIVACY
+        throw error
+      }
+    },
+    async getTerms() {
+      const loadMeta = async () => {
+        try {
+          return await prisma.termsMeta.findUnique({ where: { id: 'terms' } })
+        } catch (error) {
+          if (isMissingLegalTable(error)) return null
+          throw error
+        }
+      }
+      const loadSections = async () => {
+        try {
+          return await prisma.termsSection.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingLegalTable(error)) return []
+          throw error
+        }
+      }
+      try {
+        const [meta, sections] = await Promise.all([loadMeta(), loadSections()])
+        return portalLegalFromAdmin(STUB_TERMS, { meta, sections })
+      } catch (error) {
+        if (isMissingLegalTable(error)) return STUB_TERMS
+        throw error
+      }
+    },
+    async getFaq() {
+      const loadMeta = async () => {
+        try {
+          return await prisma.faqMeta.findUnique({ where: { id: 'faq' } })
+        } catch (error) {
+          if (isMissingFaqTable(error)) return null
+          throw error
+        }
+      }
+      const loadItems = async () => {
+        try {
+          return await prisma.faqItem.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingFaqTable(error)) return []
+          throw error
+        }
+      }
+      try {
+        const [meta, items] = await Promise.all([loadMeta(), loadItems()])
+        return portalFaqFromAdmin({ meta, items })
+      } catch (error) {
+        if (isMissingFaqTable(error)) return STUB_FAQ
+        throw error
+      }
+    },
+    async getCookies() {
+      const loadMeta = async () => {
+        try {
+          return await prisma.cookieMeta.findUnique({ where: { id: 'cookies' } })
+        } catch (error) {
+          if (isMissingCookieTable(error)) return null
+          throw error
+        }
+      }
+      const loadRows = async () => {
+        try {
+          return await prisma.cookieStorageRow.findMany({
+            orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+          })
+        } catch (error) {
+          if (isMissingCookieTable(error)) return []
+          throw error
+        }
+      }
+      try {
+        const [meta, rows] = await Promise.all([loadMeta(), loadRows()])
+        return portalCookiesFromAdmin({ meta, rows })
+      } catch (error) {
+        if (isMissingCookieTable(error)) return STUB_COOKIES
         throw error
       }
     },

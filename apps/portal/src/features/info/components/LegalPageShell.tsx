@@ -85,6 +85,7 @@ interface LegalPageShellProps {
   sections: LegalTocSection[]
   glanceItems: string[]
   children: ReactNode
+  lastUpdatedDate?: Date
 }
 
 const LegalPageShell = ({
@@ -94,11 +95,12 @@ const LegalPageShell = ({
   sections,
   glanceItems,
   children,
+  lastUpdatedDate,
 }: LegalPageShellProps) => {
   const { t, i18n } = useTranslation()
   const page = getInfoPageMeta(pageId, t)
   const { fontSize, setFontSize, readingTheme, setReadingTheme } = useLegalReadability()
-  const lastUpdated = formatLegalEffectiveDate(i18n.language)
+  const lastUpdated = formatLegalEffectiveDate(i18n.language, lastUpdatedDate)
 
   return (
     <div className="relative min-h-screen bg-gray-50 pb-12 transition-colors duration-300">

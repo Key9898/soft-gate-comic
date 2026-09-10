@@ -2,7 +2,8 @@
 title: Info page chrome (breadcrumb + PageHeader)
 type: convention
 date: 2026-08-11
-tags: [info, breadcrumb, page-header, softgate, impl-17]
+updated: 2026-09-10
+tags: [info, breadcrumb, page-header, softgate, impl-17, impl-209, impl-211]
 ---
 
 # Info page chrome
@@ -52,11 +53,15 @@ Three routes, three jobs. Footer Support names all three: **Help Center + FAQ + 
 2. **`/faq`** — answer library. 7xl shell + **inner `max-w-3xl`** (reading measure — do not widen to 7xl). Stable hashes `#q1`–`#q20` open the item (`aria-expanded` / `aria-controls`), switch category so it is visible, and `scrollIntoView`. `?cat=` sets the tab (still four categories). Related links stay on already-shipped routes (`/library`, `/notifications` included). `q14` related stays `/creators` (never `intent=submit`). `a14`: no in-portal upload; format and Send your pitch are on Publish with Us (Impl 116). Always-on **Still need help** → `/contact`. Thumbs are local-only (this page / this browser; we do not receive votes). Accordion, tabs, and thumbs are `min-h-11`. Coins answers match demo top-up (no live payment method / not live purchases).
 3. **`/contact`** — last step. Honest mailto form. Clickable `mailto:support@softgatecomic.com` (`translate="no"`, `min-h-11`). Deck: Help and FAQ first; the form opens the email app. Try Help first → `/help` and `/faq`. Path cards: reader stays `support@`; Creators → `/creators`; Press → `/press`. HQ `Insein, Yangon, Myanmar` (no street number). Reader checklist (what you were doing / which page or series / language) is display-only — **no extra form fields** on default `/contact`. **`intent=submit` uses labeled pitch fields (Impl 112)** (title, genre, episode count **min 3**, synopsis, 3:4 cover checkbox, optional platforms/notes); subject prefills `Series submission`; reader checklist is hidden; handbook `Link` to `/creators#creators-specs` (default Contact does not show it) (Impl 116). Inbox hours (Demo): weekdays, Yangon time — studio replaces (Impl 113). Yangon time, no SLA, no phone, no chat, no ticket IDs.
 
-No page-root `overflow-hidden` on Help / FAQ / Contact (wash wrapper only). Support sections use About-style `SECTION_RULE` + heading dot, copied locally (no shared chrome module). Footer Support is **Help Center + FAQ + Contact**. Keep the `/faq` route and `public/sitemap.xml` FAQ loc. Help and FAQ share Contact chrome: `max-w-7xl` + `radial-wash-primary`. Legal (Privacy / Terms / Cookies) uses the same wash via `LegalPageShell` (Impl 126); see [legal-pages.md](legal-pages.md).
+No page-root `overflow-hidden` on Help / FAQ / Contact (wash wrapper only). Support sections use About-style `SECTION_RULE` + heading dot, copied locally (no shared chrome module). Footer Support is **Help Center + FAQ + Contact**. Keep the `/faq` route and `public/sitemap.xml` FAQ loc. Help and FAQ share Contact chrome: `max-w-7xl` + `radial-wash-primary`. Legal (Privacy / Terms / Cookies) uses the same wash via `LegalPageShell` (Impl 126); Privacy/Terms live GET is Impl 212; FAQ/Cookies live GET is Impl 213. See [legal-pages.md](legal-pages.md).
 
-## Press page is a press-kit hub (Impl 57, updated 102)
+## Press page is a press-kit hub (Impl 57, updated 102, complete 209, live consume 211)
 
-`/press` is a press-kit hub (Impl 57, IA expanded Impl 102): boilerplate with copy, honest fact sheet, brand asset downloads (`/logo/logo.svg`, `/logo/logo.png`, `/favicon/icon-512.png` — never fake ZIP/PDF or JPG), Do/Don’t usage, News / product images / spokesperson as honest empty copy (no fake coverage or broken images), media contact (`mailto:press@softgatecomic.com`, `translate="no"`). Canva `favicon.svg` is the site tab icon only — not a press download. No fake press releases or metrics — see [discovery-honesty.md](discovery-honesty.md).
+`/press` is a press-kit hub. H1 + breadcrumb stay **Press** (`static.pressTitle`); eyebrow stays **Newsroom**. About-class chrome: no page-root `overflow-hidden` (wash wrapper only); `SECTION_RULE`; jump TOC; left-aligned 7xl shell. Admin owns content + file URLs; this page owns chrome (TOC, layout, Copy control, JSON-LD shape).
+
+Brand pack: a **real** ZIP at `public/press-kit/softgate-comic-press-kit.zip` (URL `/press-kit/…` so it never hits the exact `/press` SPA/SSR rewrite). Archive root is `logo.svg`, `logo.png`, `icon-512.png` — same bytes as today’s singles. ZIP is the primary download; the three singles stay secondary. A real pack is allowed. **Never fake** ZIP/PDF/JPG, never ship an empty or nested-folder zip, never offer Canva `favicon.svg` as a brand download (tab icon only).
+
+Live (`VITE_USE_MOCK_API=false`) fetches website `GET /api/press`. On fail or mock, keep `t('press.*')`. No published news → meta empty-news copy (not a fabricated release). No stills → stills note + empty grid (no fake screenshots). Spokesperson is an About team pick when present. Palette/assets/zip come from the payload; they do not drive site `primary-*`. JSON-LD `contactPoint.email` follows the payload. Media contact default is `mailto:press@softgatecomic.com` (`translate="no"`), Yangon time, no SLA. See [portal-press-read.md](portal-press-read.md), [discovery-honesty.md](discovery-honesty.md), [prelaunch-quality-bar.md](prelaunch-quality-bar.md).
 
 ## 404 recovery page (Impl 58, updated 118, polish 121)
 

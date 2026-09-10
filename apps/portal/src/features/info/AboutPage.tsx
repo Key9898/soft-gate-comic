@@ -16,6 +16,9 @@ import SEO from '../../components/SEO/SEO'
 import { buildOrganizationJsonLd } from '../../components/SEO/jsonLd'
 import Breadcrumb from '../../components/Breadcrumb'
 import PageHeader from '../../components/PageHeader'
+import { AboutProvider } from './AboutDataContext'
+import AboutHistorySection from './components/AboutHistorySection'
+import AboutTeamSection from './components/AboutTeamSection'
 import StoryBook from './components/StoryBook'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
 import { getPublishedStoryChapters } from '../../lib/info/storyChapters'
@@ -41,53 +44,6 @@ const FACTS = [
   { labelKey: 'about.factStageLabel', valueKey: 'about.factStageValue' },
   { labelKey: 'about.factMarketLabel', valueKey: 'about.factMarketValue' },
   { labelKey: 'about.factLanguagesLabel', valueKey: 'about.factLanguagesValue' },
-] as const
-
-const HISTORY = [
-  {
-    yearKey: 'about.history1Year',
-    titleKey: 'about.history1Title',
-    descKey: 'about.history1Desc',
-    photo: '/about/team/studio-workspace.jpg',
-  },
-  {
-    yearKey: 'about.history2Year',
-    titleKey: 'about.history2Title',
-    descKey: 'about.history2Desc',
-  },
-  {
-    yearKey: 'about.history3Year',
-    titleKey: 'about.history3Title',
-    descKey: 'about.history3Desc',
-  },
-  {
-    yearKey: 'about.history4Year',
-    titleKey: 'about.history4Title',
-    descKey: 'about.history4Desc',
-  },
-] as const
-
-const TEAM = [
-  {
-    src: '/about/team/team-founder.jpg',
-    nameKey: 'about.teamFounderName',
-    roleKey: 'about.teamFounderRole',
-  },
-  {
-    src: '/about/team/team-editorial.jpg',
-    nameKey: 'about.teamEditorialName',
-    roleKey: 'about.teamEditorialRole',
-  },
-  {
-    src: '/about/team/team-product.jpg',
-    nameKey: 'about.teamProductName',
-    roleKey: 'about.teamProductRole',
-  },
-  {
-    src: '/about/team/team-creators.jpg',
-    nameKey: 'about.teamCreatorsName',
-    roleKey: 'about.teamCreatorsRole',
-  },
 ] as const
 
 const AboutPage = () => {
@@ -129,186 +85,122 @@ const AboutPage = () => {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
-        <Breadcrumb items={page.breadcrumbs} className="mb-6" />
-        <PageHeader
-          variant="masthead"
-          eyebrow={page.eyebrow}
-          title={t('about.whoWeAre')}
-          deck={page.deck}
-        />
+        <AboutProvider>
+          <Breadcrumb items={page.breadcrumbs} className="mb-6" />
+          <PageHeader
+            variant="masthead"
+            eyebrow={page.eyebrow}
+            title={t('about.whoWeAre')}
+            deck={page.deck}
+          />
 
-        <section className="mb-20">
-          <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
-            {FACTS.map((fact) => (
-              <div key={fact.labelKey}>
-                <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
-                  {t(fact.labelKey)}
-                </dt>
-                <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        <section className={SECTION_RULE}>
-          <h2 className={SECTION_HEADING}>
-            <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
-            {t('about.howItWorks')}
-          </h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            {howItWorks.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className={`${CARD} p-6`}>
-                <span className={ICON_WELL}>
-                  <Icon className="h-5 w-5" aria-hidden />
-                </span>
-                <h3 className="mt-5 text-base font-bold text-gray-900">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={SECTION_RULE}>
-          <h2 className={SECTION_HEADING}>
-            <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
-            {t('about.ourStory')}
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
-            {t('about.ourStoryDesc')}
-          </p>
-          <StoryBook chapters={getPublishedStoryChapters()} />
-        </section>
-
-        <section className={SECTION_RULE}>
-          <h2 className={SECTION_HEADING}>
-            <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
-            {t('about.ourHistory')}
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
-            {t('about.historyDeck')}
-          </p>
-          <ol className="mt-10 space-y-10">
-            {HISTORY.map((item) => (
-              <li key={item.titleKey} className="grid gap-6 lg:grid-cols-12 lg:items-start">
-                <p className="text-primary-600 text-sm font-bold tracking-widest uppercase lg:col-span-2">
-                  {t(item.yearKey)}
-                </p>
-                <div className="lg:col-span-10">
-                  <h3 className="text-base font-bold text-gray-900">{t(item.titleKey)}</h3>
-                  <p className="mt-2 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
-                    {t(item.descKey)}
-                  </p>
-                  {'photo' in item ? (
-                    <img
-                      src={item.photo}
-                      alt={t('about.studioAlt')}
-                      width={1920}
-                      height={1080}
-                      loading="lazy"
-                      className="mt-6 h-48 w-full max-w-3xl rounded-3xl object-cover sm:h-64"
-                    />
-                  ) : null}
+          <section className="mb-20">
+            <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
+              {FACTS.map((fact) => (
+                <div key={fact.labelKey}>
+                  <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                    {t(fact.labelKey)}
+                  </dt>
+                  <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>
                 </div>
-              </li>
-            ))}
-          </ol>
-        </section>
+              ))}
+            </dl>
+          </section>
 
-        <section className={SECTION_RULE}>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {missionVision.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className={`${CARD} p-8`}>
-                <span className={ICON_WELL}>
-                  <Icon className="h-5 w-5" aria-hidden />
-                </span>
-                <h2 className="mt-5 text-lg font-bold text-balance text-gray-900">{title}</h2>
-                <p className="mt-3 text-sm leading-relaxed font-medium text-gray-600">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={SECTION_RULE}>
-          <div className="mx-auto mb-12 max-w-xl text-center">
-            <h2 className={`${SECTION_HEADING} justify-center`}>
+          <section className={SECTION_RULE}>
+            <h2 className={SECTION_HEADING}>
               <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
-              {t('about.ourValues')}
+              {t('about.howItWorks')}
             </h2>
-            <p className="mt-3 text-sm font-medium text-gray-500">{t('about.valuesDeck')}</p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {coreValues.map((val) => (
-              <motion.div
-                key={val.title}
-                whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.01 }}
-                className={`${CARD} border-gray-100 p-6 transition-shadow duration-300 hover:shadow-md`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={ICON_WELL}>
-                    <val.icon className="h-5.5 w-5.5 stroke-[2.2]" aria-hidden />
-                  </div>
-                  <h3 className="text-base font-bold text-gray-900">{val.title}</h3>
+            <div className="mt-8 grid gap-6 sm:grid-cols-3">
+              {howItWorks.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className={`${CARD} p-6`}>
+                  <span className={ICON_WELL}>
+                    <Icon className="h-5 w-5" aria-hidden />
+                  </span>
+                  <h3 className="mt-5 text-base font-bold text-gray-900">{title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">{desc}</p>
                 </div>
-                <p className="mt-4 pl-1 text-sm leading-relaxed font-medium text-gray-500">
-                  {val.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
 
-        <section className={SECTION_RULE}>
-          <h2 className={SECTION_HEADING}>
-            <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
-            {t('about.ourTeam')}
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
-            {t('about.teamDeck')}
-          </p>
-          <ul className="mt-10 grid grid-cols-2 gap-6 lg:grid-cols-4">
-            {TEAM.map((member) => {
-              const name = t(member.nameKey)
-              const role = t(member.roleKey)
-              return (
-                <li key={member.src}>
-                  <img
-                    src={member.src}
-                    alt={`${name}, ${role}`}
-                    width={1024}
-                    height={1024}
-                    loading="lazy"
-                    className="aspect-square w-full rounded-2xl object-cover object-top"
-                  />
-                  <h3 className="mt-4 text-base font-bold text-gray-900">{name}</h3>
-                  <p className="text-2xs mt-1 font-bold tracking-widest text-gray-400 uppercase">
-                    {role}
+          <section className={SECTION_RULE}>
+            <h2 className={SECTION_HEADING}>
+              <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
+              {t('about.ourStory')}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+              {t('about.ourStoryDesc')}
+            </p>
+            <StoryBook chapters={getPublishedStoryChapters()} />
+          </section>
+
+          <AboutHistorySection />
+
+          <section className={SECTION_RULE}>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {missionVision.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className={`${CARD} p-8`}>
+                  <span className={ICON_WELL}>
+                    <Icon className="h-5 w-5" aria-hidden />
+                  </span>
+                  <h2 className="mt-5 text-lg font-bold text-balance text-gray-900">{title}</h2>
+                  <p className="mt-3 text-sm leading-relaxed font-medium text-gray-600">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className={SECTION_RULE}>
+            <div className="mx-auto mb-12 max-w-xl text-center">
+              <h2 className={`${SECTION_HEADING} justify-center`}>
+                <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
+                {t('about.ourValues')}
+              </h2>
+              <p className="mt-3 text-sm font-medium text-gray-500">{t('about.valuesDeck')}</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {coreValues.map((val) => (
+                <motion.div
+                  key={val.title}
+                  whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.01 }}
+                  className={`${CARD} border-gray-100 p-6 transition-shadow duration-300 hover:shadow-md`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={ICON_WELL}>
+                      <val.icon className="h-5.5 w-5.5 stroke-[2.2]" aria-hidden />
+                    </div>
+                    <h3 className="text-base font-bold text-gray-900">{val.title}</h3>
+                  </div>
+                  <p className="mt-4 pl-1 text-sm leading-relaxed font-medium text-gray-500">
+                    {val.desc}
                   </p>
-                </li>
-              )
-            })}
-          </ul>
-          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-gray-500">
-            {t('about.teamStandInNote')}
-          </p>
-        </section>
+                </motion.div>
+              ))}
+            </div>
+          </section>
 
-        <section className={`${CARD} mt-12 p-8 text-center shadow-lg`}>
-          <h2 className="text-lg font-bold tracking-wider text-balance text-gray-900 uppercase">
-            {t('about.getInvolved')}
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed font-medium text-gray-500">
-            {t('about.getInvolvedDesc')}
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/creators" className={PRIMARY_CTA}>
-              {t('about.publishWithUs')}
-            </Link>
-            <Link to="/contact" className={SECONDARY_CTA}>
-              {t('about.getInTouch')}
-            </Link>
-          </div>
-        </section>
+          <AboutTeamSection />
+
+          <section className={`${CARD} mt-12 p-8 text-center shadow-lg`}>
+            <h2 className="text-lg font-bold tracking-wider text-balance text-gray-900 uppercase">
+              {t('about.getInvolved')}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed font-medium text-gray-500">
+              {t('about.getInvolvedDesc')}
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link to="/creators" className={PRIMARY_CTA}>
+                {t('about.publishWithUs')}
+              </Link>
+              <Link to="/contact" className={SECONDARY_CTA}>
+                {t('about.getInTouch')}
+              </Link>
+            </div>
+          </section>
+        </AboutProvider>
       </div>
     </div>
   )

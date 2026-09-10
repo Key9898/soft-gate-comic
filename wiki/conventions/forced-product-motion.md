@@ -4,8 +4,8 @@ type: convention
 date: 2026-08-17
 tags: [motion, a11y, reduced-motion, softgate]
 impl: 90
-updated: 2026-09-09
-impl_updated: 199
+updated: 2026-09-10
+impl_updated: 208
 ---
 
 # Forced product motion
@@ -20,6 +20,7 @@ This is a standing product rule, not a one-off Home-hero exception.
 - Auth login/register photo curtain (`.auth-split-bg-motion` transform + `.auth-split-slide` on heroes, 0.65s) is product motion — do not `transition: none` those selectors in reduce blocks. Form panes do not slide.
 - Reader `CommentsSheet` enter (bottom sheet / drawer) is product motion — do not gate it on `prefers-reduced-motion` (Impl 197).
 - Reader header/footer enter and `ReaderSheet` enter are product motion — do not gate them on `prefers-reduced-motion` (Impl 199).
+- Home rail radial View All (`.home-radial-slot` rotate/translate/scale, dialog/backdrop enter) is product motion — do not gate it on `prefers-reduced-motion` or `useReducedMotion` (Impl 208).
 - Do **not** kill those properties in reduce blocks with `animation: none` or `transition: none` on the same selectors.
 - Treat Windows reduce-motion as a common visitor, not an edge case.
 

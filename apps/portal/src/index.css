@@ -871,6 +871,112 @@ html[lang='mm'] textarea {
 }
 
 /* ============================================ */
+/* Home rail radial (Impl 208) — forced product */
+/* ============================================ */
+
+@keyframes home-radial-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes home-radial-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.15rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.home-radial-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.home-radial-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(15 23 42 / 0.46);
+  backdrop-filter: blur(10px);
+  animation: home-radial-backdrop-enter 0.35s ease;
+}
+
+.home-radial-dialog {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(72rem, 100%);
+  max-height: min(92dvh, 52rem);
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: 0 28px 80px rgb(15 23 42 / 0.28);
+  animation: home-radial-dialog-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-radial-scene {
+  position: relative;
+  height: 22.5rem;
+  overflow: hidden;
+  perspective: 1200px;
+  background:
+    radial-gradient(ellipse 80% 58% at 50% 82%, rgb(14 148 148 / 0.1), transparent 62%),
+    linear-gradient(180deg, #f8fafc 0%, #fff 58%);
+}
+
+@media (min-width: 640px) {
+  .home-radial-scene {
+    height: 28.5rem;
+  }
+}
+
+.home-radial-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.home-radial-slot {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  width: 8.75rem;
+  margin-left: -4.375rem;
+  transform: rotate(var(--radial-rot)) translateX(var(--radial-x)) translateY(var(--radial-y))
+    scale(var(--radial-scale));
+  transform-origin: 50% 125%;
+  opacity: var(--radial-opacity);
+  z-index: var(--radial-z);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 640px) {
+  .home-radial-slot {
+    width: 10.5rem;
+    margin-left: -5.25rem;
+  }
+}
+
+.home-radial-slot.is-far {
+  pointer-events: none;
+}
+
+/* ============================================ */
 /* Reduced Motion                               */
 /* ============================================ */
 

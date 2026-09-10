@@ -14,6 +14,7 @@ export interface HomeCatalogRailProps {
   description?: string
   icon?: ReactNode
   viewAllTo?: string
+  onViewAll?: () => void
   webtoons: Webtoon[]
   lang: 'mm' | 'en'
   genres: Genre[]
@@ -40,6 +41,7 @@ const HomeCatalogRail = ({
   description,
   icon,
   viewAllTo,
+  onViewAll,
   webtoons,
   lang,
   genres,
@@ -75,7 +77,16 @@ const HomeCatalogRail = ({
               <p className="mt-1 text-xs text-gray-500 sm:text-sm">{description}</p>
             ) : null}
           </div>
-          {viewAllTo && !empty ? (
+          {!empty && onViewAll ? (
+            <button
+              type="button"
+              onClick={onViewAll}
+              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
+            >
+              {t('common.viewAll')}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          ) : !empty && viewAllTo ? (
             <Link
               to={viewAllTo}
               className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"

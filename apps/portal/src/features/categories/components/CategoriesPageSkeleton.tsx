@@ -2,27 +2,17 @@ import { useId, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Check, ChevronDown, ListFilter } from 'lucide-react'
+import CatalogBusyPanel from '../../../components/CatalogBusyPanel'
 import GenreRailChevron from '../../../components/GenreRailChevron'
 import SEO from '../../../components/SEO/SEO'
-import {
-  Skeleton,
-  SkeletonBookCard,
-  SkeletonSection,
-  SkeletonText,
-} from '../../../components/Skeleton'
-import { catalogHref, PAGE_SIZE, rankOnPage, type CatalogSort } from '../../../lib/catalog'
+import { Skeleton, SkeletonSection } from '../../../components/Skeleton'
+import { catalogHref, type CatalogSort } from '../../../lib/catalog'
 import { getBrowseMasthead } from '../browseMasthead'
-
-const GENRE_SKELETON_CAP = 8
-
-const CATALOG_GRID =
-  'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
 
 type StatusFilter = 'all' | 'ongoing' | 'completed' | 'hiatus'
 
 const CategoriesPageSkeleton = ({
   ranked = false,
-  page = 1,
   sort = 'browse',
   status = 'all',
   genreSlug = 'all',
@@ -98,17 +88,11 @@ const CategoriesPageSkeleton = ({
       >
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="mb-4 flex items-center gap-2">
-            <SkeletonSection className="min-w-0 flex-1">
-              <div
-                role="group"
-                aria-label={t('home.genres')}
-                className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain sm:gap-3"
-              >
-                {Array.from({ length: GENRE_SKELETON_CAP }, (_, i) => (
-                  <Skeleton key={i} className="min-h-11 w-24 shrink-0" />
-                ))}
-              </div>
-            </SkeletonSection>
+            <div
+              role="group"
+              aria-label={t('home.genres')}
+              className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-x-auto overscroll-x-contain sm:gap-3"
+            />
             <GenreRailChevron enabled={false} size="md" />
           </div>
 
@@ -139,9 +123,7 @@ const CategoriesPageSkeleton = ({
             })}
           </div>
 
-          <div className="flex items-center justify-between">
-            <SkeletonText className="w-32" />
-
+          <div className="flex items-center justify-end">
             <div className="relative">
               <button
                 type="button"
@@ -212,11 +194,7 @@ const CategoriesPageSkeleton = ({
       <div className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SkeletonSection>
-            <div className={CATALOG_GRID}>
-              {Array.from({ length: PAGE_SIZE }, (_, i) => (
-                <SkeletonBookCard key={i} rank={isRanked ? rankOnPage(page, i) : undefined} />
-              ))}
-            </div>
+            <CatalogBusyPanel />
           </SkeletonSection>
         </div>
       </div>

@@ -4,8 +4,8 @@ type: convention
 date: 2026-08-17
 tags: [home, hero, carousel, softgate]
 impl: 92
-updated: 2026-09-09
-impl_updated: 198
+updated: 2026-09-10
+impl_updated: 210
 ---
 
 # Hero Spotlight
@@ -16,7 +16,7 @@ Home hero rotator for SoftGate Comic.
 
 - Slides: editorial Spotlight (`spotlight === true`, `spotlightOrder`). Cap **5**. Fallback to `viewCount` top 5 only when the catalog has **zero** spotlight flags.
 - Stable **`h1`**: `home.pageHeading` (“SoftGate Comic — Myanmar webtoons”). Eyebrow `<p>` is `home.spotlightKicker` (“This week's spotlight”). Series title is a large **`h2`** (does not rotate the page heading).
-- Static SoftGate `/banner/banner.png` + gradient — background does **not** rotate. Home skeleton reuses the same static chrome ([2026-08-21-hero-skeleton-chrome.md](../notes/2026-08-21-hero-skeleton-chrome.md), Impl 159).
+- Static SoftGate `/banner/banner.png` + gradient — background does **not** rotate. Home **loading** paints that banner + `home.pageHeading` only (no series bones, no Help/Creators) — Impl 210. Empty `slides` after load keep banner + heading, then empty or unavailable copy (Impl 196 / 198).
 - Empty `slides` still paint that banner chrome and the same `min-h` ladder. `h1` stays `home.pageHeading`. Catalog **success-empty**: honest unpublished deck + Help / Creators (Impl 196). Catalog **load-fail** (`unavailable`): `errors.catalogUnavailable`, no Help / Creators (Impl 198). No series title, no Start Reading / Subscribe, no `HeroBook3D`, no dots/Pause.
 - Rotating layer: title, deck, Start Reading / Save, `HeroBook3D`
 - Home cover is pointer-only (`coverTabbable={false}`): a `div` that `navigate`s to the hub on click — not a `Link`, not in the tab order, not in the SR link list. Keyboard users use Start Reading. Detail keeps the cover as a tabbable `Link`. Do not wrap a Home linked book in `aria-hidden`.

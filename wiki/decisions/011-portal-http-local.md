@@ -31,7 +31,7 @@ Vite never loads `.env.example`. Vite **does** load `.env` and `.env.local` in e
 
 - Vercel without the var stays mock/localStorage.
 - `pnpm check` stays mock unless a test stubs `VITE_USE_MOCK_API=false`.
-- `pnpm dev` on this machine hits localhost:3000 when `.env.development.local` is present and `pnpm dev:api` is running. API down → catalog error shell, not mock seed.
+- `pnpm dev` on this machine hits gitignored `VITE_API_BASE_URL` (often not `:3000` when Admin holds 3000) when `.env.development.local` is present and `pnpm dev:api` is **listening**. Confirm `GET /health`. API down → catalog error shell (`ERR_CONNECTION_REFUSED`), not mock seed. Do not retarget Admin. Note: [2026-09-10-live-join-api-listen.md](../notes/2026-09-10-live-join-api-listen.md).
 
 ## Alternatives considered
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { render, screen } from './utils'
 import PrivacyPage from '../features/info/PrivacyPage'
 import TermsPage from '../features/info/TermsPage'
@@ -28,6 +28,11 @@ const expectSharedLegalChrome = (
   expect(toc.className).toMatch(/scrollbar-thin-primary/)
   expect(toc.className).not.toMatch(/scrollbar-hide/)
 }
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+  vi.unstubAllGlobals()
+})
 
 describe('PrivacyPage', () => {
   it('renders the h1 and TOC anchor links', () => {
@@ -144,5 +149,204 @@ describe('CookiesPage', () => {
     const { container } = render(<CookiesPage />)
     expect(container.textContent).not.toMatch(/static\.[a-zA-Z]/)
     expect(container.textContent).not.toMatch(/legal\.[a-zA-Z]/)
+  })
+})
+
+const bi = (en: string, mm = en) => ({ en, mm })
+
+const LIVE_COOKIE_COPY = {
+  cookiesTitle: bi('Cookie Policy'),
+  cookiesSeoDesc: bi('Live cookies SEO'),
+  whatAreCookies: bi('What Are Cookies'),
+  whatAreCookiesDesc: bi('Live what are cookies body.'),
+  howWeUseCookies: bi('Cookies & Local Storage We Use'),
+  howWeUseCookiesDesc: bi('Live how we use cookies.'),
+  essentialCookies: bi('Essential Storage'),
+  essentialCookiesDesc: bi('Live essential.'),
+  functionalCookies: bi('Functional Storage'),
+  functionalCookiesDesc: bi('Live functional.'),
+  analyticsCookies: bi('Analytics'),
+  analyticsCookiesDesc: bi('Live analytics none.'),
+  marketingCookies: bi('Marketing & Advertising'),
+  marketingCookiesDesc: bi('Live marketing none.'),
+  storageDetails: bi('What We Store In Your Browser'),
+  storageDetailsDesc: bi('Live storage details.'),
+  managingCookies: bi('Managing Your Data'),
+  managingCookiesDesc: bi('Live managing.'),
+  thirdPartyCookies: bi('Third-Party Cookies'),
+  thirdPartyCookiesDesc: bi('Live third party.'),
+  updatesPolicy: bi('Policy Updates'),
+  updatesPolicyDesc: bi('Live updates.'),
+}
+
+describe('Cookies live consume', () => {
+  it('fails open to i18n copy when live cookies fetch fails', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (!String(input).includes('/api/cookies')) {
+          return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+        }
+        throw new Error('down')
+      })
+    )
+    render(<CookiesPage />)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Cookie Policy' })
+    ).toBeInTheDocument()
+    expect(screen.getByText(/does not set any tracking cookies/i)).toBeInTheDocument()
+    expect(screen.getByText('Coin wallet')).toBeInTheDocument()
+  })
+
+  it('uses live cookies payload when fetch succeeds', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (!String(input).includes('/api/cookies')) {
+          return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+        }
+        return new Response(
+          JSON.stringify({
+            data: {
+              effectiveDate: '2026-10-01',
+              copy: LIVE_COOKIE_COPY,
+              glance: [bi('Live cookies glance does not set any tracking cookies.')],
+              rows: [
+                {
+                  id: 'wallet',
+                  storageKey: 'softgate_wallet_v1',
+                  label: bi('Live coin wallet'),
+                  description: bi('Live wallet row.'),
+                  sortOrder: 1,
+                },
+              ],
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      })
+    )
+    render(<CookiesPage />)
+    expect(
+      await screen.findByText('Live cookies glance does not set any tracking cookies.')
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Last updated October 1, 2026/i)).toBeInTheDocument()
+    expect(screen.getByText('Live what are cookies body.')).toBeInTheDocument()
+    expect(screen.getByText('Live coin wallet')).toBeInTheDocument()
+    expect(screen.queryByText('Demo catalog')).not.toBeInTheDocument()
+  })
+})
+
+describe('Privacy and Terms live consume', () => {
+  it('fails open to i18n copy when live privacy fetch fails', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new Error('down')
+      })
+    )
+    render(<PrivacyPage />)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Privacy Policy' })
+    ).toBeInTheDocument()
+    expect(screen.getAllByText(/does not send your data to any server/i).length).toBeGreaterThan(0)
+    expect(screen.getByRole('link', { name: 'Profile → Security' })).toHaveAttribute(
+      'href',
+      '/profile?tab=security'
+    )
+  })
+
+  it('uses live privacy payload when fetch succeeds', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              data: {
+                seoDesc: { en: 'Live privacy SEO', mm: 'Live privacy SEO' },
+                glance: [
+                  { en: 'Live glance does not send your data to any server.', mm: 'Live glance' },
+                ],
+                effectiveDate: '2026-10-01',
+                sections: [
+                  {
+                    id: '1',
+                    slug: 'rights',
+                    kind: 'privacy-rights',
+                    headingLevel: 'h2',
+                    title: { en: 'Your Rights', mm: 'သင့်အခွင့်အရေးများ' },
+                    body: { en: 'Live rights body.', mm: 'Live rights body.' },
+                    bullets: [
+                      { en: 'Profile → Security', mm: 'Profile → လုံခြုံရေး' },
+                      { en: 'Signed-in readers can delete.', mm: 'ဖျက်နိုင်ပါသည်။' },
+                      { en: 'Anyone can clear site data.', mm: 'ရှင်းလင်းနိုင်ပါသည်။' },
+                      { en: 'Guests have no account.', mm: 'ဧည့်သည်။' },
+                      { en: 'Contact page', mm: 'ဆက်သွယ်ရန် စာမျက်နှာ' },
+                    ],
+                    sortOrder: 0,
+                  },
+                ],
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+          )
+      )
+    )
+    render(<PrivacyPage />)
+    expect(
+      await screen.findByText('Live glance does not send your data to any server.')
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Last updated October 1, 2026/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Profile → Security' })).toHaveAttribute(
+      'href',
+      '/profile?tab=security'
+    )
+    expect(screen.getAllByRole('link', { name: 'Contact page' }).length).toBeGreaterThan(0)
+  })
+
+  it('uses live terms coins copy when fetch succeeds', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              data: {
+                seoDesc: { en: 'Live terms SEO', mm: 'Live terms SEO' },
+                glance: [{ en: 'Live terms glance.', mm: 'Live terms glance.' }],
+                effectiveDate: '2026-09-10',
+                sections: [
+                  {
+                    id: 'coins-1',
+                    slug: 'coins',
+                    kind: 'bullets',
+                    headingLevel: 'h2',
+                    title: { en: 'Coins & Virtual Items', mm: 'Coin များ' },
+                    body: { en: 'Live coins intro.', mm: 'Live coins intro.' },
+                    bullets: [
+                      {
+                        en: 'Live coins have no real-world monetary value.',
+                        mm: 'Live coins have no real-world monetary value.',
+                      },
+                    ],
+                    sortOrder: 0,
+                  },
+                ],
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+          )
+      )
+    )
+    render(<TermsPage />)
+    expect(await screen.findByText('Live coins intro.')).toBeInTheDocument()
+    expect(screen.getByText(/Live coins have no real-world monetary value/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Coins & Virtual Items' })).toBeInTheDocument()
   })
 })

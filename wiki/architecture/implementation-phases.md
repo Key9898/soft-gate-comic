@@ -9,7 +9,7 @@ tags: [phases, softgate, comic, frontend]
 
 Master Impl index for the **SoftGate Comic** webtoon reader portal (`apps/portal` as it ships today).
 
-**Next Impl number to use: `205`.**
+**Next Impl number to use: `214`.**
 
 Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementation-phases-legacy.md](implementation-phases-legacy.md).
 
@@ -234,6 +234,15 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 202  | 2026-09-10 | Live join smoke (catalog + settings + coins + reader)        | [2026-09-10-live-join-smoke.md](../notes/2026-09-10-live-join-smoke.md)                                                                                       |
 | 203  | 2026-09-10 | Reader notification delivery pipe                            | [2026-09-10-notification-delivery-pipe.md](../notes/2026-09-10-notification-delivery-pipe.md)                                                                 |
 | 204  | 2026-09-10 | new_episode API fan-out                                      | [2026-09-10-new-episode-fan-out.md](../notes/2026-09-10-new-episode-fan-out.md)                                                                               |
+| 205  | 2026-09-10 | Public GET /api/about                                        | [2026-09-10-about-public-read.md](../notes/2026-09-10-about-public-read.md)                                                                                   |
+| 206  | 2026-09-10 | Portal Our history from GET /api/about                       | [2026-09-10-about-history-ui.md](../notes/2026-09-10-about-history-ui.md)                                                                                     |
+| 207  | 2026-09-10 | Portal Our team from GET /api/about                          | [2026-09-10-about-team-ui.md](../notes/2026-09-10-about-team-ui.md)                                                                                           |
+| 208  | 2026-09-10 | Home rail Radial Cards View All                              | [2026-09-10-home-rail-radial-view-all.md](../notes/2026-09-10-home-rail-radial-view-all.md)                                                                   |
+| 209  | 2026-09-10 | Complete Press kit (real ZIP + Demo IA)                      | [2026-09-10-press-kit-complete.md](../notes/2026-09-10-press-kit-complete.md)                                                                                 |
+| 210  | 2026-09-10 | Honest catalog loading chrome                                | [2026-09-10-catalog-loading-chrome.md](../notes/2026-09-10-catalog-loading-chrome.md)                                                                         |
+| 211  | 2026-09-10 | Public GET /api/press + PressPage consume                    | [2026-09-10-press-cms-consume.md](../notes/2026-09-10-press-cms-consume.md)                                                                                   |
+| 212  | 2026-09-10 | Public GET /api/legal/privacy and /api/legal/terms consume   | [2026-09-10-privacy-terms-consume.md](../notes/2026-09-10-privacy-terms-consume.md)                                                                           |
+| 213  | 2026-09-10 | Public GET /api/faq /api/cookies + FAQ/Cookies consume       | [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md)                                                                               |
 
 ---
 
@@ -1908,13 +1917,85 @@ Admin Express fans out through website `/api/internal/notifications` (`ADMIN_SER
 
 **Status:** Done
 
-Admin Express pings `POST /api/internal/notifications/new-episode` with `{ webtoonId, episodeNumber }` only. This API reads `LibrarySubscribe`, writes inbox id `sub-{webtoonId}-{episodeNumber}`, then reuses `deliverOutOfBand`. Missing published pair returns 200 zeros. HTTP portal stops `syncSubscribeNotifications`; mock keeps it. No campaign row. Next **205**. Note: [2026-09-10-new-episode-fan-out.md](../notes/2026-09-10-new-episode-fan-out.md). Convention: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md), [portal-notifications-http.md](../conventions/portal-notifications-http.md), [library-bookmarks.md](../conventions/library-bookmarks.md).
+Admin Express pings `POST /api/internal/notifications/new-episode` with `{ webtoonId, episodeNumber }` only. This API reads `LibrarySubscribe`, writes inbox id `sub-{webtoonId}-{episodeNumber}`, then reuses `deliverOutOfBand`. Missing published pair returns 200 zeros. HTTP portal stops `syncSubscribeNotifications`; mock keeps it. No campaign row. Note: [2026-09-10-new-episode-fan-out.md](../notes/2026-09-10-new-episode-fan-out.md). Convention: [portal-notifications-deliver.md](../conventions/portal-notifications-deliver.md), [portal-notifications-http.md](../conventions/portal-notifications-http.md), [library-bookmarks.md](../conventions/library-bookmarks.md).
+
+---
+
+## Impl Phase 205 — Public GET /api/about (2026-09-10)
+
+**Status:** Done
+
+Public Hono `GET /api/about` reads Admin `AboutHistory` / `AboutTeamMember` / `AboutTeamMeta` on shared Postgres (schema copy, no website about migration). Envelope `{ data }`. Never 401. Empty published lists stay `[]`. Meta missing/`P2021` fail-opens to portal copy. Independent `P2021` per table. Stub persist returns four seed histories (months 1 / 3 / 6 / 12) and four people. Portal `/about` stays hardcoded until 206–207. Note: [2026-09-10-about-public-read.md](../notes/2026-09-10-about-public-read.md). Convention: [portal-about-read.md](../conventions/portal-about-read.md), [named-integrations.md](../conventions/named-integrations.md).
+
+---
+
+## Impl Phase 206 — Portal Our history from GET /api/about (2026-09-10)
+
+**Status:** Done
+
+Portal Our history consumes `GET /api/about` `histories` when mock is off. Mock keeps the four i18n rows (`Next`, studio jpg). HTTP groups by year ASC with month names, honest empty, and in-section Retry (`a11y.retry`). Team stays hardcoded until **207**. No Admin or Hono payload change. Note: [2026-09-10-about-history-ui.md](../notes/2026-09-10-about-history-ui.md). Convention: [portal-about-read.md](../conventions/portal-about-read.md).
+
+---
+
+## Impl Phase 207 — Portal Our team from GET /api/about (2026-09-10)
+
+**Status:** Done
+
+Portal Our team consumes `GET /api/about` `members` + `meta` when mock is off. One shared GET with History. Mock keeps the four i18n portraits + stand-in note. HTTP uses CMS deck/note, honest empty, in-section Retry, and omits `img` when `photoUrl` is missing (never `team-*.jpg`, never initials well). Independent parse: missing `histories` fails History only; missing `members` fails Team only. No Admin or Hono payload change. Next is **212**. Note: [2026-09-10-about-team-ui.md](../notes/2026-09-10-about-team-ui.md). Convention: [portal-about-read.md](../conventions/portal-about-read.md).
+
+---
+
+## Impl Phase 208 — Home rail Radial Cards View All (2026-09-10)
+
+**Status:** Done
+
+Home Popular, Updated, and New Releases **View All** open one shared radial-cards dialog of that rail’s existing six-pack. Discovery lists are unchanged. Search landing rails keep `Link` to `/ranking` and `/categories?sort=new`. Nav `/ranking` and `/categories?sort=new` stay. Trending still has no View All. Numbers **205–207** were skipped as mandated; next is **209**. Note: [2026-09-10-home-rail-radial-view-all.md](../notes/2026-09-10-home-rail-radial-view-all.md). Convention: [discovery-honesty.md](../conventions/discovery-honesty.md), [forced-product-motion.md](../conventions/forced-product-motion.md).
+
+---
+
+## Impl Phase 209 — Complete Press kit (real ZIP + Demo IA) (2026-09-10)
+
+**Status:** Done
+
+`/press` is a complete press-kit hub: real ZIP of `logo.svg` + `logo.png` + `icon-512.png` at `/press-kit/softgate-comic-press-kit.zip`, About-class chrome, jump TOC, palette, Demo news/stills/desk slots, left media contact, copy fallback. Numbers **205–208** were not used for this page (208 already shipped Home rail View All; 205–207 stay unused). Next is **210**. Note: [2026-09-10-press-kit-complete.md](../notes/2026-09-10-press-kit-complete.md). Convention: [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 210 — Honest catalog loading chrome (2026-09-10)
+
+**Status:** Done
+
+Catalog-gated page skeletons (Home, Categories, Search, hub, Author, Library) paint live chrome plus copy-free `CatalogBusyPanel` wells. They no longer invent 6/12/24 book cards. Empty copy and Help/Creators stay on the resolved empty paint (Impl 196). Reader chrome is unchanged. Account skeletons stay on disk and unhooked. Discovery jobs and Impl 208 View All are unchanged. **207** stays unused. Next is **211**. Note: [2026-09-10-catalog-loading-chrome.md](../notes/2026-09-10-catalog-loading-chrome.md). Convention: [loading-states.md](../conventions/loading-states.md), [discovery-honesty.md](../conventions/discovery-honesty.md).
+
+---
+
+## Impl Phase 211 — Public GET /api/press + PressPage consume (2026-09-10)
+
+**Status:** Done
+
+Public Hono `GET /api/press` reads Admin `PressMeta` / `PressNews` / `PressStill` on shared Postgres (schema copy, no website press migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_PRESS`. Portal `/press` fetches when mock is off; fail or mock keeps `t('press.*')`. Chrome/TOC/Copy unchanged. Empty news is meta empty-news copy; empty stills is note + empty grid. Spokesperson from a published About member or omit. Admin writes stay Admin Impl 63; this repo does not claim that number. **207** stays unused. Next is **212**. Note: [2026-09-10-press-cms-consume.md](../notes/2026-09-10-press-cms-consume.md). Convention: [portal-press-read.md](../conventions/portal-press-read.md), [info-page-chrome.md](../conventions/info-page-chrome.md).
+
+---
+
+## Impl Phase 212 — Public GET /api/legal/privacy|terms + Privacy/Terms consume (2026-09-10)
+
+**Status:** Done
+
+Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Privacy/Terms CMS tables on shared Postgres (schema copy, no website legal migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_PRIVACY` / `STUB_TERMS`. Portal `/privacy` `/terms` fetch when mock is off; fail or mock keeps `t('static.*')`. Shell chrome stays (`LegalPageShell`, TOC, related strip, Contact). Optional `lastUpdatedDate` on the shell; Cookies still use `LEGAL_EFFECTIVE_DATE`. Rights hrefs stay `/profile?tab=security` and `/contact`. Admin writes stay Admin Impl 67; this repo does not claim that number. **207** stays unused. Next is **213**. Note: [2026-09-10-privacy-terms-consume.md](../notes/2026-09-10-privacy-terms-consume.md). Convention: [portal-legal-read.md](../conventions/portal-legal-read.md), [legal-pages.md](../conventions/legal-pages.md).
+
+---
+
+## Impl Phase 213 — Public GET /api/faq /api/cookies + FAQ/Cookies consume (2026-09-10)
+
+**Status:** Done
+
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **214**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
 ## How to append
 
-1. Take **next free Impl** (currently **205**).
+1. Take **next free Impl** (currently **214**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

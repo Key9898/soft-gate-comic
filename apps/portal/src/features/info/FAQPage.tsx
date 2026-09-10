@@ -7,14 +7,8 @@ import SEO from '../../components/SEO/SEO'
 import Breadcrumb from '../../components/Breadcrumb'
 import PageHeader from '../../components/PageHeader'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
-import {
-  FAQ_CATEGORY_IDS,
-  FAQ_ITEMS,
-  getFaqItemById,
-  isFaqCategoryId,
-  type FaqCatalogItem,
-  type FaqCategoryId,
-} from '../../lib/info/faqCatalog'
+import { FAQ_CATEGORY_IDS, isFaqCategoryId, type FaqCategoryId } from '../../lib/info/faqCatalog'
+import { catalogFaqViews, liveFaqViews, useFaq, type FaqViewItem } from '../../lib/faq'
 
 const SECTION_HEADING =
   'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
@@ -31,7 +25,7 @@ const FAQItem = ({
   isOpen,
   onToggle,
 }: {
-  item: FaqCatalogItem
+  item: FaqViewItem
   isOpen: boolean
   onToggle: () => void
 }) => {
@@ -49,7 +43,7 @@ const FAQItem = ({
         onClick={onToggle}
         className="flex min-h-11 w-full items-center justify-between p-4 text-left transition-colors hover:bg-gray-50"
       >
-        <span className="pr-4 text-sm font-bold text-gray-950 sm:text-base">{t(item.qKey)}</span>
+        <span className="pr-4 text-sm font-bold text-gray-950 sm:text-base">{item.question}</span>
         <ChevronDown
           aria-hidden="true"
           className={`h-5 w-5 text-gray-400 transition-transform duration-300 ${
@@ -72,7 +66,7 @@ const FAQItem = ({
           >
             <div className="border-t border-gray-100 px-4.5 py-4">
               <p className="text-xs leading-relaxed font-bold text-gray-600 sm:text-sm">
-                {t(item.aKey)}
+                {item.answer}
               </p>
 
               {item.related && item.related.length > 0 ? (
@@ -83,7 +77,7 @@ const FAQItem = ({
                         to={related.to}
                         className="link inline-flex min-h-11 items-center text-sm font-bold"
                       >
-                        {t(related.labelKey)}
+                        {related.label}
                       </Link>
                     </li>
                   ))}
@@ -139,17 +133,23 @@ const FAQItem = ({
 }
 
 const FAQPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const page = getInfoPageMeta('faq', t)
+  const live = useFaq()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
   const [openId, setOpenId] = useState<string | null>(null)
 
+  const viewItems = useMemo(
+    () => (live ? liveFaqViews(live, i18n.language) : catalogFaqViews(t)),
+    [live, i18n.language, t]
+  )
+
   useEffect(() => {
     const hashId = location.hash.replace(/^#/, '')
-    const hashed = getFaqItemById(hashId)
+    const hashed = viewItems.find((item) => item.id === hashId)
     if (hashed) {
       setActiveCategory(hashed.category)
       setOpenId(hashed.id)
@@ -162,15 +162,15 @@ const FAQPage = () => {
     if (isFaqCategoryId(cat)) {
       setActiveCategory(cat)
     }
-  }, [location.hash, searchParams])
+  }, [location.hash, searchParams, viewItems])
 
   const filteredFAQ = useMemo(() => {
     const needle = searchQuery.trim().toLowerCase()
-    const visible = FAQ_ITEMS.filter((item) => {
+    const visible = viewItems.filter((item) => {
       if (activeCategory !== 'all' && item.category !== activeCategory) return false
       if (!needle) return true
       return (
-        t(item.qKey).toLowerCase().includes(needle) || t(item.aKey).toLowerCase().includes(needle)
+        item.question.toLowerCase().includes(needle) || item.answer.toLowerCase().includes(needle)
       )
     })
 
@@ -179,7 +179,7 @@ const FAQPage = () => {
       category: t(`faq.${id}`),
       items: visible.filter((item) => item.category === id),
     })).filter((group) => group.items.length > 0)
-  }, [activeCategory, searchQuery, t])
+  }, [activeCategory, searchQuery, t, viewItems])
 
   return (
     <div className="relative min-h-screen bg-gray-50 pb-20 transition-colors duration-300">

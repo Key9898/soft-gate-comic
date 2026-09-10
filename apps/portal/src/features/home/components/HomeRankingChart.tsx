@@ -11,7 +11,7 @@ export interface HomeRankingChartProps {
   eyebrow?: string
   title: string
   description?: string
-  viewAllTo: string
+  onViewAll: () => void
   webtoons: Webtoon[]
   lang: 'mm' | 'en'
   genres: Genre[]
@@ -33,7 +33,7 @@ const HomeRankingChart = ({
   eyebrow,
   title,
   description,
-  viewAllTo,
+  onViewAll,
   webtoons,
   lang,
   genres,
@@ -64,13 +64,14 @@ const HomeRankingChart = ({
             ) : null}
           </div>
           {empty ? null : (
-            <Link
-              to={viewAllTo}
+            <button
+              type="button"
+              onClick={onViewAll}
               className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
             >
               {t('common.viewAll')}
               <ChevronRight className="h-4 w-4" />
-            </Link>
+            </button>
           )}
         </div>
         {empty ? (

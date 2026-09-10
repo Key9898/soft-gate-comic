@@ -6,6 +6,11 @@ import {
   type PublishedCatalog,
 } from '@softgate/shared/catalog'
 import { STUB_PORTAL_SETTINGS, type PortalSettings } from '@softgate/shared/settings'
+import { STUB_ABOUT, type PortalAbout } from './about/fromAdmin.js'
+import { STUB_PRESS, type PortalPress } from './press/fromAdmin.js'
+import { STUB_PRIVACY, STUB_TERMS, type PortalLegalPage } from './legal/fromAdmin.js'
+import { STUB_FAQ, type PortalFaq } from './faq/fromAdmin.js'
+import { STUB_COOKIES, type PortalCookies } from './cookiePolicy/fromAdmin.js'
 import type { ReaderPublicUser } from './auth/types.js'
 import { isDatabaseConfigured, type Env } from './env.js'
 import { episodeUnlockKey, redactLockedEpisodeImages } from './paywall.js'
@@ -353,6 +358,12 @@ export type PersistPort = {
   getUnstrippedPublishedCatalog(): Promise<PublishedCatalog>
   getPublishedCatalog(userId?: string): Promise<PublishedCatalog>
   getPortalSettings(): Promise<PortalSettings>
+  getAbout(): Promise<PortalAbout>
+  getPress(): Promise<PortalPress>
+  getPrivacy(): Promise<PortalLegalPage>
+  getTerms(): Promise<PortalLegalPage>
+  getFaq(): Promise<PortalFaq>
+  getCookies(): Promise<PortalCookies>
   clearAuth(): Promise<void>
   setAuthFlags(flags: AuthFlags): void
   isRegistrationOpen(): Promise<boolean>
@@ -636,6 +647,24 @@ export function createStubPersist(): PersistPort {
     },
     async getPortalSettings() {
       return STUB_PORTAL_SETTINGS
+    },
+    async getAbout() {
+      return STUB_ABOUT
+    },
+    async getPress() {
+      return STUB_PRESS
+    },
+    async getPrivacy() {
+      return STUB_PRIVACY
+    },
+    async getTerms() {
+      return STUB_TERMS
+    },
+    async getFaq() {
+      return STUB_FAQ
+    },
+    async getCookies() {
+      return STUB_COOKIES
     },
     async clearAuth() {
       usersById.clear()

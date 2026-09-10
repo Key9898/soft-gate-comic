@@ -1,12 +1,40 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import LegalPageShell, { LEGAL_H2_CLASS, LEGAL_H3_CLASS } from './components/LegalPageShell'
+import LegalCmsSections from './components/LegalCmsSections'
+import { parseLegalDate, pickLegalText, useLegal } from '../../lib/legal'
 
 const RIGHTS_LINK =
   'focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl font-bold text-primary-600 hover:text-primary-700 focus-visible:ring-2 focus-visible:outline-none'
 
 const PrivacyPage = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const live = useLegal('privacy')
+  const language = i18n.language
+
+  if (live) {
+    const sections = [
+      { id: 'glance', label: t('legal.glance') },
+      ...live.sections.map((section) => ({
+        id: section.slug,
+        label: pickLegalText(section.title, language),
+        sub: section.headingLevel === 'h3',
+      })),
+      { id: 'contact', label: t('static.contactUs') },
+    ]
+    return (
+      <LegalPageShell
+        pageId="privacy"
+        seoTitle={t('footer.privacy')}
+        seoDescription={pickLegalText(live.seoDesc, language)}
+        sections={sections}
+        glanceItems={live.glance.map((item) => pickLegalText(item, language))}
+        lastUpdatedDate={parseLegalDate(live.effectiveDate)}
+      >
+        <LegalCmsSections sections={live.sections} language={language} />
+      </LegalPageShell>
+    )
+  }
 
   const sections = [
     { id: 'glance', label: t('legal.glance') },
