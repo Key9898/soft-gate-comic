@@ -329,6 +329,30 @@ model CoinPackage {
   updatedAt DateTime @updatedAt
 }
 
+// BEGIN ADMIN-OWNED TABLES
+//
+// Everything below this marker belongs to the Admin CMS, not to the website.
+// It is copied here so Prisma can generate read types and the website can serve
+// /api/about, /api/press, /api/faq, /api/cookies, and /api/legal. Admin owns the
+// authoritative definitions on the same Postgres instance.
+//
+// The website NEVER writes these tables and NEVER migrates them.
+//
+// Do not run `prisma migrate dev` in this app. It would generate a migration
+// that creates all of these, which conflicts with Admin's own schema on shared
+// Postgres. Use `pnpm db:migrate` (`prisma migrate deploy`) instead — it only
+// applies migrations that are already committed.
+//
+// When Admin changes one of these tables, edit the copy here by hand to match.
+// A drift shows up at runtime as a non-P2021 Prisma error, which the readers
+// rethrow as a 500 rather than silently serving a stub.
+//
+// src/test/adminOwnedSchema.test.ts enforces both halves of this: every model
+// listed there must sit inside this block, and no committed migration may
+// reference one of them.
+//
+// See prisma/README.md and wiki/conventions/portal-press-read.md.
+
 model AboutHistory {
   id          String   @id @default(uuid())
   year        Int
@@ -492,3 +516,5 @@ model TermsSection {
 
   @@index([sortOrder])
 }
+
+// END ADMIN-OWNED TABLES
