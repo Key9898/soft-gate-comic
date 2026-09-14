@@ -93,7 +93,7 @@ const Modal = ({
                     title={t('common.close')}
                     aria-label={t('common.close')}
                     onClick={onClose}
-                    className="flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                    className="text-muted flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 transition-colors hover:bg-gray-100 hover:text-gray-600"
                   >
                     <X className="h-5 w-5" aria-hidden="true" />
                   </button>

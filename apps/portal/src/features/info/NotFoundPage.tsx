@@ -11,6 +11,8 @@ import ScrollToTop from '../../components/ScrollToTop'
 import { useData } from '../../context/DataContext'
 import { rankingWebtoons } from '../../lib/catalog/discovery'
 import { useSsrResponse } from '../../lib/ssr/ssrResponse'
+import { buttonClasses } from '../../components/Button'
+import { DESTINATION_TILE } from './components/infoStyles'
 
 export type NotFoundVariant = 'page' | 'series' | 'episode' | 'author' | 'genre'
 
@@ -20,14 +22,11 @@ interface NotFoundPageProps {
   withSiteChrome?: boolean
 }
 
-const DEST_LINK =
-  'hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none'
+const DEST_LINK = DESTINATION_TILE
 
-const PRIMARY_CTA =
-  'bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl px-6 py-2.5 text-sm font-medium text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
+const PRIMARY_CTA = buttonClasses({ variant: 'primary', size: 'md' })
 
-const SECONDARY_CTA =
-  'focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl border border-gray-200 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
+const SECONDARY_CTA = buttonClasses({ variant: 'surface', size: 'md' })
 
 const COPY = {
   page: { titleKey: 'notFound.pageTitle', descKey: 'notFound.pageDesc' },
@@ -70,14 +69,14 @@ const NotFoundPage = ({
         description={t(copy.descKey)}
       />
       <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8">
-        <p className="text-primary-200 text-7xl font-bold tracking-tight sm:text-8xl" aria-hidden>
+        <p className="text-primary-700 text-7xl font-bold tracking-tight sm:text-8xl" aria-hidden>
           404
         </p>
         <h1 className="mt-4 text-2xl font-bold text-gray-900 sm:text-3xl">{t(copy.titleKey)}</h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-500">{t(copy.descKey)}</p>
 
         <div className="mt-8 w-full max-w-md text-left">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
             {t('search.title')}
           </h2>
           <div className="mt-4">
@@ -99,7 +98,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
             {t('notFound.goHere')}
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -113,7 +112,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl text-left">
-          <h2 className="text-center text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-muted text-center text-xs font-bold uppercase tracking-wider">
             {t('notFound.tryTitle')}
           </h2>
           <p className="mt-3 text-center text-sm leading-relaxed text-gray-500">
@@ -124,7 +123,7 @@ const NotFoundPage = ({
               <li key={webtoon.id}>
                 <Link
                   to={`/webtoon/${webtoon.id}`}
-                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:outline-none focus-visible:ring-2"
                 >
                   <BookCard
                     coverImage={webtoon.coverImage}
@@ -155,7 +154,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-xl">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
             {t('notFound.helpTitle')}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-500">{t('notFound.helpDesc')}</p>

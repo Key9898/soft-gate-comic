@@ -230,7 +230,7 @@ function ComposerFields({
             <Smile className="h-5 w-5" aria-hidden="true" />
           </button>
           <span
-            className={`text-xs ${remaining < 20 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}
+            className={`text-xs ${remaining < 20 ? 'text-red-500' : darkMode ? 'text-muted' : 'text-gray-500'}`}
           >
             {value.length}/{COMMENT_MAX_LENGTH}
           </span>
@@ -269,7 +269,7 @@ const CommentItem = ({
   const replies = comment.replies ?? []
   const replyCount = replies.length
   const shownReplies = replies.slice(0, visibleReplies)
-  const muted = darkMode ? 'text-gray-400' : 'text-gray-400'
+  const muted = darkMode ? 'text-muted' : 'text-muted'
   const body = darkMode ? 'text-gray-200' : 'text-gray-700'
   const name = darkMode ? 'text-white' : 'text-gray-900'
 
@@ -382,7 +382,7 @@ const CommentItem = ({
               {t('comments.revealSpoiler')}
             </button>
           ) : (
-            <p className={`mt-1 text-sm leading-relaxed wrap-anywhere ${body}`}>
+            <p className={`wrap-anywhere mt-1 text-sm leading-relaxed ${body}`}>
               {comment.spoiler ? (
                 <span className={`mr-2 text-xs font-semibold uppercase ${muted}`}>
                   {t('comments.spoiler')}
@@ -621,7 +621,7 @@ const Comments = ({
   const sorted = useMemo(() => sortComments(comments, sort), [comments, sort])
   const surface = darkMode ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'
   const border = darkMode ? 'border-white/10' : 'border-gray-100'
-  const muted = darkMode ? 'text-gray-400' : 'text-gray-500'
+  const muted = darkMode ? 'text-muted' : 'text-gray-500'
 
   const handleSubmitComment = () => {
     if (!canComment || !newComment.trim()) return

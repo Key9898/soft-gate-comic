@@ -1,17 +1,8 @@
-import { useState, useEffect, useMemo, useId, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ListOrdered,
-  Sparkles,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Check,
-  ListFilter,
-  LayoutGrid,
-} from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ListOrdered, Sparkles, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react'
 import type { Webtoon } from '@softgate/shared'
 import { CatalogBookCard } from '../../components/BookCard'
 import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
@@ -39,13 +30,15 @@ import { webtoonMatchesGenre } from '../../lib/categories'
 import NotFoundPage from '../info/NotFoundPage'
 import { getBrowseMasthead } from './browseMasthead'
 import CategoriesPageSkeleton from './components/CategoriesPageSkeleton'
+import { DESTINATION_TILE } from '../info/components/infoStyles'
+import SortMenu from '../../components/SortMenu'
+import Chip from '../../components/Chip'
 
 type StatusFilter = 'all' | 'ongoing' | 'completed' | 'hiatus'
 
 const STATUS_FILTERS: readonly StatusFilter[] = ['all', 'ongoing', 'completed', 'hiatus']
 
-const DEST_LINK =
-  'hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none'
+const DEST_LINK = DESTINATION_TILE
 
 const DESTINATIONS = [
   { to: '/categories', labelKey: 'nav.categories', icon: LayoutGrid },
@@ -62,14 +55,11 @@ const CategoriesPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { slug: pathSlug } = useParams<{ slug?: string }>()
-  const sortMenuId = useId()
-  const sortButtonRef = useRef<HTMLButtonElement>(null)
 
   const { webtoons, genres, isLoading, error } = useData()
   const [searchParams] = useSearchParams()
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const {
     ref: genreScrollRef,
     canScrollRight,
@@ -125,7 +115,6 @@ const CategoriesPage = () => {
   }
 
   const goTo = (href: string) => {
-    setIsDropdownOpen(false)
     navigate(href)
   }
 
@@ -239,17 +228,6 @@ const CategoriesPage = () => {
     urlIsCanonical,
   ])
 
-  useEffect(() => {
-    if (!isDropdownOpen) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-      setIsDropdownOpen(false)
-      sortButtonRef.current?.focus()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [isDropdownOpen])
-
   const newestIds = useMemo(() => newestPublishedIds(webtoons), [webtoons])
 
   const genreRecord =
@@ -284,9 +262,6 @@ const CategoriesPage = () => {
     { value: 'highestRated', label: t('categories.highestRated') },
   ]
 
-  const activeSortLabel =
-    sortOptions.find((o) => o.value === effectiveSort)?.label || t('categories.sortBrowse')
-
   const canonicalPath = useMemo(() => {
     const params = new URLSearchParams()
     if (!isRanking && isCatalogSort(sortFromUrl)) params.set('sort', sortFromUrl)
@@ -313,7 +288,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'completed') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-bold tracking-wider text-white uppercase ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusCompleted')}
         </span>
@@ -322,7 +297,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'hiatus') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-bold tracking-wider text-white uppercase ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusHiatus')}
         </span>
@@ -378,7 +353,7 @@ const CategoriesPage = () => {
         ) : null}
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {showRanks ? (
-            <p className="text-primary-700 mb-1 text-xs font-semibold tracking-wide uppercase">
+            <p className="text-primary-700 mb-1 text-xs font-semibold uppercase tracking-wide">
               {t('categories.rankingEyebrow')}
             </p>
           ) : null}
@@ -405,10 +380,10 @@ const CategoriesPage = () => {
               {genres.map((genre) => {
                 const isActive = selectedGenre === genre.slug
                 return (
-                  <button
-                    type="button"
+                  <Chip
                     key={genre.id}
-                    aria-pressed={isActive}
+                    tone="genre"
+                    selected={isActive}
                     onClick={(e) => {
                       handleGenreChange(genre.slug)
                       e.currentTarget.scrollIntoView({
@@ -417,9 +392,6 @@ const CategoriesPage = () => {
                         behavior: 'smooth',
                       })
                     }}
-                    className={`relative flex min-h-11 shrink-0 items-center justify-center rounded-2xl px-4.5 py-2.5 text-xs font-bold whitespace-nowrap transition-all ${
-                      isActive ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
                   >
                     <span className="relative z-10">{genre.name[lang]}</span>
                     {isActive && (
@@ -429,7 +401,7 @@ const CategoriesPage = () => {
                         transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                       />
                     )}
-                  </button>
+                  </Chip>
                 )
               })}
             </div>
@@ -449,19 +421,13 @@ const CategoriesPage = () => {
             {statusOptions.map((option) => {
               const isActive = selectedStatus === option.value
               return (
-                <button
-                  type="button"
+                <Chip
                   key={option.value}
-                  aria-pressed={isActive}
+                  selected={isActive}
                   onClick={() => handleStatusChange(option.value)}
-                  className={`min-h-11 rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
-                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                  }`}
                 >
                   {option.label}
-                </button>
+                </Chip>
               )
             })}
           </div>
@@ -469,71 +435,12 @@ const CategoriesPage = () => {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-gray-900">{countLine}</h2>
 
-            <div className="relative">
-              <button
-                ref={sortButtonRef}
-                type="button"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                aria-haspopup="menu"
-                aria-expanded={isDropdownOpen}
-                aria-controls={sortMenuId}
-                className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
-              >
-                <ListFilter className="text-primary-500 h-4.5 w-4.5" />
-                <span>{activeSortLabel}</span>
-                <ChevronDown
-                  className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
-
-              {isDropdownOpen && (
-                <div
-                  className="fixed inset-0 z-40 bg-transparent"
-                  onClick={() => {
-                    setIsDropdownOpen(false)
-                    sortButtonRef.current?.focus()
-                  }}
-                />
-              )}
-
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    id={sortMenuId}
-                    role="menu"
-                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                    transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                    className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-2xl border border-gray-100 bg-white p-2 shadow-xl"
-                  >
-                    <div className="space-y-1">
-                      {sortOptions.map((option) => {
-                        const isSelected = effectiveSort === option.value
-                        return (
-                          <button
-                            key={option.value}
-                            type="button"
-                            role="menuitem"
-                            onClick={() => handleSortChange(option.value)}
-                            className={`flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-xs font-bold transition-all ${
-                              isSelected
-                                ? 'bg-primary-50 text-primary-600'
-                                : 'text-gray-600 hover:bg-gray-50'
-                            }`}
-                          >
-                            <span>{option.label}</span>
-                            {isSelected && (
-                              <Check className="text-primary-600 h-4 w-4 stroke-[3]" />
-                            )}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <SortMenu
+              options={sortOptions}
+              value={effectiveSort}
+              onChange={handleSortChange}
+              label={t('categories.sortBrowse')}
+            />
           </div>
         </div>
       </div>
@@ -551,7 +458,7 @@ const CategoriesPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                <h3 className="text-muted text-xs font-bold uppercase tracking-wider">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -566,7 +473,7 @@ const CategoriesPage = () => {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="hover:border-primary-300 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:border-primary-300 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
               >
                 {t('categories.clearFilters')}
               </button>
@@ -586,7 +493,7 @@ const CategoriesPage = () => {
                       >
                         <Link
                           to={`/webtoon/${webtoon.id}`}
-                          className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                          className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                           aria-label={`${rank}. ${webtoon.title[lang]}`}
                         >
                           <CatalogBookCard
@@ -618,7 +525,7 @@ const CategoriesPage = () => {
                     >
                       <Link
                         to={`/webtoon/${webtoon.id}`}
-                        className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       >
                         <CatalogBookCard
                           webtoon={webtoon}
@@ -645,7 +552,7 @@ const CategoriesPage = () => {
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage <= 1}
                     aria-label={t('common.previous')}
-                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft className="h-5 w-5" aria-hidden />
                   </button>
@@ -657,7 +564,7 @@ const CategoriesPage = () => {
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={currentPage >= totalPages}
                     aria-label={t('common.next')}
-                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronRight className="h-5 w-5" aria-hidden />
                   </button>

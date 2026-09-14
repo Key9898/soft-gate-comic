@@ -22,7 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const isPassword = type === 'password'
 
     const baseStyles =
-      'w-full px-4 py-2.5 rounded-2xl border bg-white transition-all duration-200 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0'
+      'w-full px-4 py-2.5 rounded-2xl border bg-white transition-all duration-200 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-offset-0'
 
     const stateStyles = error
       ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
@@ -40,7 +40,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">{leftIcon}</div>
+            <div className="text-muted absolute left-3 top-1/2 -translate-y-1/2">{leftIcon}</div>
           )}
           <input
             ref={ref}
@@ -54,7 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+              className="text-muted absolute right-3 top-1/2 -translate-y-1/2 transition-colors hover:text-gray-600"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" aria-hidden="true" />
@@ -64,9 +64,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </button>
           )}
           {rightIcon && !isPassword && (
-            <div className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400">
-              {rightIcon}
-            </div>
+            <div className="text-muted absolute right-3 top-1/2 -translate-y-1/2">{rightIcon}</div>
           )}
         </div>
         {error && (

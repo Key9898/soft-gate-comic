@@ -49,7 +49,7 @@ const LibraryPageSkeleton = () => {
               <span
                 title={t('libraryPage.listView')}
                 aria-label={t('libraryPage.listView')}
-                className="rounded-2xl p-2 text-gray-400"
+                className="text-muted rounded-2xl p-2"
               >
                 <List className="h-5 w-5" aria-hidden="true" />
               </span>
@@ -58,7 +58,7 @@ const LibraryPageSkeleton = () => {
           <div className="p-4">
             <div className="relative">
               <Search
-                className="absolute top-1/2 left-4.5 h-5 w-5 -translate-y-1/2 text-gray-400"
+                className="left-4.5 text-muted absolute top-1/2 h-5 w-5 -translate-y-1/2"
                 aria-hidden="true"
               />
               <input
@@ -66,7 +66,7 @@ const LibraryPageSkeleton = () => {
                 disabled
                 placeholder={t('libraryPage.searchPlaceholder')}
                 aria-label={t('libraryPage.searchPlaceholder')}
-                className="w-full rounded-2xl border border-gray-200 py-3 pr-4 pl-12 text-sm font-medium"
+                className="w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-4 text-sm font-medium"
               />
             </div>
           </div>

@@ -16,7 +16,7 @@ const ContentRatingBadge = ({ rating, className = '' }: ContentRatingBadgeProps)
       data-testid="content-rating-badge"
       data-rating={rating}
       className={`rounded-2xl px-1.5 py-0.5 text-xs font-bold uppercase tabular-nums ${
-        mature ? 'bg-rose-600 text-white' : 'bg-black/60 text-white backdrop-blur-sm'
+        mature ? 'bg-rose-600 text-white' : 'bg-black/75 text-white backdrop-blur-sm'
       } ${className}`.trim()}
     >
       {t(contentRatingLabelKey(rating))}

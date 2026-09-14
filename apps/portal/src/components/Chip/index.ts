@@ -1,0 +1,6 @@
+export { default } from './Chip'
+export type { ChipProps } from './Chip'
+export { default as ChipLink } from './ChipLink'
+export type { ChipLinkProps } from './ChipLink'
+export { chipClasses, CHIP_BASE } from './chipClasses'
+export type { ChipTone } from './chipClasses'

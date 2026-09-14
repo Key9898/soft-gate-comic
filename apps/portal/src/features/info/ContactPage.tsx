@@ -56,10 +56,10 @@ const ContactFloatingInput = ({
       >
         <label
           htmlFor={inputId}
-          className={`pointer-events-none absolute left-4.5 origin-top-left transition-all duration-200 ${
+          className={`left-4.5 pointer-events-none absolute origin-top-left transition-all duration-200 ${
             isFocused || hasValue
               ? 'text-primary-500 text-2xs top-2 font-semibold'
-              : 'top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400'
+              : 'text-muted top-1/2 -translate-y-1/2 text-sm font-semibold'
           }`}
         >
           {label}
@@ -74,7 +74,7 @@ const ContactFloatingInput = ({
           aria-describedby={error ? errorId : undefined}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`w-full bg-transparent px-4.5 text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
+          className={`px-4.5 w-full bg-transparent text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
             isFocused || hasValue ? 'pt-6.5 pb-2' : 'py-4'
           }`}
         />
@@ -83,7 +83,7 @@ const ContactFloatingInput = ({
         <p
           id={errorId}
           role="alert"
-          className="text-2xs mt-1 ml-2 flex items-center gap-1 font-bold text-red-500"
+          className="text-2xs ml-2 mt-1 flex items-center gap-1 font-bold text-red-500"
         >
           {error}
         </p>
@@ -223,7 +223,7 @@ const ContactPage = () => {
   return (
     <div className="relative min-h-screen bg-gray-50 pb-20 transition-colors duration-300">
       <SEO title={t('footer.contact')} description={t('contact.getInTouchDesc')} path="/contact" />
-      <div className="radial-wash-primary pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2" />
+      <div className="radial-wash-primary pointer-events-none absolute left-1/2 top-0 h-[450px] w-full max-w-7xl -translate-x-1/2" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
         <Breadcrumb items={page.breadcrumbs} className="mb-6" />
@@ -240,7 +240,7 @@ const ContactPage = () => {
                   />
                   {t('contact.getInTouch')}
                 </h2>
-                <p className="pr-2 text-sm leading-relaxed font-semibold text-gray-500">
+                <p className="pr-2 text-sm font-semibold leading-relaxed text-gray-500">
                   {t('contact.getInTouchDesc')}
                 </p>
               </div>
@@ -255,7 +255,7 @@ const ContactPage = () => {
                         <ch.icon className="h-5.5 w-5.5 stroke-[2.2]" aria-hidden="true" />
                       </div>
                       <div>
-                        <p className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                        <p className="text-2xs text-muted font-bold uppercase tracking-widest">
                           {ch.title}
                         </p>
                         <p
@@ -293,7 +293,7 @@ const ContactPage = () => {
               <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
                 <Link
                   to="/creators"
-                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-start gap-3 rounded-2xl border border-gray-200 bg-white p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-start gap-3 rounded-2xl border border-gray-200 bg-white p-4 transition-colors focus-visible:outline-none focus-visible:ring-2"
                 >
                   <PenLine
                     className="text-primary-600 mt-0.5 h-5 w-5 shrink-0"
@@ -310,7 +310,7 @@ const ContactPage = () => {
                 </Link>
                 <Link
                   to="/press"
-                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-start gap-3 rounded-2xl border border-gray-200 bg-white p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-start gap-3 rounded-2xl border border-gray-200 bg-white p-4 transition-colors focus-visible:outline-none focus-visible:ring-2"
                 >
                   <Newspaper
                     className="text-primary-600 mt-0.5 h-5 w-5 shrink-0"
@@ -355,16 +355,16 @@ const ContactPage = () => {
 
               <div className="rounded-3xl border border-gray-200/60 bg-white p-6 shadow-xl sm:p-8">
                 <div className="mb-6">
-                  <h2 className="flex items-center gap-2 text-lg font-bold tracking-wider text-gray-900 uppercase">
+                  <h2 className="flex items-center gap-2 text-lg font-bold uppercase tracking-wider text-gray-900">
                     <span className="bg-primary-500 shape-circle h-2 w-2" aria-hidden="true" />
                     {t('contact.sendMessage')}
                   </h2>
-                  <p className="text-2xs mt-1 font-bold tracking-wider text-gray-400 uppercase">
+                  <p className="text-2xs text-muted mt-1 font-bold uppercase tracking-wider">
                     {t('contact.formHint')}
                   </p>
                   {!isPitch && (
                     <>
-                      <p className="mt-4 text-xs font-bold tracking-wider text-gray-500 uppercase">
+                      <p className="mt-4 text-xs font-bold uppercase tracking-wider text-gray-500">
                         {t('contact.writerTitle')}
                       </p>
                       <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600">
@@ -378,7 +378,7 @@ const ContactPage = () => {
                     <p className="mt-4 text-sm text-gray-600">
                       <Link
                         to="/creators#creators-specs"
-                        className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center font-semibold underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                        className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center font-semibold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2"
                       >
                         {t('contact.pitchHandbook')}
                       </Link>
@@ -398,7 +398,7 @@ const ContactPage = () => {
                       <h4 className="text-sm font-bold text-gray-900">
                         {t('contact.successTitle')}
                       </h4>
-                      <p className="mt-2 pr-6 pl-6 text-xs leading-relaxed font-bold text-gray-500">
+                      <p className="mt-2 pl-6 pr-6 text-xs font-bold leading-relaxed text-gray-500">
                         {t('contact.successDesc')}
                       </p>
                     </motion.div>
@@ -454,7 +454,7 @@ const ContactPage = () => {
                           >
                             <label
                               htmlFor={synopsisId}
-                              className="pl-1 text-xs font-bold tracking-wider text-gray-400 uppercase"
+                              className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
                             >
                               {t('creators.fieldSynopsis')}
                             </label>
@@ -464,14 +464,14 @@ const ContactPage = () => {
                               onChange={(e) => setSynopsis(e.target.value)}
                               rows={4}
                               aria-invalid={errors.synopsis ? true : undefined}
-                              className={`w-full resize-none rounded-2xl border-2 px-4.5 py-3.5 text-sm font-bold transition focus:outline-none ${
+                              className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none ${
                                 errors.synopsis
                                   ? 'border-red-500 bg-red-500/5'
                                   : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
                               }`}
                             />
                             {errors.synopsis && (
-                              <p role="alert" className="text-2xs mt-1 ml-2 font-bold text-red-500">
+                              <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
                                 {errors.synopsis}
                               </p>
                             )}
@@ -479,7 +479,7 @@ const ContactPage = () => {
                           <div className="text-left">
                             <label
                               htmlFor={coverId}
-                              className="flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-200 bg-gray-50/50 px-4.5 text-sm font-bold text-gray-900"
+                              className="px-4.5 flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-200 bg-gray-50/50 text-sm font-bold text-gray-900"
                             >
                               <input
                                 id={coverId}
@@ -492,7 +492,7 @@ const ContactPage = () => {
                               {t('creators.fieldCoverReady')}
                             </label>
                             {errors.cover && (
-                              <p role="alert" className="text-2xs mt-1 ml-2 font-bold text-red-500">
+                              <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
                                 {errors.cover}
                               </p>
                             )}
@@ -506,7 +506,7 @@ const ContactPage = () => {
                           <motion.div className="space-y-2 text-left">
                             <label
                               htmlFor={notesId}
-                              className="pl-1 text-xs font-bold tracking-wider text-gray-400 uppercase"
+                              className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
                             >
                               {t('creators.fieldNotes')}
                             </label>
@@ -515,7 +515,7 @@ const ContactPage = () => {
                               value={notes}
                               onChange={(e) => setNotes(e.target.value)}
                               rows={3}
-                              className="focus:border-primary-500 focus:ring-primary-500 w-full resize-none rounded-2xl border-2 border-gray-200 px-4.5 py-3.5 text-sm font-bold transition focus:ring-1 focus:outline-none"
+                              className="focus:border-primary-500 focus:ring-primary-500 px-4.5 w-full resize-none rounded-2xl border-2 border-gray-200 py-3.5 text-sm font-bold transition focus:outline-none focus:ring-1"
                             />
                           </motion.div>
                         </>
@@ -526,7 +526,7 @@ const ContactPage = () => {
                         >
                           <label
                             htmlFor={messageId}
-                            className="pl-1 text-xs font-bold tracking-wider text-gray-400 uppercase"
+                            className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
                           >
                             {t('contact.message')}
                           </label>
@@ -537,14 +537,14 @@ const ContactPage = () => {
                             rows={4}
                             placeholder={t('contact.messagePlaceholder')}
                             aria-invalid={errors.message ? true : undefined}
-                            className={`w-full resize-none rounded-2xl border-2 px-4.5 py-3.5 text-sm font-bold transition focus:outline-none ${
+                            className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none ${
                               errors.message
                                 ? 'border-red-500 bg-red-500/5'
                                 : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
                             }`}
                           />
                           {errors.message && (
-                            <p role="alert" className="text-2xs mt-1 ml-2 font-bold text-red-500">
+                            <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
                               {errors.message}
                             </p>
                           )}
@@ -553,7 +553,7 @@ const ContactPage = () => {
 
                       <Button
                         type="submit"
-                        className="mt-2 min-h-[44px] w-full rounded-2xl text-xs font-bold tracking-wider uppercase"
+                        className="mt-2 min-h-[44px] w-full rounded-2xl text-xs font-bold uppercase tracking-wider"
                       >
                         <Send className="h-4 w-4 stroke-[2.2]" />
                         {t('contact.send')}

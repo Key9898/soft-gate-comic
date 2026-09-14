@@ -29,7 +29,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link
               to="/"
-              className="text-primary-400 flex items-center gap-3 rounded-2xl focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="text-primary-400 flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <img
                 src="/logo/logo.svg"
@@ -43,12 +43,12 @@ const Footer = () => {
 
           <div>
             <h3 className="mb-4 font-semibold text-white">{t('footer.company')}</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-0.5">
               {footerLinks.company.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="inline-flex min-h-11 items-center rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>
@@ -59,12 +59,12 @@ const Footer = () => {
 
           <div>
             <h3 className="mb-4 font-semibold text-white">{t('footer.support')}</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-0.5">
               {footerLinks.support.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="inline-flex min-h-11 items-center rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>
@@ -75,12 +75,12 @@ const Footer = () => {
 
           <div>
             <h3 className="mb-4 font-semibold text-white">{t('footer.legal')}</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-0.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="inline-flex min-h-11 items-center rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>
@@ -91,7 +91,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 border-t border-gray-800 pt-8 text-center">
-          <p className="text-sm text-gray-500">{t('footer.copyright')}</p>
+          <p className="text-sm text-gray-400">{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

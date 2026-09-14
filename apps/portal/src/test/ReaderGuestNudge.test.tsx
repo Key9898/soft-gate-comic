@@ -78,7 +78,7 @@ describe('Reader guest nudges', () => {
   it('keeps the coin unlock button and balance line for logged-in readers on a premium episode', () => {
     seedSession()
     renderReader('/read/1/4')
-    expect(screen.getByRole('button', { name: /unlock with coins/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /unlock ·/i })).toBeInTheDocument()
     expect(screen.getByText(/your balance/i)).toBeInTheDocument()
   })
 

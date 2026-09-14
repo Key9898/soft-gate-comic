@@ -27,6 +27,20 @@ export function episodeThumbSrc(
   return seriesCover
 }
 
+/**
+ * True when an episode's strip is the series cover repeated rather than real panel
+ * art. The demo catalog fills empty strips with the series' own cover, and a reader
+ * that shows those without saying so is claiming art it does not have.
+ */
+export function isPlaceholderStrip(
+  episode: Pick<Episode, 'images'>,
+  seriesCover?: string
+): boolean {
+  if (!seriesCover) return false
+  if (episode.images.length === 0) return true
+  return episode.images.every((src) => src === seriesCover)
+}
+
 export function panelPixelSize(
   imagesLength: number,
   imageSizes: Episode['imageSizes'],

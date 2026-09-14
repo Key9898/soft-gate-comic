@@ -337,7 +337,9 @@
     "newPassword": "New Password",
     "confirmNewPassword": "Confirm New Password",
     "deleteAccount": "Delete Account",
-    "deleteAccountWarning": "This action cannot be undone"
+    "deleteAccountWarning": "This action cannot be undone",
+    "deleteAccountConfirmBody": "This removes your account, library, reading history and coin balance. It cannot be undone.",
+    "deleteAccountTypeUsername": "Type {{username}} to confirm"
   },
   "coins": {
     "title": "Coins",
@@ -590,7 +592,14 @@
     "epShort": "Ep. {{n}}",
     "minutes": "{{mins}} mins",
     "endOfSeries": "You have reached the end of this webtoon!",
-    "unlockTxnDesc": "Unlocked Episode {{n}} — {{title}}"
+    "unlockTxnDesc": "Unlocked Episode {{n}} — {{title}}",
+    "unlockCta": "Unlock · {{coins}} coins",
+    "balanceAfter": "Balance after: {{n}} coins",
+    "confirmUnlockBody": "Unlock Episode {{n}} for {{coins}} coins? Balance after: {{after}}.",
+    "unlockedAnnounce": "Episode {{n}} unlocked. Balance is now {{balance}} coins.",
+    "shortfall": "You need {{n}} more coins to unlock this episode.",
+    "topUpAndReturn": "Top up and come back",
+    "stripDemo": "Demo strip — the series cover stands in for episode art. Client-swap, not the real panels."
   },
   "profilePage": {
     "episodesUnit_one": "{{count}} episode",
@@ -697,7 +706,8 @@
     "deselectAll": "Deselect All",
     "itemsSelected": "{{count}} selected",
     "deleteConfirm": "Are you sure you want to remove selected items?",
-    "deleteSuccess": "Collection updated successfully"
+    "deleteSuccess": "Collection updated successfully",
+    "viewMode": "View mode"
   },
   "notificationsPage": {
     "title": "Notifications",
@@ -725,7 +735,9 @@
     "allCaughtUpWhy": "Subscribe to a series or join a comment thread to see updates here. New episodes, broadcasts, and comment replies may also email or Web Push when those channels are configured.",
     "filterUpdates": "Updates",
     "filterActivity": "Activity",
-    "filterPromo": "Promo"
+    "filterPromo": "Promo",
+    "deleteConfirmBody": "This removes the notification from your inbox. It cannot be brought back.",
+    "clearReadConfirmBody": "This removes every notification you have already read. It cannot be brought back."
   },
   "coinsPage": {
     "title": "Coins",
@@ -791,7 +803,12 @@
     "unlockedEpisodes": "Unlocked episodes",
     "unlockedEmpty": "No premium episodes unlocked yet.",
     "unlockedEpisode": "Episode {{n}}",
-    "emptyShop": "No coin packages are listed right now."
+    "emptyShop": "No coin packages are listed right now.",
+    "topUpContext": "Topping up to unlock Episode {{n}} of {{title}}.",
+    "topUpNeed": "You need {{n}} more coins.",
+    "topUpReturn": "Back to Episode {{n}}",
+    "topUpSmallestPack": "Smallest pack that covers it",
+    "cardDemoLocked": "Demo checkout — these card fields are locked and pre-filled with a test number. Never enter a real card here."
   },
   "static": {
     "lastUpdated": "Last Updated",

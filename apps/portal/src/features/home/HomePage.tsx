@@ -38,6 +38,7 @@ import HomeRankingChart from './components/HomeRankingChart'
 import HomeRailRadialModal, { type HomeRailRadialVariant } from './components/HomeRailRadialModal'
 import HomePageSkeleton from './components/HomePageSkeleton'
 import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
+import { ChipLink } from '../../components/Chip'
 
 const CONTINUE_CAP = 12
 
@@ -190,18 +191,19 @@ const HomePage = () => {
                 </div>
               ) : (
                 genres.map((genre) => (
-                  <Link
+                  <ChipLink
                     key={genre.id}
                     to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
+                    tone="genre"
+                    // NOTE: `selectedGenre` is set here but the Link unmounts the page,
+                    // so this never renders as selected. Dead state, tracked in the
+                    // Phase 4 discovery-IA work (GitHub #21) rather than changed here.
+                    selected={selectedGenre === genre.slug}
+                    className="text-sm font-medium"
                     onClick={() => setSelectedGenre(genre.slug)}
-                    className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                      selectedGenre === genre.slug
-                        ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
                   >
                     {genre.name[lang]}
-                  </Link>
+                  </ChipLink>
                 ))
               )}
             </div>
@@ -252,7 +254,7 @@ const HomePage = () => {
                   type="button"
                   onClick={() => scrollContinueByPage('right')}
                   aria-label={t('a11y.scrollContinueRight')}
-                  className="text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex min-h-[38px] min-w-[38px] shrink-0 items-center justify-center self-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2"
+                  className="text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex min-h-11 min-w-11 shrink-0 items-center justify-center self-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2"
                 >
                   <ChevronRight className="h-5 w-5" aria-hidden />
                 </button>

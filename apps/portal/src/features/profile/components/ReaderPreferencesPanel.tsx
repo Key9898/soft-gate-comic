@@ -77,7 +77,7 @@ const ReaderPreferencesPanel = () => {
 
       <div className="space-y-6">
         <div>
-          <label className="mb-3 block text-sm font-semibold tracking-wider text-gray-400 uppercase">
+          <label className="text-muted mb-3 block text-sm font-semibold uppercase tracking-wider">
             {t('profilePage.prefsReaderDark')}
           </label>
           <p className="mb-3 text-xs font-medium text-gray-500">
@@ -113,7 +113,7 @@ const ReaderPreferencesPanel = () => {
 
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <label className="text-sm font-semibold tracking-wider text-gray-400 uppercase">
+            <label className="text-muted text-sm font-semibold uppercase tracking-wider">
               {t('readerPage.brightness')}
             </label>
             <span className="text-primary-600 text-xs font-bold">
@@ -133,7 +133,7 @@ const ReaderPreferencesPanel = () => {
         </div>
 
         <div>
-          <label className="mb-3 block text-sm font-semibold tracking-wider text-gray-400 uppercase">
+          <label className="text-muted mb-3 block text-sm font-semibold uppercase tracking-wider">
             {t('reader.fontSize')}
           </label>
           <div className="flex gap-3">
@@ -162,7 +162,7 @@ const ReaderPreferencesPanel = () => {
         </div>
 
         <div>
-          <label className="mb-3 block text-sm font-semibold tracking-wider text-gray-400 uppercase">
+          <label className="text-muted mb-3 block text-sm font-semibold uppercase tracking-wider">
             {t('readerPage.imageFit')}
           </label>
           <div className="flex gap-3">

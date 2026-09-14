@@ -27,6 +27,7 @@ import WeeklyReadingChart from './components/WeeklyReadingChart'
 import AchievementsBadgeCenter from './components/AchievementsBadgeCenter'
 import NotificationSettingsMatrix from './components/NotificationSettingsMatrix'
 import ReaderPreferencesPanel from './components/ReaderPreferencesPanel'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 function authErrorCode(err: unknown) {
   return err instanceof AuthApiError ? err.code : undefined
@@ -64,6 +65,8 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [deletePassword, setDeletePassword] = useState('')
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [deletePending, setDeletePending] = useState(false)
   const [securityErrors, setSecurityErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -231,15 +234,28 @@ const ProfilePage = () => {
     navigate('/')
   }
 
-  const handleDeleteAccount = async () => {
+  const requestDeleteAccount = () => {
     if (!deletePassword) {
       setSecurityErrors({ deletePassword: t('profilePage.validationRequired') })
       return
     }
+    setSecurityErrors({})
+    setDeleteConfirmOpen(true)
+  }
+
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) {
+      setSecurityErrors({ deletePassword: t('profilePage.validationRequired') })
+      setDeleteConfirmOpen(false)
+      return
+    }
+    setDeletePending(true)
     try {
       await deleteAccount(deletePassword)
+      setDeleteConfirmOpen(false)
       navigate('/')
     } catch (err) {
+      setDeleteConfirmOpen(false)
       const code = authErrorCode(err)
       if (code === 'NOT_AUTHENTICATED') {
         navigate('/login')
@@ -248,6 +264,8 @@ const ProfilePage = () => {
       setSecurityErrors({
         deletePassword: t('auth.loginFailed'),
       })
+    } finally {
+      setDeletePending(false)
     }
   }
 
@@ -279,7 +297,7 @@ const ProfilePage = () => {
                       {displayName.charAt(0).toUpperCase()}
                     </span>
                   )}
-                  <label className="absolute right-0 bottom-0 cursor-pointer rounded-2xl bg-white p-1.5 shadow">
+                  <label className="absolute bottom-0 right-0 cursor-pointer rounded-2xl bg-white p-1.5 shadow">
                     <Edit3 className="text-primary-600 h-3.5 w-3.5" />
                     <input
                       type="file"
@@ -292,8 +310,8 @@ const ProfilePage = () => {
                   </label>
                 </div>
                 <h1 className="mt-4 text-lg font-bold text-gray-900">{displayName}</h1>
-                <p className="text-xs font-semibold text-gray-400">@{user.username}</p>
-                <p className="text-2xs mt-2 font-medium text-gray-400">
+                <p className="text-muted text-xs font-semibold">@{user.username}</p>
+                <p className="text-2xs text-muted mt-2 font-medium">
                   {t('profilePage.localStatsNote', {
                     balance,
                     unlocks: unlockedEpisodeKeys.length,
@@ -305,9 +323,7 @@ const ProfilePage = () => {
                 {stats.map((stat) => (
                   <div key={stat.label} className="rounded-2xl border bg-gray-50 p-3.5 text-center">
                     <p className="text-xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="text-2xs mt-0.5 font-bold text-gray-400 uppercase">
-                      {stat.label}
-                    </p>
+                    <p className="text-2xs text-muted mt-0.5 font-bold uppercase">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -330,7 +346,7 @@ const ProfilePage = () => {
                     {activeTab === tab.id && (
                       <motion.div
                         layoutId="activeProfileTabBorder"
-                        className="bg-primary-600 absolute top-3.5 bottom-3.5 left-0 w-1 rounded-2xl"
+                        className="bg-primary-600 absolute bottom-3.5 left-0 top-3.5 w-1 rounded-2xl"
                         transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                       />
                     )}
@@ -400,7 +416,7 @@ const ProfilePage = () => {
                       />
 
                       <div className="text-left">
-                        <label className="mb-2 block text-xs font-bold text-gray-400 uppercase">
+                        <label className="text-muted mb-2 block text-xs font-bold uppercase">
                           {t('profilePage.bio')}
                         </label>
                         <textarea
@@ -408,7 +424,7 @@ const ProfilePage = () => {
                           onChange={(e) => setBio(e.target.value)}
                           disabled={!isEditing}
                           rows={4}
-                          className={`w-full resize-none rounded-2xl border-2 px-4.5 py-3 text-sm font-bold transition focus:outline-none ${
+                          className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3 text-sm font-bold transition focus:outline-none ${
                             isEditing
                               ? 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
                               : 'border-gray-100 bg-gray-50/50'
@@ -418,7 +434,7 @@ const ProfilePage = () => {
                       </div>
 
                       <div className="border-t border-gray-100 pt-4">
-                        <p className="text-xs font-bold text-gray-400">
+                        <p className="text-muted text-xs font-bold">
                           {t('profilePage.joinedOn', {
                             date: new Date(user.createdAt).toLocaleDateString(
                               lang === 'mm' ? 'my-MM' : 'en-US',
@@ -486,7 +502,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div className="rounded-3xl border border-red-100 bg-red-50 p-6 text-left">
-                    <h3 className="mb-2 text-base font-bold tracking-wider text-red-600 uppercase">
+                    <h3 className="mb-2 text-base font-bold uppercase tracking-wider text-red-600">
                       {t('profile.deleteAccount')}
                     </h3>
                     <p className="mb-4 text-xs font-semibold text-red-500">
@@ -500,11 +516,7 @@ const ProfilePage = () => {
                       error={securityErrors.deletePassword}
                       leftIcon={<Lock className="h-5 w-5" />}
                     />
-                    <Button
-                      variant="danger"
-                      className="mt-4"
-                      onClick={() => void handleDeleteAccount()}
-                    >
+                    <Button variant="danger" className="mt-4" onClick={requestDeleteAccount}>
                       {t('profile.deleteAccount')}
                     </Button>
                   </div>
@@ -514,6 +526,19 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        title={t('profile.deleteAccount')}
+        message={t('profile.deleteAccountConfirmBody')}
+        confirmPhrase={user.username}
+        confirmPhraseLabel={t('profile.deleteAccountTypeUsername', { username: user.username })}
+        cancelLabel={t('common.cancel')}
+        confirmLabel={t('profile.deleteAccount')}
+        isConfirming={deletePending}
+        onCancel={() => setDeleteConfirmOpen(false)}
+        onConfirm={() => void handleDeleteAccount()}
+      />
     </div>
   )
 }

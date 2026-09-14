@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
 import SEO from '../../components/SEO/SEO'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import { useEngagement } from '../../context/EngagementContext'
 import type { NotificationType } from '../../lib/notifications'
 
@@ -30,6 +31,11 @@ const NotificationsPage = () => {
     clearReadNotifications,
   } = useEngagement()
   const [filter, setFilter] = useState<InboxFilter>('all')
+  // Deleting an inbox row is not reversible: the store has no restore path, so the
+  // confirm is the guardrail until EngagementContext can support a real undo.
+  const [pendingDelete, setPendingDelete] = useState<
+    { kind: 'one'; id: string } | { kind: 'read' } | null
+  >(null)
 
   const filteredNotifications = notifications.filter((item) => {
     if (filter === 'all') return true
@@ -97,7 +103,7 @@ const NotificationsPage = () => {
             <h1 className="text-2xl font-bold text-gray-900">{t('notificationsPage.title')}</h1>
             <Link
               to="/profile?tab=settings"
-              className="text-primary-600 focus-visible:ring-primary-500 inline-flex min-h-11 items-center gap-2 rounded-2xl text-sm font-bold focus-visible:ring-2 focus-visible:outline-none"
+              className="text-primary-600 focus-visible:ring-primary-500 inline-flex min-h-11 items-center gap-2 rounded-2xl text-sm font-bold focus-visible:outline-none focus-visible:ring-2"
             >
               <Settings className="h-4 w-4" aria-hidden="true" />
               {t('profilePage.settings')}
@@ -134,13 +140,13 @@ const NotificationsPage = () => {
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                   <Link
                     to="/categories"
-                    className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:ring-2 focus-visible:outline-none"
+                    className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2"
                   >
                     {t('categories.webtoons')}
                   </Link>
                   <Link
                     to="/profile?tab=settings"
-                    className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl border border-gray-200 px-4 text-sm font-bold text-gray-700 hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                    className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl border border-gray-200 px-4 text-sm font-bold text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                   >
                     {t('profilePage.settings')}
                   </Link>
@@ -173,7 +179,7 @@ const NotificationsPage = () => {
                             {!notification.isRead ? (
                               <span className="bg-primary-500 shape-circle h-2 w-2" />
                             ) : null}
-                            <span className="text-xs text-gray-400">
+                            <span className="text-muted text-xs">
                               {formatTime(notification.createdAt)}
                             </span>
                           </div>
@@ -192,7 +198,7 @@ const NotificationsPage = () => {
                       {notification.href ? (
                         <Link
                           to={notification.href}
-                          className={`focus-visible:ring-primary-500 min-w-0 flex-1 rounded-none ring-inset focus-visible:ring-2 focus-visible:outline-none ${rowClass}`}
+                          className={`focus-visible:ring-primary-500 min-w-0 flex-1 rounded-none ring-inset focus-visible:outline-none focus-visible:ring-2 ${rowClass}`}
                           onClick={() => markNotificationRead(notification.id)}
                         >
                           {body}
@@ -202,9 +208,9 @@ const NotificationsPage = () => {
                       )}
                       <button
                         type="button"
-                        className="focus-visible:ring-primary-500 m-2 self-center rounded-2xl p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500 focus-visible:ring-2 focus-visible:outline-none"
+                        className="focus-visible:ring-primary-500 text-muted m-2 self-center rounded-2xl p-2 hover:bg-gray-100 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2"
                         aria-label={t('common.delete')}
-                        onClick={() => deleteNotification(notification.id)}
+                        onClick={() => setPendingDelete({ kind: 'one', id: notification.id })}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -217,13 +223,39 @@ const NotificationsPage = () => {
 
           {notifications.some((n) => n.isRead) ? (
             <div className="mt-4 text-center">
-              <Button variant="ghost" size="sm" onClick={clearReadNotifications}>
+              <Button variant="ghost" size="sm" onClick={() => setPendingDelete({ kind: 'read' })}>
                 {t('notificationsPage.clearAllRead')}
               </Button>
             </div>
           ) : null}
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={pendingDelete !== null}
+        title={
+          pendingDelete?.kind === 'read' ? t('notificationsPage.clearAllRead') : t('common.delete')
+        }
+        message={
+          pendingDelete?.kind === 'read'
+            ? t('notificationsPage.clearReadConfirmBody')
+            : t('notificationsPage.deleteConfirmBody')
+        }
+        cancelLabel={t('common.cancel')}
+        confirmLabel={
+          pendingDelete?.kind === 'read' ? t('notificationsPage.clearAllRead') : t('common.delete')
+        }
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (!pendingDelete) return
+          if (pendingDelete.kind === 'read') {
+            clearReadNotifications()
+          } else {
+            deleteNotification(pendingDelete.id)
+          }
+          setPendingDelete(null)
+        }}
+      />
     </div>
   )
 }

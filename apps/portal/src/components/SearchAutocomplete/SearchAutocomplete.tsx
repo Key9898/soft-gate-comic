@@ -17,7 +17,7 @@ interface SearchAutocompleteProps {
 const SearchAutocomplete = ({
   className = '',
   inputClassName = '',
-  iconClassName = 'pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400',
+  iconClassName = 'pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted',
   autoFocus = false,
   defaultQuery = '',
 }: SearchAutocompleteProps) => {
@@ -95,7 +95,7 @@ const SearchAutocomplete = ({
           onFocus={() => setOpen(true)}
           className={
             inputClassName ||
-            'focus:ring-primary-500 w-56 rounded-2xl border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2'
+            'focus:ring-primary-500 w-56 rounded-2xl border-none bg-gray-100 py-2 pl-10 pr-4 text-sm transition-all focus:bg-white focus:ring-2'
           }
         />
         <Search className={iconClassName} aria-hidden="true" />
@@ -115,7 +115,7 @@ const SearchAutocomplete = ({
                 onClick={() => onPick(item)}
               >
                 <span className="truncate font-medium">{item.label}</span>
-                <span className="shrink-0 text-xs text-gray-400">
+                <span className="text-muted shrink-0 text-xs">
                   {t(`search.suggestion.${item.kind}`)}
                 </span>
               </button>

@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 214**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 216**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
@@ -247,6 +247,9 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-10-press-cms-consume.md](notes/2026-09-10-press-cms-consume.md) — Impl 211 public GET /api/press + PressPage consume
 - [notes/2026-09-10-privacy-terms-consume.md](notes/2026-09-10-privacy-terms-consume.md) — Impl 212 public GET /api/legal/privacy|terms + Privacy/Terms consume
 - [notes/2026-09-10-faq-cookies-consume.md](notes/2026-09-10-faq-cookies-consume.md) — Impl 213 public GET /api/faq /api/cookies + FAQ/Cookies consume
+- [notes/2026-09-14-uiux-improvement-plan.md](notes/2026-09-14-uiux-improvement-plan.md) — portal UI/UX improvement plan, six phases (backlog, no Impl yet)
+- [notes/2026-09-14-phase-0-ship-blockers.md](notes/2026-09-14-phase-0-ship-blockers.md) — Impl 214 Phase 0 ship blockers (hero clip, coin spend, confirms, contrast, reduce-motion)
+- [notes/2026-09-14-phase-1-design-system-core.md](notes/2026-09-14-phase-1-design-system-core.md) — Impl 215 Phase 1 core (Button touch floor, ButtonLink, Card, SortMenu, SearchField, token cleanup)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150

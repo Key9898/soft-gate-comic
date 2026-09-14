@@ -36,6 +36,7 @@ import {
   formatWaitFreeAt,
   hasWaitSchedule,
   isEpisodeLocked,
+  isPlaceholderStrip,
   isPublishedEpisode,
   panelPixelSize,
   publishedEpisodesForSeries,
@@ -119,6 +120,10 @@ const ReaderPage = () => {
   const [brightness, setBrightness] = useState(DEFAULT_READER_PREFS.brightness)
   const [imageFit, setImageFit] = useState<ReaderImageFit>(DEFAULT_READER_PREFS.imageFit)
   const [unlockError, setUnlockError] = useState('')
+  const [unlockPending, setUnlockPending] = useState(false)
+  const [unlockConfirm, setUnlockConfirm] = useState(false)
+  const [unlockNotice, setUnlockNotice] = useState('')
+  const [unlockShortfall, setUnlockShortfall] = useState(0)
   const [ageOk, setAgeOk] = useState(() => hasAgeConfirm(null))
   const [shareStatus, setShareStatus] = useState('')
   const [reported, setReported] = useState(false)
@@ -591,27 +596,41 @@ const ReaderPage = () => {
   const handleUnlock = async () => {
     if (!webtoonId || !currentEpisode) return
     setUnlockError('')
+    setUnlockShortfall(0)
     if (!isAuthenticated) {
       navigate('/login', { state: { from: { pathname: fromPath } } })
       return
     }
-    const result = await unlockEpisode(
-      webtoonId,
-      currentEpisode.episodeNumber,
-      currentEpisode.coinPrice,
-      t('readerPage.unlockTxnDesc', {
-        n: currentEpisode.episodeNumber,
-        title: webtoon?.title[lang] ?? webtoonId,
-      })
-    )
-    if (!result.ok) {
-      if (result.reason === 'INSUFFICIENT_COINS') {
-        setUnlockError(t('readerPage.insufficientCoins', { balance }))
-        navigate('/coins')
+    setUnlockPending(true)
+    try {
+      const result = await unlockEpisode(
+        webtoonId,
+        currentEpisode.episodeNumber,
+        currentEpisode.coinPrice,
+        t('readerPage.unlockTxnDesc', {
+          n: currentEpisode.episodeNumber,
+          title: webtoon?.title[lang] ?? webtoonId,
+        })
+      )
+      if (!result.ok) {
+        if (result.reason === 'INSUFFICIENT_COINS') {
+          setUnlockShortfall(Math.max(0, currentEpisode.coinPrice - balance))
+          setUnlockError(t('readerPage.insufficientCoins', { balance }))
+        }
+        setUnlockConfirm(false)
+        return
       }
-      return
+      setUnlockConfirm(false)
+      setUnlockNotice(
+        t('readerPage.unlockedAnnounce', {
+          n: currentEpisode.episodeNumber,
+          balance: Math.max(0, balance - currentEpisode.coinPrice),
+        })
+      )
+      retry()
+    } finally {
+      setUnlockPending(false)
     }
-    retry()
   }
 
   const handleShare = async () => {
@@ -665,6 +684,10 @@ const ReaderPage = () => {
         aria-hidden="true"
       />
 
+      <p role="status" aria-live="polite" className="sr-only">
+        {unlockNotice}
+      </p>
+
       <AnimatePresence>
         {showHeader && (
           <motion.header
@@ -672,7 +695,7 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-top fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-top fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)]'
@@ -736,7 +759,7 @@ const ReaderPage = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-gray-200/20">
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gray-200/20">
                 <div
                   className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r"
                   style={{ width: `${readingProgress}%` }}
@@ -758,7 +781,7 @@ const ReaderPage = () => {
           e.stopPropagation()
           goToEpisode(episodeNum - 1)
         }}
-        className={`fixed top-1/2 left-2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
+        className={`fixed left-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasPrev ? '' : 'cursor-not-allowed opacity-30'
         } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
       >
@@ -773,7 +796,7 @@ const ReaderPage = () => {
           e.stopPropagation()
           goToEpisode(episodeNum + 1)
         }}
-        className={`fixed top-1/2 right-2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
+        className={`fixed right-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasNext ? '' : 'cursor-not-allowed opacity-30'
         } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
       >
@@ -782,7 +805,7 @@ const ReaderPage = () => {
 
       <main
         className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 sm:px-2 ${
-          showHeader ? 'pt-20 pb-16 md:pt-24' : 'pt-2 pb-2'
+          showHeader ? 'pb-16 pt-20 md:pt-24' : 'pb-2 pt-2'
         }`}
         onClick={() => setShowHeader(!showHeader)}
       >
@@ -795,7 +818,7 @@ const ReaderPage = () => {
                   : 'border border-gray-200 bg-gray-100'
               }`}
             >
-              <Lock className="text-accent-500 h-10 w-10 animate-pulse" />
+              <Lock className="text-accent-500 h-10 w-10" />
             </div>
             <h2 className="mb-2 text-2xl font-bold">{t('readerPage.premiumEpisode')}</h2>
             <p className={`mb-4 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -810,68 +833,160 @@ const ReaderPage = () => {
                 })}
               </p>
             ) : null}
-            {isAuthenticated && (
-              <p className={`mb-6 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                {t('coinsPage.yourBalance')}: {balance}
-              </p>
-            )}
-            {unlockError ? (
-              <p role="alert" className="mb-3 text-sm font-semibold text-red-500">
-                {unlockError}
-              </p>
+            {isAuthenticated ? (
+              <div
+                className={`mb-6 space-y-1 text-xs ${darkMode ? 'text-gray-400' : 'text-muted'}`}
+              >
+                <p>
+                  {t('coinsPage.yourBalance')}: <span className="tabular-nums">{balance}</span>
+                </p>
+                {balance >= currentEpisode.coinPrice ? (
+                  <p>{t('readerPage.balanceAfter', { n: balance - currentEpisode.coinPrice })}</p>
+                ) : null}
+              </div>
             ) : null}
-            <Button
-              size="lg"
-              onClick={(e) => {
-                e.stopPropagation()
-                void handleUnlock()
-              }}
-            >
-              {isAuthenticated ? t('readerPage.unlockWithCoins') : t('readerPage.loginToUnlock')}
-            </Button>
+            {unlockError ? (
+              <div
+                role="alert"
+                className={`mb-4 w-full max-w-sm rounded-2xl border px-4 py-3 text-left ${
+                  darkMode ? 'border-red-500/40 bg-red-500/10' : 'border-red-200 bg-red-50'
+                }`}
+              >
+                <p className="text-sm font-semibold text-red-500">{unlockError}</p>
+                {unlockShortfall > 0 ? (
+                  <>
+                    <p
+                      className={`mt-1 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-strong'}`}
+                    >
+                      {t('readerPage.shortfall', { n: unlockShortfall })}
+                    </p>
+                    <Link
+                      to="/coins"
+                      state={{
+                        from: fromPath,
+                        needCoins: unlockShortfall,
+                        episodeNumber: currentEpisode.episodeNumber,
+                        seriesTitle: webtoon?.title[lang] ?? '',
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-3 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    >
+                      {t('readerPage.topUpAndReturn')}
+                    </Link>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+            {unlockConfirm && isAuthenticated ? (
+              <div className="w-full max-w-sm">
+                <p className={`mb-3 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-strong'}`}>
+                  {t('readerPage.confirmUnlockBody', {
+                    n: currentEpisode.episodeNumber,
+                    coins: currentEpisode.coinPrice,
+                    after: Math.max(0, balance - currentEpisode.coinPrice),
+                  })}
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                  <Button
+                    size="lg"
+                    isLoading={unlockPending}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      void handleUnlock()
+                    }}
+                  >
+                    {t('readerPage.unlockCta', { coins: currentEpisode.coinPrice })}
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    disabled={unlockPending}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setUnlockConfirm(false)
+                    }}
+                  >
+                    {t('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                size="lg"
+                isLoading={unlockPending}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (!isAuthenticated) {
+                    void handleUnlock()
+                    return
+                  }
+                  setUnlockError('')
+                  setUnlockShortfall(0)
+                  setUnlockConfirm(true)
+                }}
+              >
+                {isAuthenticated
+                  ? t('readerPage.unlockCta', { coins: currentEpisode.coinPrice })
+                  : t('readerPage.loginToUnlock')}
+              </Button>
+            )}
           </div>
         ) : currentEpisode.images.length > 0 ? (
-          <div
-            data-testid="reader-strip-stack"
-            className={`flex flex-col gap-0 ${imageFit === 'full' ? 'w-full' : ''} ${
-              scaled ? 'overflow-visible' : 'overflow-hidden'
-            } ${scaled ? '' : 'touch-pan-y'}`}
-            style={
-              pinchScale === 1 && pan.x === 0 && pan.y === 0
-                ? undefined
-                : {
-                    transform: `translate(${pan.x}px, ${pan.y}px) scale(${pinchScale})`,
-                    transformOrigin: `${pinchOrigin.x}px ${pinchOrigin.y}px`,
-                  }
-            }
-            onPointerDown={onStripPointerDown}
-            onPointerMove={onStripPointerMove}
-            onPointerUp={onStripPointerEnd}
-            onPointerCancel={onStripPointerEnd}
-            onClick={onStripClick}
-          >
-            {currentEpisode.images.map((src, index) => {
-              const size = panelPixelSize(
-                currentEpisode.images.length,
-                currentEpisode.imageSizes,
-                index
-              )
-              return (
-                <div key={`${src}-${index}`}>
-                  <ReaderPanelImage
-                    src={src}
-                    alt={`${currentEpisode.title[lang]} strip ${index + 1}`}
-                    loading={index < 2 ? 'eager' : 'lazy'}
-                    priority={index === 0}
-                    width={size?.width}
-                    height={size?.height}
-                  />
-                  {midAdAfter === index ? <ReaderAdSlot variant="mid" darkMode={darkMode} /> : null}
-                </div>
-              )
-            })}
-            <ReaderAdSlot variant="end" darkMode={darkMode} />
-          </div>
+          <>
+            {isPlaceholderStrip(currentEpisode, webtoon.coverImage) ? (
+              <p
+                data-testid="reader-strip-demo"
+                className={`mx-auto mb-2 max-w-2xl px-4 text-center text-xs font-semibold ${
+                  darkMode ? 'text-gray-400' : 'text-muted'
+                }`}
+              >
+                {t('readerPage.stripDemo')}
+              </p>
+            ) : null}
+            <div
+              data-testid="reader-strip-stack"
+              className={`flex flex-col gap-0 ${imageFit === 'full' ? 'w-full' : ''} ${
+                scaled ? 'overflow-visible' : 'overflow-hidden'
+              } ${scaled ? '' : 'touch-pan-y'}`}
+              style={
+                pinchScale === 1 && pan.x === 0 && pan.y === 0
+                  ? undefined
+                  : {
+                      transform: `translate(${pan.x}px, ${pan.y}px) scale(${pinchScale})`,
+                      transformOrigin: `${pinchOrigin.x}px ${pinchOrigin.y}px`,
+                    }
+              }
+              onPointerDown={onStripPointerDown}
+              onPointerMove={onStripPointerMove}
+              onPointerUp={onStripPointerEnd}
+              onPointerCancel={onStripPointerEnd}
+              onClick={onStripClick}
+            >
+              {currentEpisode.images.map((src, index) => {
+                const size = panelPixelSize(
+                  currentEpisode.images.length,
+                  currentEpisode.imageSizes,
+                  index
+                )
+                return (
+                  <div key={`${src}-${index}`}>
+                    <ReaderPanelImage
+                      src={src}
+                      alt={`${currentEpisode.title[lang]} strip ${index + 1}`}
+                      loading={index < 2 ? 'eager' : 'lazy'}
+                      priority={index === 0}
+                      width={size?.width}
+                      height={size?.height}
+                    />
+                    {midAdAfter === index ? (
+                      <ReaderAdSlot variant="mid" darkMode={darkMode} />
+                    ) : null}
+                  </div>
+                )
+              })}
+              <ReaderAdSlot variant="end" darkMode={darkMode} />
+            </div>
+          </>
         ) : (
           <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
             <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -915,7 +1030,7 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-bottom fixed right-0 bottom-0 left-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-bottom fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_-8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_-8px_32px_0_rgba(31,38,135,0.08)]'

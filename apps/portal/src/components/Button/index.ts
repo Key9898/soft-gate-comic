@@ -1,2 +1,6 @@
 export { default } from './Button'
 export type { ButtonProps } from './Button'
+export { default as ButtonLink, ButtonAnchor } from './ButtonLink'
+export type { ButtonLinkProps, ButtonAnchorProps } from './ButtonLink'
+export { buttonClasses } from './buttonClasses'
+export type { ButtonVariant, ButtonSize, ButtonClassOptions } from './buttonClasses'

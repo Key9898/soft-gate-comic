@@ -39,7 +39,7 @@ describe('Library history Continue', () => {
   it('opens the last-read episode from History Continue', async () => {
     const user = userEvent.setup({ delay: null })
     render(<LibraryPage />)
-    await user.click(await screen.findByRole('button', { name: /history/i }))
+    await user.click(await screen.findByRole('tab', { name: /history/i }))
     const continueLink = await screen.findByRole('link', { name: /continue reading/i })
     expect(continueLink).toHaveAttribute('href', '/read/1/3')
   })

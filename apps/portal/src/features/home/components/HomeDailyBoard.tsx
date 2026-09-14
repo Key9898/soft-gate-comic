@@ -6,6 +6,7 @@ import type { Episode, UploadDay, Webtoon } from '@softgate/shared'
 import { dailyDrops, todayWeekday, UPLOAD_DAY_ORDER } from '../../../lib/catalog'
 import DailyDropCard from './DailyDropCard'
 import CatalogEmptyPanel from '../../../components/CatalogEmptyPanel'
+import Chip from '../../../components/Chip'
 
 const WEEKDAY_KEYS = [
   'home.weekdaySun',
@@ -68,19 +69,15 @@ const HomeDailyBoard = ({
           {UPLOAD_DAY_ORDER.map((value) => {
             const selected = value === day
             return (
-              <button
+              <Chip
                 key={value}
-                type="button"
-                aria-pressed={selected}
+                tone="genre"
+                selected={selected}
+                className="text-sm font-medium"
                 onClick={() => setDay(value)}
-                className={`focus:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  selected
-                    ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
               >
                 {t(WEEKDAY_KEYS[value])}
-              </button>
+              </Chip>
             )
           })}
         </div>

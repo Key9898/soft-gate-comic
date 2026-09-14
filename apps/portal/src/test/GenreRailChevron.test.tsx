@@ -11,12 +11,13 @@ describe('GenreRailChevron', () => {
     expect(container.querySelector('svg')).toBeNull()
   })
 
-  it('renders Show more genres with the same min size when enabled', () => {
+  it('renders Show more genres at the 44pt touch floor when enabled', () => {
     const onClick = vi.fn()
     render(<GenreRailChevron enabled size="sm" onClick={onClick} label="Show more genres" />)
     const button = screen.getByRole('button', { name: 'Show more genres' })
     expect(screen.queryByTestId('genre-rail-chevron-slot')).not.toBeInTheDocument()
-    expect(button.className).toMatch(/min-h-\[38px\]/)
+    expect(button.className).toMatch(/min-h-11/)
+    expect(button.className).toMatch(/min-w-11/)
     fireEvent.click(button)
     expect(onClick).toHaveBeenCalledTimes(1)
   })

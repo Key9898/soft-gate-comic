@@ -48,17 +48,17 @@ export const FloatingInput = ({
         } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
       >
         {leftIcon && (
-          <div className="absolute top-1/2 left-4.5 -translate-y-1/2 text-gray-400">{leftIcon}</div>
+          <div className="left-4.5 text-muted absolute top-1/2 -translate-y-1/2">{leftIcon}</div>
         )}
 
         <label
           htmlFor={inputId}
-          className={`pointer-events-none absolute left-4.5 origin-top-left transition-all duration-200 ${
+          className={`left-4.5 pointer-events-none absolute origin-top-left transition-all duration-200 ${
             leftIcon ? 'left-11' : ''
           } ${
             isFocused || hasValue
               ? 'text-primary-500 text-2xs top-2 font-semibold'
-              : 'top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-400'
+              : 'text-muted top-1/2 -translate-y-1/2 text-sm font-semibold'
           }`}
         >
           {label}
@@ -74,7 +74,7 @@ export const FloatingInput = ({
           aria-describedby={error ? errorId : undefined}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`w-full bg-transparent px-4.5 text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
+          className={`px-4.5 w-full bg-transparent text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
             leftIcon ? 'pl-11' : ''
           } ${isFocused || hasValue ? 'pt-6.5 pb-2' : 'py-4'}`}
         />
@@ -84,7 +84,7 @@ export const FloatingInput = ({
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-            className="absolute top-1/2 right-4.5 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+            className="right-4.5 text-muted absolute top-1/2 -translate-y-1/2 transition-colors hover:text-gray-600"
           >
             {showPassword ? (
               <svg
@@ -114,9 +114,7 @@ export const FloatingInput = ({
         )}
 
         {rightIcon && !isPassword && (
-          <div className="absolute top-1/2 right-4.5 -translate-y-1/2 text-gray-400">
-            {rightIcon}
-          </div>
+          <div className="right-4.5 text-muted absolute top-1/2 -translate-y-1/2">{rightIcon}</div>
         )}
       </div>
 
@@ -128,7 +126,7 @@ export const FloatingInput = ({
             exit={{ opacity: 0, y: -5 }}
             id={errorId}
             role="alert"
-            className="mt-1.5 ml-2 flex items-center gap-1 text-xs font-bold text-red-500"
+            className="ml-2 mt-1.5 flex items-center gap-1 text-xs font-bold text-red-500"
           >
             <svg
               viewBox="0 0 24 24"

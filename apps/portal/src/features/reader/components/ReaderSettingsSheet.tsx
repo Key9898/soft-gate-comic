@@ -29,7 +29,8 @@ const ReaderSettingsSheet = ({
     ? 'border-white/10 bg-white/5 hover:border-white/20'
     : 'border-gray-200 bg-gray-50 hover:border-gray-300'
   const active = 'border-primary-500 bg-primary-600/10 text-primary-500'
-  const label = 'mb-3 block text-sm font-semibold tracking-wider text-gray-400 uppercase'
+  const labelTone = darkMode ? 'text-gray-300' : 'text-muted-strong'
+  const label = `mb-3 block text-sm font-semibold tracking-wider uppercase ${labelTone}`
 
   return (
     <ReaderSheet
@@ -67,7 +68,7 @@ const ReaderSettingsSheet = ({
 
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <label className="text-sm font-semibold tracking-wider text-gray-400 uppercase">
+            <label className={`text-sm font-semibold uppercase tracking-wider ${labelTone}`}>
               {t('readerPage.brightness')}
             </label>
             <span className="text-primary-500 text-xs font-bold">
@@ -75,7 +76,7 @@ const ReaderSettingsSheet = ({
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Sun className="h-4 w-4 text-gray-400" />
+            <Sun className={`h-4 w-4 ${darkMode ? 'text-gray-400' : 'text-muted'}`} aria-hidden />
             <input
               type="range"
               min="0.25"

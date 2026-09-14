@@ -22,22 +22,26 @@ import AboutTeamSection from './components/AboutTeamSection'
 import StoryBook from './components/StoryBook'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
 import { getPublishedStoryChapters } from '../../lib/info/storyChapters'
+import {
+  INFO_PRIMARY_CTA,
+  INFO_SECONDARY_CTA,
+  INFO_SECTION_HEADING,
+  INFO_SECTION_RULE,
+  INFO_CARD,
+} from './components/infoStyles'
 
 const ICON_WELL =
   'bg-primary-50 text-primary-600 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl'
 
-const SECTION_HEADING =
-  'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
+const SECTION_HEADING = INFO_SECTION_HEADING
 
-const SECTION_RULE = 'border-t border-gray-200/60 py-20'
+const SECTION_RULE = INFO_SECTION_RULE
 
-const CARD = 'rounded-3xl border border-gray-200/60 bg-white shadow-sm'
+const CARD = INFO_CARD
 
-const PRIMARY_CTA =
-  'bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 flex min-h-[44px] items-center justify-center rounded-2xl px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-primary-500/10 transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
+const PRIMARY_CTA = INFO_PRIMARY_CTA
 
-const SECONDARY_CTA =
-  'flex min-h-[44px] items-center justify-center rounded-2xl border border-gray-200 px-6 py-2.5 text-xs font-bold tracking-wider text-gray-700 uppercase transition hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none'
+const SECONDARY_CTA = INFO_SECONDARY_CTA
 
 const FACTS = [
   { labelKey: 'about.factProductLabel', valueKey: 'about.factProductValue' },
@@ -81,7 +85,7 @@ const AboutPage = () => {
         className="pointer-events-none absolute inset-x-0 top-0 h-[450px] overflow-hidden"
         aria-hidden
       >
-        <div className="radial-wash-primary absolute top-0 left-1/2 h-full w-full max-w-7xl -translate-x-1/2" />
+        <div className="radial-wash-primary absolute left-1/2 top-0 h-full w-full max-w-7xl -translate-x-1/2" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
@@ -98,7 +102,7 @@ const AboutPage = () => {
             <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
               {FACTS.map((fact) => (
                 <div key={fact.labelKey}>
-                  <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                  <dt className="text-2xs text-muted font-bold uppercase tracking-widest">
                     {t(fact.labelKey)}
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>
@@ -119,7 +123,7 @@ const AboutPage = () => {
                     <Icon className="h-5 w-5" aria-hidden />
                   </span>
                   <h3 className="mt-5 text-base font-bold text-gray-900">{title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">{desc}</p>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">{desc}</p>
                 </div>
               ))}
             </div>
@@ -130,7 +134,7 @@ const AboutPage = () => {
               <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
               {t('about.ourStory')}
             </h2>
-            <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+            <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">
               {t('about.ourStoryDesc')}
             </p>
             <StoryBook chapters={getPublishedStoryChapters()} />
@@ -145,8 +149,8 @@ const AboutPage = () => {
                   <span className={ICON_WELL}>
                     <Icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <h2 className="mt-5 text-lg font-bold text-balance text-gray-900">{title}</h2>
-                  <p className="mt-3 text-sm leading-relaxed font-medium text-gray-600">{desc}</p>
+                  <h2 className="mt-5 text-balance text-lg font-bold text-gray-900">{title}</h2>
+                  <p className="mt-3 text-sm font-medium leading-relaxed text-gray-600">{desc}</p>
                 </div>
               ))}
             </div>
@@ -174,7 +178,7 @@ const AboutPage = () => {
                     </div>
                     <h3 className="text-base font-bold text-gray-900">{val.title}</h3>
                   </div>
-                  <p className="mt-4 pl-1 text-sm leading-relaxed font-medium text-gray-500">
+                  <p className="mt-4 pl-1 text-sm font-medium leading-relaxed text-gray-500">
                     {val.desc}
                   </p>
                 </motion.div>
@@ -185,10 +189,10 @@ const AboutPage = () => {
           <AboutTeamSection />
 
           <section className={`${CARD} mt-12 p-8 text-center shadow-lg`}>
-            <h2 className="text-lg font-bold tracking-wider text-balance text-gray-900 uppercase">
+            <h2 className="text-balance text-lg font-bold uppercase tracking-wider text-gray-900">
               {t('about.getInvolved')}
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed font-medium text-gray-500">
+            <p className="mx-auto mt-3 max-w-xl text-sm font-medium leading-relaxed text-gray-500">
               {t('about.getInvolvedDesc')}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">

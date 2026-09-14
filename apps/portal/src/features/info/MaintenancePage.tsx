@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, HelpCircle, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react'
 import SEO from '../../components/SEO/SEO'
 import { useSettings } from '../../context/SettingsContext'
+import { buttonClasses } from '../../components/Button'
 
 const CARD = 'rounded-3xl border border-gray-200/80 bg-white p-5 text-left shadow-sm'
-const LINK =
-  'focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold focus-visible:ring-2 focus-visible:outline-none'
+const LINK = buttonClasses({ variant: 'ghost', size: 'md', className: 'px-5 font-semibold' })
 
 const MaintenancePage = () => {
   const { t } = useTranslation()
@@ -24,7 +24,7 @@ const MaintenancePage = () => {
         description={t('maintenance.lead')}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <p className="text-primary-600 text-xs font-bold tracking-wider uppercase">
+        <p className="text-primary-600 text-xs font-bold uppercase tracking-wider">
           {t('maintenance.windowEyebrow')}
         </p>
         <h1 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
@@ -74,7 +74,7 @@ const MaintenancePage = () => {
         </div>
 
         <section className={`${CARD} mt-4`} aria-labelledby="maintenance-window">
-          <p className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+          <p className="text-2xs text-muted font-bold uppercase tracking-wider">
             {t('common.demo')}
           </p>
           <h2 id="maintenance-window" className="mt-2 text-lg font-bold text-gray-950">

@@ -12,9 +12,9 @@ import { useFollows } from '../../context/FollowsContext'
 import { newestPublishedIds } from '../../lib/catalog'
 import NotFoundPage from '../info/NotFoundPage'
 import AuthorPageSkeleton from './components/AuthorPageSkeleton'
+import { DESTINATION_TILE } from '../info/components/infoStyles'
 
-const DEST_LINK =
-  'hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none'
+const DEST_LINK = DESTINATION_TILE
 
 const DESTINATIONS = [
   { to: '/categories', labelKey: 'nav.categories', icon: LayoutGrid },
@@ -148,7 +148,7 @@ const AuthorPage = () => {
                 <Link
                   key={webtoon.id}
                   to={`/webtoon/${webtoon.id}`}
-                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
                   <CatalogBookCard
                     webtoon={webtoon}
@@ -170,7 +170,7 @@ const AuthorPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                <h3 className="text-muted text-xs font-bold uppercase tracking-wider">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">

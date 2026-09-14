@@ -2,9 +2,11 @@ import { ChevronRight } from 'lucide-react'
 
 export type GenreRailChevronSize = 'md' | 'sm'
 
+// Both sizes clear the 44pt touch floor. `sm` used to be 38x38, which put the only
+// control on a horizontal rail below the minimum on exactly the device that needs it.
 const SIZE_CLASS: Record<GenreRailChevronSize, string> = {
   md: 'min-h-11 min-w-11',
-  sm: 'min-h-[38px] min-w-[38px]',
+  sm: 'min-h-11 min-w-11',
 }
 
 type GenreRailChevronProps = {
@@ -26,7 +28,7 @@ const GenreRailChevron = ({ enabled, size = 'md', onClick, label }: GenreRailChe
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2 ${box}`}
+      className={`text-primary-600 hover:bg-primary-50 focus-visible:ring-primary-500 flex items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus-visible:ring-2 ${box}`}
     >
       <ChevronRight className="h-5 w-5" aria-hidden />
     </button>

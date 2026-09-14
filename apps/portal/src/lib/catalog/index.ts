@@ -1,5 +1,6 @@
 export {
   episodeThumbSrc,
+  isPlaceholderStrip,
   isPublishedEpisode,
   latestPublishedEpisode,
   panelPixelSize,

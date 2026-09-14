@@ -8,7 +8,6 @@ import {
   HelpCircle,
   FileText,
   ArrowRight,
-  Search,
   PenLine,
   Bookmark,
   Flag,
@@ -16,18 +15,23 @@ import {
 import SEO from '../../components/SEO/SEO'
 import Breadcrumb from '../../components/Breadcrumb'
 import PageHeader from '../../components/PageHeader'
+import SearchField from '../../components/SearchField'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
 import { FAQ_POPULAR_IDS, filterFaqItems, getFaqItemById } from '../../lib/info/faqCatalog'
+import {
+  INFO_PRIMARY_CTA,
+  INFO_SECTION_HEADING,
+  INFO_SECTION_RULE,
+  INFO_CARD,
+} from './components/infoStyles'
 
-const SECTION_HEADING =
-  'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
+const SECTION_HEADING = INFO_SECTION_HEADING
 
-const SECTION_RULE = 'border-t border-gray-200/60 py-20'
+const SECTION_RULE = INFO_SECTION_RULE
 
-const CARD = 'rounded-3xl border border-gray-200/60 bg-white shadow-sm'
+const CARD = INFO_CARD
 
-const PRIMARY_CTA =
-  'bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 flex min-h-[44px] items-center justify-center rounded-2xl px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-md shadow-primary-500/10 transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
+const PRIMARY_CTA = INFO_PRIMARY_CTA
 
 const HelpPage = () => {
   const { t } = useTranslation()
@@ -87,25 +91,17 @@ const HelpPage = () => {
   return (
     <div className="relative min-h-screen bg-gray-50 pb-20">
       <SEO title={t('footer.help')} description={t('help.honestIntro')} path="/help" />
-      <div className="radial-wash-primary pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2" />
+      <div className="radial-wash-primary pointer-events-none absolute left-1/2 top-0 h-[450px] w-full max-w-7xl -translate-x-1/2" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Breadcrumb items={page.breadcrumbs} className="mb-6" />
         <PageHeader variant="compact" eyebrow={page.eyebrow} title={page.title} deck={page.deck}>
-          <div className="relative max-w-3xl">
-            <input
-              type="search"
-              aria-label={t('help.searchPlaceholder')}
-              placeholder={t('help.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="focus:ring-primary-500 min-h-11 w-full rounded-2xl border-none bg-gray-100 py-3.5 pr-4 pl-11 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
-            />
-            <Search
-              className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400"
-              aria-hidden="true"
-            />
-          </div>
+          <SearchField
+            wrapperClassName="max-w-3xl"
+            label={t('help.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </PageHeader>
 
         {showSearchPanel ? (
@@ -116,10 +112,10 @@ const HelpPage = () => {
                   <li key={item.id}>
                     <Link
                       to={`/faq#${item.id}`}
-                      className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                      className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
                     >
                       <span>{t(item.qKey)}</span>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+                      <ArrowRight className="text-muted h-4 w-4 shrink-0" aria-hidden="true" />
                     </Link>
                   </li>
                 ))}
@@ -129,7 +125,7 @@ const HelpPage = () => {
                 {t('help.searchNoResults')}{' '}
                 <Link
                   to="/contact"
-                  className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                  className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2"
                 >
                   {t('footer.contact')}
                 </Link>
@@ -146,7 +142,7 @@ const HelpPage = () => {
               <Link
                 key={topic.to}
                 to={topic.to}
-                className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 flex-col rounded-2xl border border-gray-200 p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 flex-col rounded-2xl border border-gray-200 p-4 transition-colors focus-visible:outline-none focus-visible:ring-2"
               >
                 <topic.icon className="text-primary-600 mb-2 h-7 w-7" />
                 <h3 className="font-semibold text-gray-900">{topic.title}</h3>
@@ -157,7 +153,7 @@ const HelpPage = () => {
 
           <Link
             to="/faq"
-            className="hover:border-primary-300 focus-visible:ring-primary-500 bg-primary-500/10 mt-8 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-4 py-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="hover:border-primary-300 focus-visible:ring-primary-500 bg-primary-500/10 mt-8 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2"
           >
             <span>
               <span className="text-primary-700 block font-semibold">{t('help.browseAll')}</span>
@@ -177,13 +173,13 @@ const HelpPage = () => {
               <li key={item.id}>
                 <Link
                   to={`/faq#${item.id}`}
-                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
                 >
                   <span className="flex items-center gap-3">
                     <FileText className="text-primary-500 h-4 w-4 shrink-0" aria-hidden="true" />
                     {t(item.qKey)}
                   </span>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+                  <ArrowRight className="text-muted h-4 w-4 shrink-0" aria-hidden="true" />
                 </Link>
               </li>
             ))}

@@ -1,17 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, type MotionProps } from 'framer-motion'
-import {
-  Check,
-  ChevronDown,
-  Clock,
-  ListFilter,
-  ListOrdered,
-  Lock,
-  Search,
-  Sparkles,
-  X,
-} from 'lucide-react'
+import { Clock, ListOrdered, Lock, Search, Sparkles, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Genre, Webtoon } from '@softgate/shared'
 import { CatalogBookCard } from '../../components/BookCard'
@@ -60,6 +50,8 @@ import {
   type SearchTab,
   type StatusFilter,
 } from './searchParams'
+import SortMenu from '../../components/SortMenu'
+import Chip from '../../components/Chip'
 
 const SearchPage = () => {
   const { t, i18n } = useTranslation()
@@ -81,7 +73,6 @@ const SearchPage = () => {
   const sortBy = parseSearchSort(searchParams)
 
   const [recent, setRecent] = useState<string[]>(() => getRecentSearches())
-  const [isSortOpen, setIsSortOpen] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
   const handleImageLoad = (id: string) => {
@@ -185,7 +176,6 @@ const SearchPage = () => {
   }
 
   const setSortFilter = (next: WebtoonSortBy) => {
-    setIsSortOpen(false)
     patchSearchParams((params) => {
       applySearchSort(params, next)
     })
@@ -227,7 +217,7 @@ const SearchPage = () => {
 
   const recovery = (
     <div className="mt-8 w-full">
-      <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+      <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
         {t('notFound.goHere')}
       </h2>
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -265,7 +255,7 @@ const SearchPage = () => {
                 title={t('common.close')}
                 aria-label={t('common.close')}
                 onClick={clearSearch}
-                className="absolute top-1/2 right-4 z-10 -translate-y-1/2 p-1 text-gray-400 transition hover:text-gray-600"
+                className="text-muted focus-visible:ring-primary-500 absolute right-2 top-1/2 z-10 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl transition hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -294,7 +284,7 @@ const SearchPage = () => {
                         type="button"
                         key={chip.en}
                         onClick={() => applySearch(term)}
-                        className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                        className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                       >
                         {term}
                       </button>
@@ -367,7 +357,7 @@ const SearchPage = () => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {recent.length === 0 ? (
-                    <p className="text-sm text-gray-400">{t('search.noRecent')}</p>
+                    <p className="text-muted text-sm">{t('search.noRecent')}</p>
                   ) : (
                     recent.map((term) => (
                       <button
@@ -430,18 +420,14 @@ const SearchPage = () => {
                   ['episodes', t('search.tabs.episodes'), episodeHits.length],
                 ] as const
               ).map(([key, label, count]) => (
-                <button
+                <Chip
                   key={key}
-                  type="button"
+                  tone="genre"
+                  selected={tab === key}
                   onClick={() => setActiveTab(key)}
-                  className={`min-h-11 rounded-2xl px-4 py-2 text-sm font-medium transition ${
-                    tab === key
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
                 >
                   {label} ({count})
-                </button>
+                </Chip>
               ))}
             </div>
 
@@ -451,85 +437,36 @@ const SearchPage = () => {
                   {statusOptions.map((option) => {
                     const isActive = status === option.value
                     return (
-                      <button
-                        type="button"
+                      <Chip
                         key={option.value}
+                        selected={isActive}
                         onClick={() => setStatusFilter(option.value)}
-                        className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
-                          isActive
-                            ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
-                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                        }`}
                       >
                         {option.label}
-                      </button>
+                      </Chip>
                     )
                   })}
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setGenreFilter('')}
-                    className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
-                      !genre
-                        ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
-                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
+                  <Chip selected={!genre} onClick={() => setGenreFilter('')}>
                     {t('search.filters.allGenres')}
-                  </button>
+                  </Chip>
                   {browseGenres.map((g) => {
                     const isActive = genre === g.slug
                     return (
-                      <button
-                        type="button"
-                        key={g.id}
-                        onClick={() => setGenreFilter(g.slug)}
-                        className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
-                          isActive
-                            ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
-                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                        }`}
-                      >
+                      <Chip key={g.id} selected={isActive} onClick={() => setGenreFilter(g.slug)}>
                         {g.name[lang]}
-                      </button>
+                      </Chip>
                     )
                   })}
                 </div>
-                <div className="relative flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setIsSortOpen((open) => !open)}
-                    className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
-                  >
-                    <ListFilter className="text-primary-500 h-4.5 w-4.5" />
-                    <span>{sortOptions.find((o) => o.value === sortBy)?.label}</span>
-                    <ChevronDown
-                      className={`h-4 w-4 text-gray-400 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-                  {isSortOpen ? (
-                    <div className="absolute right-0 z-20 mt-12 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-xl">
-                      {sortOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => setSortFilter(option.value)}
-                          className={`flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-xs font-bold ${
-                            sortBy === option.value
-                              ? 'bg-primary-50 text-primary-600'
-                              : 'text-gray-600 hover:bg-gray-50'
-                          }`}
-                        >
-                          <span>{option.label}</span>
-                          {sortBy === option.value ? (
-                            <Check className="text-primary-600 h-4 w-4 stroke-[3]" />
-                          ) : null}
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
+                <SortMenu
+                  className="flex justify-end"
+                  options={sortOptions}
+                  value={sortBy}
+                  onChange={setSortFilter}
+                  label={t('categories.sortBrowse')}
+                />
               </div>
             ) : null}
 
@@ -549,7 +486,7 @@ const SearchPage = () => {
                     >
                       <Link
                         to={`/webtoon/${webtoon.id}`}
-                        className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       >
                         <CatalogBookCard
                           webtoon={webtoon}
@@ -652,7 +589,7 @@ const SearchPage = () => {
                             ) : null}
                           </div>
                           {locked ? (
-                            <span className="bg-accent-600/90 absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
+                            <span className="bg-accent-600/90 absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
                               <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                             </span>
                           ) : null}
@@ -729,7 +666,7 @@ function SearchNoResults({
     <div>
       <div className="rounded-2xl border border-dashed border-gray-200 bg-white py-12 text-center">
         <p className="text-gray-500">{t('search.noResults')}</p>
-        <p className="mt-1 text-sm text-gray-400">{query}</p>
+        <p className="text-muted mt-1 text-sm">{query}</p>
       </div>
       <div className="mt-6">
         <SearchAutocomplete className="mx-auto max-w-md" />
@@ -743,7 +680,7 @@ function SearchNoResults({
               <Link
                 key={webtoon.id}
                 to={`/webtoon/${webtoon.id}`}
-                className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:outline-none"
+                className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2"
               >
                 <CatalogBookCard
                   webtoon={webtoon}

@@ -13,7 +13,7 @@ const CommentsTeaser = ({ comments, onOpen, darkMode = false }: CommentsTeaserPr
   const newest = [...comments]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 3)
-  const muted = darkMode ? 'text-gray-400' : 'text-gray-600'
+  const muted = darkMode ? 'text-muted' : 'text-gray-600'
   const card = darkMode ? 'border-white/10 bg-white/5' : 'border-gray-100 bg-gray-50'
 
   return (

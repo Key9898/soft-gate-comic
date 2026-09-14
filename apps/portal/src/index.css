@@ -37,6 +37,13 @@
   --color-spark-600: rgb(214 54 31);
   --color-spark-700: rgb(180 45 26);
 
+  /* Muted = meta / eyebrow / placeholder text on light surfaces. gray-600 clears AA on
+     both white (7.6:1) and the gray-50 body (7.3:1); gray-500 is 4.42:1 on gray-50 and
+     misses. gray-400 is 2.85:1 and fails at every size. Use text-muted, never
+     text-gray-400, on any light surface. */
+  --color-muted: rgb(75 85 99);
+  --color-muted-strong: rgb(55 65 81);
+
   /* Sepia = legal-page reading theme (warm paper). */
   --color-sepia-50: rgb(252 248 242);
   --color-sepia-200: rgb(238 222 206);
@@ -99,12 +106,12 @@ html::-webkit-scrollbar {
   clip: auto;
   white-space: normal;
   border-radius: 1rem;
-  background: #fff;
+  background: var(--color-white);
   padding: 0.75rem 1rem;
   font-weight: 600;
-  color: rgb(12 120 120);
+  color: var(--color-primary-700);
   outline: none;
-  box-shadow: 0 0 0 2px rgb(50 170 172);
+  box-shadow: 0 0 0 2px var(--color-primary-500);
 }
 
 html[lang='mm'] body,
@@ -145,45 +152,9 @@ html[lang='mm'] textarea {
 /* Components                                   */
 /* ============================================ */
 
-.btn-primary {
-  @apply bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded-2xl px-4 py-2 font-medium text-white transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none;
-}
-
-.btn-secondary {
-  @apply rounded-2xl border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none;
-}
-
-.btn-outline {
-  @apply border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 rounded-2xl border-2 px-4 py-2 font-medium transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none;
-}
-
-.input-base {
-  @apply focus:ring-primary-500 focus:border-primary-500 w-full rounded-2xl border border-gray-300 px-4 py-2 transition-colors duration-200 placeholder:text-gray-400 focus:ring-2 focus:outline-none;
-}
-
-.card {
-  @apply rounded-2xl border border-gray-200 bg-white shadow-sm;
-}
-
-.card-hover {
-  @apply rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md;
-}
-
-.tag {
-  @apply rounded-2xl px-3 py-1 text-sm font-medium;
-}
-
-.tag-primary {
-  @apply bg-primary-100 text-primary-700 rounded-2xl px-3 py-1 text-sm font-medium;
-}
-
-.tag-accent {
-  @apply bg-accent-600 rounded-2xl px-3 py-1 text-sm font-medium text-white;
-}
-
-.tag-spark {
-  @apply bg-spark-600 rounded-2xl px-3 py-1 text-sm font-medium text-white;
-}
+/* Button, ButtonLink, Card and Chip own these treatments now. The class versions
+   drifted out of use and were unreferenced repo-wide; components/Button is the
+   single source for CTA classes. */
 
 .shape-circle {
   border-radius: 50%;
@@ -322,8 +293,8 @@ html[lang='mm'] textarea {
 
 .hero-book-cover-link:focus-visible {
   box-shadow:
-    0 0 0 2px #fff,
-    0 0 0 4px rgb(14 148 148);
+    0 0 0 2px var(--color-white),
+    0 0 0 4px var(--color-primary-600);
 }
 
 .hero-book-pages,
@@ -332,7 +303,9 @@ html[lang='mm'] textarea {
   transform-style: preserve-3d;
 }
 
-/* Fore-edge block: horizontal paper lines (visible after rotateY(90deg)) */
+/* Fore-edge block: horizontal paper lines (visible after rotateY(90deg)).
+   The slate literals below are modelled paper and board, not brand colour — they
+   describe a material and deliberately do not follow the theme tokens. */
 .hero-book-pages {
   position: absolute;
   top: 3px;
@@ -448,7 +421,7 @@ html[lang='mm'] textarea {
   display: grid;
   grid-template-columns: 1fr;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid rgb(229 231 235 / 0.8);
   border-radius: 1.5rem;
   box-shadow: 0 10px 28px rgb(15 23 42 / 0.08);
@@ -461,7 +434,7 @@ html[lang='mm'] textarea {
 .story-reader:focus-visible {
   box-shadow:
     0 10px 28px rgb(15 23 42 / 0.08),
-    0 0 0 2px #fff,
+    0 0 0 2px var(--color-white),
     0 0 0 4px rgb(14 148 148 / 0.7);
 }
 
@@ -471,7 +444,7 @@ html[lang='mm'] textarea {
   gap: 0.5rem;
   padding: 1.25rem 1.25rem 1rem;
   border-bottom: 1px solid rgb(229 231 235 / 0.9);
-  background: #fff;
+  background: var(--color-white);
 }
 
 .story-reader-rail-label {
@@ -480,7 +453,7 @@ html[lang='mm'] textarea {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.16em;
-  color: #9ca3af;
+  color: var(--color-muted);
   text-transform: uppercase;
 }
 
@@ -492,14 +465,14 @@ html[lang='mm'] textarea {
   padding: 0.55rem 0.85rem;
   border: 0;
   border-radius: 9999px;
-  background: #f8fafc;
+  background: var(--color-gray-50);
   text-align: left;
   cursor: pointer;
 }
 
 .story-reader-ep[aria-current='true'] {
-  background: rgb(14 148 148 / 0.1);
-  box-shadow: inset 0 0 0 1.5px #0e9494;
+  background: color-mix(in oklab, var(--color-primary-600) 10%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--color-primary-600);
 }
 
 .story-reader-ep-index {
@@ -507,12 +480,12 @@ html[lang='mm'] textarea {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #9ca3af;
+  color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .story-reader-ep[aria-current='true'] .story-reader-ep-index {
-  color: #0e9494;
+  color: var(--color-primary-600);
 }
 
 .story-reader-ep-copy {
@@ -525,19 +498,19 @@ html[lang='mm'] textarea {
 .story-reader-ep-title {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-gray-900);
 }
 
 .story-reader-ep-now {
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #0e9494;
+  color: var(--color-primary-600);
 }
 
 .story-reader-pane {
   min-width: 0;
   padding: 1.25rem 1.25rem 1.75rem;
-  background: #fff;
+  background: var(--color-white);
 }
 
 .story-reader-toolbar {
@@ -553,7 +526,7 @@ html[lang='mm'] textarea {
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #6b7280;
+  color: var(--color-muted);
 }
 
 .story-reader-turn-prev,
@@ -567,8 +540,8 @@ html[lang='mm'] textarea {
   padding: 0;
   border: 1px solid rgb(14 148 148 / 0.35);
   border-radius: 9999px;
-  background: #fff;
-  color: #0e9494;
+  background: var(--color-white);
+  color: var(--color-primary-600);
   cursor: pointer;
 }
 
@@ -576,15 +549,15 @@ html[lang='mm'] textarea {
 .story-reader-turn-next:hover:not(:disabled),
 .story-reader-turn-prev:focus-visible:not(:disabled),
 .story-reader-turn-next:focus-visible:not(:disabled) {
-  color: #0a5c5c;
-  background: #f0fdfa;
+  color: var(--color-primary-800);
+  background: var(--color-primary-50);
   outline: none;
 }
 
 .story-reader-turn-prev:focus-visible,
 .story-reader-turn-next:focus-visible {
   box-shadow:
-    0 0 0 2px #fff,
+    0 0 0 2px var(--color-white),
     0 0 0 4px rgb(14 148 148 / 0.7);
 }
 
@@ -592,7 +565,7 @@ html[lang='mm'] textarea {
 .story-reader-turn-next:disabled {
   color: rgb(15 23 42 / 0.28);
   border-color: rgb(15 23 42 / 0.12);
-  background: #f8fafc;
+  background: var(--color-gray-50);
   cursor: default;
 }
 
@@ -609,7 +582,7 @@ html[lang='mm'] textarea {
   margin: 0 0 1rem;
   font-size: 1.375rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-gray-900);
   text-wrap: balance;
 }
 
@@ -624,7 +597,7 @@ html[lang='mm'] textarea {
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.7;
-  color: #374151;
+  color: var(--color-gray-700);
 }
 
 @media (min-width: 1024px) {
@@ -656,7 +629,7 @@ html[lang='mm'] textarea {
   }
 
   .story-reader-ep[aria-current='true'] {
-    border-left-color: #0e9494;
+    border-left-color: var(--color-primary-600);
     background: rgb(14 148 148 / 0.08);
     box-shadow: none;
   }
@@ -685,10 +658,6 @@ html[lang='mm'] textarea {
 
 .link {
   @apply text-primary-600 hover:text-primary-700 transition-colors duration-200;
-}
-
-.container-app {
-  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
 /* ============================================ */
@@ -922,7 +891,7 @@ html[lang='mm'] textarea {
   flex-direction: column;
   overflow: hidden;
   border-radius: 1.5rem;
-  background: #fff;
+  background: var(--color-white);
   box-shadow: 0 28px 80px rgb(15 23 42 / 0.28);
   animation: home-radial-dialog-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -933,8 +902,12 @@ html[lang='mm'] textarea {
   overflow: hidden;
   perspective: 1200px;
   background:
-    radial-gradient(ellipse 80% 58% at 50% 82%, rgb(14 148 148 / 0.1), transparent 62%),
-    linear-gradient(180deg, #f8fafc 0%, #fff 58%);
+    radial-gradient(
+      ellipse 80% 58% at 50% 82%,
+      color-mix(in oklab, var(--color-primary-600) 10%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-white) 58%);
 }
 
 @media (min-width: 640px) {
@@ -989,6 +962,39 @@ html[lang='mm'] textarea {
   .skeleton-appear {
     animation: none;
     opacity: 1;
+  }
+
+  /* Forced product motion covers motion the visitor asked for (opening the radial
+     dialog). It does not cover motion fired by Tab: :focus-within on the hero book
+     rotated a large object during plain keyboard navigation, with no way to opt out.
+     Under reduce the book keeps its authored resting angle and simply stops moving —
+     the hover/focus straighten, the come-forward push and the enter slide are all
+     neutralised. The radial dialog enter animation stays: the visitor opened it. */
+  .hero-book,
+  .hero-book-motion,
+  .hero-book-float-shadow {
+    transition: none !important;
+  }
+
+  .hero-book-enter {
+    animation: none !important;
+    translate: none !important;
+  }
+
+  .hero-book-scene:hover .hero-book,
+  .hero-book-scene:focus-within .hero-book {
+    transform: rotateX(6deg) rotateY(-42deg) rotateZ(-4deg);
+  }
+
+  .hero-book-scene:hover .hero-book-motion,
+  .hero-book-scene:focus-within .hero-book-motion {
+    transform: translate3d(0, 0, 0.01px);
+  }
+
+  .hero-book-scene:hover .hero-book-float-shadow,
+  .hero-book-scene:focus-within .hero-book-float-shadow {
+    opacity: 1;
+    transform: translateZ(0);
   }
 }
 

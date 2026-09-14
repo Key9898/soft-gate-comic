@@ -138,7 +138,7 @@ describe('Reader chrome', () => {
     renderReader('/read/1/1')
     expect(await screen.findByRole('heading', { name: 'The Beginning' })).toBeInTheDocument()
     const imgs = screen.getByTestId('reader-strip-stack').querySelectorAll('img')
-    expect(imgs).toHaveLength(4)
+    expect(imgs).toHaveLength(5)
 
     expect(imgs[0]).toHaveAttribute('loading', 'eager')
     expect(imgs[0]).toHaveAttribute('decoding', 'async')

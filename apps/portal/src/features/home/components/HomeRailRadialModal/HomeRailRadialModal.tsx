@@ -144,7 +144,7 @@ const HomeRailRadialModal = ({
             title={t('common.close')}
             aria-label={t('common.close')}
             onClick={onClose}
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            className="text-muted flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 transition-colors hover:bg-gray-100 hover:text-gray-600"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -181,13 +181,13 @@ const HomeRailRadialModal = ({
                   {isCenter ? (
                     <Link
                       to={`/webtoon/${webtoon.id}`}
-                      className="focus:ring-primary-500 absolute inset-0 z-10 rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="focus:ring-primary-500 absolute inset-0 z-10 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       aria-label={label}
                     />
                   ) : (
                     <button
                       type="button"
-                      className="focus:ring-primary-500 absolute inset-0 z-10 rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                      className="focus:ring-primary-500 absolute inset-0 z-10 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       aria-label={label}
                       tabIndex={isFar ? -1 : 0}
                       onClick={() => setActiveIndex(index)}
@@ -199,17 +199,17 @@ const HomeRailRadialModal = ({
           </div>
         </div>
         {showWrap ? (
-          <div className="flex items-center justify-center gap-2 px-4 pt-1 pb-5 sm:gap-3 sm:pb-6">
+          <div className="flex items-center justify-center gap-2 px-4 pb-5 pt-1 sm:gap-3 sm:pb-6">
             <button
               type="button"
               onClick={goPrev}
               aria-label={t('common.previous')}
-              className="text-primary-700 hover:bg-primary-50 focus:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:ring-2 focus:outline-none"
+              className="text-primary-700 hover:bg-primary-50 focus:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2"
             >
               <ChevronLeft className="h-5 w-5" aria-hidden="true" />
             </button>
             <p
-              className="min-w-16 text-center text-sm font-medium text-gray-600 tabular-nums"
+              className="min-w-16 text-center text-sm font-medium tabular-nums text-gray-600"
               aria-live="polite"
             >
               {t('a11y.radialSlide', { n: safeIndex + 1, total: count })}
@@ -218,7 +218,7 @@ const HomeRailRadialModal = ({
               type="button"
               onClick={goNext}
               aria-label={t('common.next')}
-              className="text-primary-700 hover:bg-primary-50 focus:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:ring-2 focus:outline-none"
+              className="text-primary-700 hover:bg-primary-50 focus:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2"
             >
               <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </button>
