@@ -228,13 +228,97 @@ describe('FAQPage live consume', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('shows an honest empty list when live FAQ items are empty', async () => {
+  it('says the studio has published nothing when live FAQ items are empty', async () => {
     vi.stubEnv('VITE_USE_MOCK_API', 'false')
     vi.stubGlobal('fetch', faqFetch({ data: { items: [] } }))
     renderApp(<FAQPage />)
-    expect(await screen.findByText(/no questions match your search/i)).toBeInTheDocument()
+    // Nothing published is not the same as nothing matching a search.
+    expect(await screen.findByText(/has not published any questions yet/i)).toBeInTheDocument()
+    expect(screen.queryByText(/no questions match your search/i)).not.toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: /what is softgate comic\?/i })
+    ).not.toBeInTheDocument()
+  })
+
+  it('still shows search-failure copy when a search matches nothing', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      faqFetch({
+        data: {
+          items: [
+            {
+              id: 'live-1',
+              category: 'general',
+              question: { en: 'Live FAQ question?', mm: 'Live FAQ question?' },
+              answer: { en: 'Live FAQ answer.', mm: 'Live FAQ answer.' },
+              sortOrder: 1,
+            },
+          ],
+        },
+      })
+    )
+    renderApp(<FAQPage />)
+    await screen.findByRole('button', { name: /live faq question\?/i })
+
+    fireApp.change(screen.getByRole('searchbox', { name: /search questions/i }), {
+      target: { value: 'zzzzz no match' },
+    })
+    expect(screen.getByText(/no questions match your search/i)).toBeInTheDocument()
+    expect(screen.queryByText(/has not published any questions yet/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps a category the reader picked after arriving via ?cat=', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    let release: (() => void) | undefined
+    const gate = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (!String(input).includes('/api/faq')) {
+          return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+        }
+        await gate
+        return new Response(
+          JSON.stringify({
+            data: {
+              items: [
+                {
+                  id: 'live-acct',
+                  category: 'account',
+                  question: { en: 'Live account question?', mm: 'Live account question?' },
+                  answer: { en: 'Live account answer.', mm: 'Live account answer.' },
+                  sortOrder: 1,
+                },
+                {
+                  id: 'live-gen',
+                  category: 'general',
+                  question: { en: 'Live general question?', mm: 'Live general question?' },
+                  answer: { en: 'Live general answer.', mm: 'Live general answer.' },
+                  sortOrder: 2,
+                },
+              ],
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      })
+    )
+
+    // ?cat=general selects General; the reader then switches to Account while
+    // the live payload is still in flight.
+    renderFaqAt('/faq?cat=general')
+    fireApp.click(screen.getByRole('button', { name: /^account$/i }))
+
+    release?.()
+    expect(
+      await screen.findByRole('button', { name: /live account question\?/i })
+    ).toBeInTheDocument()
+    // The arriving payload must not snap the reader back to ?cat=general.
+    expect(
+      screen.queryByRole('button', { name: /live general question\?/i })
     ).not.toBeInTheDocument()
   })
 })

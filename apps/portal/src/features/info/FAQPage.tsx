@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -152,10 +152,24 @@ const FAQPage = () => {
     [live, i18n.language, t]
   )
 
+  // viewItems is in the dep list because a deep link can target a question that
+  // only exists in the live payload, so the effect has to run again when that
+  // payload lands. Without a guard it would also re-apply the URL over a
+  // category the reader picked in the meantime, so each target is applied once.
+  const viewItemsRef = useRef(viewItems)
+  viewItemsRef.current = viewItems
+  const appliedHashRef = useRef<string | null>(null)
+  const appliedCatRef = useRef<string | null>(null)
+
   useEffect(() => {
     const hashId = location.hash.replace(/^#/, '')
-    const hashed = viewItems.find((item) => item.id === hashId)
-    if (hashed) {
+    if (hashId) {
+      if (appliedHashRef.current === hashId) return
+      const hashed = viewItemsRef.current.find((item) => item.id === hashId)
+      // Not found yet may just mean the live payload has not arrived; leave the
+      // target unapplied so the next run can still resolve it.
+      if (!hashed) return
+      appliedHashRef.current = hashId
       setActiveCategory(hashed.category)
       setOpenId(hashed.id)
       requestAnimationFrame(() => {
@@ -163,8 +177,10 @@ const FAQPage = () => {
       })
       return
     }
+
     const cat = searchParams.get('cat')
-    if (isFaqCategoryId(cat)) {
+    if (isFaqCategoryId(cat) && appliedCatRef.current !== cat) {
+      appliedCatRef.current = cat
       setActiveCategory(cat)
     }
   }, [location.hash, searchParams, viewItems])
@@ -262,9 +278,13 @@ const FAQPage = () => {
 
               {filteredFAQ.length === 0 && (
                 <div className="py-12 text-center">
-                  <p className="text-sm font-bold text-gray-500">{t('faq.noResults')}</p>
+                  {/* Nothing published is not the same as nothing matching a
+                      search — saying "no match" for an empty CMS is a lie. */}
+                  <p className="text-sm font-bold text-gray-500">
+                    {viewItems.length === 0 ? t('faq.empty') : t('faq.noResults')}
+                  </p>
                   <p className="text-muted mt-2 text-xs font-medium">
-                    {t('faq.noResultsDesc')}{' '}
+                    {viewItems.length === 0 ? t('faq.emptyDesc') : t('faq.noResultsDesc')}{' '}
                     <Link
                       to="/contact"
                       className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2"

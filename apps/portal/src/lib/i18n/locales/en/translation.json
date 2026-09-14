@@ -1350,6 +1350,8 @@
     "feedbackLocal": "Votes stay in this browser. We do not receive them.",
     "noResults": "No questions match your search.",
     "noResultsDesc": "Try another term, or reach us via",
+    "empty": "The studio has not published any questions yet.",
+    "emptyDesc": "Nothing is hidden — there is simply no FAQ to show. Reach us via",
     "general": "General",
     "account": "Account",
     "payments": "Payments",
