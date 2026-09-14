@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A second push to the same branch cancels the in-flight run; main is never cancelled.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version comes from the packageManager field in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # @prisma/client is not in the root onlyBuiltDependencies allowlist, so its
+      # postinstall is skipped and the generated client would be missing.
+      - run: pnpm --filter @softgate/api prisma:generate
+
+      - run: pnpm lint
+
+      - run: pnpm format:check
+
+      # turbo builds @softgate/shared first; apps/api type-checks against its
+      # emitted declarations, so build and test:run share one invocation.
+      - run: pnpm turbo run test:run build
