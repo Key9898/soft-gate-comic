@@ -350,3 +350,65 @@ describe('Privacy and Terms live consume', () => {
     expect(screen.getByRole('heading', { name: 'Coins & Virtual Items' })).toBeInTheDocument()
   })
 })
+
+describe('Legal live consume rejects malformed payloads', () => {
+  const okJson = (body: unknown) =>
+    new Response(JSON.stringify(body), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+  it('fails open to i18n copy when live privacy returns a 200 with the wrong shape', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => okJson({ data: {} }))
+    )
+    render(<PrivacyPage />)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Privacy Policy' })
+    ).toBeInTheDocument()
+    expect(screen.getAllByText(/does not send your data to any server/i).length).toBeGreaterThan(0)
+  })
+
+  it('fails open to i18n copy when live terms sections are not an array', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        okJson({
+          data: {
+            seoDesc: { en: 'Live terms SEO', mm: 'Live terms SEO' },
+            glance: [],
+            effectiveDate: '2026-10-01',
+            sections: null,
+          },
+        })
+      )
+    )
+    render(<TermsPage />)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Terms of Service' })
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Last updated September 10, 2026/i)).toBeInTheDocument()
+  })
+
+  it('fails open to i18n copy when live cookies returns a 200 with the wrong shape', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (!String(input).includes('/api/cookies')) {
+          return new Response(JSON.stringify({ error: { code: 'NOT_FOUND' } }), { status: 404 })
+        }
+        return okJson({ data: { effectiveDate: '2026-10-01', copy: 'nope' } })
+      })
+    )
+    render(<CookiesPage />)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Cookie Policy' })
+    ).toBeInTheDocument()
+    expect(screen.getByText(/does not set any tracking cookies/i)).toBeInTheDocument()
+    expect(screen.getByText('Coin wallet')).toBeInTheDocument()
+  })
+})

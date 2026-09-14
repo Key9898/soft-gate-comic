@@ -258,3 +258,55 @@ describe('PressPage', () => {
     })
   })
 })
+
+describe('PressPage rejects malformed live payloads', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.unstubAllGlobals()
+  })
+
+  it('fails open to i18n copy when live press returns a 200 with the wrong shape', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ data: {} }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+      )
+    )
+    render(<PressPage />)
+    expect(await screen.findByRole('heading', { name: 'About SoftGate Comic' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Nandar Aye' })).toBeInTheDocument()
+  })
+
+  it('fails open when live press facts are not an array', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              data: {
+                copy: { boilerplate: { en: 'Live boilerplate.', mm: 'Live boilerplate.' } },
+                zipUrl: '/press-kit/softgate-comic-press-kit.zip',
+                contactEmail: 'desk@softgatecomic.com',
+                facts: 'nope',
+                palette: [],
+                assets: [],
+                news: [],
+                stills: [],
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+          )
+      )
+    )
+    render(<PressPage />)
+    expect(await screen.findByRole('heading', { name: 'About SoftGate Comic' })).toBeInTheDocument()
+    expect(screen.queryByText('Live boilerplate.')).not.toBeInTheDocument()
+  })
+})

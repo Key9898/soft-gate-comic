@@ -238,3 +238,23 @@ describe('FAQPage live consume', () => {
     ).not.toBeInTheDocument()
   })
 })
+
+describe('FAQPage rejects malformed live payloads', () => {
+  it('fails open to the i18n catalog when live FAQ returns a 200 with the wrong shape', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal('fetch', faqFetch({ data: { items: 'nope' } }))
+    renderApp(<FAQPage />)
+    expect(
+      await screen.findByRole('button', { name: /what is softgate comic\?/i })
+    ).toBeInTheDocument()
+  })
+
+  it('fails open to the i18n catalog when the live FAQ envelope has no payload', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    vi.stubGlobal('fetch', faqFetch({ data: null }))
+    renderApp(<FAQPage />)
+    expect(
+      await screen.findByRole('button', { name: /what is softgate comic\?/i })
+    ).toBeInTheDocument()
+  })
+})

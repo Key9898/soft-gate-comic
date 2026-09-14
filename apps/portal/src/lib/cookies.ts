@@ -1,8 +1,17 @@
 import { unwrapApiData } from '@softgate/contracts'
 import { useEffect, useState } from 'react'
 import { isMockApi } from './api/isMockApi'
+import {
+  asBilingual,
+  asBilingualList,
+  asNonEmptyString,
+  asRecord,
+  asSortOrder,
+  parseRows,
+  type BilingualText,
+} from './parse'
 
-export type BilingualText = { en: string; mm: string }
+export type { BilingualText }
 
 export type CookieCopyKey =
   | 'cookiesTitle'
@@ -43,6 +52,41 @@ export type PortalCookies = {
   rows: PortalCookieRow[]
 }
 
+function parseCookieRow(row: unknown): PortalCookieRow | null {
+  const item = asRecord(row)
+  if (!item) return null
+  const id = asNonEmptyString(item.id)
+  const storageKey = asNonEmptyString(item.storageKey)
+  const label = asBilingual(item.label)
+  const description = asBilingual(item.description)
+  if (!id || !storageKey || !label || !description) return null
+  return { id, storageKey, label, description, sortOrder: asSortOrder(item.sortOrder) }
+}
+
+export function parseCookies(data: unknown): PortalCookies | null {
+  const root = asRecord(data)
+  if (!root) return null
+  const effectiveDate = asNonEmptyString(root.effectiveDate)
+  const copyRow = asRecord(root.copy)
+  if (!effectiveDate || !copyRow) return null
+  if (!Array.isArray(root.glance)) return null
+  const rows = parseRows(root.rows, parseCookieRow)
+  if (!rows) return null
+
+  const copy: Record<string, BilingualText> = {}
+  for (const [key, text] of Object.entries(copyRow)) {
+    const bilingual = asBilingual(text)
+    if (bilingual) copy[key] = bilingual
+  }
+
+  return {
+    effectiveDate,
+    copy: copy as PortalCookies['copy'],
+    glance: asBilingualList(root.glance),
+    rows,
+  }
+}
+
 export function useCookies(): PortalCookies | null {
   const mock = isMockApi()
   const [live, setLive] = useState<PortalCookies | null>(null)
@@ -57,7 +101,7 @@ export function useCookies(): PortalCookies | null {
         return res.json()
       })
       .then((payload: unknown) => {
-        const data = unwrapApiData<PortalCookies>(payload)
+        const data = parseCookies(unwrapApiData<unknown>(payload))
         if (!cancelled && data) setLive(data)
       })
       .catch(() => {

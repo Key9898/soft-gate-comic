@@ -67,12 +67,22 @@ function asBullets(value: unknown): BilingualText[] {
   return value.map((item) => asBilingual(item))
 }
 
+const YANGON_TZ = 'Asia/Yangon'
+
+const yangonDateFormat = new Intl.DateTimeFormat('en-CA', {
+  timeZone: YANGON_TZ,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
 function toIsoDate(value: Date | string): string {
   if (typeof value === 'string') {
     const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
     return match ? `${match[1]}-${match[2]}-${match[3]}` : LEGAL_EFFECTIVE_DATE
   }
-  return value.toISOString().slice(0, 10)
+  if (!Number.isFinite(value.getTime())) return LEGAL_EFFECTIVE_DATE
+  return yangonDateFormat.format(value)
 }
 
 function portalSectionFromAdmin(row: AdminLegalSectionRow): PortalLegalSection {

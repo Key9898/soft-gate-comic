@@ -7,8 +7,16 @@ import {
   type FaqCatalogItem,
   type FaqCategoryId,
 } from './info/faqCatalog'
+import {
+  asBilingual,
+  asNonEmptyString,
+  asRecord,
+  asSortOrder,
+  parseRows,
+  type BilingualText,
+} from './parse'
 
-export type BilingualText = { en: string; mm: string }
+export type { BilingualText }
 
 export type PortalFaqItem = {
   id: string
@@ -81,6 +89,36 @@ export function liveFaqViews(faq: PortalFaq, language: string): FaqViewItem[] {
     .filter((item): item is FaqViewItem => item !== null)
 }
 
+function parseFaqItem(row: unknown): PortalFaqItem | null {
+  const item = asRecord(row)
+  if (!item) return null
+  const id = asNonEmptyString(item.id)
+  const category = asNonEmptyString(item.category)
+  const question = asBilingual(item.question)
+  const answer = asBilingual(item.answer)
+  if (!id || !category || !question || !answer) return null
+  const next: PortalFaqItem = {
+    id,
+    category,
+    question,
+    answer,
+    sortOrder: asSortOrder(item.sortOrder),
+  }
+  const relatedTo = asNonEmptyString(item.relatedTo)
+  if (relatedTo) next.relatedTo = relatedTo
+  const relatedLabel = asBilingual(item.relatedLabel)
+  if (relatedLabel) next.relatedLabel = relatedLabel
+  return next
+}
+
+export function parseFaq(data: unknown): PortalFaq | null {
+  const root = asRecord(data)
+  if (!root) return null
+  const items = parseRows(root.items, parseFaqItem)
+  if (!items) return null
+  return { items }
+}
+
 export function useFaq(): PortalFaq | null {
   const mock = isMockApi()
   const [live, setLive] = useState<PortalFaq | null>(null)
@@ -95,7 +133,7 @@ export function useFaq(): PortalFaq | null {
         return res.json()
       })
       .then((payload: unknown) => {
-        const data = unwrapApiData<PortalFaq>(payload)
+        const data = parseFaq(unwrapApiData<unknown>(payload))
         if (!cancelled && data) setLive(data)
       })
       .catch(() => {
