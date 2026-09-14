@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import AuthAtmosphere from '../features/auth/AuthAtmosphere'
 import AuthSplitCard, { type AuthReturnFrom } from '../features/auth/AuthSplitCard'
+import { RouteErrorBoundary } from '../components/ErrorBoundary'
 
 const AuthLayout = () => {
   const { t } = useTranslation()
@@ -54,7 +55,9 @@ const AuthLayout = () => {
             </>
           ) : (
             <div className="mx-auto max-w-lg rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
-              <Outlet />
+              <RouteErrorBoundary>
+                <Outlet />
+              </RouteErrorBoundary>
             </div>
           )}
         </div>

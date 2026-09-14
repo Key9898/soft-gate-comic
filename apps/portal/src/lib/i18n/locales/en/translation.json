@@ -77,7 +77,12 @@
   },
   "errors": {
     "catalogLoad": "The catalog request failed.",
-    "catalogUnavailable": "Titles cannot show until the catalog request succeeds. Use Retry at the top of the page."
+    "catalogUnavailable": "Titles cannot show until the catalog request succeeds. Use Retry at the top of the page.",
+    "catalogUnavailableShort": "Could not load. Use Retry at the top of the page.",
+    "boundaryTitle": "Something went wrong",
+    "boundaryBody": "This page failed to load. Trying again often works — if it does not, you can head back to Home.",
+    "boundaryRetry": "Try again",
+    "boundaryHome": "Go to Home"
   },
   "maintenance": {
     "title": "Reading is paused",

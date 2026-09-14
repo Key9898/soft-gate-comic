@@ -1,9 +1,12 @@
 import { Outlet } from 'react-router-dom'
+import { RouteErrorBoundary } from '../components/ErrorBoundary'
 
 const ReaderLayout = () => {
   return (
     <div className="min-h-screen">
-      <Outlet />
+      <RouteErrorBoundary>
+        <Outlet />
+      </RouteErrorBoundary>
     </div>
   )
 }

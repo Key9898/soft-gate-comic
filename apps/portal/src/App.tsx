@@ -10,6 +10,7 @@ import { EngagementProvider } from './context/EngagementContext'
 import CatalogStatus from './components/CatalogStatus/CatalogStatus'
 import MaintenanceGate from './components/MaintenanceGate'
 import ProtectedRoute from './components/ProtectedRoute'
+import ErrorBoundary from './components/ErrorBoundary'
 
 import MainLayout from './layouts/MainLayout'
 import AuthLayout from './layouts/AuthLayout'
@@ -153,7 +154,11 @@ function App() {
           v7_relativeSplatPath: true,
         }}
       >
-        <AppRoutes />
+        {/* Last resort: the layouts each guard their own Outlet, so this only
+            fires for a crash in the chrome or the providers themselves. */}
+        <ErrorBoundary>
+          <AppRoutes />
+        </ErrorBoundary>
       </BrowserRouter>
     </LocaleProvider>
   )

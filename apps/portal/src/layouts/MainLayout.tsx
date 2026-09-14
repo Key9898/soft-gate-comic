@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
 import ScrollToTop from '../components/ScrollToTop'
+import { RouteErrorBoundary } from '../components/ErrorBoundary'
 
 const MainLayout = () => {
   const { t } = useTranslation()
@@ -18,7 +19,9 @@ const MainLayout = () => {
       </a>
       <Navigation />
       <main id="main-content" tabIndex={-1} className="flex-1">
-        <Outlet />
+        <RouteErrorBoundary>
+          <Outlet />
+        </RouteErrorBoundary>
       </main>
       <Footer />
       <ScrollToTop />
