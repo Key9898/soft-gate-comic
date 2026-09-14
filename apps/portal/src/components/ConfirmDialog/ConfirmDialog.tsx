@@ -112,7 +112,7 @@ const ConfirmDialog = ({
                 variant="ghost"
                 onClick={onCancel}
                 disabled={isConfirming}
-                className="min-h-11 px-4 py-2"
+                className="px-4 py-2"
               >
                 {cancelLabel}
               </Button>
@@ -121,7 +121,7 @@ const ConfirmDialog = ({
                 onClick={onConfirm}
                 isLoading={isConfirming}
                 disabled={!phraseMatched}
-                className="min-h-11 px-5 py-2 font-bold shadow-lg shadow-red-500/15"
+                className="px-5 py-2 font-bold shadow-lg shadow-red-500/15"
               >
                 {confirmLabel}
               </Button>

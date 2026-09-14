@@ -1,6 +1,6 @@
 import { BookOpen } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { ButtonLink } from '../../components/Button'
 
 export interface CatalogEmptyPanelProps {
   title?: string | null
@@ -35,18 +35,12 @@ const CatalogEmptyPanel = ({
       ) : null}
       {actions ? (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/help"
-            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2"
-          >
+          <ButtonLink to="/help" className="font-semibold">
             {t('footer.help')}
-          </Link>
-          <Link
-            to="/creators"
-            className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-gray-200 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
-          >
+          </ButtonLink>
+          <ButtonLink to="/creators" variant="surface" className="font-semibold">
             {t('footer.creators')}
-          </Link>
+          </ButtonLink>
         </div>
       ) : null}
     </div>

@@ -5,6 +5,7 @@ import { useEngagement } from '../../../context/EngagementContext'
 import { isMockApi } from '../../../lib/api/isMockApi'
 import { enableLockScreenPush } from '../../../lib/push'
 import type { NotifPrefs } from '../../../lib/notifications'
+import Button from '../../../components/Button'
 
 type PrefKey = keyof NotifPrefs
 
@@ -44,12 +45,12 @@ const InAppSwitch = ({
     className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl focus-visible:outline-none focus-visible:ring-2"
   >
     <span
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+      className={`relative inline-flex h-6 w-11 items-center rounded-2xl transition-colors ${
         checked ? 'bg-primary-600' : 'bg-gray-200'
       }`}
     >
       <span
-        className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
+        className={`shape-circle inline-block h-5 w-5 bg-white shadow transition-transform ${
           checked ? 'translate-x-5' : 'translate-x-0.5'
         }`}
       />
@@ -89,15 +90,14 @@ const NotificationSettingsMatrix = () => {
       {http ? (
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-gray-600">{t('profilePage.pushEnableLead')}</p>
-          <button
-            type="button"
-            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2"
+          <Button
+            className="text-sm font-bold"
             onClick={() => {
               void enableLockScreenPush().then(setPushStatus)
             }}
           >
             {t('profilePage.pushEnable')}
-          </button>
+          </Button>
         </div>
       ) : null}
       {pushStatus === 'ok' ? (

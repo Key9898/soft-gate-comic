@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, Link } from 'react-router-dom'
-import Button from '../../components/Button'
+import Button, { ButtonLink } from '../../components/Button'
 import BookCard from '../../components/BookCard'
 import SEO from '../../components/SEO/SEO'
 import { useData } from '../../context/DataContext'
@@ -525,14 +525,15 @@ const LibraryPage = () => {
                         </button>
                       ) : null}
                       {activeTab === 'history' && !isEditMode ? (
-                        <Link
+                        <ButtonLink
                           to={continueHref(item)}
                           onClick={(event) => event.stopPropagation()}
-                          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-2 inline-flex min-h-11 items-center justify-center gap-1 rounded-2xl px-3 text-xs font-bold text-white focus-visible:outline-none focus-visible:ring-2"
+                          size="sm"
+                          className="mt-2 gap-1 px-3 text-xs font-bold"
                         >
                           <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                           {t('libraryPage.continueReading')}
-                        </Link>
+                        </ButtonLink>
                       ) : null}
                     </div>
                   )

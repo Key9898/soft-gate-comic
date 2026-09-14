@@ -119,7 +119,6 @@ const AuthorPage = () => {
             <div className="mt-4">
               <Button
                 size="md"
-                className="min-h-11"
                 variant={following ? 'secondary' : 'primary'}
                 leftIcon={
                   following ? (

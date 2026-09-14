@@ -123,7 +123,7 @@ const ReaderCompletePortal = ({
                     <img
                       src={item.coverImage}
                       alt=""
-                      className="h-12 w-9 shrink-0 rounded-xl object-cover"
+                      className="book-media book-media-shadow h-12 w-9 shrink-0 object-cover"
                     />
                   ) : null}
                   <span className={`truncate text-sm font-bold ${titleClass}`}>

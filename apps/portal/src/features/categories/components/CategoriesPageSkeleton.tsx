@@ -75,7 +75,7 @@ const CategoriesPageSkeleton = ({
             {masthead.title ? (
               <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{masthead.title}</h1>
             ) : (
-              <Skeleton className="h-8 w-52 rounded-lg sm:h-9" />
+              <Skeleton className="h-8 w-52 sm:h-9" />
             )}
           </div>
           <p className="max-w-2xl text-sm leading-relaxed text-gray-600">{masthead.deck}</p>

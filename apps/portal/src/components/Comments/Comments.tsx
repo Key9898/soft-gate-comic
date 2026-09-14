@@ -355,13 +355,12 @@ const CommentItem = ({
                 }}
               />
               <div className="mt-2 flex gap-2">
-                <Button size="sm" variant="primary" className="min-h-11" onClick={submitEdit}>
+                <Button size="sm" variant="primary" onClick={submitEdit}>
                   {t('common.save')}
                 </Button>
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="min-h-11"
                   onClick={() => {
                     setIsEditing(false)
                     setEditContent('')
@@ -403,7 +402,6 @@ const CommentItem = ({
                 <Button
                   size="sm"
                   variant={confirm === 'delete' ? 'danger' : 'primary'}
-                  className="min-h-11"
                   onClick={() => {
                     if (confirm === 'delete') onDelete?.(comment.id)
                     else onReport?.(comment.id)
@@ -412,12 +410,7 @@ const CommentItem = ({
                 >
                   {confirm === 'delete' ? t('comments.confirmDelete') : t('comments.confirmReport')}
                 </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="min-h-11"
-                  onClick={() => setConfirm(null)}
-                >
+                <Button size="sm" variant="ghost" onClick={() => setConfirm(null)}>
                   {t('common.cancel')}
                 </Button>
               </div>
@@ -552,7 +545,6 @@ const CommentItem = ({
                 <Button
                   size="sm"
                   variant="primary"
-                  className="min-h-11"
                   onClick={submitReply}
                   disabled={!replyContent.trim()}
                 >
@@ -698,7 +690,6 @@ const Comments = ({
               </label>
               <Button
                 variant="primary"
-                className="min-h-11"
                 onClick={handleSubmitComment}
                 disabled={!canComment || !newComment.trim()}
               >

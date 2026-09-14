@@ -7,6 +7,7 @@ import Button from '../../components/Button'
 import SEO from '../../components/SEO/SEO'
 import Breadcrumb from '../../components/Breadcrumb'
 import PageHeader from '../../components/PageHeader'
+import Input, { type InputProps } from '../../components/Input'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
 import { useSettings } from '../../context/SettingsContext'
 
@@ -17,80 +18,11 @@ const SECTION_RULE = 'border-t border-gray-200/60 py-20'
 
 const PITCH_MIN_FINISHED_EPISODES = 3
 
-interface FloatingInputProps {
-  label: string
-  type?: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  error?: string
-  min?: number
-}
-
-const ContactFloatingInput = ({
-  label,
-  type = 'text',
-  value,
-  onChange,
-  error,
-  min,
-}: FloatingInputProps) => {
-  const inputId = useId()
-  const errorId = useId()
-  const [isFocused, setIsFocused] = useState(false)
-  const hasValue = value.length > 0
-
-  return (
-    <motion.div
-      animate={{ x: error ? [-10, 10, -10, 10, 0] : 0 }}
-      transition={{ duration: 0.4 }}
-      className="w-full text-left"
-    >
-      <div
-        className={`relative rounded-2xl border-2 transition-all duration-300 ${
-          error
-            ? 'border-red-500 bg-red-500/5'
-            : isFocused
-              ? 'border-primary-500 ring-primary-500/20 bg-white ring-2'
-              : 'border-gray-200 bg-gray-50/50'
-        }`}
-      >
-        <label
-          htmlFor={inputId}
-          className={`left-4.5 pointer-events-none absolute origin-top-left transition-all duration-200 ${
-            isFocused || hasValue
-              ? 'text-primary-500 text-2xs top-2 font-semibold'
-              : 'text-muted top-1/2 -translate-y-1/2 text-sm font-semibold'
-          }`}
-        >
-          {label}
-        </label>
-        <input
-          id={inputId}
-          type={type}
-          value={value}
-          min={min}
-          onChange={onChange}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? errorId : undefined}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          className={`px-4.5 w-full bg-transparent text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
-            isFocused || hasValue ? 'pt-6.5 pb-2' : 'py-4'
-          }`}
-        />
-      </div>
-      {error && (
-        <p
-          id={errorId}
-          role="alert"
-          className="text-2xs ml-2 mt-1 flex items-center gap-1 font-bold text-red-500"
-        >
-          {error}
-        </p>
-      )}
-    </motion.div>
-  )
-}
+/** ContactPage used to ship its own copy of the floating-label input; it is now the
+ *  shared component's `floating` variant. */
+const ContactFloatingInput = (props: Omit<InputProps, 'variant'>) => (
+  <Input variant="floating" {...props} />
+)
 
 const ContactPage = () => {
   const { t } = useTranslation()
@@ -553,7 +485,7 @@ const ContactPage = () => {
 
                       <Button
                         type="submit"
-                        className="mt-2 min-h-[44px] w-full rounded-2xl text-xs font-bold uppercase tracking-wider"
+                        className="mt-2 w-full rounded-2xl text-xs font-bold uppercase tracking-wider"
                       >
                         <Send className="h-4 w-4 stroke-[2.2]" />
                         {t('contact.send')}

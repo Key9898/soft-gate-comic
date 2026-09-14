@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -67,6 +67,7 @@ const ProfilePage = () => {
   const [deletePassword, setDeletePassword] = useState('')
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [deletePending, setDeletePending] = useState(false)
+  const bioId = useId()
   const [securityErrors, setSecurityErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -416,10 +417,14 @@ const ProfilePage = () => {
                       />
 
                       <div className="text-left">
-                        <label className="text-muted mb-2 block text-xs font-bold uppercase">
+                        <label
+                          htmlFor={bioId}
+                          className="text-muted mb-2 block text-xs font-bold uppercase"
+                        >
                           {t('profilePage.bio')}
                         </label>
                         <textarea
+                          id={bioId}
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           disabled={!isEditing}
@@ -429,7 +434,7 @@ const ProfilePage = () => {
                               ? 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
                               : 'border-gray-100 bg-gray-50/50'
                           }`}
-                          placeholder={t('comments.placeholder')}
+                          placeholder={t('profilePage.bioPlaceholder')}
                         />
                       </div>
 

@@ -676,7 +676,8 @@
     "prefsAccountNote": "Reader display prefs follow this signed-in account on the API. They are not stored in this browser.",
     "prefsLanguageNote": "Language is the header switcher — English or Myanmar for the whole portal.",
     "prefsReaderDark": "Reader strip",
-    "prefsReaderDarkHint": "Dark or light pages inside the episode reader. The portal itself stays light."
+    "prefsReaderDarkHint": "Dark or light pages inside the episode reader. The portal itself stays light.",
+    "bioPlaceholder": "A line or two about what you read."
   },
   "libraryPage": {
     "title": "My Library",

@@ -264,10 +264,10 @@ const CreatorsPage = () => {
               </p>
               <div className="w-24 border-x-2 border-t-2 border-gray-300 px-1 pt-1">
                 <div className="space-y-1">
-                  <div className="h-10 rounded-sm bg-gray-100" />
-                  <div className="h-14 rounded-sm bg-gray-100" />
-                  <div className="h-8 rounded-sm bg-gray-100" />
-                  <div className="h-12 rounded-sm bg-gray-100" />
+                  <div className="h-10 rounded-2xl bg-gray-100" />
+                  <div className="h-14 rounded-2xl bg-gray-100" />
+                  <div className="h-8 rounded-2xl bg-gray-100" />
+                  <div className="h-12 rounded-2xl bg-gray-100" />
                 </div>
               </div>
               <p className="text-muted mt-3 text-xs font-bold uppercase tracking-wider">

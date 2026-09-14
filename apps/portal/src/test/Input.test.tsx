@@ -88,9 +88,38 @@ describe('Input', () => {
     expect(input).toHaveAttribute('id', 'custom-email-id')
   })
 
-  it('generates id from label if not provided', () => {
+  it('associates the label without deriving the id from its text', () => {
     render(<Input label="Email Address" />)
     const input = screen.getByLabelText(/email address/i)
-    expect(input).toHaveAttribute('id', 'email-address')
+    expect(input).toHaveAttribute('id')
+    // Deriving the id from the label is what let two fields both labelled
+    // "Password" share an id, so every htmlFor pointed at the first one.
+    expect(input.getAttribute('id')).not.toBe('email-address')
+  })
+
+  it('gives two identically labelled fields distinct ids', () => {
+    render(
+      <>
+        <Input label="Password" type="password" />
+        <Input label="Password" type="password" />
+      </>
+    )
+    const [first, second] = screen.getAllByLabelText('Password')
+    expect(first.getAttribute('id')).toBeTruthy()
+    expect(first.getAttribute('id')).not.toBe(second.getAttribute('id'))
+  })
+
+  it('points aria-describedby at the error it renders', () => {
+    render(<Input label="Email" error="Invalid email" />)
+    const input = screen.getByLabelText('Email')
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    const describedBy = input.getAttribute('aria-describedby')
+    expect(describedBy).toBeTruthy()
+    expect(document.getElementById(describedBy!)).toHaveTextContent('Invalid email')
+  })
+
+  it('renders the floating variant with the same label association', () => {
+    render(<Input variant="floating" label="Display name" value="" onChange={() => {}} />)
+    expect(screen.getByLabelText('Display name')).toBeInTheDocument()
   })
 })

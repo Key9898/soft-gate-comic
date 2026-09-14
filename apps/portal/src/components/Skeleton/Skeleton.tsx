@@ -22,7 +22,7 @@ export const Skeleton = ({ tone = 'light', className = '', children }: SkeletonP
 )
 
 export const SkeletonText = ({ tone = 'light', className = 'w-full' }: SkeletonProps) => (
-  <Skeleton tone={tone} className={`h-4 rounded-lg ${className}`} />
+  <Skeleton tone={tone} className={`h-4 ${className}`} />
 )
 
 export const SkeletonBookCard = ({
@@ -52,7 +52,7 @@ export const SkeletonDailyDropCard = ({ tone = 'light' }: { tone?: SkeletonTone 
   <div className="flex flex-col" data-testid="home-daily-drop">
     <Skeleton tone={tone} className="book-media relative aspect-[3/4] w-full overflow-hidden">
       <div className="absolute inset-x-0 bottom-0 h-12 rounded-none bg-black/25" />
-      <div className="absolute inset-x-8 bottom-2.5 h-4 rounded-lg bg-white/25" />
+      <div className="absolute inset-x-8 bottom-2.5 h-4 rounded-2xl bg-white/25" />
     </Skeleton>
     <div className="mt-2.5 flex flex-col gap-1.5 px-0.5">
       <SkeletonText tone={tone} className="w-3/4" />

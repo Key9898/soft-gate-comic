@@ -12,7 +12,7 @@ import {
   Settings,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import Button from '../../components/Button'
+import Button, { ButtonLink } from '../../components/Button'
 import SEO from '../../components/SEO/SEO'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import { useEngagement } from '../../context/EngagementContext'
@@ -138,18 +138,16 @@ const NotificationsPage = () => {
                   {t('notificationsPage.allCaughtUpWhy')}
                 </p>
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                  <Link
-                    to="/categories"
-                    className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2"
-                  >
+                  <ButtonLink to="/categories" className="text-sm font-bold">
                     {t('categories.webtoons')}
-                  </Link>
-                  <Link
+                  </ButtonLink>
+                  <ButtonLink
                     to="/profile?tab=settings"
-                    className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl border border-gray-200 px-4 text-sm font-bold text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
+                    variant="surface"
+                    className="text-sm font-bold"
                   >
                     {t('profilePage.settings')}
-                  </Link>
+                  </ButtonLink>
                 </div>
               </div>
             ) : (

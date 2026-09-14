@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, HelpCircle, Lock, Mail, ShieldCheck, UserRound } from 'lucide-react'
 import SEO from '../../components/SEO/SEO'
 import { useSettings } from '../../context/SettingsContext'
-import { buttonClasses } from '../../components/Button'
+import { buttonClasses, ButtonLink } from '../../components/Button'
 
 const CARD = 'rounded-3xl border border-gray-200/80 bg-white p-5 text-left shadow-sm'
 const LINK = buttonClasses({ variant: 'ghost', size: 'md', className: 'px-5 font-semibold' })
@@ -86,9 +86,9 @@ const MaintenancePage = () => {
         </section>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/login" className={`${LINK} bg-primary-600 hover:bg-primary-700 text-white`}>
+          <ButtonLink to="/login" className="px-5 font-semibold">
             {t('maintenance.login')}
-          </Link>
+          </ButtonLink>
           <Link
             to="/help"
             className={`${LINK} border border-gray-200 bg-white text-gray-800 hover:bg-gray-50`}

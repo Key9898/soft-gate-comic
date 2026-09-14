@@ -12,7 +12,7 @@ const CoinsPageSkeleton = () => (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }, (_, i) => (
             <div key={i} className="rounded-3xl border border-gray-200 bg-white p-5">
-              <Skeleton className="mb-3 h-8 w-24 rounded-lg" />
+              <Skeleton className="mb-3 h-8 w-24" />
               <SkeletonText className="mb-4 w-1/2" />
               <Skeleton className="h-11 w-full" />
             </div>

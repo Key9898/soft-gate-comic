@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Mail, Lock, User } from 'lucide-react'
-import Button from '../../components/Button'
+import Button, { ButtonLink } from '../../components/Button'
 import Input from '../../components/Input'
 import { MIN_PASSWORD_LENGTH, safeReturnTo } from '../../lib/auth'
 import { useAuth } from './useAuth'
@@ -128,13 +128,9 @@ const RegisterPage = ({
         <p className="mt-2 text-sm text-gray-600">
           {t(maintenanceMode ? 'auth.maintenanceRegisterLead' : 'auth.registrationClosedLead')}
         </p>
-        <Link
-          to="/login"
-          state={{ from }}
-          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl px-6 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2"
-        >
+        <ButtonLink to="/login" state={{ from }} size="lg" className="mt-6 text-sm font-semibold">
           {t('auth.signInInstead')}
-        </Link>
+        </ButtonLink>
       </>
     )
   }

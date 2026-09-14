@@ -11,9 +11,9 @@ const AuthorPageSkeleton = () => {
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-10 sm:flex-row sm:items-start sm:px-6 lg:px-8">
           <Skeleton className="shape-circle h-24 w-24 shrink-0" />
           <div className="flex w-full flex-col items-center gap-3 sm:items-start">
-            <Skeleton className="h-8 w-48 rounded-xl" />
+            <Skeleton className="h-8 w-48" />
             <SkeletonText className="w-full max-w-lg" />
-            <Skeleton className="h-4 w-24 rounded-xl" />
+            <Skeleton className="h-4 w-24" />
             <Skeleton className="h-11 w-28 rounded-2xl" />
             <SkeletonText className="w-full max-w-sm" />
           </div>

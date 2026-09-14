@@ -4,7 +4,7 @@ const NotificationsPageSkeleton = () => (
   <SkeletonSection className="min-h-screen bg-gray-50">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        <Skeleton className="mb-6 h-8 w-48 rounded-lg" />
+        <Skeleton className="mb-6 h-8 w-48" />
         <div className="mb-6 flex flex-wrap gap-2">
           {Array.from({ length: 4 }, (_, i) => (
             <Skeleton key={i} className="min-h-11 w-24" />

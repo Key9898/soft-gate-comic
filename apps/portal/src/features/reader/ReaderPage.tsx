@@ -21,7 +21,7 @@ import {
   Share2,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import Button from '../../components/Button'
+import Button, { ButtonLink } from '../../components/Button'
 import Modal from '../../components/Modal'
 import SEO from '../../components/SEO/SEO'
 import { useAuth } from '../../context/AuthContext'
@@ -860,7 +860,7 @@ const ReaderPage = () => {
                     >
                       {t('readerPage.shortfall', { n: unlockShortfall })}
                     </p>
-                    <Link
+                    <ButtonLink
                       to="/coins"
                       state={{
                         from: fromPath,
@@ -869,10 +869,10 @@ const ReaderPage = () => {
                         seriesTitle: webtoon?.title[lang] ?? '',
                       }}
                       onClick={(e) => e.stopPropagation()}
-                      className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-3 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      className="mt-3 font-semibold"
                     >
                       {t('readerPage.topUpAndReturn')}
-                    </Link>
+                    </ButtonLink>
                   </>
                 ) : null}
               </div>
