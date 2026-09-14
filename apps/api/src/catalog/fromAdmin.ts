@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { publishedCatalogFrom, type PublishedCatalog } from '@softgate/shared/catalog'
 
 type Author = PublishedCatalog['authors'][number]
@@ -172,10 +171,6 @@ export function coinPackagesFromAdminRows(rows: AdminCoinPackageRow[]): CatalogC
     packs.push(pack)
   }
   return packs
-}
-
-export function isMissingCoinPackageTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }
 
 export function publishedCatalogFromAdmin(input: {

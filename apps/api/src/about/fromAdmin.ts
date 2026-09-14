@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { asBilingual } from '../catalog/fromAdmin.js'
 
 export const ABOUT_TEAM_META_ID = 'about-team'
@@ -209,8 +208,4 @@ export function portalMetaFromAdminRow(row: AdminAboutTeamMetaRow | null): Porta
     standInNote: asBilingual(row.standInNote),
     standInVisible: row.standInVisible,
   }
-}
-
-export function isMissingAboutTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }

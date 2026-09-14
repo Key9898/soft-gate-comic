@@ -1,3 +1,4 @@
+import { isMissingTable } from './prismaErrors.js'
 import { randomUUID } from 'node:crypto'
 import {
   Prisma,
@@ -8,42 +9,22 @@ import {
 } from '@prisma/client'
 import { isEpisodeLocked } from '@softgate/shared/catalog'
 import { STUB_PORTAL_SETTINGS } from '@softgate/shared/settings'
-import {
-  coinPackagesFromAdminRows,
-  isMissingCoinPackageTable,
-  publishedCatalogFromAdmin,
-} from './catalog/fromAdmin.js'
+import { coinPackagesFromAdminRows, publishedCatalogFromAdmin } from './catalog/fromAdmin.js'
 import {
   ABOUT_TEAM_META_ID,
-  isMissingAboutTable,
   portalHistoriesFromAdminRows,
   portalMembersFromAdminRows,
   portalMetaFromAdminRow,
   STUB_ABOUT,
 } from './about/fromAdmin.js'
-import {
-  isMissingPressTable,
-  portalPressFromAdmin,
-  PRESS_META_ID,
-  STUB_PRESS,
-} from './press/fromAdmin.js'
-import {
-  isMissingLegalTable,
-  portalLegalFromAdmin,
-  STUB_PRIVACY,
-  STUB_TERMS,
-} from './legal/fromAdmin.js'
-import { isMissingFaqTable, portalFaqFromAdmin, STUB_FAQ } from './faq/fromAdmin.js'
-import {
-  isMissingCookieTable,
-  portalCookiesFromAdmin,
-  STUB_COOKIES,
-} from './cookiePolicy/fromAdmin.js'
-import {
-  isMissingPlatformSettingsTable,
-  PLATFORM_SETTINGS_ID,
-  portalSettingsFromAdminRow,
-} from './settings/fromAdmin.js'
+import { portalPressFromAdmin, PRESS_META_ID, STUB_PRESS } from './press/fromAdmin.js'
+import { portalLegalFromAdmin, STUB_PRIVACY, STUB_TERMS } from './legal/fromAdmin.js'
+import { PRIVACY_META_ID, TERMS_META_ID } from './legal/seed.js'
+import { portalFaqFromAdmin, STUB_FAQ } from './faq/fromAdmin.js'
+import { FAQ_META_ID } from './faq/seed.js'
+import { portalCookiesFromAdmin, STUB_COOKIES } from './cookiePolicy/fromAdmin.js'
+import { COOKIE_META_ID } from './cookiePolicy/seed.js'
+import { PLATFORM_SETTINGS_ID, portalSettingsFromAdminRow } from './settings/fromAdmin.js'
 import { episodeUnlockKey, redactLockedEpisodeImages } from './paywall.js'
 import {
   STUB_SEED_BALANCE,
@@ -387,7 +368,7 @@ export function createPrismaPersist(
           const rows = await prisma.coinPackage.findMany({ orderBy: { createdAt: 'asc' } })
           return coinPackagesFromAdminRows(rows)
         } catch (error) {
-          if (isMissingCoinPackageTable(error)) return undefined
+          if (isMissingTable(error)) return undefined
           throw error
         }
       }
@@ -442,7 +423,7 @@ export function createPrismaPersist(
         })
         return portalSettingsFromAdminRow(row)
       } catch (error) {
-        if (isMissingPlatformSettingsTable(error)) return STUB_PORTAL_SETTINGS
+        if (isMissingTable(error)) return STUB_PORTAL_SETTINGS
         throw error
       }
     },
@@ -455,7 +436,7 @@ export function createPrismaPersist(
           })
           return portalHistoriesFromAdminRows(rows)
         } catch (error) {
-          if (isMissingAboutTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -467,7 +448,7 @@ export function createPrismaPersist(
           })
           return portalMembersFromAdminRows(rows)
         } catch (error) {
-          if (isMissingAboutTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -478,7 +459,7 @@ export function createPrismaPersist(
           })
           return portalMetaFromAdminRow(row)
         } catch (error) {
-          if (isMissingAboutTable(error)) return STUB_ABOUT.meta
+          if (isMissingTable(error)) return STUB_ABOUT.meta
           throw error
         }
       }
@@ -494,7 +475,7 @@ export function createPrismaPersist(
         try {
           return await prisma.pressMeta.findUnique({ where: { id: PRESS_META_ID } })
         } catch (error) {
-          if (isMissingPressTable(error)) return null
+          if (isMissingTable(error)) return null
           throw error
         }
       }
@@ -504,7 +485,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingPressTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -514,7 +495,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingPressTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -527,26 +508,24 @@ export function createPrismaPersist(
           const row = await prisma.aboutTeamMember.findUnique({ where: { id: memberId } })
           return row ? [row] : []
         } catch (error) {
-          if (isMissingAboutTable(error) || isMissingPressTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
-      try {
-        const [meta, news, stills] = await Promise.all([loadMeta(), loadNews(), loadStills()])
-        if (!meta && news.length === 0 && stills.length === 0) return STUB_PRESS
-        const members = await loadSpokesperson(meta?.spokespersonMemberId)
-        return portalPressFromAdmin({ meta, news, stills, members })
-      } catch (error) {
-        if (isMissingPressTable(error)) return STUB_PRESS
-        throw error
-      }
+      // Every loader above already turns a missing table into its own empty
+      // fallback, so an outer P2021 catch here could never fire. Anything that
+      // still escapes is real and propagates as a 500.
+      const [meta, news, stills] = await Promise.all([loadMeta(), loadNews(), loadStills()])
+      if (!meta && news.length === 0 && stills.length === 0) return STUB_PRESS
+      const members = await loadSpokesperson(meta?.spokespersonMemberId)
+      return portalPressFromAdmin({ meta, news, stills, members })
     },
     async getPrivacy() {
       const loadMeta = async () => {
         try {
-          return await prisma.privacyMeta.findUnique({ where: { id: 'privacy' } })
+          return await prisma.privacyMeta.findUnique({ where: { id: PRIVACY_META_ID } })
         } catch (error) {
-          if (isMissingLegalTable(error)) return null
+          if (isMissingTable(error)) return null
           throw error
         }
       }
@@ -556,7 +535,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingLegalTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -564,16 +543,16 @@ export function createPrismaPersist(
         const [meta, sections] = await Promise.all([loadMeta(), loadSections()])
         return portalLegalFromAdmin(STUB_PRIVACY, { meta, sections })
       } catch (error) {
-        if (isMissingLegalTable(error)) return STUB_PRIVACY
+        if (isMissingTable(error)) return STUB_PRIVACY
         throw error
       }
     },
     async getTerms() {
       const loadMeta = async () => {
         try {
-          return await prisma.termsMeta.findUnique({ where: { id: 'terms' } })
+          return await prisma.termsMeta.findUnique({ where: { id: TERMS_META_ID } })
         } catch (error) {
-          if (isMissingLegalTable(error)) return null
+          if (isMissingTable(error)) return null
           throw error
         }
       }
@@ -583,7 +562,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingLegalTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -591,16 +570,16 @@ export function createPrismaPersist(
         const [meta, sections] = await Promise.all([loadMeta(), loadSections()])
         return portalLegalFromAdmin(STUB_TERMS, { meta, sections })
       } catch (error) {
-        if (isMissingLegalTable(error)) return STUB_TERMS
+        if (isMissingTable(error)) return STUB_TERMS
         throw error
       }
     },
     async getFaq() {
       const loadMeta = async () => {
         try {
-          return await prisma.faqMeta.findUnique({ where: { id: 'faq' } })
+          return await prisma.faqMeta.findUnique({ where: { id: FAQ_META_ID } })
         } catch (error) {
-          if (isMissingFaqTable(error)) return null
+          if (isMissingTable(error)) return null
           throw error
         }
       }
@@ -610,7 +589,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingFaqTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -618,16 +597,16 @@ export function createPrismaPersist(
         const [meta, items] = await Promise.all([loadMeta(), loadItems()])
         return portalFaqFromAdmin({ meta, items })
       } catch (error) {
-        if (isMissingFaqTable(error)) return STUB_FAQ
+        if (isMissingTable(error)) return STUB_FAQ
         throw error
       }
     },
     async getCookies() {
       const loadMeta = async () => {
         try {
-          return await prisma.cookieMeta.findUnique({ where: { id: 'cookies' } })
+          return await prisma.cookieMeta.findUnique({ where: { id: COOKIE_META_ID } })
         } catch (error) {
-          if (isMissingCookieTable(error)) return null
+          if (isMissingTable(error)) return null
           throw error
         }
       }
@@ -637,7 +616,7 @@ export function createPrismaPersist(
             orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
           })
         } catch (error) {
-          if (isMissingCookieTable(error)) return []
+          if (isMissingTable(error)) return []
           throw error
         }
       }
@@ -645,7 +624,7 @@ export function createPrismaPersist(
         const [meta, rows] = await Promise.all([loadMeta(), loadRows()])
         return portalCookiesFromAdmin({ meta, rows })
       } catch (error) {
-        if (isMissingCookieTable(error)) return STUB_COOKIES
+        if (isMissingTable(error)) return STUB_COOKIES
         throw error
       }
     },

@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { asBilingual } from '../catalog/fromAdmin.js'
 import {
   DEFAULT_FAQ_ITEMS,
@@ -87,8 +86,4 @@ export function portalFaqFromAdmin(input: {
 }): PortalFaq {
   if (!input.meta && input.items.length === 0) return STUB_FAQ
   return { items: portalItemsFromAdminRows(input.items) }
-}
-
-export function isMissingFaqTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }

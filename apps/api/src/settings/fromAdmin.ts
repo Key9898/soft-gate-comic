@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import {
   parsePortalSettings,
   STUB_PORTAL_SETTINGS,
@@ -23,8 +22,4 @@ export function portalSettingsFromAdminRow(row: AdminPlatformSettingsRow | null)
     contactEmail: row.contactEmail,
     defaultLanguage: row.defaultLanguage,
   })
-}
-
-export function isMissingPlatformSettingsTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }

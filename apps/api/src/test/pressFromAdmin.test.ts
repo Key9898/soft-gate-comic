@@ -1,7 +1,7 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
-  isMissingPressTable,
   portalNewsFromAdminRows,
   portalPressFromAdmin,
   portalSpokespersonFromAdmin,
@@ -77,13 +77,13 @@ describe('portalPressFromAdmin', () => {
   })
 })
 
-describe('isMissingPressTable', () => {
+describe('isMissingTable', () => {
   it('detects Prisma P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('missing', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingPressTable(error)).toBe(true)
-    expect(isMissingPressTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(error)).toBe(true)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })

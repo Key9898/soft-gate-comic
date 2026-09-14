@@ -1,11 +1,8 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { STUB_PORTAL_SETTINGS } from '@softgate/shared/settings'
 import { describe, expect, it } from 'vitest'
-import {
-  isMissingPlatformSettingsTable,
-  portalSettingsFromAdminRow,
-  type AdminPlatformSettingsRow,
-} from '../settings/fromAdmin.js'
+import { portalSettingsFromAdminRow, type AdminPlatformSettingsRow } from '../settings/fromAdmin.js'
 
 const closed: AdminPlatformSettingsRow = {
   id: 'platform',
@@ -30,13 +27,13 @@ describe('portalSettingsFromAdminRow', () => {
   })
 })
 
-describe('isMissingPlatformSettingsTable', () => {
+describe('isMissingTable', () => {
   it('is true for P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('The table does not exist', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingPlatformSettingsTable(error)).toBe(true)
+    expect(isMissingTable(error)).toBe(true)
   })
 
   it('is false for other Prisma codes and plain errors', () => {
@@ -44,7 +41,7 @@ describe('isMissingPlatformSettingsTable', () => {
       code: 'P2002',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingPlatformSettingsTable(taken)).toBe(false)
-    expect(isMissingPlatformSettingsTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(taken)).toBe(false)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })

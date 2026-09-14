@@ -1,7 +1,7 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
-  isMissingFaqTable,
   portalFaqFromAdmin,
   portalItemsFromAdminRows,
   STUB_FAQ,
@@ -49,13 +49,13 @@ describe('portalFaqFromAdmin', () => {
   })
 })
 
-describe('isMissingFaqTable', () => {
+describe('isMissingTable', () => {
   it('detects Prisma P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('missing', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingFaqTable(error)).toBe(true)
-    expect(isMissingFaqTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(error)).toBe(true)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })

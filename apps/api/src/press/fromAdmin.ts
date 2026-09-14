@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { asBilingual } from '../catalog/fromAdmin.js'
 
 export const PRESS_META_ID = 'press'
@@ -368,8 +367,4 @@ export function portalPressFromAdmin(input: {
   const spokesperson = portalSpokespersonFromAdmin(input.meta.spokespersonMemberId, input.members)
   if (spokesperson) next.spokesperson = spokesperson
   return next
-}
-
-export function isMissingPressTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }

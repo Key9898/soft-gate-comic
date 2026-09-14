@@ -1,7 +1,7 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
-  isMissingAboutTable,
   portalHistoriesFromAdminRows,
   portalMembersFromAdminRows,
   portalMetaFromAdminRow,
@@ -106,13 +106,13 @@ describe('portalMetaFromAdminRow', () => {
   })
 })
 
-describe('isMissingAboutTable', () => {
+describe('isMissingTable', () => {
   it('is true for P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('The table does not exist', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingAboutTable(error)).toBe(true)
+    expect(isMissingTable(error)).toBe(true)
   })
 
   it('is false for other Prisma codes and plain errors', () => {
@@ -120,7 +120,7 @@ describe('isMissingAboutTable', () => {
       code: 'P2002',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingAboutTable(taken)).toBe(false)
-    expect(isMissingAboutTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(taken)).toBe(false)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })

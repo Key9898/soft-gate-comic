@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { asBilingual } from '../catalog/fromAdmin.js'
 import {
   DEFAULT_PRIVACY_META,
@@ -137,14 +136,13 @@ export function portalLegalFromAdmin(
   if (!input.meta) {
     return { ...stub, sections }
   }
+  const glance = asGlance(input.meta.glance)
   return {
     seoDesc: asBilingual(input.meta.seoDesc),
-    glance: asGlance(input.meta.glance).length > 0 ? asGlance(input.meta.glance) : stub.glance,
-    effectiveDate: toIsoDate(input.meta.effectiveDate) || stub.effectiveDate,
+    glance: glance.length > 0 ? glance : stub.glance,
+    // toIsoDate always returns a date string — it falls back to the seed date
+    // itself — so there is nothing left to coalesce here.
+    effectiveDate: toIsoDate(input.meta.effectiveDate),
     sections,
   }
-}
-
-export function isMissingLegalTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }

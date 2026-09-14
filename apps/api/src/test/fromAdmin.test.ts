@@ -1,9 +1,9 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
   asBilingual,
   coinPackagesFromAdminRows,
-  isMissingCoinPackageTable,
   publishedCatalogFromAdmin,
   type AdminAuthorRow,
   type AdminEpisodeRow,
@@ -213,13 +213,13 @@ describe('coinPackagesFromAdminRows', () => {
   })
 })
 
-describe('isMissingCoinPackageTable', () => {
+describe('isMissingTable', () => {
   it('is true for P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('The table does not exist', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingCoinPackageTable(error)).toBe(true)
+    expect(isMissingTable(error)).toBe(true)
   })
 
   it('is false for other Prisma codes and plain errors', () => {
@@ -227,7 +227,7 @@ describe('isMissingCoinPackageTable', () => {
       code: 'P2002',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingCoinPackageTable(taken)).toBe(false)
-    expect(isMissingCoinPackageTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(taken)).toBe(false)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })

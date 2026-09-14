@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { asBilingual } from '../catalog/fromAdmin.js'
 import {
   COOKIE_COPY_KEYS,
@@ -125,10 +124,6 @@ export function portalCookiesFromAdmin(input: {
     glance: asGlance(input.meta.glance),
     rows,
   }
-}
-
-export function isMissingCookieTable(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021'
 }
 
 export { COOKIE_COPY_KEYS }

@@ -1,7 +1,7 @@
+import { isMissingTable } from '../prismaErrors.js'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it } from 'vitest'
 import {
-  isMissingCookieTable,
   portalCookiesFromAdmin,
   portalRowsFromAdminRows,
   STUB_COOKIES,
@@ -63,13 +63,13 @@ describe('portalCookiesFromAdmin', () => {
   })
 })
 
-describe('isMissingCookieTable', () => {
+describe('isMissingTable', () => {
   it('detects Prisma P2021', () => {
     const error = new Prisma.PrismaClientKnownRequestError('missing', {
       code: 'P2021',
       clientVersion: Prisma.prismaVersion.client,
     })
-    expect(isMissingCookieTable(error)).toBe(true)
-    expect(isMissingCookieTable(new Error('down'))).toBe(false)
+    expect(isMissingTable(error)).toBe(true)
+    expect(isMissingTable(new Error('down'))).toBe(false)
   })
 })
