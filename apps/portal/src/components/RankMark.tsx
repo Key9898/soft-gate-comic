@@ -5,7 +5,7 @@ export interface RankMarkProps {
 const RankMark = ({ rank }: RankMarkProps) => (
   <span
     data-testid="rank-mark"
-    className="pointer-events-none absolute bottom-0 left-1 z-20 text-2xl leading-none font-black tabular-nums sm:text-3xl"
+    className="pointer-events-none absolute bottom-0 left-1 z-20 text-2xl font-black tabular-nums leading-none sm:text-3xl"
     aria-hidden="true"
   >
     <span

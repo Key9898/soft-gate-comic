@@ -103,7 +103,7 @@ const ReaderEpisodeSheet = ({
                   />
                 ) : null}
                 <span className="min-w-0 flex-1">
-                  <span className={`block text-xs font-semibold tracking-wider uppercase ${muted}`}>
+                  <span className={`block text-xs font-semibold uppercase tracking-wider ${muted}`}>
                     {t('readerPage.episodeN', { n: episode.episodeNumber })}
                   </span>
                   <span className={`block truncate text-sm font-bold ${titleClass}`}>

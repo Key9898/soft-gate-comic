@@ -67,7 +67,7 @@ const ReaderSettingsSheet = ({
 
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <label className="text-sm font-semibold tracking-wider text-gray-400 uppercase">
+            <label className="text-sm font-semibold uppercase tracking-wider text-gray-400">
               {t('readerPage.brightness')}
             </label>
             <span className="text-primary-500 text-xs font-bold">

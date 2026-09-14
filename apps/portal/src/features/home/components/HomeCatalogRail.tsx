@@ -65,7 +65,7 @@ const HomeCatalogRail = ({
         <div className="mb-6 flex items-center justify-between gap-4">
           <div className="min-w-0">
             {eyebrow ? (
-              <p className="text-primary-700 mb-1 text-xs font-semibold tracking-wide uppercase">
+              <p className="text-primary-700 mb-1 text-xs font-semibold uppercase tracking-wide">
                 {eyebrow}
               </p>
             ) : null}
@@ -81,7 +81,7 @@ const HomeCatalogRail = ({
             <button
               type="button"
               onClick={onViewAll}
-              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
+              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:outline-none focus:ring-2"
             >
               {t('common.viewAll')}
               <ChevronRight className="h-4 w-4" />
@@ -89,7 +89,7 @@ const HomeCatalogRail = ({
           ) : !empty && viewAllTo ? (
             <Link
               to={viewAllTo}
-              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:ring-2 focus:outline-none"
+              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:outline-none focus:ring-2"
             >
               {t('common.viewAll')}
               <ChevronRight className="h-4 w-4" />
@@ -111,7 +111,7 @@ const HomeCatalogRail = ({
               >
                 <Link
                   to={cardTo(webtoon)}
-                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
                   <CatalogBookCard
                     webtoon={webtoon}

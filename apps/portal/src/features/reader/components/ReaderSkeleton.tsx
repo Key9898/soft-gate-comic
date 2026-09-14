@@ -38,7 +38,7 @@ const ReaderSkeleton = ({
     <SkeletonSection className={`min-h-screen ${darkMode ? 'bg-gray-950' : 'bg-gray-50'}`}>
       <header
         data-testid="reader-skeleton-header"
-        className={`safe-top fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md ${chromeBorder}`}
+        className={`safe-top fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md ${chromeBorder}`}
       >
         <div className="relative mx-auto max-w-4xl px-4 py-3">
           <div className="flex items-center justify-between">
@@ -84,7 +84,7 @@ const ReaderSkeleton = ({
               </button>
             </div>
           </div>
-          <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-gray-200/20">
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gray-200/20">
             <div
               className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r"
               style={{ width: '0%' }}
@@ -98,14 +98,14 @@ const ReaderSkeleton = ({
       </header>
 
       <main
-        className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 pt-20 pb-16 sm:px-2 md:pt-24`}
+        className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 pb-16 pt-20 sm:px-2 md:pt-24`}
       >
         <div className="min-h-[50dvh] w-full" aria-hidden="true" />
       </main>
 
       <div
         data-testid="reader-skeleton-footer"
-        className={`safe-bottom fixed right-0 bottom-0 left-0 z-50 border-t backdrop-blur-md ${footerChromeBorder}`}
+        className={`safe-bottom fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md ${footerChromeBorder}`}
       >
         <div className="mx-auto max-w-4xl px-4 py-3">
           <div className="flex items-center justify-between">

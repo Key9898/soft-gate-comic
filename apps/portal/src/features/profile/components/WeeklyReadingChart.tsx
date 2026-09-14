@@ -41,7 +41,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
 
   return (
     <div className="rounded-3xl border border-gray-100 bg-white p-6 text-left shadow-sm">
-      <h4 className="mb-5 flex items-center gap-2 text-sm font-bold tracking-wider text-gray-400 uppercase">
+      <h4 className="mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400">
         <TrendingUp className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         {t('profilePage.weeklyActivity')}
         {demoLabel ? (
@@ -51,8 +51,8 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
         ) : null}
       </h4>
 
-      <div className="relative flex h-52 items-end justify-between gap-2.5 px-3 pt-6 pb-2.5">
-        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between">
+      <div className="relative flex h-52 items-end justify-between gap-2.5 px-3 pb-2.5 pt-6">
+        <div className="pointer-events-none absolute inset-x-0 bottom-8 top-0 flex flex-col justify-between">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="w-full border-t border-dashed border-gray-100" />
           ))}
@@ -74,14 +74,14 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: -35, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="text-2xs absolute top-0 z-30 rounded-2xl bg-gray-950 px-2.5 py-1.5 font-bold whitespace-nowrap text-white shadow-lg"
+                    className="text-2xs absolute top-0 z-30 whitespace-nowrap rounded-2xl bg-gray-950 px-2.5 py-1.5 font-bold text-white shadow-lg"
                   >
                     {t('profilePage.episodesUnit', { count: d.count })}
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="relative flex h-36 w-7 items-end sm:w-8.5">
+              <div className="sm:w-8.5 relative flex h-36 w-7 items-end">
                 <motion.div
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
@@ -91,7 +91,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
                 />
               </div>
 
-              <span className="text-2xs mt-2 font-bold text-gray-400 uppercase">{d.day}</span>
+              <span className="text-2xs mt-2 font-bold uppercase text-gray-400">{d.day}</span>
             </div>
           )
         })}

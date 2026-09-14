@@ -382,7 +382,7 @@ const CommentItem = ({
               {t('comments.revealSpoiler')}
             </button>
           ) : (
-            <p className={`mt-1 text-sm leading-relaxed wrap-anywhere ${body}`}>
+            <p className={`wrap-anywhere mt-1 text-sm leading-relaxed ${body}`}>
               {comment.spoiler ? (
                 <span className={`mr-2 text-xs font-semibold uppercase ${muted}`}>
                   {t('comments.spoiler')}

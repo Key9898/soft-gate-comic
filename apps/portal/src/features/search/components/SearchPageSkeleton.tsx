@@ -111,7 +111,7 @@ const QuerySkeleton = ({ tab: tabFallback = 'webtoons' }: { tab?: SearchTab }) =
                 title={t('common.close')}
                 aria-label={t('common.close')}
                 onClick={() => setSearchParams({})}
-                className="absolute top-1/2 right-4 z-10 -translate-y-1/2 p-1 text-gray-400 transition hover:text-gray-600"
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 p-1 text-gray-400 transition hover:text-gray-600"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -151,7 +151,7 @@ const QuerySkeleton = ({ tab: tabFallback = 'webtoons' }: { tab?: SearchTab }) =
                       onClick={() =>
                         patchSearchParams((params) => applySearchStatus(params, option.value))
                       }
-                      className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                      className={`px-4.5 min-h-[38px] rounded-2xl py-2.5 text-xs font-bold transition-all ${
                         isActive
                           ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                           : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -166,7 +166,7 @@ const QuerySkeleton = ({ tab: tabFallback = 'webtoons' }: { tab?: SearchTab }) =
                 <button
                   type="button"
                   onClick={() => patchSearchParams((params) => applySearchGenre(params, ''))}
-                  className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                  className={`px-4.5 min-h-[38px] rounded-2xl py-2.5 text-xs font-bold transition-all ${
                     !genre
                       ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -179,7 +179,7 @@ const QuerySkeleton = ({ tab: tabFallback = 'webtoons' }: { tab?: SearchTab }) =
                 <button
                   type="button"
                   onClick={() => setIsSortOpen((open) => !open)}
-                  className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
+                  className="px-4.5 flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50"
                 >
                   <ListFilter className="text-primary-500 h-4.5 w-4.5" />
                   <span>{sortOptions.find((o) => o.value === sortBy)?.label}</span>
@@ -274,7 +274,7 @@ const LandingSkeleton = () => {
                     type="button"
                     key={chip.en}
                     onClick={() => applySearch(term)}
-                    className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                    className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                   >
                     {term}
                   </button>

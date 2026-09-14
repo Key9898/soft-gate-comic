@@ -340,15 +340,15 @@ const CoinsPage = () => {
         <h1 className="sr-only">{t('coinsPage.title')}</h1>
         <div className="max-w-4xl">
           <div className="from-primary-600 to-primary-800 relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br p-6 text-white shadow-xl sm:p-8">
-            <div className="shape-circle absolute top-0 right-0 h-48 w-48 bg-white/5 blur-2xl" />
+            <div className="shape-circle absolute right-0 top-0 h-48 w-48 bg-white/5 blur-2xl" />
             <div className="bg-accent-500/10 shape-circle absolute bottom-0 left-0 h-36 w-36 blur-xl" />
 
             <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-primary-100 text-sm font-semibold tracking-wider uppercase">
+                <p className="text-primary-100 text-sm font-semibold uppercase tracking-wider">
                   {t('coinsPage.yourBalance')} · {t('coinsPage.demoLabel')}
                 </p>
-                <p className="text-2xs mt-1 inline-flex rounded-2xl bg-amber-400/20 px-2 py-0.5 font-bold tracking-wide text-amber-200 uppercase">
+                <p className="text-2xs mt-1 inline-flex rounded-2xl bg-amber-400/20 px-2 py-0.5 font-bold uppercase tracking-wide text-amber-200">
                   {t('coinsPage.demoTopUpBadge')}
                 </p>
                 <div className="mt-2 flex items-center gap-3.5">
@@ -407,7 +407,7 @@ const CoinsPage = () => {
                     <li key={item.key}>
                       <Link
                         to={`/webtoon/${item.webtoonId}`}
-                        className="focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-2 text-sm font-bold text-gray-800 hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                        className="focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-2 text-sm font-bold text-gray-800 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                       >
                         <span className="truncate">{item.title[lang]}</span>
                         <span className="shrink-0 text-xs font-semibold text-gray-500">
@@ -583,7 +583,7 @@ const CoinsPage = () => {
                     setSelectedPaymentMethod(null)
                   }
                 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+                className="backdrop-blur-xs fixed inset-0 bg-black/60"
               />
 
               {/* Modal Card */}
@@ -602,7 +602,7 @@ const CoinsPage = () => {
                 <div className="from-primary-600 to-primary-800 bg-gradient-to-r p-6 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-primary-200 text-2xs font-bold tracking-wider uppercase">
+                      <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
                         {t('coinsPage.demoTopUp')}
                       </span>
                       <h3 id={wizardTitleId} className="mt-1 text-lg font-bold">
@@ -615,7 +615,7 @@ const CoinsPage = () => {
                       )}
                     </div>
                     <div className="text-right">
-                      <span className="text-primary-200 text-2xs font-bold tracking-wider uppercase">
+                      <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
                         {t('coinsPage.totalPrice')}
                       </span>
                       <p className="mt-1 text-2xl font-bold">
@@ -736,7 +736,7 @@ const CoinsPage = () => {
                             name: 'KBZPay',
                             desc: t('coinsPage.methodKbzDesc'),
                             logo: (
-                              <div className="shape-circle flex h-8 w-8 items-center justify-center bg-[#0062b1] font-sans text-base font-bold text-white shadow-sm select-none">
+                              <div className="shape-circle flex h-8 w-8 select-none items-center justify-center bg-[#0062b1] font-sans text-base font-bold text-white shadow-sm">
                                 K
                               </div>
                             ),
@@ -747,8 +747,8 @@ const CoinsPage = () => {
                             name: 'WavePay',
                             desc: t('coinsPage.methodWaveDesc'),
                             logo: (
-                              <div className="shape-circle relative flex h-8 w-8 items-center justify-center bg-[#fdd835] font-bold shadow-sm select-none">
-                                <span className="text-2xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-bold text-emerald-800">
+                              <div className="shape-circle relative flex h-8 w-8 select-none items-center justify-center bg-[#fdd835] font-bold shadow-sm">
+                                <span className="text-2xs absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-bold text-emerald-800">
                                   W
                                 </span>
                                 <svg
@@ -772,7 +772,7 @@ const CoinsPage = () => {
                             name: 'A+',
                             desc: t('coinsPage.methodAplusDesc'),
                             logo: (
-                              <div className="shape-circle flex h-8 w-8 items-center justify-center bg-[#ff5722] font-sans text-xs font-bold text-white shadow-sm select-none">
+                              <div className="shape-circle flex h-8 w-8 select-none items-center justify-center bg-[#ff5722] font-sans text-xs font-bold text-white shadow-sm">
                                 A+
                               </div>
                             ),
@@ -783,7 +783,7 @@ const CoinsPage = () => {
                             name: 'CBPay',
                             desc: t('coinsPage.methodCbDesc'),
                             logo: (
-                              <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#01579b] font-sans text-xs font-bold text-white shadow-sm select-none">
+                              <div className="flex h-8 w-8 select-none items-center justify-center rounded-2xl bg-[#01579b] font-sans text-xs font-bold text-white shadow-sm">
                                 CB
                               </div>
                             ),
@@ -802,7 +802,7 @@ const CoinsPage = () => {
                           <button
                             key={method.id}
                             onClick={() => setSelectedPaymentMethod(method.id)}
-                            className={`flex min-h-[44px] items-center gap-4.5 rounded-2xl border-2 border-gray-200 p-4 text-left transition-all duration-200 ${method.hoverClass}`}
+                            className={`gap-4.5 flex min-h-[44px] items-center rounded-2xl border-2 border-gray-200 p-4 text-left transition-all duration-200 ${method.hoverClass}`}
                           >
                             {method.logo}
                             <div>
@@ -956,18 +956,18 @@ const CoinsPage = () => {
                                   </span>
                                   {/* Styled Sim Chip */}
                                   <div className="relative h-7 w-9 overflow-hidden rounded-2xl border border-amber-300/40 bg-amber-400/80">
-                                    <div className="absolute inset-x-2.5 top-0 bottom-0 border-x border-amber-600/30" />
-                                    <div className="absolute inset-y-2 top-0 bottom-0 border-y border-amber-600/30" />
+                                    <div className="absolute inset-x-2.5 bottom-0 top-0 border-x border-amber-600/30" />
+                                    <div className="absolute inset-y-2 bottom-0 top-0 border-y border-amber-600/30" />
                                   </div>
                                 </div>
 
-                                <div className="my-2 font-mono text-lg tracking-widest select-all">
+                                <div className="my-2 select-all font-mono text-lg tracking-widest">
                                   {cardNumber || '•••• •••• •••• ••••'}
                                 </div>
 
                                 <div className="flex items-end justify-between">
                                   <div>
-                                    <span className="text-primary-300 block text-[8px] font-bold tracking-wider uppercase">
+                                    <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
                                       {t('coinsPage.cardholderLabel')}
                                     </span>
                                     <span className="block max-w-[180px] truncate text-xs font-bold uppercase">
@@ -975,7 +975,7 @@ const CoinsPage = () => {
                                     </span>
                                   </div>
                                   <div className="text-right">
-                                    <span className="text-primary-300 block text-[8px] font-bold tracking-wider uppercase">
+                                    <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
                                       {t('coinsPage.expiryLabel')}
                                     </span>
                                     <span className="block font-mono text-xs font-bold">
@@ -992,7 +992,7 @@ const CoinsPage = () => {
                                   <span className="text-primary-300 mb-1 block text-[8px] font-bold uppercase">
                                     {t('coinsPage.signatureLabel')}
                                   </span>
-                                  <div className="flex h-8 w-full items-center rounded-2xl bg-white pr-3 text-right font-mono text-sm font-bold text-gray-800 italic shadow-inner">
+                                  <div className="flex h-8 w-full items-center rounded-2xl bg-white pr-3 text-right font-mono text-sm font-bold italic text-gray-800 shadow-inner">
                                     <div className="h-full flex-1 border-r border-gray-300/50 bg-gray-200" />
                                     <span className="ml-2 tracking-widest">{cardCvv || '•••'}</span>
                                   </div>
@@ -1011,7 +1011,7 @@ const CoinsPage = () => {
                             <div>
                               <label
                                 htmlFor="cardNumberInput"
-                                className="mb-1 block text-xs font-bold text-gray-500 uppercase"
+                                className="mb-1 block text-xs font-bold uppercase text-gray-500"
                               >
                                 {t('coinsPage.cardNumber')}
                               </label>
@@ -1034,7 +1034,7 @@ const CoinsPage = () => {
                             <div>
                               <label
                                 htmlFor="cardHolderInput"
-                                className="mb-1 block text-xs font-bold text-gray-500 uppercase"
+                                className="mb-1 block text-xs font-bold uppercase text-gray-500"
                               >
                                 {t('coinsPage.cardHolder')}
                               </label>
@@ -1052,7 +1052,7 @@ const CoinsPage = () => {
                               <div>
                                 <label
                                   htmlFor="cardExpiryInput"
-                                  className="mb-1 block text-xs font-bold text-gray-500 uppercase"
+                                  className="mb-1 block text-xs font-bold uppercase text-gray-500"
                                 >
                                   {t('coinsPage.cardExpiry')}
                                 </label>
@@ -1076,7 +1076,7 @@ const CoinsPage = () => {
                               <div>
                                 <label
                                   htmlFor="cardCvvInput"
-                                  className="mb-1 block text-xs font-bold text-gray-500 uppercase"
+                                  className="mb-1 block text-xs font-bold uppercase text-gray-500"
                                 >
                                   {t('coinsPage.cardCvv')}
                                 </label>

@@ -27,7 +27,7 @@ const ReadabilityControls = ({
 
   return (
     <div className="rounded-3xl border border-gray-200/60 bg-white p-5 shadow-sm">
-      <h3 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-gray-400 uppercase">
+      <h3 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400">
         <Settings className="text-primary-500 h-4.5 w-4.5" aria-hidden />
         {t('legal.readability')}
       </h3>
@@ -35,7 +35,7 @@ const ReadabilityControls = ({
         <div role="group" aria-labelledby="legal-zoom-label">
           <p
             id="legal-zoom-label"
-            className="text-2xs font-bold tracking-wider text-gray-400 uppercase"
+            className="text-2xs font-bold uppercase tracking-wider text-gray-400"
           >
             {t('legal.textZoom')}
           </p>
@@ -45,11 +45,11 @@ const ReadabilityControls = ({
               onClick={() => onFontSizeChange(LEGAL_FONT_SIZES[Math.max(0, sizeIndex - 1)])}
               disabled={sizeIndex === 0}
               aria-label={t('legal.zoomOut')}
-              className="focus-visible:ring-primary-500 flex min-h-11 flex-1 items-center justify-center rounded-2xl hover:bg-gray-200 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-40"
+              className="focus-visible:ring-primary-500 flex min-h-11 flex-1 items-center justify-center rounded-2xl hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 disabled:opacity-40"
             >
               <ZoomOut className="h-4 w-4 text-gray-500" aria-hidden />
             </button>
-            <span className="text-2xs w-14 text-center font-bold text-gray-800 uppercase">
+            <span className="text-2xs w-14 text-center font-bold uppercase text-gray-800">
               {t(SIZE_LABEL_KEYS[fontSize])}
             </span>
             <button
@@ -61,7 +61,7 @@ const ReadabilityControls = ({
               }
               disabled={sizeIndex === LEGAL_FONT_SIZES.length - 1}
               aria-label={t('legal.zoomIn')}
-              className="focus-visible:ring-primary-500 flex min-h-11 flex-1 items-center justify-center rounded-2xl hover:bg-gray-200 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-40"
+              className="focus-visible:ring-primary-500 flex min-h-11 flex-1 items-center justify-center rounded-2xl hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 disabled:opacity-40"
             >
               <ZoomIn className="h-4 w-4 text-gray-500" aria-hidden />
             </button>
@@ -71,7 +71,7 @@ const ReadabilityControls = ({
         <div role="radiogroup" aria-labelledby="legal-contrast-label">
           <p
             id="legal-contrast-label"
-            className="text-2xs font-bold tracking-wider text-gray-400 uppercase"
+            className="text-2xs font-bold uppercase tracking-wider text-gray-400"
           >
             {t('legal.contrast')}
           </p>
@@ -81,7 +81,7 @@ const ReadabilityControls = ({
               role="radio"
               aria-checked={readingTheme === 'default'}
               onClick={() => onReadingThemeChange('default')}
-              className={`focus-visible:ring-primary-500 min-h-11 flex-1 rounded-2xl text-xs font-bold uppercase focus-visible:ring-2 focus-visible:outline-none ${
+              className={`focus-visible:ring-primary-500 min-h-11 flex-1 rounded-2xl text-xs font-bold uppercase focus-visible:outline-none focus-visible:ring-2 ${
                 readingTheme === 'default'
                   ? 'text-primary-600 bg-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-700'
@@ -94,7 +94,7 @@ const ReadabilityControls = ({
               role="radio"
               aria-checked={readingTheme === 'sepia'}
               onClick={() => onReadingThemeChange('sepia')}
-              className={`focus-visible:ring-primary-500 min-h-11 flex-1 rounded-2xl text-xs font-bold uppercase focus-visible:ring-2 focus-visible:outline-none ${
+              className={`focus-visible:ring-primary-500 min-h-11 flex-1 rounded-2xl text-xs font-bold uppercase focus-visible:outline-none focus-visible:ring-2 ${
                 readingTheme === 'sepia'
                   ? 'bg-amber-100 text-amber-800 shadow-sm'
                   : 'text-gray-500 hover:text-gray-700'

@@ -49,7 +49,7 @@ const LibraryDeleteConfirmDialog = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCancel}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            className="backdrop-blur-xs fixed inset-0 bg-black/60"
           />
 
           <motion.div
@@ -71,7 +71,7 @@ const LibraryDeleteConfirmDialog = ({
                 <h3 id={titleId} className="text-lg font-bold text-gray-900">
                   {title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed font-medium text-gray-500">{message}</p>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">{message}</p>
               </div>
             </div>
 

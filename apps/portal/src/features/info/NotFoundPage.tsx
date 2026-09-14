@@ -77,7 +77,7 @@ const NotFoundPage = ({
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-500">{t(copy.descKey)}</p>
 
         <div className="mt-8 w-full max-w-md text-left">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
             {t('search.title')}
           </h2>
           <div className="mt-4">
@@ -99,7 +99,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
             {t('notFound.goHere')}
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -113,7 +113,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl text-left">
-          <h2 className="text-center text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-center text-xs font-bold uppercase tracking-wider text-gray-400">
             {t('notFound.tryTitle')}
           </h2>
           <p className="mt-3 text-center text-sm leading-relaxed text-gray-500">
@@ -124,7 +124,7 @@ const NotFoundPage = ({
               <li key={webtoon.id}>
                 <Link
                   to={`/webtoon/${webtoon.id}`}
-                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:outline-none focus-visible:ring-2"
                 >
                   <BookCard
                     coverImage={webtoon.coverImage}
@@ -155,7 +155,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-xl">
-          <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
             {t('notFound.helpTitle')}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-500">{t('notFound.helpDesc')}</p>

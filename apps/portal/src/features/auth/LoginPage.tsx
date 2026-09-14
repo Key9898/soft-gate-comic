@@ -119,7 +119,7 @@ const LoginPage = ({
           <Link
             to="/forgot-password"
             state={{ from }}
-            className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl text-sm transition focus-visible:ring-2 focus-visible:outline-none"
+            className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl text-sm transition focus-visible:outline-none focus-visible:ring-2"
           >
             {t('auth.forgotPassword')}
           </Link>
@@ -136,7 +136,7 @@ const LoginPage = ({
           <Link
             to="/register"
             state={{ from }}
-            className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium transition focus-visible:ring-2 focus-visible:outline-none"
+            className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium transition focus-visible:outline-none focus-visible:ring-2"
           >
             {t('auth.signUp')}
           </Link>

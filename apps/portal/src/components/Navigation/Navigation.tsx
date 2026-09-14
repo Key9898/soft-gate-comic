@@ -53,7 +53,7 @@ const Navigation = () => {
           <div className="flex items-center gap-8">
             <Link
               to="/"
-              className="text-primary-600 focus-visible:ring-primary-500 flex items-center rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+              className="text-primary-600 focus-visible:ring-primary-500 flex items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2"
             >
               <img
                 src="/logo/logo.svg"
@@ -68,7 +68,7 @@ const Navigation = () => {
                   key={link.path}
                   to={link.path}
                   aria-current={isActive(link.path) ? 'page' : undefined}
-                  className={`focus-visible:ring-primary-500 rounded-2xl text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+                  className={`focus-visible:ring-primary-500 whitespace-nowrap rounded-2xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 ${
                     isActive(link.path)
                       ? 'text-primary-600'
                       : 'hover:text-primary-600 text-gray-600'
@@ -89,7 +89,7 @@ const Navigation = () => {
               aria-label={t('search.title')}
               aria-expanded={isSearchOpen}
               aria-controls={isSearchOpen ? searchPanelId : undefined}
-              className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none xl:hidden"
+              className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 xl:hidden"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <Search className="h-5 w-5" aria-hidden="true" />
@@ -101,7 +101,7 @@ const Navigation = () => {
                   to="/library"
                   title={t('nav.library')}
                   aria-label={t('nav.library')}
-                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none lg:flex"
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 lg:flex"
                 >
                   <BookMarked className="h-5 w-5" aria-hidden="true" />
                 </Link>
@@ -109,7 +109,7 @@ const Navigation = () => {
                   to="/coins"
                   title={t('nav.coins')}
                   aria-label={t('nav.coins')}
-                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none lg:flex"
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 lg:flex"
                 >
                   <Coins className="h-5 w-5" aria-hidden="true" />
                 </Link>
@@ -117,11 +117,11 @@ const Navigation = () => {
                   to="/notifications"
                   title={t('nav.notifications')}
                   aria-label={t('nav.notifications')}
-                  className="hover:text-primary-600 focus-visible:ring-primary-500 relative flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none"
+                  className="hover:text-primary-600 focus-visible:ring-primary-500 relative flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2"
                 >
                   <Bell className="h-5 w-5" aria-hidden="true" />
                   {unreadNotificationCount > 0 ? (
-                    <span className="bg-accent-600 shape-circle absolute top-1 right-1 h-2 w-2" />
+                    <span className="bg-accent-600 shape-circle absolute right-1 top-1 h-2 w-2" />
                   ) : null}
                 </Link>
               </>
@@ -133,7 +133,7 @@ const Navigation = () => {
               <div className="hidden items-center gap-2 lg:flex">
                 <Link
                   to="/profile"
-                  className="bg-primary-50 hover:bg-primary-100 focus-visible:ring-primary-500 flex min-w-0 items-center gap-2 rounded-2xl px-3 py-1.5 transition focus-visible:ring-2 focus-visible:outline-none"
+                  className="bg-primary-50 hover:bg-primary-100 focus-visible:ring-primary-500 flex min-w-0 items-center gap-2 rounded-2xl px-3 py-1.5 transition focus-visible:outline-none focus-visible:ring-2"
                 >
                   <div className="bg-primary-600 shape-circle flex h-6 w-6 shrink-0 items-center justify-center">
                     <span className="text-xs font-bold text-white">
@@ -147,7 +147,7 @@ const Navigation = () => {
                 <button
                   type="button"
                   onClick={logout}
-                  className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-500 transition hover:text-red-600 focus-visible:ring-2 focus-visible:outline-none"
+                  className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-500 transition hover:text-red-600 focus-visible:outline-none focus-visible:ring-2"
                   title={t('nav.logout')}
                   aria-label={t('nav.logout')}
                 >
@@ -168,7 +168,7 @@ const Navigation = () => {
               aria-label={t('nav.menu')}
               aria-expanded={isMenuOpen}
               aria-controls={isMenuOpen ? menuId : undefined}
-              className={`hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:ring-2 focus-visible:outline-none ${
+              className={`hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 ${
                 isAuthenticated ? 'lg:hidden' : 'md:hidden'
               }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -222,7 +222,7 @@ const Navigation = () => {
                     to={link.path}
                     onClick={() => setIsMenuOpen(false)}
                     aria-current={isActive(link.path) ? 'page' : undefined}
-                    className={`focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+                    className={`focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 ${
                       isActive(link.path)
                         ? 'text-primary-600'
                         : 'hover:text-primary-600 text-gray-600'
@@ -238,7 +238,7 @@ const Navigation = () => {
                     <Link
                       to="/profile"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
                     >
                       <User className="h-4 w-4" aria-hidden="true" />
                       {user.displayName}
@@ -246,14 +246,14 @@ const Navigation = () => {
                     <Link
                       to="/library"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
                     >
                       {t('nav.library')}
                     </Link>
                     <Link
                       to="/coins"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:ring-2 focus-visible:outline-none"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
                     >
                       {t('nav.coins')}
                     </Link>
@@ -263,7 +263,7 @@ const Navigation = () => {
                         logout()
                         setIsMenuOpen(false)
                       }}
-                      className="focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-red-600 hover:text-red-700 focus-visible:ring-2 focus-visible:outline-none"
+                      className="focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-red-600 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2"
                     >
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       {t('nav.logout')}
@@ -274,7 +274,7 @@ const Navigation = () => {
                     to="/login"
                     state={{ from: location }}
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
+                    className="text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2"
                   >
                     {t('nav.login')}
                   </Link>

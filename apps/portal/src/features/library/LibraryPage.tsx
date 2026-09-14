@@ -322,7 +322,7 @@ const LibraryPage = () => {
                     setSelectedItems([])
                     setIsEditMode(false)
                   }}
-                  className={`relative flex min-h-[44px] items-center gap-2 px-6 py-4 whitespace-nowrap transition-colors focus:outline-none ${
+                  className={`relative flex min-h-[44px] items-center gap-2 whitespace-nowrap px-6 py-4 transition-colors focus:outline-none ${
                     activeTab === tab.id ? 'text-primary-600' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -334,7 +334,7 @@ const LibraryPage = () => {
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="activeTabUnderline"
-                      className="bg-primary-600 absolute right-0 bottom-0 left-0 h-0.5"
+                      className="bg-primary-600 absolute bottom-0 left-0 right-0 h-0.5"
                       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -376,7 +376,7 @@ const LibraryPage = () => {
           <div className="p-4">
             <div className="relative">
               <Search
-                className="absolute top-1/2 left-4.5 h-5 w-5 -translate-y-1/2 text-gray-400"
+                className="left-4.5 absolute top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
                 aria-hidden="true"
               />
               <input
@@ -385,7 +385,7 @@ const LibraryPage = () => {
                 aria-label={t('libraryPage.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-2xl border border-gray-200 py-3 pr-4 pl-12 text-sm font-medium transition focus:ring-1"
+                className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-4 text-sm font-medium transition focus:ring-1"
               />
             </div>
           </div>
@@ -441,14 +441,14 @@ const LibraryPage = () => {
                           handleCardClick(item)
                         }
                       }}
-                      className={`group focus-visible:ring-primary-500 relative flex flex-col transition-all duration-300 focus-visible:ring-2 focus-visible:outline-none ${
+                      className={`focus-visible:ring-primary-500 group relative flex flex-col transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 ${
                         isEditMode ? 'cursor-pointer select-none' : 'cursor-pointer'
                       } ${isSelected ? 'ring-primary-500/30 rounded-[3px] ring-2 ring-offset-4' : ''}`}
                     >
                       {isEditMode && (
-                        <div className="absolute top-2 left-2 z-20">
+                        <div className="absolute left-2 top-2 z-20">
                           <div
-                            className={`shape-circle flex h-6.5 w-6.5 items-center justify-center border-2 shadow-md transition-all ${
+                            className={`shape-circle h-6.5 w-6.5 flex items-center justify-center border-2 shadow-md transition-all ${
                               isSelected
                                 ? 'border-primary-600 bg-primary-600 text-white'
                                 : 'border-white bg-black/45 text-transparent'
@@ -491,7 +491,7 @@ const LibraryPage = () => {
                         <button
                           type="button"
                           data-testid="notify-mute"
-                          className="absolute top-2 right-2 z-20 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white/90 text-gray-700 shadow-sm"
+                          className="absolute right-2 top-2 z-20 flex min-h-11 min-w-11 items-center justify-center rounded-2xl bg-white/90 text-gray-700 shadow-sm"
                           aria-label={
                             item.notifyMuted
                               ? t('webtoonDetail.notifyOff')
@@ -513,7 +513,7 @@ const LibraryPage = () => {
                         <Link
                           to={continueHref(item)}
                           onClick={(event) => event.stopPropagation()}
-                          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-2 inline-flex min-h-11 items-center justify-center gap-1 rounded-2xl px-3 text-xs font-bold text-white focus-visible:ring-2 focus-visible:outline-none"
+                          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-2 inline-flex min-h-11 items-center justify-center gap-1 rounded-2xl px-3 text-xs font-bold text-white focus-visible:outline-none focus-visible:ring-2"
                         >
                           <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                           {t('libraryPage.continueReading')}
@@ -539,7 +539,7 @@ const LibraryPage = () => {
                           handleCardClick(item)
                         }
                       }}
-                      className={`group focus-visible:ring-primary-500 relative flex items-center gap-4 rounded-3xl border bg-white p-4 shadow-sm transition-all duration-300 focus-visible:ring-2 focus-visible:outline-none ${
+                      className={`focus-visible:ring-primary-500 group relative flex items-center gap-4 rounded-3xl border bg-white p-4 shadow-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 ${
                         isEditMode ? 'cursor-pointer select-none' : ''
                       } ${isSelected ? 'border-primary-500 ring-primary-500/20 ring-2' : ''}`}
                     >
@@ -547,7 +547,7 @@ const LibraryPage = () => {
                       {isEditMode && (
                         <div className="flex-shrink-0">
                           <div
-                            className={`shape-circle flex h-6.5 w-6.5 items-center justify-center border-2 transition-all ${
+                            className={`shape-circle h-6.5 w-6.5 flex items-center justify-center border-2 transition-all ${
                               isSelected
                                 ? 'border-primary-600 bg-primary-600 text-white'
                                 : 'border-gray-300 text-transparent'
@@ -579,7 +579,7 @@ const LibraryPage = () => {
 
                       {/* Info layout */}
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate text-base leading-tight font-bold text-gray-900">
+                        <h3 className="truncate text-base font-bold leading-tight text-gray-900">
                           {item.title[lang]}
                         </h3>
                         <p className="mt-1 text-xs font-semibold text-gray-500">
@@ -635,7 +635,7 @@ const LibraryPage = () => {
                             <Link
                               to={continueHref(item)}
                               onClick={(event) => event.stopPropagation()}
-                              className="hover:bg-primary-50 text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 items-center gap-1 rounded-2xl px-3 text-xs font-bold focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
+                              className="hover:bg-primary-50 text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 items-center gap-1 rounded-2xl px-3 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 sm:inline-flex"
                             >
                               <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                               {t('libraryPage.continueReading')}
@@ -675,7 +675,7 @@ const LibraryPage = () => {
               className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex w-[90%] max-w-lg items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/95 px-6 py-3.5 text-sm shadow-2xl backdrop-blur-md"
             >
               <div className="flex flex-col">
-                <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+                <span className="text-2xs font-bold uppercase tracking-wider text-gray-400">
                   {t('libraryPage.title')}
                 </span>
                 <span className="font-bold text-gray-900">

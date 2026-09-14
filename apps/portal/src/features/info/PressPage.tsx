@@ -192,7 +192,7 @@ const PressPage = () => {
         className="pointer-events-none absolute inset-x-0 top-0 h-[450px] overflow-hidden"
         aria-hidden
       >
-        <div className="radial-wash-primary absolute top-0 left-1/2 h-full w-full max-w-7xl -translate-x-1/2" />
+        <div className="radial-wash-primary absolute left-1/2 top-0 h-full w-full max-w-7xl -translate-x-1/2" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
@@ -212,7 +212,7 @@ const PressPage = () => {
             <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
             {txt('boilerplateTitle', 'press.boilerplateTitle')}
           </h2>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed font-medium text-gray-600">
+          <p className="mt-4 max-w-3xl text-sm font-medium leading-relaxed text-gray-600">
             {boilerplate}
           </p>
           <button
@@ -247,7 +247,7 @@ const PressPage = () => {
           <dl className={`${CARD} mt-8 grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-3`}>
             {facts.map((fact) => (
               <div key={fact.key}>
-                <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                <dt className="text-2xs font-bold uppercase tracking-widest text-gray-400">
                   {fact.label}
                 </dt>
                 <dd className="mt-1.5 text-sm font-semibold text-gray-900">
@@ -276,13 +276,13 @@ const PressPage = () => {
                 <tr className="border-b border-gray-200/60">
                   <th
                     scope="col"
-                    className="px-6 py-4 font-bold tracking-wider text-gray-500 uppercase"
+                    className="px-6 py-4 font-bold uppercase tracking-wider text-gray-500"
                   >
                     {t('press.newsColStatus')}
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-4 font-bold tracking-wider text-gray-500 uppercase"
+                    className="px-6 py-4 font-bold uppercase tracking-wider text-gray-500"
                   >
                     {t('press.newsColItem')}
                   </th>
@@ -294,7 +294,7 @@ const PressPage = () => {
                     <tr key={row.id}>
                       <td className="px-6 py-5 align-top">
                         {row.demoBadge ? (
-                          <span className="inline-flex rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold tracking-wider text-amber-800 uppercase">
+                          <span className="inline-flex rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold uppercase tracking-wider text-amber-800">
                             {t('common.demo')}
                           </span>
                         ) : null}
@@ -316,7 +316,7 @@ const PressPage = () => {
                 ) : (
                   <tr>
                     <td className="px-6 py-5 align-top">
-                      <span className="inline-flex rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold tracking-wider text-amber-800 uppercase">
+                      <span className="inline-flex rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold uppercase tracking-wider text-amber-800">
                         {t('common.demo')}
                       </span>
                     </td>
@@ -357,7 +357,7 @@ const PressPage = () => {
                 </div>
                 <div className="mt-4 flex items-start justify-between gap-3">
                   <p className="text-sm font-bold text-gray-900">{asset.name}</p>
-                  <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-1 font-bold tracking-wider text-gray-500 uppercase">
+                  <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-1 font-bold uppercase tracking-wider text-gray-500">
                     {asset.format}
                   </span>
                 </div>
@@ -373,7 +373,7 @@ const PressPage = () => {
             ))}
           </div>
 
-          <h3 className="mt-12 text-sm font-bold tracking-wider text-gray-900 uppercase">
+          <h3 className="mt-12 text-sm font-bold uppercase tracking-wider text-gray-900">
             {txt('paletteTitle', 'press.paletteTitle')}
           </h3>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -390,25 +390,25 @@ const PressPage = () => {
             ))}
           </ul>
 
-          <h3 className="mt-12 text-sm font-bold tracking-wider text-gray-900 uppercase">
+          <h3 className="mt-12 text-sm font-bold uppercase tracking-wider text-gray-900">
             {txt('usageTitle', 'press.usageTitle')}
           </h3>
           <div className="mt-4 grid max-w-3xl gap-8 sm:grid-cols-2">
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-900 uppercase">
+              <p className="text-sm font-bold uppercase tracking-wider text-gray-900">
                 {txt('usageDoTitle', 'press.usageDoTitle')}
               </p>
-              <ul className="mt-3 space-y-2 text-sm leading-relaxed font-medium text-gray-500">
+              <ul className="mt-3 space-y-2 text-sm font-medium leading-relaxed text-gray-500">
                 {usageDo.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-sm font-bold tracking-wider text-gray-900 uppercase">
+              <p className="text-sm font-bold uppercase tracking-wider text-gray-900">
                 {txt('usageDontTitle', 'press.usageDontTitle')}
               </p>
-              <ul className="mt-3 space-y-2 text-sm leading-relaxed font-medium text-gray-500">
+              <ul className="mt-3 space-y-2 text-sm font-medium leading-relaxed text-gray-500">
                 {usageDont.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -438,7 +438,7 @@ const PressPage = () => {
                   <div className="flex items-start justify-between gap-3 p-5">
                     <h3 className="text-sm font-bold text-gray-900">{still.title}</h3>
                     {still.demoBadge ? (
-                      <span className="inline-flex shrink-0 rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold tracking-wider text-amber-800 uppercase">
+                      <span className="inline-flex shrink-0 rounded-2xl bg-amber-50 px-2 py-1 text-xs font-bold uppercase tracking-wider text-amber-800">
                         {t('common.demo')}
                       </span>
                     ) : null}
@@ -470,7 +470,7 @@ const PressPage = () => {
               {showSpokespersonPerson ? (
                 <>
                   <h3 className="text-base font-bold text-gray-900">{founderName}</h3>
-                  <p className="text-2xs mt-1 font-bold tracking-widest text-gray-400 uppercase">
+                  <p className="text-2xs mt-1 font-bold uppercase tracking-widest text-gray-400">
                     {founderRole}
                   </p>
                 </>
@@ -493,7 +493,7 @@ const PressPage = () => {
             <div className="bg-primary-50 text-primary-600 mb-4 flex h-12 w-12 items-center justify-center rounded-2xl">
               <Mail className="h-6 w-6" aria-hidden />
             </div>
-            <h2 id="press-contact" className="text-xl font-bold text-balance text-gray-900">
+            <h2 id="press-contact" className="text-balance text-xl font-bold text-gray-900">
               {txt('contact', 'press.contact')}
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600">

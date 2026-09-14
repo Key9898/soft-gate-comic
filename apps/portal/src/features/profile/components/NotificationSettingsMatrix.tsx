@@ -41,7 +41,7 @@ const InAppSwitch = ({
     aria-checked={checked}
     aria-label={label}
     onClick={onToggle}
-    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl focus-visible:outline-none focus-visible:ring-2"
   >
     <span
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -80,7 +80,7 @@ const NotificationSettingsMatrix = () => {
         </div>
         <Link
           to="/notifications"
-          className="text-primary-600 focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl text-sm font-bold focus-visible:ring-2 focus-visible:outline-none"
+          className="text-primary-600 focus-visible:ring-primary-500 inline-flex min-h-11 items-center rounded-2xl text-sm font-bold focus-visible:outline-none focus-visible:ring-2"
         >
           {t('profilePage.settingsInboxLink')}
         </Link>
@@ -91,7 +91,7 @@ const NotificationSettingsMatrix = () => {
           <p className="text-sm text-gray-600">{t('profilePage.pushEnableLead')}</p>
           <button
             type="button"
-            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:ring-2 focus-visible:outline-none"
+            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2"
             onClick={() => {
               void enableLockScreenPush().then(setPushStatus)
             }}
@@ -117,7 +117,7 @@ const NotificationSettingsMatrix = () => {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[36rem] border-separate border-spacing-y-2 text-left">
           <thead>
-            <tr className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+            <tr className="text-2xs font-bold uppercase tracking-wider text-gray-400">
               <th className="px-2 py-2 font-bold">{t('profilePage.settingsCategory')}</th>
               <th className="px-2 py-2 text-center font-bold">{t('profilePage.channelInApp')}</th>
               <th className="px-2 py-2 text-center font-bold">{t('profilePage.channelEmail')}</th>

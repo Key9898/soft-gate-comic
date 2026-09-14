@@ -148,7 +148,7 @@ const AuthorPage = () => {
                 <Link
                   key={webtoon.id}
                   to={`/webtoon/${webtoon.id}`}
-                  className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
                   <CatalogBookCard
                     webtoon={webtoon}
@@ -170,7 +170,7 @@ const AuthorPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">

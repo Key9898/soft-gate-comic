@@ -68,7 +68,7 @@ function MockTeamList() {
               className={PHOTO_CLASS}
             />
             <h3 className="mt-4 text-base font-bold text-gray-900">{name}</h3>
-            <p className="text-2xs mt-1 font-bold tracking-widest text-gray-400 uppercase">
+            <p className="text-2xs mt-1 font-bold uppercase tracking-widest text-gray-400">
               {role}
             </p>
           </li>
@@ -97,7 +97,7 @@ function HttpTeamList({ members, lang }: { members: PortalAboutMember[]; lang: s
               />
             ) : null}
             <h3 className="mt-4 text-base font-bold text-gray-900">{name}</h3>
-            <p className="text-2xs mt-1 font-bold tracking-widest text-gray-400 uppercase">
+            <p className="text-2xs mt-1 font-bold uppercase tracking-widest text-gray-400">
               {role}
             </p>
           </li>
@@ -148,17 +148,17 @@ const AboutTeamSection = () => {
         <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
         {t('about.ourTeam')}
       </h2>
-      <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">{deck}</p>
+      <p className="mt-3 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">{deck}</p>
       {state.status === 'mock' ? <MockTeamList /> : null}
       {state.status === 'loading' ? <TeamSkeleton /> : null}
       {state.status === 'empty' ? (
-        <p className="mt-10 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+        <p className="mt-10 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
           {t('about.teamEmpty')}
         </p>
       ) : null}
       {state.status === 'error' ? (
         <div className="mt-10 max-w-3xl">
-          <p className="text-sm leading-relaxed font-medium text-gray-500">
+          <p className="text-sm font-medium leading-relaxed text-gray-500">
             {t('about.teamUnavailable')}
           </p>
           <button

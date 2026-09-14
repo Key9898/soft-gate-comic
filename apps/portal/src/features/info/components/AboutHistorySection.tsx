@@ -64,12 +64,12 @@ function MockHistoryList() {
     <ol className="mt-10 space-y-10">
       {MOCK_HISTORY.map((item) => (
         <li key={item.titleKey} className="grid gap-6 lg:grid-cols-12 lg:items-start">
-          <p className="text-primary-600 text-sm font-bold tracking-widest uppercase lg:col-span-2">
+          <p className="text-primary-600 text-sm font-bold uppercase tracking-widest lg:col-span-2">
             {t(item.yearKey)}
           </p>
           <div className="lg:col-span-10">
             <h3 className="text-base font-bold text-gray-900">{t(item.titleKey)}</h3>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+            <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
               {t(item.descKey)}
             </p>
             {'photo' in item ? (
@@ -96,7 +96,7 @@ function HttpHistoryList({ histories, lang }: { histories: PortalAboutHistory[];
     <ol className="mt-10 space-y-12">
       {groups.map((group) => (
         <li key={group.year} className="grid gap-6 lg:grid-cols-12 lg:items-start">
-          <p className="text-primary-600 text-sm font-bold tracking-widest uppercase lg:col-span-2">
+          <p className="text-primary-600 text-sm font-bold uppercase tracking-widest lg:col-span-2">
             {String(group.year)}
           </p>
           <ol className="space-y-10 lg:col-span-10">
@@ -106,11 +106,11 @@ function HttpHistoryList({ histories, lang }: { histories: PortalAboutHistory[];
               const monthLabel = monthKey ? t(monthKey) : String(item.month)
               return (
                 <li key={item.id}>
-                  <p className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                  <p className="text-2xs font-bold uppercase tracking-widest text-gray-400">
                     {monthLabel}
                   </p>
                   <h3 className="mt-1 text-base font-bold text-gray-900">{title}</h3>
-                  <p className="mt-2 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+                  <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
                     {pickBilingual(item.description, lang)}
                   </p>
                   {item.photoUrl ? (
@@ -143,19 +143,19 @@ const AboutHistorySection = () => {
         <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
         {t('about.ourHistory')}
       </h2>
-      <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+      <p className="mt-3 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
         {t('about.historyDeck')}
       </p>
       {state.status === 'mock' ? <MockHistoryList /> : null}
       {state.status === 'loading' ? <HistorySkeleton /> : null}
       {state.status === 'empty' ? (
-        <p className="mt-10 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+        <p className="mt-10 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
           {t('about.historyEmpty')}
         </p>
       ) : null}
       {state.status === 'error' ? (
         <div className="mt-10 max-w-3xl">
-          <p className="text-sm leading-relaxed font-medium text-gray-500">
+          <p className="text-sm font-medium leading-relaxed text-gray-500">
             {t('about.historyUnavailable')}
           </p>
           <button

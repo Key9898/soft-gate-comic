@@ -29,7 +29,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link
               to="/"
-              className="text-primary-400 flex items-center gap-3 rounded-2xl focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="text-primary-400 flex items-center gap-3 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <img
                 src="/logo/logo.svg"
@@ -48,7 +48,7 @@ const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>
@@ -64,7 +64,7 @@ const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>
@@ -80,7 +80,7 @@ const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                    className="rounded-2xl text-sm text-gray-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {link.name}
                   </Link>

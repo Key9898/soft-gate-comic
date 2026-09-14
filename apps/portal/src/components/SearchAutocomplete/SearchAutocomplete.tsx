@@ -95,7 +95,7 @@ const SearchAutocomplete = ({
           onFocus={() => setOpen(true)}
           className={
             inputClassName ||
-            'focus:ring-primary-500 w-56 rounded-2xl border-none bg-gray-100 py-2 pr-4 pl-10 text-sm transition-all focus:bg-white focus:ring-2'
+            'focus:ring-primary-500 w-56 rounded-2xl border-none bg-gray-100 py-2 pl-10 pr-4 text-sm transition-all focus:bg-white focus:ring-2'
           }
         />
         <Search className={iconClassName} aria-hidden="true" />

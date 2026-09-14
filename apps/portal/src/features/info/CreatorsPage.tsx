@@ -130,7 +130,7 @@ const CreatorsPage = () => {
         className="pointer-events-none absolute inset-x-0 top-0 h-[450px] overflow-hidden"
         aria-hidden
       >
-        <div className="radial-wash-primary absolute top-0 left-1/2 h-full w-full max-w-7xl -translate-x-1/2" />
+        <div className="radial-wash-primary absolute left-1/2 top-0 h-full w-full max-w-7xl -translate-x-1/2" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 pb-16 text-left sm:px-6 lg:px-8">
@@ -146,7 +146,7 @@ const CreatorsPage = () => {
           <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
             {FACTS.map((fact) => (
               <div key={fact.labelKey}>
-                <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                <dt className="text-2xs font-bold uppercase tracking-widest text-gray-400">
                   {t(fact.labelKey)}
                 </dt>
                 <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>
@@ -168,7 +168,7 @@ const CreatorsPage = () => {
             <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
             {t('creators.whyTitle')}
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+          <p className="mt-3 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
             {t('creators.whyDesc')}
           </p>
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -178,7 +178,7 @@ const CreatorsPage = () => {
                   <card.icon className="h-5 w-5" aria-hidden />
                 </span>
                 <h3 className="mt-4 text-base font-bold text-gray-900">{card.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed font-medium text-gray-500">
+                <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {card.desc}
                 </p>
               </div>
@@ -198,12 +198,12 @@ const CreatorsPage = () => {
                   <span className={ICON_WELL}>
                     <step.icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <span className="text-2xs text-primary-500 font-bold tracking-widest uppercase">
+                  <span className="text-2xs text-primary-500 font-bold uppercase tracking-widest">
                     {index + 1}
                   </span>
                 </div>
                 <h3 className="mt-4 text-base font-bold text-gray-900">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed font-medium text-gray-500">
+                <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {step.desc}
                 </p>
               </div>
@@ -216,7 +216,7 @@ const CreatorsPage = () => {
             <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
             {t('creators.examplesTitle')}
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+          <p className="mt-3 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
             {t('creators.examplesNote')}
           </p>
           <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -224,7 +224,7 @@ const CreatorsPage = () => {
               <li key={webtoon.id}>
                 <Link
                   to={`/webtoon/${webtoon.id}`}
-                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+                  className="focus-visible:ring-primary-500 block rounded-2xl focus-visible:outline-none focus-visible:ring-2"
                 >
                   <BookCard
                     coverImage={webtoon.coverImage}
@@ -250,12 +250,12 @@ const CreatorsPage = () => {
                   {t('creators.specVisualCover')}
                 </span>
               </div>
-              <p className="mt-3 text-xs font-bold tracking-wider text-gray-400 uppercase">
+              <p className="mt-3 text-xs font-bold uppercase tracking-wider text-gray-400">
                 {t('creators.specCoverLabel')}
               </p>
             </div>
             <div>
-              <p className="text-2xs mb-2 font-bold tracking-widest text-gray-400 uppercase">
+              <p className="text-2xs mb-2 font-bold uppercase tracking-widest text-gray-400">
                 {t('creators.specVisualWidth')}
               </p>
               <div className="w-24 border-x-2 border-t-2 border-gray-300 px-1 pt-1">
@@ -266,7 +266,7 @@ const CreatorsPage = () => {
                   <div className="h-12 rounded-sm bg-gray-100" />
                 </div>
               </div>
-              <p className="mt-3 text-xs font-bold tracking-wider text-gray-400 uppercase">
+              <p className="mt-3 text-xs font-bold uppercase tracking-wider text-gray-400">
                 {t('creators.specVisualStrip')}
               </p>
             </div>
@@ -274,7 +274,7 @@ const CreatorsPage = () => {
           <dl className={`${CARD} mt-8 grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2`}>
             {SPECS.map((spec) => (
               <div key={spec.labelKey}>
-                <dt className="text-2xs font-bold tracking-widest text-gray-400 uppercase">
+                <dt className="text-2xs font-bold uppercase tracking-widest text-gray-400">
                   {t(spec.labelKey)}
                 </dt>
                 <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(spec.valueKey)}</dd>
@@ -337,17 +337,17 @@ const CreatorsPage = () => {
             <span className="bg-primary-500 shape-circle h-2.5 w-2.5" />
             {t('creators.afterTitle')}
           </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed font-medium text-gray-500">
+          <p className="mt-3 max-w-3xl text-sm font-medium leading-relaxed text-gray-500">
             {t('creators.afterDeck')}
           </p>
           <ol className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {AFTER.map((item, index) => (
               <li key={item.titleKey} className={`${CARD} p-6`}>
-                <span className="text-2xs text-primary-500 font-bold tracking-widest uppercase">
+                <span className="text-2xs text-primary-500 font-bold uppercase tracking-widest">
                   {index + 1}
                 </span>
                 <h3 className="mt-4 text-base font-bold text-gray-900">{t(item.titleKey)}</h3>
-                <p className="mt-2 text-sm leading-relaxed font-medium text-gray-500">
+                <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {t(item.descKey)}
                 </p>
               </li>
@@ -368,7 +368,7 @@ const CreatorsPage = () => {
               <h3 className="mt-5 text-base font-bold text-gray-900">
                 {t('creators.rightsIpTitle')}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+              <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">
                 {t('creators.rightsIpDesc')}
               </p>
             </div>
@@ -379,7 +379,7 @@ const CreatorsPage = () => {
               <h3 className="mt-5 text-base font-bold text-gray-900">
                 {t('creators.rightsPayTitle')}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+              <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">
                 {t('creators.rightsPayDesc')}
               </p>
             </div>
@@ -390,7 +390,7 @@ const CreatorsPage = () => {
               <h3 className="mt-5 text-base font-bold text-gray-900">
                 {t('creators.rightsSimulTitle')}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+              <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">
                 {t('creators.rightsSimulDesc')}
               </p>
             </div>
@@ -406,7 +406,7 @@ const CreatorsPage = () => {
             {FAQ.map((item) => (
               <div key={item.qKey} className={`${CARD} p-6`}>
                 <dt className="text-sm font-bold text-gray-900">{t(item.qKey)}</dt>
-                <dd className="mt-2 text-sm leading-relaxed font-medium text-gray-500">
+                <dd className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {t(item.aKey)}
                 </dd>
               </div>
@@ -418,7 +418,7 @@ const CreatorsPage = () => {
           <div className={`${CARD} p-8`}>
             <div className="max-w-3xl">
               <h2 className="text-xl font-bold text-gray-900">{t('creators.ctaTitle')}</h2>
-              <p className="mt-3 text-sm leading-relaxed font-medium text-gray-500">
+              <p className="mt-3 text-sm font-medium leading-relaxed text-gray-500">
                 {t('creators.ctaDesc')}
               </p>
               <Link to="/contact?intent=submit" className={`${PRIMARY_CTA} mt-6 w-fit`}>

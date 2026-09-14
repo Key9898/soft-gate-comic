@@ -341,7 +341,7 @@ const WebtoonDetailPage = () => {
               <div className="mb-4 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Link
                   to={`/author/${webtoon.author.id}`}
-                  className="flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none"
+                  className="flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                   aria-label={`${t('webtoonDetail.viewAuthor')} ${webtoon.author.name[lang]}`}
                 >
                   <div className="shape-circle flex h-8 w-8 items-center justify-center bg-white/20">
@@ -369,7 +369,7 @@ const WebtoonDetailPage = () => {
                       <Link
                         key={genre}
                         to={`/categories/${catalogGenre.slug}`}
-                        className={`${className} inline-flex min-h-11 items-center transition hover:bg-white/20 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none`}
+                        className={`${className} inline-flex min-h-11 items-center transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900`}
                       >
                         {label}
                       </Link>
@@ -384,7 +384,7 @@ const WebtoonDetailPage = () => {
                     <Link
                       key={tag}
                       to={`/search?q=${encodeURIComponent(tag)}`}
-                      className="inline-flex min-h-11 items-center rounded-2xl bg-white/5 px-3 py-1 text-xs font-medium text-white/80 ring-1 ring-white/10 transition hover:bg-white/15 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none"
+                      className="inline-flex min-h-11 items-center rounded-2xl bg-white/5 px-3 py-1 text-xs font-medium text-white/80 ring-1 ring-white/10 transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                     >
                       {tag}
                     </Link>
@@ -475,7 +475,7 @@ const WebtoonDetailPage = () => {
                   data-testid="hub-next-drop"
                   className="mb-6 rounded-2xl bg-white/10 px-4 py-3 text-left backdrop-blur-sm"
                 >
-                  <p className="text-xs font-medium tracking-wide text-white/60 uppercase">
+                  <p className="text-xs font-medium uppercase tracking-wide text-white/60">
                     {t('webtoonDetail.nextDrop')}
                   </p>
                   <UpcomingDropMeta
@@ -496,7 +496,7 @@ const WebtoonDetailPage = () => {
               <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Link
                   to={primaryHref}
-                  className="rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none"
+                  className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
                   <Button size="lg" leftIcon={<Play className="h-5 w-5" />}>
                     {primaryLabel}
@@ -505,7 +505,7 @@ const WebtoonDetailPage = () => {
                 {showLatestCta && latestEpisode ? (
                   <Link
                     to={`/read/${webtoon.id}/${latestEpisode.episodeNumber}`}
-                    className="rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none"
+                    className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                   >
                     <Button size="lg" variant="heroOutline">
                       {t('webtoonDetail.latestEpisode')}
@@ -699,7 +699,7 @@ const WebtoonDetailPage = () => {
                           )}
                         </div>
                         {locked ? (
-                          <span className="bg-accent-600/90 absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
+                          <span className="bg-accent-600/90 absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
                             <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                           </span>
                         ) : null}
@@ -790,7 +790,7 @@ const WebtoonDetailPage = () => {
               <h2 className="text-xl font-bold text-gray-900">{t('webtoonDetail.otherWorks')}</h2>
               <Link
                 to={`/author/${webtoon.author.id}`}
-                className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 text-sm font-semibold focus-visible:ring-2 focus-visible:outline-none"
+                className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2"
               >
                 {t('common.viewAll')}
               </Link>
@@ -807,7 +807,7 @@ const WebtoonDetailPage = () => {
                 >
                   <Link
                     to={`/webtoon/${w.id}`}
-                    className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                    className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
                     <CatalogBookCard
                       webtoon={w}
@@ -845,7 +845,7 @@ const WebtoonDetailPage = () => {
                 >
                   <Link
                     to={`/webtoon/${w.id}`}
-                    className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                    className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                   >
                     <CatalogBookCard
                       webtoon={w}

@@ -77,7 +77,7 @@ export const AchievementsBadgeCenter = ({
           box-shadow: 0 5px 15px -3px rgba(245, 158, 11, 0.4), 0 4px 6px -4px rgba(245, 158, 11, 0.4);
         }
       `}</style>
-      <h4 className="mb-5 flex items-center gap-2 text-sm font-bold tracking-wider text-gray-400 uppercase">
+      <h4 className="mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400">
         <Award className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         {t('profilePage.achievements')}
         {demoLabel ? (
@@ -106,7 +106,7 @@ export const AchievementsBadgeCenter = ({
             </div>
 
             {ach.special && ach.unlocked && (
-              <span className="absolute top-2 right-2">
+              <span className="absolute right-2 top-2">
                 <Sparkles
                   className="h-3 w-3 animate-spin text-amber-500"
                   style={{ animationDuration: '3s' }}
@@ -115,7 +115,7 @@ export const AchievementsBadgeCenter = ({
             )}
 
             {!ach.unlocked && (
-              <div className="absolute top-2 right-2 rounded-2xl bg-gray-200 p-1">
+              <div className="absolute right-2 top-2 rounded-2xl bg-gray-200 p-1">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -129,7 +129,7 @@ export const AchievementsBadgeCenter = ({
               </div>
             )}
 
-            <p className="text-xs leading-tight font-bold text-gray-900">{ach.title}</p>
+            <p className="text-xs font-bold leading-tight text-gray-900">{ach.title}</p>
             <p className="text-2xs mt-1 leading-normal text-gray-400">{ach.desc}</p>
           </motion.div>
         ))}

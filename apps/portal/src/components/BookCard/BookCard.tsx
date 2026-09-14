@@ -90,7 +90,7 @@ const BookCard = ({
         {typeof rank === 'number' ? <RankMark rank={rank} /> : null}
 
         {typeof progress === 'number' && progress > 0 && (
-          <div className="absolute right-0 bottom-0 left-0 z-10 h-[3px] bg-gray-200/90">
+          <div className="absolute bottom-0 left-0 right-0 z-10 h-[3px] bg-gray-200/90">
             <div
               className="bg-primary-600 h-full transition-all duration-500"
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
@@ -100,16 +100,16 @@ const BookCard = ({
       </div>
 
       <div className="mt-2.5 min-w-0 px-0.5">
-        <h3 className="line-clamp-2 text-sm font-semibold break-words text-gray-900 lg:line-clamp-1">
+        <h3 className="line-clamp-2 break-words text-sm font-semibold text-gray-900 lg:line-clamp-1">
           {title}
         </h3>
         {description ? (
-          <p className="min-h-2lh mt-0.5 line-clamp-2 text-xs break-words text-gray-600">
+          <p className="min-h-2lh mt-0.5 line-clamp-2 break-words text-xs text-gray-600">
             {description}
           </p>
         ) : null}
         {subtitle ? (
-          <p className="mt-0.5 line-clamp-1 text-xs break-words text-gray-500">{subtitle}</p>
+          <p className="mt-0.5 line-clamp-1 break-words text-xs text-gray-500">{subtitle}</p>
         ) : null}
         {meta ? <div className="mt-1.5">{meta}</div> : null}
       </div>

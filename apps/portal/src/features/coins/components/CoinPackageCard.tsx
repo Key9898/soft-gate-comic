@@ -39,12 +39,12 @@ const CoinPackageCard = ({
       )}
 
       {pkg.popular && (
-        <span className="from-accent-500 to-accent-700 text-2xs absolute top-0 right-6 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold tracking-wider text-white uppercase shadow-sm">
+        <span className="from-accent-500 to-accent-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold uppercase tracking-wider text-white shadow-sm">
           {popularLabel}
         </span>
       )}
       {pkg.bestValue && (
-        <span className="from-spark-500 to-spark-700 text-2xs absolute top-0 right-6 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold tracking-wider text-white uppercase shadow-sm">
+        <span className="from-spark-500 to-spark-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold uppercase tracking-wider text-white shadow-sm">
           {bestValueLabel}
         </span>
       )}

@@ -66,7 +66,7 @@ const CategoriesPageSkeleton = ({
         ) : null}
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {isRanked ? (
-            <p className="text-primary-700 mb-1 text-xs font-semibold tracking-wide uppercase">
+            <p className="text-primary-700 mb-1 text-xs font-semibold uppercase tracking-wide">
               {t('categories.rankingEyebrow')}
             </p>
           ) : null}
@@ -111,7 +111,7 @@ const CategoriesPageSkeleton = ({
                   onClick={() =>
                     goTo(catalogHref({ sort: mastheadSort, genreSlug, status: option.value }))
                   }
-                  className={`min-h-11 rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                  className={`px-4.5 min-h-11 rounded-2xl py-2.5 text-xs font-bold transition-all ${
                     isActive
                       ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -131,7 +131,7 @@ const CategoriesPageSkeleton = ({
                 aria-haspopup="menu"
                 aria-expanded={isDropdownOpen}
                 aria-controls={sortMenuId}
-                className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
+                className="px-4.5 flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50"
               >
                 <ListFilter className="text-primary-500 h-4.5 w-4.5" />
                 <span>{activeSortLabel}</span>

@@ -313,7 +313,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'completed') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-bold tracking-wider text-white uppercase ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusCompleted')}
         </span>
@@ -322,7 +322,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'hiatus') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-bold tracking-wider text-white uppercase ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusHiatus')}
         </span>
@@ -378,7 +378,7 @@ const CategoriesPage = () => {
         ) : null}
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {showRanks ? (
-            <p className="text-primary-700 mb-1 text-xs font-semibold tracking-wide uppercase">
+            <p className="text-primary-700 mb-1 text-xs font-semibold uppercase tracking-wide">
               {t('categories.rankingEyebrow')}
             </p>
           ) : null}
@@ -417,7 +417,7 @@ const CategoriesPage = () => {
                         behavior: 'smooth',
                       })
                     }}
-                    className={`relative flex min-h-11 shrink-0 items-center justify-center rounded-2xl px-4.5 py-2.5 text-xs font-bold whitespace-nowrap transition-all ${
+                    className={`px-4.5 relative flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-2xl py-2.5 text-xs font-bold transition-all ${
                       isActive ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -454,7 +454,7 @@ const CategoriesPage = () => {
                   key={option.value}
                   aria-pressed={isActive}
                   onClick={() => handleStatusChange(option.value)}
-                  className={`min-h-11 rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                  className={`px-4.5 min-h-11 rounded-2xl py-2.5 text-xs font-bold transition-all ${
                     isActive
                       ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -477,7 +477,7 @@ const CategoriesPage = () => {
                 aria-haspopup="menu"
                 aria-expanded={isDropdownOpen}
                 aria-controls={sortMenuId}
-                className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
+                className="px-4.5 flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50"
               >
                 <ListFilter className="text-primary-500 h-4.5 w-4.5" />
                 <span>{activeSortLabel}</span>
@@ -551,7 +551,7 @@ const CategoriesPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -566,7 +566,7 @@ const CategoriesPage = () => {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="hover:border-primary-300 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:border-primary-300 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
               >
                 {t('categories.clearFilters')}
               </button>
@@ -586,7 +586,7 @@ const CategoriesPage = () => {
                       >
                         <Link
                           to={`/webtoon/${webtoon.id}`}
-                          className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                          className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                           aria-label={`${rank}. ${webtoon.title[lang]}`}
                         >
                           <CatalogBookCard
@@ -618,7 +618,7 @@ const CategoriesPage = () => {
                     >
                       <Link
                         to={`/webtoon/${webtoon.id}`}
-                        className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       >
                         <CatalogBookCard
                           webtoon={webtoon}
@@ -645,7 +645,7 @@ const CategoriesPage = () => {
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage <= 1}
                     aria-label={t('common.previous')}
-                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft className="h-5 w-5" aria-hidden />
                   </button>
@@ -657,7 +657,7 @@ const CategoriesPage = () => {
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={currentPage >= totalPages}
                     aria-label={t('common.next')}
-                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                    className="focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 transition focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronRight className="h-5 w-5" aria-hidden />
                   </button>

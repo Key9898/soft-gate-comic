@@ -672,7 +672,7 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-top fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-top fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)]'
@@ -736,7 +736,7 @@ const ReaderPage = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-gray-200/20">
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gray-200/20">
                 <div
                   className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r"
                   style={{ width: `${readingProgress}%` }}
@@ -758,7 +758,7 @@ const ReaderPage = () => {
           e.stopPropagation()
           goToEpisode(episodeNum - 1)
         }}
-        className={`fixed top-1/2 left-2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
+        className={`fixed left-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasPrev ? '' : 'cursor-not-allowed opacity-30'
         } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
       >
@@ -773,7 +773,7 @@ const ReaderPage = () => {
           e.stopPropagation()
           goToEpisode(episodeNum + 1)
         }}
-        className={`fixed top-1/2 right-2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
+        className={`fixed right-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasNext ? '' : 'cursor-not-allowed opacity-30'
         } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
       >
@@ -782,7 +782,7 @@ const ReaderPage = () => {
 
       <main
         className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 sm:px-2 ${
-          showHeader ? 'pt-20 pb-16 md:pt-24' : 'pt-2 pb-2'
+          showHeader ? 'pb-16 pt-20 md:pt-24' : 'pb-2 pt-2'
         }`}
         onClick={() => setShowHeader(!showHeader)}
       >
@@ -915,7 +915,7 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-bottom fixed right-0 bottom-0 left-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-bottom fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
               darkMode
                 ? 'border-white/5 bg-gray-950/75 shadow-[0_-8px_32px_0_rgba(0,0,0,0.37)]'
                 : 'border-gray-200 bg-white/75 shadow-[0_-8px_32px_0_rgba(31,38,135,0.08)]'

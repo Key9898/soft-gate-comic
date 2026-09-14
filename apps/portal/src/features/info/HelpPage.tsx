@@ -87,7 +87,7 @@ const HelpPage = () => {
   return (
     <div className="relative min-h-screen bg-gray-50 pb-20">
       <SEO title={t('footer.help')} description={t('help.honestIntro')} path="/help" />
-      <div className="radial-wash-primary pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2" />
+      <div className="radial-wash-primary pointer-events-none absolute left-1/2 top-0 h-[450px] w-full max-w-7xl -translate-x-1/2" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Breadcrumb items={page.breadcrumbs} className="mb-6" />
@@ -99,10 +99,10 @@ const HelpPage = () => {
               placeholder={t('help.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="focus:ring-primary-500 min-h-11 w-full rounded-2xl border-none bg-gray-100 py-3.5 pr-4 pl-11 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
+              className="focus:ring-primary-500 min-h-11 w-full rounded-2xl border-none bg-gray-100 py-3.5 pl-11 pr-4 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
             />
             <Search
-              className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400"
+              className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
               aria-hidden="true"
             />
           </div>
@@ -116,7 +116,7 @@ const HelpPage = () => {
                   <li key={item.id}>
                     <Link
                       to={`/faq#${item.id}`}
-                      className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                      className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
                     >
                       <span>{t(item.qKey)}</span>
                       <ArrowRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
@@ -129,7 +129,7 @@ const HelpPage = () => {
                 {t('help.searchNoResults')}{' '}
                 <Link
                   to="/contact"
-                  className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                  className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2"
                 >
                   {t('footer.contact')}
                 </Link>
@@ -146,7 +146,7 @@ const HelpPage = () => {
               <Link
                 key={topic.to}
                 to={topic.to}
-                className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 flex-col rounded-2xl border border-gray-200 p-4 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 flex-col rounded-2xl border border-gray-200 p-4 transition-colors focus-visible:outline-none focus-visible:ring-2"
               >
                 <topic.icon className="text-primary-600 mb-2 h-7 w-7" />
                 <h3 className="font-semibold text-gray-900">{topic.title}</h3>
@@ -157,7 +157,7 @@ const HelpPage = () => {
 
           <Link
             to="/faq"
-            className="hover:border-primary-300 focus-visible:ring-primary-500 bg-primary-500/10 mt-8 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-4 py-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="hover:border-primary-300 focus-visible:ring-primary-500 bg-primary-500/10 mt-8 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2"
           >
             <span>
               <span className="text-primary-700 block font-semibold">{t('help.browseAll')}</span>
@@ -177,7 +177,7 @@ const HelpPage = () => {
               <li key={item.id}>
                 <Link
                   to={`/faq#${item.id}`}
-                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                  className="hover:border-primary-300 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2"
                 >
                   <span className="flex items-center gap-3">
                     <FileText className="text-primary-500 h-4 w-4 shrink-0" aria-hidden="true" />

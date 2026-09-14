@@ -64,8 +64,8 @@ const FAQItem = ({
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="border-t border-gray-100 px-4.5 py-4">
-              <p className="text-xs leading-relaxed font-bold text-gray-600 sm:text-sm">
+            <div className="px-4.5 border-t border-gray-100 py-4">
+              <p className="text-xs font-bold leading-relaxed text-gray-600 sm:text-sm">
                 {item.answer}
               </p>
 
@@ -86,7 +86,7 @@ const FAQItem = ({
 
               <div className="mt-4 flex flex-wrap items-start justify-between gap-3 border-t border-gray-50 pt-3.5">
                 <div className="min-w-0 flex-1">
-                  <span className="text-2xs font-bold tracking-wider text-gray-400 uppercase">
+                  <span className="text-2xs font-bold uppercase tracking-wider text-gray-400">
                     {t('faq.wasHelpful')}
                   </span>
                   <p className="mt-1 text-xs font-medium text-gray-400">{t('faq.feedbackLocal')}</p>
@@ -184,7 +184,7 @@ const FAQPage = () => {
   return (
     <div className="relative min-h-screen bg-gray-50 pb-20 transition-colors duration-300">
       <SEO title={t('footer.faq')} description={t('faq.intro')} path="/faq" />
-      <div className="radial-wash-primary pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2" />
+      <div className="radial-wash-primary pointer-events-none absolute left-1/2 top-0 h-[450px] w-full max-w-7xl -translate-x-1/2" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
         <Breadcrumb items={page.breadcrumbs} className="mb-6" />
@@ -196,10 +196,10 @@ const FAQPage = () => {
               placeholder={t('faq.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="focus:ring-primary-500 min-h-11 w-full rounded-2xl border-none bg-gray-100 py-3.5 pr-4 pl-11 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
+              className="focus:ring-primary-500 min-h-11 w-full rounded-2xl border-none bg-gray-100 py-3.5 pl-11 pr-4 text-sm font-bold text-gray-950 transition placeholder:text-gray-400 focus:bg-white focus:ring-2"
             />
             <Search
-              className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400"
+              className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
               aria-hidden="true"
             />
           </div>
@@ -225,7 +225,7 @@ const FAQPage = () => {
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`relative flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all ${
+                    className={`relative flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
                       isActive ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -245,7 +245,7 @@ const FAQPage = () => {
             <div className="space-y-6">
               {filteredFAQ.map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h3 className="text-primary-500 pl-1.5 text-sm font-bold tracking-wider uppercase">
+                  <h3 className="text-primary-500 pl-1.5 text-sm font-bold uppercase tracking-wider">
                     {cat.category}
                   </h3>
                   <div className="space-y-2">
@@ -270,7 +270,7 @@ const FAQPage = () => {
                     {t('faq.noResultsDesc')}{' '}
                     <Link
                       to="/contact"
-                      className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                      className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded font-bold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2"
                     >
                       {t('footer.contact')}
                     </Link>

@@ -55,20 +55,20 @@ const CatalogBookCard = ({
       badge={
         <>
           {isNew || webtoon.isPremium ? (
-            <div className="pointer-events-none absolute top-2 left-2 z-10 flex flex-col items-start gap-1">
+            <div className="pointer-events-none absolute left-2 top-2 z-10 flex flex-col items-start gap-1">
               {isNew ? (
                 <span className="bg-primary-600 rounded-2xl px-2 py-0.5 text-xs font-medium text-white">
                   {t('webtoon.new')}
                 </span>
               ) : null}
               {webtoon.isPremium ? (
-                <span className="bg-accent-600 text-2xs rounded-2xl px-2 py-0.5 font-bold text-white uppercase shadow-sm">
+                <span className="bg-accent-600 text-2xs rounded-2xl px-2 py-0.5 font-bold uppercase text-white shadow-sm">
                   {t('webtoon.premium')}
                 </span>
               ) : null}
             </div>
           ) : null}
-          <div className="pointer-events-none absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
+          <div className="pointer-events-none absolute right-2 top-2 z-10 flex flex-col items-end gap-1">
             <RatingChip rating={webtoon.rating} />
             <ContentRatingBadge rating={webtoon.contentRating} />
           </div>

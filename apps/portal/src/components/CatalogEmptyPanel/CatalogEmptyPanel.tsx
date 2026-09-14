@@ -37,13 +37,13 @@ const CatalogEmptyPanel = ({
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/help"
-            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-white transition focus-visible:ring-2 focus-visible:outline-none"
+            className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2"
           >
             {t('footer.help')}
           </Link>
           <Link
             to="/creators"
-            className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-gray-200 transition hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+            className="focus-visible:ring-primary-500 inline-flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-gray-200 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
           >
             {t('footer.creators')}
           </Link>

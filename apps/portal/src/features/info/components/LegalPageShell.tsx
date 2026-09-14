@@ -45,7 +45,7 @@ const LegalRelatedPolicies = ({ current }: LegalRelatedPoliciesProps) => {
       aria-label={t('legal.relatedPolicies')}
       className="flex flex-wrap items-center gap-x-1 gap-y-1"
     >
-      <span className="text-2xs mr-2 font-bold tracking-wider text-gray-400 uppercase">
+      <span className="text-2xs mr-2 font-bold uppercase tracking-wider text-gray-400">
         {t('legal.relatedPolicies')}
       </span>
       {POLICY_LINKS.map((policy, index) => {
@@ -105,7 +105,7 @@ const LegalPageShell = ({
   return (
     <div className="relative min-h-screen bg-gray-50 pb-12 transition-colors duration-300">
       <SEO title={seoTitle} description={seoDescription} path={`/${pageId}`} />
-      <div className="radial-wash-primary pointer-events-none absolute top-0 left-1/2 h-[450px] w-full max-w-7xl -translate-x-1/2" />
+      <div className="radial-wash-primary pointer-events-none absolute left-1/2 top-0 h-[450px] w-full max-w-7xl -translate-x-1/2" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 text-left sm:px-6 lg:px-8">
         <Breadcrumb items={page.breadcrumbs} className="mb-6" />

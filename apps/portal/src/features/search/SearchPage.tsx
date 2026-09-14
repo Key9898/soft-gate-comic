@@ -227,7 +227,7 @@ const SearchPage = () => {
 
   const recovery = (
     <div className="mt-8 w-full">
-      <h2 className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+      <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400">
         {t('notFound.goHere')}
       </h2>
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -265,7 +265,7 @@ const SearchPage = () => {
                 title={t('common.close')}
                 aria-label={t('common.close')}
                 onClick={clearSearch}
-                className="absolute top-1/2 right-4 z-10 -translate-y-1/2 p-1 text-gray-400 transition hover:text-gray-600"
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 p-1 text-gray-400 transition hover:text-gray-600"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -294,7 +294,7 @@ const SearchPage = () => {
                         type="button"
                         key={chip.en}
                         onClick={() => applySearch(term)}
-                        className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none"
+                        className="hover:border-primary-300 focus-visible:ring-primary-500 min-h-11 rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                       >
                         {term}
                       </button>
@@ -455,7 +455,7 @@ const SearchPage = () => {
                         type="button"
                         key={option.value}
                         onClick={() => setStatusFilter(option.value)}
-                        className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                        className={`px-4.5 min-h-[38px] rounded-2xl py-2.5 text-xs font-bold transition-all ${
                           isActive
                             ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -470,7 +470,7 @@ const SearchPage = () => {
                   <button
                     type="button"
                     onClick={() => setGenreFilter('')}
-                    className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                    className={`px-4.5 min-h-[38px] rounded-2xl py-2.5 text-xs font-bold transition-all ${
                       !genre
                         ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                         : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -485,7 +485,7 @@ const SearchPage = () => {
                         type="button"
                         key={g.id}
                         onClick={() => setGenreFilter(g.slug)}
-                        className={`min-h-[38px] rounded-2xl px-4.5 py-2.5 text-xs font-bold transition-all ${
+                        className={`px-4.5 min-h-[38px] rounded-2xl py-2.5 text-xs font-bold transition-all ${
                           isActive
                             ? 'bg-primary-50 text-primary-700 ring-primary-200 ring-1'
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -500,7 +500,7 @@ const SearchPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsSortOpen((open) => !open)}
-                    className="flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4.5 py-2.5 text-xs font-bold tracking-wider text-gray-800 uppercase shadow-sm transition-all hover:bg-gray-50"
+                    className="px-4.5 flex min-h-[44px] items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50"
                   >
                     <ListFilter className="text-primary-500 h-4.5 w-4.5" />
                     <span>{sortOptions.find((o) => o.value === sortBy)?.label}</span>
@@ -549,7 +549,7 @@ const SearchPage = () => {
                     >
                       <Link
                         to={`/webtoon/${webtoon.id}`}
-                        className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                        className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2"
                       >
                         <CatalogBookCard
                           webtoon={webtoon}
@@ -652,7 +652,7 @@ const SearchPage = () => {
                             ) : null}
                           </div>
                           {locked ? (
-                            <span className="bg-accent-600/90 absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
+                            <span className="bg-accent-600/90 absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-2xl text-white">
                               <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                             </span>
                           ) : null}
@@ -743,7 +743,7 @@ function SearchNoResults({
               <Link
                 key={webtoon.id}
                 to={`/webtoon/${webtoon.id}`}
-                className="focus:ring-primary-500 block rounded-[3px] focus:ring-2 focus:outline-none"
+                className="focus:ring-primary-500 block rounded-[3px] focus:outline-none focus:ring-2"
               >
                 <CatalogBookCard
                   webtoon={webtoon}
