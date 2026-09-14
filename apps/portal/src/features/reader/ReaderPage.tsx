@@ -68,6 +68,7 @@ import ReaderSkeleton from './components/ReaderSkeleton'
 import ReaderAdSlot from './components/ReaderAdSlot'
 import ReaderCompletePortal from './components/ReaderCompletePortal'
 import NotFoundPage from '../info/NotFoundPage'
+import CatalogLoadFailPage from '../info/CatalogLoadFailPage'
 
 function isEditableReaderTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false
@@ -94,7 +95,7 @@ const ReaderPage = () => {
   const lang = i18n.language as 'mm' | 'en'
   const { webtoonId, episodeNumber } = useParams()
   const navigate = useNavigate()
-  const { webtoons, episodes, isLoading, retry } = useData()
+  const { webtoons, episodes, isLoading, error: catalogError, retry } = useData()
   const { isBookmarked, toggleBookmark } = useLibrary()
   const { isAuthenticated, isLoading: authLoading, user } = useAuth()
   const { maintenanceMode, allowRegistration } = useSettings()
@@ -459,6 +460,12 @@ const ReaderPage = () => {
   }
 
   if (!webtoon) {
+    // A failed catalog fetch is not a deleted series. Telling a reader their series
+    // does not exist, when the truth is the request failed, sends them away from
+    // something that is still there — and `retry` was already in scope, unused.
+    if (catalogError) {
+      return <CatalogLoadFailPage onRetry={retry} backHref={`/webtoon/${webtoonId ?? ''}`} />
+    }
     return <NotFoundPage variant="series" withSiteChrome />
   }
 

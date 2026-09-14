@@ -24,6 +24,21 @@ const CatalogEmptyPanel = ({
       : description
   const actions = unavailable ? false : showActions
 
+  // One failed fetch used to render this full-height panel under every section —
+  // about eight identical restatements of a single fact. CatalogStatus already owns
+  // the message and the retry at the top of the page, so each section only needs a
+  // slim marker that its content could not load.
+  if (unavailable) {
+    return (
+      <p
+        data-testid="catalog-unavailable-note"
+        className="text-muted rounded-2xl border border-dashed border-gray-200 px-4 py-3 text-sm"
+      >
+        {t('errors.catalogUnavailableShort')}
+      </p>
+    )
+  }
+
   return (
     <div className="rounded-3xl border border-gray-200 bg-white px-6 py-10 text-center sm:px-8 sm:py-12">
       <div className="shape-circle mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-gray-100">

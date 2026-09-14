@@ -247,6 +247,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 215  | 2026-09-14 | Phase 1 design-system core (Button, Card, SortMenu, SearchField) | [2026-09-14-phase-1-design-system-core.md](../notes/2026-09-14-phase-1-design-system-core.md)                                                                 |
 | 216  | 2026-09-14 | Phase 3 accessibility floor                                      | [2026-09-14-phase-3-accessibility-floor.md](../notes/2026-09-14-phase-3-accessibility-floor.md)                                                               |
 | 217  | 2026-09-14 | Phase 2 funnel and retention                                     | [2026-09-14-phase-2-funnel-retention.md](../notes/2026-09-14-phase-2-funnel-retention.md)                                                                     |
+| 218  | 2026-09-14 | Phase 4 discovery IA (partial; taxonomy deferred)                | [2026-09-14-phase-4-discovery-ia.md](../notes/2026-09-14-phase-4-discovery-ia.md)                                                                             |
 
 ---
 
@@ -1993,7 +1994,7 @@ Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Priva
 
 **Status:** Done
 
-Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **218**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **219**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
@@ -2029,9 +2030,17 @@ Phase 2 (GitHub epic #19, issue #12). Empty states stop claiming the wrong cause
 
 ---
 
+## Impl Phase 218 — Phase 4 discovery IA (2026-09-14)
+
+**Status:** Done (partial; rail taxonomy deferred to the owner)
+
+Phase 4 (GitHub epic #21, issues #14 and #15). Home's "View all" opened a modal fed the _same_ six-item arrays the rail already showed; it now routes to `/ranking` and `/categories?sort=…` via `catalogHref`, and `HomeRailRadialModal` is deleted. A failed catalog fetch rendered the full explanatory panel under every section — about eight restatements of one fact — so `CatalogEmptyPanel unavailable` is a slim note using new `errors.catalogUnavailableShort`, with the full `errors.catalogUnavailable` kept once in the hero (a deliberate amendment to the copy split in [discovery-honesty](../conventions/discovery-honesty.md), [hero-spotlight](../conventions/hero-spotlight.md) and [loading-states](../conventions/loading-states.md)). New `CatalogLoadFailPage` stops the reader claiming a deleted series when the request merely failed. Categories' count line became `role="status"` instead of an `<h2>` breaking the outline; Home's dead `selectedGenre` state is gone; rails carry a `rail-fade-end` overflow mask; `CatalogStatus` names the offline state and retries on reconnect. **Four review findings did not survive checking and were not acted on**: the "/faq 425px column" (it is the 768px `max-w-3xl` reading measure used across every info page), the "arrow overlaps the clipped chip" (rail ends 307, arrow 315–359), the "six near-synonymous rails" (six distinct selectors in `discovery.ts`, one personalised) and the "ragged grid fill" (deliberate exclusion filters against a ten-title demo catalog). The taxonomy collapse is therefore deferred: its premise does not hold, and acting on it would delete working personalisation and contradict a convention. **207** stays unused. Next is **219**. Note: [2026-09-14-phase-4-discovery-ia.md](../notes/2026-09-14-phase-4-discovery-ia.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **218**).
+1. Take **next free Impl** (currently **219**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

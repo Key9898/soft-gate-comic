@@ -660,6 +660,13 @@ html[lang='mm'] textarea {
   @apply text-primary-600 hover:text-primary-700 transition-colors duration-200;
 }
 
+/* A horizontal scroller's last visible item gets cut by the container edge, which
+   reads as a rendering fault rather than "there is more". The mask fades the cut so
+   it reads as overflow. Applied only while the rail can actually scroll further. */
+.rail-fade-end {
+  mask-image: linear-gradient(to right, black calc(100% - 2.5rem), transparent 100%);
+}
+
 /* ============================================ */
 /* Utilities                                    */
 /* ============================================ */

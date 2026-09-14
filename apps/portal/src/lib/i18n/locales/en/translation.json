@@ -82,7 +82,8 @@
     "boundaryTitle": "Something went wrong",
     "boundaryBody": "This page failed to load. Trying again often works — if it does not, you can head back to Home.",
     "boundaryRetry": "Try again",
-    "boundaryHome": "Go to Home"
+    "boundaryHome": "Go to Home",
+    "offline": "You are offline. Pages already loaded still work; new ones will not until the connection returns."
   },
   "maintenance": {
     "title": "Reading is paused",

@@ -433,7 +433,11 @@ const CategoriesPage = () => {
           </div>
 
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-900">{countLine}</h2>
+            {/* A result count is status, not a section heading — it was breaking the
+                document outline between the page h1 and the real section headings. */}
+            <p role="status" aria-live="polite" className="text-base font-bold text-gray-900">
+              {countLine}
+            </p>
 
             <SortMenu
               options={sortOptions}

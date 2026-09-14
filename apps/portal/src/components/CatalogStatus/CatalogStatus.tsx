@@ -15,6 +15,25 @@ const CatalogStatus = () => {
   const { error, isLoading, retry } = useData()
   const { maintenanceMode } = useSettings()
   const [slow, setSlow] = useState(false)
+  // Nothing in the app told a reader they were offline: a dropped connection
+  // surfaced as the generic catalog-error path, which reads as a server fault.
+  const [offline, setOffline] = useState(
+    () => typeof navigator !== 'undefined' && navigator.onLine === false
+  )
+
+  useEffect(() => {
+    const goOffline = () => setOffline(true)
+    const goOnline = () => {
+      setOffline(false)
+      retry()
+    }
+    window.addEventListener('offline', goOffline)
+    window.addEventListener('online', goOnline)
+    return () => {
+      window.removeEventListener('offline', goOffline)
+      window.removeEventListener('online', goOnline)
+    }
+  }, [retry])
 
   useEffect(() => {
     if (!isLoading) {
@@ -25,16 +44,19 @@ const CatalogStatus = () => {
     return () => window.clearTimeout(id)
   }, [isLoading])
 
-  if (maintenanceMode || pathname === '/maintenance' || isAuthRoute(pathname) || (!error && !slow))
-    return null
+  if (maintenanceMode || pathname === '/maintenance' || isAuthRoute(pathname)) return null
+  if (!error && !slow && !offline) return null
 
   return (
     <div
-      role={error ? 'alert' : 'status'}
+      role={error || offline ? 'alert' : 'status'}
+      data-testid="catalog-status"
       className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
-        <p>{error ? t('errors.catalogLoad') : t('a11y.stillLoading')}</p>
+        <p>
+          {offline ? t('errors.offline') : error ? t('errors.catalogLoad') : t('a11y.stillLoading')}
+        </p>
         <button
           type="button"
           onClick={retry}

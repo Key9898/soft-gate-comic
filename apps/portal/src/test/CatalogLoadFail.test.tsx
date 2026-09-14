@@ -30,6 +30,8 @@ function stubCatalogHttpFail() {
 }
 
 const FAIL_DECK = /titles cannot show until the catalog request succeeds/i
+// Sections carry a slim marker; the full sentence is said once, by the hero.
+const FAIL_NOTE = /could not load\. use retry at the top of the page\./i
 
 afterEach(() => {
   vi.unstubAllEnvs()
@@ -75,7 +77,7 @@ describe('catalog HTTP load-fail chrome', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Browse by Genre' }, { timeout: 8000 })
     ).toBeInTheDocument()
-    expect((await screen.findAllByText(FAIL_DECK)).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(FAIL_NOTE)).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /all statuses/i })).toBeInTheDocument()
     expect(screen.queryByText(/no published series in the library yet/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/matching your criteria/i)).not.toBeInTheDocument()
@@ -95,7 +97,7 @@ describe('catalog HTTP load-fail chrome', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Search' }, { timeout: 8000 })
     ).toBeInTheDocument()
-    expect((await screen.findAllByText(FAIL_DECK)).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(FAIL_NOTE)).length).toBeGreaterThan(0)
     expect(screen.getAllByRole('heading', { name: 'Popular' }).length).toBeGreaterThan(0)
     expect(screen.getAllByRole('heading', { name: 'New Releases' }).length).toBeGreaterThan(0)
     expect(

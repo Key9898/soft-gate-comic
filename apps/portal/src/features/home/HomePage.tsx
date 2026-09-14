@@ -30,19 +30,17 @@ import {
   startHereWebtoons,
   trendingWebtoons,
   updatedWebtoons,
+  catalogHref,
 } from '../../lib/catalog'
 import HeroSpotlight from './components/HeroSpotlight'
 import HomeCatalogRail from './components/HomeCatalogRail'
 import HomeDailyBoard from './components/HomeDailyBoard'
 import HomeRankingChart from './components/HomeRankingChart'
-import HomeRailRadialModal, { type HomeRailRadialVariant } from './components/HomeRailRadialModal'
 import HomePageSkeleton from './components/HomePageSkeleton'
 import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
 import { ChipLink } from '../../components/Chip'
 
 const CONTINUE_CAP = 12
-
-type HomeOpenRail = HomeRailRadialVariant
 
 const HomePage = () => {
   const { t, i18n } = useTranslation()
@@ -71,9 +69,6 @@ const HomePage = () => {
   useEffect(() => {
     updateGenreScroll()
   }, [genres, updateGenreScroll])
-
-  const [selectedGenre, setSelectedGenre] = useState('all')
-  const [openRail, setOpenRail] = useState<HomeOpenRail | null>(null)
 
   // Fix 8: Loading skeleton state
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
@@ -179,7 +174,9 @@ const HomePage = () => {
             </span>
             <div
               ref={genreScrollRef}
-              className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-3 overflow-x-auto overscroll-x-contain pb-2"
+              className={`scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-center gap-3 overflow-x-auto overscroll-x-contain pb-2 ${
+                canScrollGenreRight ? 'rail-fade-end' : ''
+              }`}
             >
               {genres.length === 0 ? (
                 <div className="min-w-0 flex-1 py-2">
@@ -195,12 +192,11 @@ const HomePage = () => {
                     key={genre.id}
                     to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
                     tone="genre"
-                    // NOTE: `selectedGenre` is set here but the Link unmounts the page,
-                    // so this never renders as selected. Dead state, tracked in the
-                    // Phase 4 discovery-IA work (GitHub #21) rather than changed here.
-                    selected={selectedGenre === genre.slug}
+                    // These navigate away from Home, so none of them is ever the
+                    // "current" chip. The state that tracked a selection here could
+                    // never render and has been removed.
+                    selected={false}
                     className="text-sm font-medium"
-                    onClick={() => setSelectedGenre(genre.slug)}
                   >
                     {genre.name[lang]}
                   </ChipLink>
@@ -226,7 +222,9 @@ const HomePage = () => {
             <div className="flex items-center gap-2">
               <div
                 ref={continueScrollRef}
-                className="scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-stretch gap-4 overflow-x-auto overscroll-x-contain sm:gap-5"
+                className={`scrollbar-hide flex min-w-0 flex-1 flex-nowrap items-stretch gap-4 overflow-x-auto overscroll-x-contain sm:gap-5 ${
+                  canScrollContinueRight ? 'rail-fade-end' : ''
+                }`}
               >
                 {continueItems.map(({ webtoon, record, progress }) => (
                   <Link
@@ -306,7 +304,7 @@ const HomePage = () => {
         id="home-ranking"
         title={t('home.ranking')}
         description={t('home.rankingDesc')}
-        onViewAll={() => setOpenRail('ranking')}
+        viewAllTo={catalogHref({ sort: 'popular' })}
         webtoons={rankingList}
         lang={lang}
         genres={genres}
@@ -352,7 +350,7 @@ const HomePage = () => {
         title={t('home.updated')}
         description={t('home.updatedDesc')}
         icon={<Clock className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
-        onViewAll={() => setOpenRail('updated')}
+        viewAllTo={catalogHref({ sort: 'recentlyUpdated' })}
         webtoons={updatedList}
         lang={lang}
         genres={genres}
@@ -370,7 +368,7 @@ const HomePage = () => {
         title={t('home.newReleases')}
         description={t('home.newReleasesDesc')}
         icon={<Sparkles className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />}
-        onViewAll={() => setOpenRail('new')}
+        viewAllTo={catalogHref({ sort: 'new' })}
         webtoons={newReleases}
         lang={lang}
         genres={genres}
@@ -402,28 +400,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      <HomeRailRadialModal
-        open={openRail !== null}
-        onClose={() => setOpenRail(null)}
-        title={
-          openRail === 'updated'
-            ? t('home.updated')
-            : openRail === 'new'
-              ? t('home.newReleases')
-              : t('home.ranking')
-        }
-        webtoons={
-          openRail === 'updated' ? updatedList : openRail === 'new' ? newReleases : rankingList
-        }
-        variant={openRail ?? 'ranking'}
-        lang={lang}
-        genres={genres}
-        newestIds={newestIds}
-        loadedImages={loadedImages}
-        failedImages={failedImages}
-        onImageLoad={handleImageLoad}
-        onImageError={handleImageError}
-      />
     </>
   )
 }

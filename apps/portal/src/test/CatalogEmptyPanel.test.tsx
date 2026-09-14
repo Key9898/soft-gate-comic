@@ -21,7 +21,7 @@ describe('CatalogEmptyPanel', () => {
     )
   })
 
-  it('uses load-fail copy and forces actions off when unavailable', () => {
+  it('marks the section slimly on load-fail and forces actions off', () => {
     render(
       <CatalogEmptyPanel
         title="Library empty"
@@ -30,7 +30,11 @@ describe('CatalogEmptyPanel', () => {
         unavailable
       />
     )
-    expect(screen.getByText(en.errors.catalogUnavailable)).toBeInTheDocument()
+    // The full sentence is said once by the hero; a section that repeats it eight
+    // times punishes the reader for a server problem.
+    expect(screen.getByTestId('catalog-unavailable-note')).toBeInTheDocument()
+    expect(screen.getByText(en.errors.catalogUnavailableShort)).toBeInTheDocument()
+    expect(screen.queryByText(en.errors.catalogUnavailable)).not.toBeInTheDocument()
     expect(screen.queryByText('Library empty')).not.toBeInTheDocument()
     expect(screen.queryByText('Should not show')).not.toBeInTheDocument()
     expect(screen.queryByText(en.home.emptyDesc)).not.toBeInTheDocument()

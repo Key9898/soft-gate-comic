@@ -11,7 +11,9 @@ export interface HomeRankingChartProps {
   eyebrow?: string
   title: string
   description?: string
-  onViewAll: () => void
+  /** A real browse destination. This used to open a modal that re-showed the same
+   *  six items the reader was already looking at. */
+  viewAllTo: string
   webtoons: Webtoon[]
   lang: 'mm' | 'en'
   genres: Genre[]
@@ -33,7 +35,7 @@ const HomeRankingChart = ({
   eyebrow,
   title,
   description,
-  onViewAll,
+  viewAllTo,
   webtoons,
   lang,
   genres,
@@ -64,14 +66,13 @@ const HomeRankingChart = ({
             ) : null}
           </div>
           {empty ? null : (
-            <button
-              type="button"
-              onClick={onViewAll}
-              className="text-primary-600 hover:text-primary-700 focus:ring-primary-500 flex min-h-[44px] shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:outline-none focus:ring-2"
+            <Link
+              to={viewAllTo}
+              className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 flex min-h-11 shrink-0 items-center gap-1 rounded-2xl px-3 py-2 font-medium transition focus:outline-none focus-visible:ring-2"
             >
               {t('common.viewAll')}
-              <ChevronRight className="h-4 w-4" />
-            </button>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           )}
         </div>
         {empty ? (

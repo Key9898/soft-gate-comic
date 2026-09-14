@@ -45,9 +45,9 @@ describe('Categories browse polish', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Browse by Genre' })
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { level: 2, name: /Webtoons · Ongoing/ })
-    ).toBeInTheDocument()
+    // The count line is status, not a heading: it was breaking the outline between
+    // the page h1 and the real section headings.
+    expect(screen.getByText(/Webtoons · Ongoing/)).toHaveAttribute('role', 'status')
   })
 
   it('shows recovery when the filter set is empty', async () => {

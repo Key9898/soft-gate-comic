@@ -54,8 +54,9 @@ describe('HomePage', () => {
 
   it('renders view all links', () => {
     render(<HomePage />)
-    const viewAllButtons = screen.getAllByRole('button', { name: 'View All' })
-    expect(viewAllButtons).toHaveLength(3)
+    // View All navigates now; it used to open a modal showing the same six items.
+    const viewAllLinks = screen.getAllByRole('link', { name: 'View All' })
+    expect(viewAllLinks).toHaveLength(3)
     const ranking = screen.getByRole('heading', { name: 'Popular' }).closest('section')
     expect(ranking).toBeTruthy()
     expect(ranking?.querySelector('ol')).toBeTruthy()
@@ -77,8 +78,12 @@ describe('HomePage', () => {
     expect(ranking?.querySelector('.pl-12')).toBeNull()
     expect(ranking?.querySelector('.book-rank-notch')).toBeNull()
     expect(ranking?.querySelector('ol')?.className).toMatch(/xl:grid-cols-6/)
-    expect(ranking?.querySelector('a[href="/ranking"]')).toBeNull()
-    expect(within(ranking!).getByRole('button', { name: 'View All' })).toBeInTheDocument()
+    // Popular's View All is the /ranking page now, not a modal over the same six.
+    expect(ranking?.querySelector('a[href="/ranking"]')).toBeTruthy()
+    expect(within(ranking!).getByRole('link', { name: 'View All' })).toHaveAttribute(
+      'href',
+      '/ranking'
+    )
     const trending = screen.getByRole('heading', { name: 'Trending Now' }).closest('section')
     expect(trending).toBeTruthy()
     expect(trending?.textContent).toContain('Titles rising this week, not all-time reads.')
@@ -93,14 +98,18 @@ describe('HomePage', () => {
     expect(updated).toBeTruthy()
     expect(updated?.textContent).toContain('Latest published episode activity, not new series.')
     expect(updated?.querySelector('.lucide-clock')).toBeTruthy()
-    expect(updated?.querySelector('a[href="/categories?sort=recentlyUpdated"]')).toBeNull()
-    expect(within(updated!).getByRole('button', { name: 'View All' })).toBeInTheDocument()
+    expect(within(updated!).getByRole('link', { name: 'View All' })).toHaveAttribute(
+      'href',
+      '/categories?sort=recentlyUpdated'
+    )
     const newReleases = screen.getByRole('heading', { name: 'New Releases' }).closest('section')
     expect(newReleases).toBeTruthy()
     expect(newReleases?.textContent).toContain('Newly added series, not new episodes.')
     expect(newReleases?.querySelector('.lucide-sparkles')).toBeTruthy()
-    expect(newReleases?.querySelector('a[href="/categories?sort=new"]')).toBeNull()
-    expect(within(newReleases!).getByRole('button', { name: 'View All' })).toBeInTheDocument()
+    expect(within(newReleases!).getByRole('link', { name: 'View All' })).toHaveAttribute(
+      'href',
+      '/categories?sort=new'
+    )
     const updatedHrefs = [...(updated?.querySelectorAll('a[href^="/webtoon/"]') ?? [])].map(
       (node) => node.getAttribute('href')
     )
@@ -114,29 +123,19 @@ describe('HomePage', () => {
     expect(newReleases?.textContent).toContain('Campus Life')
   })
 
-  it('opens a ranked radial dialog from Popular View All', () => {
+  it('sends View All to a real browse destination instead of a modal', () => {
     render(<HomePage />)
-    const ranking = screen.getByRole('heading', { name: 'Popular' }).closest('section')
-    fireEvent.click(within(ranking!).getByRole('button', { name: 'View All' }))
-    const dialog = screen.getByRole('dialog', { name: 'Popular' })
-    expect(dialog).toBeInTheDocument()
-    expect(within(dialog).getAllByTestId('rank-mark')).toHaveLength(6)
-    const center = within(dialog).getByTestId('home-radial-center')
-    expect(center.querySelector('a[href^="/webtoon/"]')).toBeTruthy()
-  })
-
-  it('opens Updated and New radials without ranks and closes on Escape', () => {
-    render(<HomePage />)
-    const updated = screen.getByRole('heading', { name: 'Updated' }).closest('section')
-    fireEvent.click(within(updated!).getByRole('button', { name: 'View All' }))
-    const updatedDialog = screen.getByRole('dialog', { name: 'Updated' })
-    expect(within(updatedDialog).queryByTestId('rank-mark')).not.toBeInTheDocument()
-    fireEvent.keyDown(document, { key: 'Escape' })
+    // The modal re-showed the same six items the reader was already looking at,
+    // so "View All" showed strictly less than the rail behind it.
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    const newReleases = screen.getByRole('heading', { name: 'New Releases' }).closest('section')
-    fireEvent.click(within(newReleases!).getByRole('button', { name: 'View All' }))
-    const newDialog = screen.getByRole('dialog', { name: 'New Releases' })
-    expect(within(newDialog).queryByTestId('rank-mark')).not.toBeInTheDocument()
+    for (const [heading, href] of [
+      ['Popular', '/ranking'],
+      ['Updated', '/categories?sort=recentlyUpdated'],
+      ['New Releases', '/categories?sort=new'],
+    ] as const) {
+      const section = screen.getByRole('heading', { name: heading }).closest('section')
+      expect(within(section!).getByRole('link', { name: 'View All' })).toHaveAttribute('href', href)
+    }
   })
 
   it('lists unpublished Daily drops by Yangon weekday, not as links', () => {
