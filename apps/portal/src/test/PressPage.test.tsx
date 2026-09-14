@@ -310,3 +310,100 @@ describe('PressPage rejects malformed live payloads', () => {
     expect(screen.queryByText('Live boilerplate.')).not.toBeInTheDocument()
   })
 })
+
+describe('PressPage live empty states', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.unstubAllGlobals()
+  })
+
+  const livePress = (overrides: Record<string, unknown>) => {
+    const bi = (text: string) => ({ en: text, mm: text })
+    return {
+      data: {
+        copy: {
+          boilerplateTitle: bi('Live SoftGate'),
+          boilerplate: bi('Live boilerplate from Admin.'),
+          newsSlotTitle: bi('No public press release yet'),
+          newsSlotCopy: bi('Admin has published no release.'),
+          stillsNote: bi('Admin has published no stills.'),
+        },
+        zipUrl: '/press-kit/softgate-comic-press-kit.zip',
+        contactEmail: 'desk@softgatecomic.com',
+        facts: [],
+        palette: [],
+        assets: [],
+        news: [],
+        stills: [],
+        ...overrides,
+      },
+    }
+  }
+
+  const stubPress = (body: unknown) =>
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify(body), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+      )
+    )
+
+  it('shows the meta empty-news copy instead of a fabricated release', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    stubPress(livePress({}))
+    render(<PressPage />)
+
+    expect(await screen.findByText('No public press release yet')).toBeInTheDocument()
+    expect(screen.getByText('Admin has published no release.')).toBeInTheDocument()
+    // The mock kit's Demo headline must not survive into a live empty newsroom.
+    expect(screen.queryByText(/launches|milestone|announces/i)).not.toBeInTheDocument()
+  })
+
+  it('drops the empty-news copy once Admin publishes a release', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    const bi = (text: string) => ({ en: text, mm: text })
+    stubPress(
+      livePress({
+        news: [{ id: 'n1', title: bi('Portal beta opens'), body: bi('Live release body.') }],
+      })
+    )
+    render(<PressPage />)
+
+    expect(await screen.findByText('Portal beta opens')).toBeInTheDocument()
+    expect(screen.getByText('Live release body.')).toBeInTheDocument()
+    expect(screen.queryByText('No public press release yet')).not.toBeInTheDocument()
+  })
+
+  it('shows the stills note and an empty grid instead of fake screenshots', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    stubPress(livePress({}))
+    const { container } = render(<PressPage />)
+
+    expect(await screen.findByText('Admin has published no stills.')).toBeInTheDocument()
+    const stillImages = Array.from(container.querySelectorAll('img'))
+      .map((img) => img.getAttribute('src') ?? '')
+      .filter((src) => src.includes('/press-kit/still-'))
+    expect(stillImages).toEqual([])
+  })
+
+  it('renders published stills when Admin has them', async () => {
+    vi.stubEnv('VITE_USE_MOCK_API', 'false')
+    const bi = (text: string) => ({ en: text, mm: text })
+    stubPress(
+      livePress({
+        stills: [{ id: 's1', title: bi('Home'), imageUrl: '/press-kit/still-home.png' }],
+      })
+    )
+    const { container } = render(<PressPage />)
+
+    await screen.findByText('Admin has published no stills.')
+    const stillImages = Array.from(container.querySelectorAll('img'))
+      .map((img) => img.getAttribute('src') ?? '')
+      .filter((src) => src.includes('/press-kit/still-'))
+    expect(stillImages).toEqual(['/press-kit/still-home.png'])
+  })
+})
