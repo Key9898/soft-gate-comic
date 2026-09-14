@@ -10,6 +10,9 @@ tags:
     settings,
     about,
     press,
+    legal,
+    faq,
+    cookies,
     auth,
     wallet,
     library,
@@ -19,7 +22,7 @@ tags:
     softgate,
   ]
 impl: 195
-impl_updated: 211
+impl_updated: 213
 ---
 
 # SoftGate Comic API
