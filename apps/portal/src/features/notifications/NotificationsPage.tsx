@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import Button, { ButtonLink } from '../../components/Button'
 import SEO from '../../components/SEO/SEO'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import Chip from '../../components/Chip'
 import { useEngagement } from '../../context/EngagementContext'
 import type { NotificationType } from '../../lib/notifications'
 
@@ -112,14 +113,14 @@ const NotificationsPage = () => {
 
           <div className="mb-4 flex flex-wrap gap-2">
             {filters.map((item) => (
-              <Button
+              <Chip
                 key={item.id}
-                variant={filter === item.id ? 'primary' : 'ghost'}
-                size="sm"
+                tone="genre"
+                selected={filter === item.id}
                 onClick={() => setFilter(item.id)}
               >
                 {item.label}
-              </Button>
+              </Chip>
             ))}
             {notifications.some((item) => !item.isRead) ? (
               <Button variant="ghost" size="sm" onClick={markAllNotificationsRead}>

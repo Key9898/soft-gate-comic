@@ -61,7 +61,8 @@
     "retry": "Retry",
     "storyBook": "Our Story",
     "storyPrevChapter": "Previous chapter",
-    "storyNextChapter": "Next chapter"
+    "storyNextChapter": "Next chapter",
+    "switchLanguage": "Switch to {{language}}"
   },
   "rating": {
     "community": "Community",
@@ -310,7 +311,8 @@
     "unlockEpisode": "Unlock Episode",
     "unlockDescription": "You need {{coins}} coins to read this episode",
     "unlockWithCoins": "Unlock with Coins",
-    "backToWebtoon": "Back to series"
+    "backToWebtoon": "Back to series",
+    "theme": "Theme"
   },
   "library": {
     "title": "Library",

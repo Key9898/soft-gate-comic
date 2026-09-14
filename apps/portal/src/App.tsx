@@ -31,6 +31,10 @@ import ProfilePage from './features/profile/ProfilePage'
 import LibraryPage from './features/library/LibraryPage'
 import NotificationsPage from './features/notifications/NotificationsPage'
 import CoinsPage from './features/coins/CoinsPage'
+import ProfilePageSkeleton from './features/profile/components/ProfilePageSkeleton'
+import LibraryPageSkeleton from './features/library/components/LibraryPageSkeleton'
+import NotificationsPageSkeleton from './features/notifications/components/NotificationsPageSkeleton'
+import CoinsPageSkeleton from './features/coins/components/CoinsPageSkeleton'
 
 import {
   PrivacyPage,
@@ -70,7 +74,7 @@ export function AppRoutes() {
                         <Route
                           path="/profile"
                           element={
-                            <ProtectedRoute>
+                            <ProtectedRoute fallback={<ProfilePageSkeleton />}>
                               <ProfilePage />
                             </ProtectedRoute>
                           }
@@ -78,7 +82,7 @@ export function AppRoutes() {
                         <Route
                           path="/library"
                           element={
-                            <ProtectedRoute>
+                            <ProtectedRoute fallback={<LibraryPageSkeleton />}>
                               <LibraryPage />
                             </ProtectedRoute>
                           }
@@ -86,7 +90,7 @@ export function AppRoutes() {
                         <Route
                           path="/notifications"
                           element={
-                            <ProtectedRoute>
+                            <ProtectedRoute fallback={<NotificationsPageSkeleton />}>
                               <NotificationsPage />
                             </ProtectedRoute>
                           }
@@ -94,7 +98,7 @@ export function AppRoutes() {
                         <Route
                           path="/coins"
                           element={
-                            <ProtectedRoute>
+                            <ProtectedRoute fallback={<CoinsPageSkeleton />}>
                               <CoinsPage />
                             </ProtectedRoute>
                           }

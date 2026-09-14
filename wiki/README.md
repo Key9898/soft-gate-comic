@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 216**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 217**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
@@ -250,6 +250,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-14-uiux-improvement-plan.md](notes/2026-09-14-uiux-improvement-plan.md) — portal UI/UX improvement plan, six phases (backlog, no Impl yet)
 - [notes/2026-09-14-phase-0-ship-blockers.md](notes/2026-09-14-phase-0-ship-blockers.md) — Impl 214 Phase 0 ship blockers (hero clip, coin spend, confirms, contrast, reduce-motion)
 - [notes/2026-09-14-phase-1-design-system-core.md](notes/2026-09-14-phase-1-design-system-core.md) — Impl 215 Phase 1 core (Button touch floor, ButtonLink, Card, SortMenu, SearchField, token cleanup)
+- [notes/2026-09-14-phase-3-accessibility-floor.md](notes/2026-09-14-phase-3-accessibility-floor.md) — Impl 216 Phase 3 a11y floor (reader keyboard, combobox, radiogroups, IME guard, reading floor)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150

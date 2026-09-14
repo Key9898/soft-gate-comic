@@ -235,7 +235,7 @@ describe('page skeletons', () => {
     expect(screen.getByRole('button', { name: 'Blood Moon' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Cyber Dreams' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Ko Zaw' })).toBeInTheDocument()
-    const search = screen.getByRole('searchbox')
+    const search = screen.getByRole('combobox')
     const statuses = screen.getAllByRole('status')
     expect(statuses.length).toBeGreaterThan(0)
     statuses.forEach((region) => {
@@ -262,7 +262,7 @@ describe('page skeletons', () => {
     window.history.pushState({}, '', '/search?q=Horizon')
     const { unmount } = render(<SearchPageSkeleton hasQuery />)
     expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
-    expect(screen.getByRole('searchbox')).toHaveValue('Horizon')
+    expect(screen.getByRole('combobox')).toHaveValue('Horizon')
     expect(screen.getByRole('button', { name: /^close$/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^webtoons$/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^authors$/i })).toBeInTheDocument()
@@ -272,7 +272,7 @@ describe('page skeletons', () => {
     expect(screen.getByRole('button', { name: /all genres/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /results for "horizon"/i })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /^\d+\s+results for/i })).not.toBeInTheDocument()
-    const search = screen.getByRole('searchbox')
+    const search = screen.getByRole('combobox')
     const statuses = screen.getAllByRole('status')
     expect(statuses.length).toBeGreaterThan(0)
     statuses.forEach((region) => {

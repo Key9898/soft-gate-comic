@@ -85,6 +85,9 @@ function sameReaderChrome(a: ReaderPrefs, b: ReaderPrefs) {
 
 const chromeSpring = { type: 'spring' as const, stiffness: 260, damping: 22 }
 
+/** Matches the system back/forward edge-swipe zone on iOS and Android. */
+const SYSTEM_EDGE_GUTTER_PX = 24
+
 const ReaderPage = () => {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as 'mm' | 'en'
@@ -313,14 +316,28 @@ const ReaderPage = () => {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      if (
+        e.key !== 'ArrowLeft' &&
+        e.key !== 'ArrowRight' &&
+        e.key !== 't' &&
+        e.key !== 'T' &&
+        e.key !== 'Escape'
+      ) {
+        return
+      }
       if (showSettings || showComments || showEpisodeSheet) return
-      const target = e.target as HTMLElement | null
-      if (target) {
-        const tag = target.tagName
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable) {
-          return
-        }
+      if (isEditableReaderTarget(e.target)) return
+      // Chrome could only be recovered by scrolling up, so a keyboard reader who
+      // scrolled down had no way back to the toolbar, and no way out of the reader.
+      if (e.key === 't' || e.key === 'T') {
+        e.preventDefault()
+        setShowHeader((open) => !open)
+        return
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        navigate(`/webtoon/${webtoonId}`)
+        return
       }
       if (e.key === 'ArrowLeft' && hasPrev) {
         e.preventDefault()
@@ -333,7 +350,17 @@ const ReaderPage = () => {
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [showSettings, showComments, showEpisodeSheet, hasPrev, hasNext, goToEpisode, episodeNum])
+  }, [
+    showSettings,
+    showComments,
+    showEpisodeSheet,
+    hasPrev,
+    hasNext,
+    goToEpisode,
+    episodeNum,
+    navigate,
+    webtoonId,
+  ])
 
   useEffect(() => {
     if (!webtoonId || !currentEpisode || locked || ageBlocked) return
@@ -496,7 +523,14 @@ const ReaderPage = () => {
       return
     }
     if (e.pointerType === 'touch' || e.pointerType === 'pen') {
-      swipeOriginRef.current = { x: e.clientX, y: e.clientY, type: e.pointerType }
+      // A swipe that starts in the screen-edge gutter belongs to the OS: on iOS a
+      // right-swipe from the left edge is Back, and claiming it as "previous episode"
+      // makes both gestures unreliable.
+      const inEdgeGutter =
+        e.clientX <= SYSTEM_EDGE_GUTTER_PX || e.clientX >= window.innerWidth - SYSTEM_EDGE_GUTTER_PX
+      swipeOriginRef.current = inEdgeGutter
+        ? null
+        : { x: e.clientX, y: e.clientY, type: e.pointerType }
     }
   }
 
@@ -764,7 +798,10 @@ const ReaderPage = () => {
                   className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r"
                   style={{ width: `${readingProgress}%` }}
                   role="progressbar"
-                  aria-label={`${t('reader.readingProgress')}: ${Math.round(readingProgress)}%`}
+                  aria-valuenow={Math.round(readingProgress)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={t('reader.readingProgress')}
                 />
               </div>
             </div>
@@ -803,10 +840,10 @@ const ReaderPage = () => {
         <ChevronRight className="h-5 w-5" />
       </button>
 
+      {/* Padding is constant: the chrome is fixed, so tying page padding to its
+          visibility moved the strip ~72px under the reader's finger on every tap. */}
       <main
-        className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 sm:px-2 ${
-          showHeader ? 'pb-16 pt-20 md:pt-24' : 'pb-2 pt-2'
-        }`}
+        className={`${imageFit === 'full' ? 'w-full' : 'mx-auto max-w-2xl'} px-0 pb-16 pt-20 sm:px-2 md:pt-24`}
         onClick={() => setShowHeader(!showHeader)}
       >
         {locked ? (
@@ -1154,9 +1191,11 @@ const ReaderPage = () => {
         darkMode={darkMode}
         brightness={brightness}
         imageFit={imageFit}
+        fontSize={fontSize}
         onDarkMode={setDarkMode}
         onBrightness={setBrightness}
         onImageFit={setImageFit}
+        onFontSize={setFontSize}
       />
 
       <ReaderEpisodeSheet

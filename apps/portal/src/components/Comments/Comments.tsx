@@ -209,7 +209,13 @@ function ComposerFields({
         className={`w-full resize-none rounded-2xl border px-4 py-3 focus:border-transparent focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${fieldClass}`}
         rows={3}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
+          // isComposing: a Burmese (or any IME) user is mid-composition when Enter
+          // commits a candidate; posting there sends a half-typed comment.
+          if (
+            e.key === 'Enter' &&
+            !e.nativeEvent.isComposing &&
+            (e.metaKey || e.ctrlKey || !e.shiftKey)
+          ) {
             e.preventDefault()
             onSubmit()
           }
@@ -348,7 +354,13 @@ const CommentItem = ({
                 }`}
                 rows={2}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
+                  // isComposing: a Burmese (or any IME) user is mid-composition when Enter
+                  // commits a candidate; posting there sends a half-typed comment.
+                  if (
+                    e.key === 'Enter' &&
+                    !e.nativeEvent.isComposing &&
+                    (e.metaKey || e.ctrlKey || !e.shiftKey)
+                  ) {
                     e.preventDefault()
                     submitEdit()
                   }

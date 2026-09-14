@@ -245,6 +245,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 213  | 2026-09-10 | Public GET /api/faq /api/cookies + FAQ/Cookies consume           | [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md)                                                                               |
 | 214  | 2026-09-14 | Phase 0 ship blockers from the UI/UX plan                        | [2026-09-14-phase-0-ship-blockers.md](../notes/2026-09-14-phase-0-ship-blockers.md)                                                                           |
 | 215  | 2026-09-14 | Phase 1 design-system core (Button, Card, SortMenu, SearchField) | [2026-09-14-phase-1-design-system-core.md](../notes/2026-09-14-phase-1-design-system-core.md)                                                                 |
+| 216  | 2026-09-14 | Phase 3 accessibility floor                                      | [2026-09-14-phase-3-accessibility-floor.md](../notes/2026-09-14-phase-3-accessibility-floor.md)                                                               |
 
 ---
 
@@ -1991,7 +1992,7 @@ Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Priva
 
 **Status:** Done
 
-Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **216**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **217**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
@@ -2011,9 +2012,17 @@ First tranche of Phase 1 (GitHub epic #18, issue #11). `components/Button/button
 
 ---
 
+## Impl Phase 216 — Phase 3 accessibility floor (2026-09-14)
+
+**Status:** Done
+
+Phase 3 (GitHub epic #20, issue #13). The theme: several controls declared ARIA roles without honouring the behaviour those roles promise. Reader — `<main>` tied its padding to chrome visibility, shifting the strip ~72px on every tap; padding is now constant and only the fixed chrome animates. Added `t` to toggle chrome and `Escape` to exit, since the toolbar previously only returned on an upward scroll and a keyboard reader had no way out. Swipes starting within 24px of a screen edge no longer claim the OS back gesture. The live progress bar declared `role="progressbar"` with no value at all; it now reports `aria-valuenow`/`min`/`max`. `SearchAutocomplete` declared `listbox`/`option` with zero keyboard handling and hardcoded `aria-selected={false}`; it is now a proper `combobox` with arrow movement, `aria-activedescendant`, Home/End, Enter, Escape, and options out of the tab order — arrowing past the last option returns to no-active-option so Enter can still submit the typed query. `ReaderSettingsSheet` had two `<label>` elements wrapping nothing; groups are now `fieldset`/`legend` + `radiogroup`, and it finally has the font-size control for a preference it was already storing and persisting. Notification filters became `Chip`s with `aria-pressed`. The daily-drop card stopped re-announcing every second (live countdown left the accessible name). Comment composers guard `isComposing` so IME users stop posting mid-composition. Legal reading floors at 16px on mobile (was 12px smallest, 14px default). Errored textareas keep a focus ring. `LanguageSwitcher` accessible name is translated. Both route gates pass the route's own skeleton and announce loading instead of painting a blank screen. Two directional radius violations missed by the Phase 1 grep (`rounded-l-sm`) are fixed. Recorded as deliberate: the `xl` label breakpoint stays (Impl 77 ladder, and the control has an accessible name at every width), the 24px half-star targets stay (half-star precision needs them, and the control is a full radiogroup), and `window.location.assign` on locale switch stays (routing, not a11y). **207** stays unused. Next is **217**. Note: [2026-09-14-phase-3-accessibility-floor.md](../notes/2026-09-14-phase-3-accessibility-floor.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **216**).
+1. Take **next free Impl** (currently **217**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

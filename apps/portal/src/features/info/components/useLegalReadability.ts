@@ -5,11 +5,13 @@ export type LegalReadingTheme = 'default' | 'sepia'
 
 export const LEGAL_FONT_SIZES: LegalFontSize[] = ['sm', 'base', 'lg', 'xl']
 
+// Long-form legal copy, much of it in Burmese. Mobile never drops below 16px: the
+// smallest step used to be 12px and the default 14px, both under the readable floor.
 export const LEGAL_SIZE_CLASSES: Record<LegalFontSize, string> = {
-  sm: 'text-xs sm:text-sm leading-relaxed',
-  base: 'text-sm sm:text-base leading-relaxed',
-  lg: 'text-base sm:text-lg leading-relaxed',
-  xl: 'text-lg sm:text-xl leading-relaxed',
+  sm: 'text-base leading-relaxed',
+  base: 'text-base sm:text-lg leading-relaxed',
+  lg: 'text-lg sm:text-xl leading-relaxed',
+  xl: 'text-xl sm:text-2xl leading-relaxed',
 }
 
 export const LEGAL_THEME_CLASSES: Record<LegalReadingTheme, string> = {

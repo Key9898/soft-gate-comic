@@ -61,7 +61,8 @@
     "retry": "ပြန်ကြိုးစားရန်",
     "storyBook": "ကျွန်ုပ်တို့ ဇာတ်ကြောင်း",
     "storyPrevChapter": "ယခင် အခန်း",
-    "storyNextChapter": "နောက် အခန်း"
+    "storyNextChapter": "နောက် အခန်း",
+    "switchLanguage": "{{language}} သို့ ပြောင်းရန်"
   },
   "rating": {
     "community": "အများသတ်မှတ်ချက်",
@@ -310,7 +311,8 @@
     "unlockEpisode": "အပိုင်းကို ဖွင့်ပါ",
     "unlockDescription": "ဤအပိုင်းကို ဖတ်ရှုရန် {{coins}} ဒင်္ဂါး လိုအပ်ပါသည်",
     "unlockWithCoins": "ဒင်္ဂါးဖြင့် ဖွင့်ပါ",
-    "backToWebtoon": "စီးရီးသို့ ပြန်သွားရန်"
+    "backToWebtoon": "စီးရီးသို့ ပြန်သွားရန်",
+    "theme": "အပြင်အဆင်"
   },
   "library": {
     "title": "စာကြည့်တိုက်",

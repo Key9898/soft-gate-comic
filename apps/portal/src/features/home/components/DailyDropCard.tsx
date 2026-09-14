@@ -31,12 +31,11 @@ const DailyDropCard = ({
   const title = webtoon.title[lang]
   const remaining = dropRemainingMs(episode.scheduledAt ?? '', now)
   const countdown = remaining > 0 ? formatDropCountdown(remaining) : t('home.dailyPublishingSoon')
-  const label = [
-    title,
-    countdown,
-    t('home.dailyEpisode', { n: episode.episodeNumber }),
-    episode.title[lang],
-  ]
+  // The countdown is deliberately not part of the accessible name. It changes every
+  // second, and a name that changes every second re-announces the whole card to a
+  // screen-reader user who happens to be sitting on it. It stays visible in the
+  // gradient strip below, where sighted readers get it without the interruption.
+  const label = [title, t('home.dailyEpisode', { n: episode.episodeNumber }), episode.title[lang]]
     .filter(Boolean)
     .join(', ')
   const showImage = Boolean(webtoon.coverImage) && !imageFailed
@@ -82,6 +81,7 @@ const DailyDropCard = ({
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-2 pb-2.5 pt-10">
           <p
             data-testid="daily-drop-countdown"
+            aria-hidden="true"
             className="text-center text-sm font-semibold tabular-nums text-white"
           >
             {countdown}

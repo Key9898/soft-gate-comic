@@ -96,7 +96,7 @@ const SeriesRatingControl = ({
                 }
                 onClick={() => select(left)}
                 onKeyDown={onKeyDown}
-                className={`absolute inset-y-0 left-0 z-10 w-1/2 rounded-l-sm ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
+                className={`absolute inset-y-0 left-0 z-10 w-1/2 rounded-l-2xl ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
               />
               <button
                 type="button"
@@ -107,7 +107,7 @@ const SeriesRatingControl = ({
                 tabIndex={disabled ? -1 : value === right ? 0 : -1}
                 onClick={() => select(right)}
                 onKeyDown={onKeyDown}
-                className={`absolute inset-y-0 right-0 z-10 w-1/2 rounded-r-sm ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
+                className={`absolute inset-y-0 right-0 z-10 w-1/2 rounded-r-2xl ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
               />
             </span>
           )

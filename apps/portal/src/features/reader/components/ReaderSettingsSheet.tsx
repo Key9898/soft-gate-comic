@@ -1,6 +1,6 @@
-import { Moon, Maximize2, RectangleHorizontal, Sun } from 'lucide-react'
+import { Moon, Maximize2, RectangleHorizontal, Sun, Type } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import type { ReaderImageFit } from '../../../lib/reader'
+import type { ReaderFontSize, ReaderImageFit } from '../../../lib/reader'
 import ReaderSheet from './ReaderSheet'
 
 type ReaderSettingsSheetProps = {
@@ -9,9 +9,11 @@ type ReaderSettingsSheetProps = {
   darkMode: boolean
   brightness: number
   imageFit: ReaderImageFit
+  fontSize: ReaderFontSize
   onDarkMode: (value: boolean) => void
   onBrightness: (value: number) => void
   onImageFit: (value: ReaderImageFit) => void
+  onFontSize: (value: ReaderFontSize) => void
 }
 
 const ReaderSettingsSheet = ({
@@ -20,17 +22,20 @@ const ReaderSettingsSheet = ({
   darkMode,
   brightness,
   imageFit,
+  fontSize,
   onDarkMode,
   onBrightness,
   onImageFit,
+  onFontSize,
 }: ReaderSettingsSheetProps) => {
   const { t } = useTranslation()
   const idle = darkMode
     ? 'border-white/10 bg-white/5 hover:border-white/20'
     : 'border-gray-200 bg-gray-50 hover:border-gray-300'
   const active = 'border-primary-500 bg-primary-600/10 text-primary-500'
-  const labelTone = darkMode ? 'text-gray-300' : 'text-muted-strong'
-  const label = `mb-3 block text-sm font-semibold tracking-wider uppercase ${labelTone}`
+  const legendTone = darkMode ? 'text-gray-300' : 'text-muted-strong'
+  const legend = `mb-3 block text-sm font-semibold tracking-wider uppercase ${legendTone}`
+  const option = `flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`
 
   return (
     <ReaderSheet
@@ -40,44 +45,51 @@ const ReaderSettingsSheet = ({
       darkMode={darkMode}
     >
       <div className="space-y-6">
-        <div>
-          <label className={label}>{t('profilePage.preferences')}</label>
-          <div className="flex gap-3">
+        {/* Each group is a fieldset/legend + radiogroup. These used to be bare <label>
+            elements wrapping nothing, so the groups had no accessible name and the
+            chosen option was conveyed by colour alone. */}
+        <fieldset>
+          <legend className={legend}>{t('reader.theme')}</legend>
+          <div role="radiogroup" aria-label={t('reader.theme')} className="flex gap-3">
             <button
               type="button"
+              role="radio"
+              aria-checked={!darkMode}
               onClick={() => onDarkMode(false)}
-              className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
-                !darkMode ? active : idle
-              }`}
+              className={`${option} ${!darkMode ? active : idle}`}
             >
-              <Sun className="h-5 w-5" />
+              <Sun className="h-5 w-5" aria-hidden="true" />
               {t('reader.lightMode')}
             </button>
             <button
               type="button"
+              role="radio"
+              aria-checked={darkMode}
               onClick={() => onDarkMode(true)}
-              className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
-                darkMode ? active : idle
-              }`}
+              className={`${option} ${darkMode ? active : idle}`}
             >
-              <Moon className="h-5 w-5" />
+              <Moon className="h-5 w-5" aria-hidden="true" />
               {t('reader.darkMode')}
             </button>
           </div>
-        </div>
+        </fieldset>
 
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <label className={`text-sm font-semibold uppercase tracking-wider ${labelTone}`}>
+            <label
+              htmlFor="reader-brightness"
+              className={`text-sm font-semibold uppercase tracking-wider ${legendTone}`}
+            >
               {t('readerPage.brightness')}
             </label>
-            <span className="text-primary-500 text-xs font-bold">
+            <span className="text-primary-500 text-xs font-bold tabular-nums">
               {Math.round(brightness * 100)}%
             </span>
           </div>
           <div className="flex items-center gap-4">
             <Sun className={`h-4 w-4 ${darkMode ? 'text-gray-400' : 'text-muted'}`} aria-hidden />
             <input
+              id="reader-brightness"
               type="range"
               min="0.25"
               max="1"
@@ -87,37 +99,66 @@ const ReaderSettingsSheet = ({
               className={`accent-primary-500 h-1.5 w-full cursor-pointer appearance-none rounded-2xl ${
                 darkMode ? 'bg-gray-700' : 'bg-gray-200'
               }`}
-              aria-label={t('readerPage.brightness')}
             />
-            <Sun className="h-5 w-5 text-gray-300" />
+            <Sun
+              className={`h-5 w-5 ${darkMode ? 'text-gray-300' : 'text-gray-400'}`}
+              aria-hidden
+            />
           </div>
         </div>
 
-        <div>
-          <label className={label}>{t('readerPage.imageFit')}</label>
-          <div className="flex gap-3">
+        {/* The fontSize preference was stored, applied and persisted, but had no
+            control anywhere in the reader — only in profile settings. */}
+        <fieldset>
+          <legend className={legend}>{t('reader.fontSize')}</legend>
+          <div role="radiogroup" aria-label={t('reader.fontSize')} className="flex gap-3">
+            {(['sm', 'md', 'lg'] as const).map((size) => (
+              <button
+                key={size}
+                type="button"
+                role="radio"
+                aria-checked={fontSize === size}
+                onClick={() => onFontSize(size)}
+                className={`${option} flex-col gap-1 ${fontSize === size ? active : idle}`}
+              >
+                <Type className="h-4 w-4" aria-hidden="true" />
+                <span className="text-xs">
+                  {size === 'sm'
+                    ? t('legal.sizeSmall')
+                    : size === 'md'
+                      ? t('legal.sizeMedium')
+                      : t('legal.sizeLarge')}
+                </span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend className={legend}>{t('readerPage.imageFit')}</legend>
+          <div role="radiogroup" aria-label={t('readerPage.imageFit')} className="flex gap-3">
             <button
               type="button"
+              role="radio"
+              aria-checked={imageFit === 'fit'}
               onClick={() => onImageFit('fit')}
-              className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
-                imageFit === 'fit' ? active : idle
-              }`}
+              className={`${option} ${imageFit === 'fit' ? active : idle}`}
             >
-              <RectangleHorizontal className="h-5 w-5" />
+              <RectangleHorizontal className="h-5 w-5" aria-hidden="true" />
               {t('readerPage.fit')}
             </button>
             <button
               type="button"
+              role="radio"
+              aria-checked={imageFit === 'full'}
               onClick={() => onImageFit('full')}
-              className={`flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition ${
-                imageFit === 'full' ? active : idle
-              }`}
+              className={`${option} ${imageFit === 'full' ? active : idle}`}
             >
-              <Maximize2 className="h-5 w-5" />
+              <Maximize2 className="h-5 w-5" aria-hidden="true" />
               {t('readerPage.fullWidth')}
             </button>
           </div>
-        </div>
+        </fieldset>
       </div>
     </ReaderSheet>
   )

@@ -30,6 +30,9 @@ const SearchAutocomplete = ({
 
   const [query, setQuery] = useState(defaultQuery)
   const [open, setOpen] = useState(false)
+  // -1 means "no option is active": the combobox still commits the typed query on
+  // Enter, which is the behaviour a visitor expects before they arrow into the list.
+  const [activeIndex, setActiveIndex] = useState(-1)
   const debounced = useDebounce(query, 300)
 
   const suggestions = useMemo(
@@ -48,6 +51,10 @@ const SearchAutocomplete = ({
   useEffect(() => {
     setQuery(defaultQuery)
   }, [defaultQuery])
+
+  useEffect(() => {
+    setActiveIndex(-1)
+  }, [debounced])
 
   useEffect(() => {
     const onDocClick = (event: MouseEvent) => {
@@ -73,7 +80,48 @@ const SearchAutocomplete = ({
   const onPick = (item: SearchSuggestion) => {
     addRecentSearch(item.label)
     setOpen(false)
+    setActiveIndex(-1)
     navigate(item.href)
+  }
+
+  const isOpen = open && suggestions.length > 0
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      if (isOpen) {
+        e.preventDefault()
+        setOpen(false)
+        setActiveIndex(-1)
+      }
+      return
+    }
+    if (e.key === 'Enter') {
+      if (isOpen && activeIndex >= 0) {
+        e.preventDefault()
+        onPick(suggestions[activeIndex])
+      }
+      return
+    }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Home' && e.key !== 'End') {
+      return
+    }
+    if (!isOpen) {
+      if (e.key === 'ArrowDown' && suggestions.length > 0) {
+        e.preventDefault()
+        setOpen(true)
+        setActiveIndex(0)
+      }
+      return
+    }
+    e.preventDefault()
+    const last = suggestions.length - 1
+    if (e.key === 'Home') return setActiveIndex(0)
+    if (e.key === 'End') return setActiveIndex(last)
+    // Functional updates: held arrow keys can fire several times before a render.
+    if (e.key === 'ArrowDown') {
+      return setActiveIndex((current) => (current >= last ? -1 : current + 1))
+    }
+    setActiveIndex((current) => (current <= -1 ? last : current - 1))
   }
 
   return (
@@ -85,9 +133,14 @@ const SearchAutocomplete = ({
           autoFocus={autoFocus}
           placeholder={t('search.placeholder')}
           aria-label={t('search.placeholder')}
+          role="combobox"
           aria-autocomplete="list"
           aria-controls={listId}
-          aria-expanded={open && suggestions.length > 0}
+          aria-expanded={isOpen}
+          aria-activedescendant={
+            isOpen && activeIndex >= 0 ? `${listId}-option-${activeIndex}` : undefined
+          }
+          onKeyDown={onKeyDown}
           onChange={(e) => {
             setQuery(e.target.value)
             setOpen(true)
@@ -101,17 +154,25 @@ const SearchAutocomplete = ({
         <Search className={iconClassName} aria-hidden="true" />
       </form>
 
-      {open && suggestions.length > 0 && (
+      {isOpen && (
         <ul
           id={listId}
           role="listbox"
           className="absolute z-50 mt-2 max-h-72 w-full min-w-[16rem] overflow-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg"
         >
-          {suggestions.map((item) => (
-            <li key={item.id} role="option" aria-selected={false}>
+          {suggestions.map((item, index) => (
+            <li
+              key={item.id}
+              id={`${listId}-option-${index}`}
+              role="option"
+              aria-selected={index === activeIndex}
+              onMouseEnter={() => setActiveIndex(index)}
+              className={index === activeIndex ? 'bg-primary-50' : ''}
+            >
               <button
                 type="button"
-                className="hover:bg-primary-50 flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-gray-800"
+                tabIndex={-1}
+                className="hover:bg-primary-50 flex min-h-11 w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-gray-800"
                 onClick={() => onPick(item)}
               >
                 <span className="truncate font-medium">{item.label}</span>

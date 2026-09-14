@@ -32,7 +32,7 @@ describe('Categories browse polish', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Browse by Genre' })
     ).toBeInTheDocument()
-    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
   })
 
   it('titles a genre path without sort as the genre name', async () => {

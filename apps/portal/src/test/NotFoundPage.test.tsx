@@ -16,7 +16,7 @@ describe('NotFoundPage', () => {
     render(<NotFoundPage />)
     expect(screen.getByRole('link', { name: /go home/i })).toHaveAttribute('href', '/')
     expect(screen.getByRole('heading', { name: /^search$/i })).toBeInTheDocument()
-    expect(screen.getByRole('searchbox')).toBeInTheDocument()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
   })
 
   it('renders guest-safe destinations without Library', () => {

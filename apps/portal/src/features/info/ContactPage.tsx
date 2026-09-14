@@ -396,10 +396,10 @@ const ContactPage = () => {
                               onChange={(e) => setSynopsis(e.target.value)}
                               rows={4}
                               aria-invalid={errors.synopsis ? true : undefined}
-                              className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none ${
+                              className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none focus:ring-1 ${
                                 errors.synopsis
-                                  ? 'border-red-500 bg-red-500/5'
-                                  : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
+                                  ? 'border-red-500 bg-red-500/5 focus:ring-red-500'
+                                  : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200'
                               }`}
                             />
                             {errors.synopsis && (
@@ -469,10 +469,10 @@ const ContactPage = () => {
                             rows={4}
                             placeholder={t('contact.messagePlaceholder')}
                             aria-invalid={errors.message ? true : undefined}
-                            className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none ${
+                            className={`px-4.5 w-full resize-none rounded-2xl border-2 py-3.5 text-sm font-bold transition focus:outline-none focus:ring-1 ${
                               errors.message
-                                ? 'border-red-500 bg-red-500/5'
-                                : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200 focus:ring-1'
+                                ? 'border-red-500 bg-red-500/5 focus:ring-red-500'
+                                : 'focus:border-primary-500 focus:ring-primary-500 border-gray-200'
                             }`}
                           />
                           {errors.message && (
