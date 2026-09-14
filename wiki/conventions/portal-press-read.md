@@ -27,6 +27,8 @@ Portal `/press` keeps today’s `t('press.*')` kit, Demo stills, and founder sta
 
 ZIP default `/press-kit/softgate-comic-press-kit.zip`. Do not delete `public/press-kit/*`. Palette on `/press` does not drive site `primary-*`.
 
+Client fetch only — no SSR press seed, same as [portal-about-read.md](portal-about-read.md). The payload's `contactEmail` reaches JSON-LD `contactPoint.email` only after the effect resolves, so server-rendered HTML and crawlers that do not execute JavaScript keep `press@softgatecomic.com`.
+
 ## Stub persist
 
 No `DATABASE_URL`. Returns `STUB_PRESS`: today’s kit copy, empty news/stills, default zip + `press@softgatecomic.com`.

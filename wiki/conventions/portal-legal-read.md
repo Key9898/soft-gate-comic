@@ -18,12 +18,14 @@ Portal `/privacy` `/terms` keep today’s `t('static.*')`. **No fetch.** Unset `
 
 `GET ${VITE_API_BASE_URL || http://localhost:3000}/api/legal/privacy` and `/api/legal/terms`. Unwrap `{ data }` via `unwrapApiData`. Pick `en`/`mm` from the payload with the active language.
 
-| HTTP result                         | Page                                                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| 200 with copy                       | Live SEO, glance, effective date, published sections. TOC = `#glance` + slugs + `#contact`. |
-| Fail (network, non-OK, unwrap null) | Keep `t('static.*')`. Never a blank legal page.                                             |
+| HTTP result                         | Page                                                                                                    |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 200 with copy                       | Live SEO description, glance, effective date, published sections. TOC = `#glance` + slugs + `#contact`. |
+| Fail (network, non-OK, unwrap null) | Keep `t('static.*')`. Never a blank legal page.                                                         |
 
 `privacy-rights` labels come from CMS; hrefs stay `/profile?tab=security` and `/contact`. Cookies consume is Impl 213.
+
+Client fetch only — no SSR legal seed, same as [portal-about-read.md](portal-about-read.md). The live SEO description replaces `t('static.*SeoDesc')` after the effect resolves, so server-rendered HTML and crawlers that do not execute JavaScript keep the i18n copy. "Live SEO" above means the rendered document, not the SSR response.
 
 ## Stub persist
 
