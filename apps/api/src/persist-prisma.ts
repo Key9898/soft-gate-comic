@@ -357,12 +357,19 @@ async function maybeNotifyCommentReply(
 
 export type PrismaPersistPort = PersistPort & { close(): Promise<void> }
 
-export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
-  const prisma = new PrismaClient({
-    datasources: {
-      db: { url: databaseUrl },
-    },
-  })
+export function createPrismaPersist(
+  databaseUrl: string,
+  // Tests pass a stand-in so the adapter's query shapes can be asserted without
+  // a live database. Production always takes the client built here.
+  client?: PrismaClient
+): PrismaPersistPort {
+  const prisma =
+    client ??
+    new PrismaClient({
+      datasources: {
+        db: { url: databaseUrl },
+      },
+    })
   let authFlags: AuthFlags = {}
 
   const adapter: PrismaPersistPort = {
@@ -511,22 +518,23 @@ export function createPrismaPersist(databaseUrl: string): PrismaPersistPort {
           throw error
         }
       }
-      const loadMembers = async () => {
+      // The spokesperson is one optional team row. Reading it needs the meta
+      // first, so it stays out of the parallel wave rather than scanning the
+      // whole team table on every press request.
+      const loadSpokesperson = async (memberId: string | null | undefined) => {
+        if (!memberId) return []
         try {
-          return await prisma.aboutTeamMember.findMany()
+          const row = await prisma.aboutTeamMember.findUnique({ where: { id: memberId } })
+          return row ? [row] : []
         } catch (error) {
           if (isMissingAboutTable(error) || isMissingPressTable(error)) return []
           throw error
         }
       }
       try {
-        const [meta, news, stills, members] = await Promise.all([
-          loadMeta(),
-          loadNews(),
-          loadStills(),
-          loadMembers(),
-        ])
+        const [meta, news, stills] = await Promise.all([loadMeta(), loadNews(), loadStills()])
         if (!meta && news.length === 0 && stills.length === 0) return STUB_PRESS
+        const members = await loadSpokesperson(meta?.spokespersonMemberId)
         return portalPressFromAdmin({ meta, news, stills, members })
       } catch (error) {
         if (isMissingPressTable(error)) return STUB_PRESS
