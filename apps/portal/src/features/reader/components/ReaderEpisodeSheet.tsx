@@ -113,6 +113,8 @@ const ReaderEpisodeSheet = ({
                   <img
                     src={thumb}
                     alt=""
+                    loading="lazy"
+                    decoding="async"
                     className="aspect-[202/142] h-14 w-auto shrink-0 rounded-2xl object-cover"
                   />
                 ) : null}

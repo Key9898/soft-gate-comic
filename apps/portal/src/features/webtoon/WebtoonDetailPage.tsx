@@ -693,7 +693,13 @@ const WebtoonDetailPage = () => {
                       <div className="relative w-20 shrink-0 sm:w-24">
                         <div className="aspect-[202/142] overflow-hidden rounded-2xl bg-gray-100">
                           {thumbSrc ? (
-                            <img src={thumbSrc} alt="" className="h-full w-full object-cover" />
+                            <img
+                              src={thumbSrc}
+                              alt=""
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              decoding="async"
+                            />
                           ) : (
                             <div
                               className={`flex h-full w-full items-center justify-center ${webtoon.coverColor}`}

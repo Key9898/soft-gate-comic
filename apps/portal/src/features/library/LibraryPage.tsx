@@ -62,8 +62,11 @@ const progressWidthClasses: Record<number, string> = {
 }
 
 const getProgressWidthClass = (progress: number): string => {
-  const roundedProgress = Math.round(progress / 10) * 10
-  return progressWidthClasses[roundedProgress] || `w-[${progress}%]`
+  // The old fallback was `w-[${progress}%]`, an interpolated class Tailwind's JIT
+  // never emits — so any value that missed the map rendered a zero-width bar.
+  const clamped = Math.max(0, Math.min(100, progress))
+  const roundedProgress = Math.round(clamped / 10) * 10
+  return progressWidthClasses[roundedProgress] ?? 'w-0'
 }
 
 const LibraryPage = () => {
@@ -588,6 +591,8 @@ const LibraryPage = () => {
                             src={item.coverImage}
                             alt={item.title[lang]}
                             className="h-full w-full object-cover"
+                            loading="lazy"
+                            decoding="async"
                           />
                         ) : (
                           <span className="text-2xl font-bold text-white opacity-40">

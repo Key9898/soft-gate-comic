@@ -114,7 +114,15 @@ function ComposerAvatar({
   darkMode?: boolean
 }) {
   if (avatar) {
-    return <img src={avatar} alt="" className="shape-circle h-10 w-10 object-cover" />
+    return (
+      <img
+        src={avatar}
+        alt=""
+        className="shape-circle h-10 w-10 object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    )
   }
   if (name) {
     return (

@@ -743,7 +743,11 @@ html[lang='mm'] textarea {
 }
 
 @utility progress-bar {
-  transition: width 0.15s ease-out;
+  /* scaleX instead of width: animating width relayouts the bar every frame, and the
+     reading progress bar updates on every scroll event. */
+  transform-origin: left center;
+  transition: transform 0.15s ease-out;
+  width: 100%;
 }
 
 @utility safe-top {

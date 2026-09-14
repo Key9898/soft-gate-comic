@@ -9,6 +9,8 @@ export interface ModalProps {
   isOpen: boolean
   onClose: () => void
   title?: string
+  /** Accessible name for a modal that has no visible title. */
+  ariaLabel?: string
   children: ReactNode
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   showCloseButton?: boolean
@@ -18,6 +20,7 @@ export interface ModalProps {
 
 const Modal = ({
   isOpen,
+  ariaLabel,
   onClose,
   title,
   children,
@@ -73,7 +76,10 @@ const Modal = ({
             ref={modalRef}
             role="dialog"
             aria-modal="true"
+            // A title-less modal previously had no accessible name at all; fall back
+            // to the caller's label so the dialog always announces as something.
             aria-labelledby={title ? titleId : undefined}
+            aria-label={title ? undefined : ariaLabel}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}

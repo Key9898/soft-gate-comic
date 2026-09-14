@@ -37,15 +37,15 @@ const TransactionHistoryRow = ({
       </div>
       <div className="text-right">
         <p
-          className={`text-sm font-bold ${
+          className={`text-sm font-bold tabular-nums ${
             transaction.amount > 0 ? 'text-green-600' : 'text-red-500'
           }`}
         >
           {transaction.amount > 0 ? '+' : ''}
           {transaction.amount}
         </p>
-        <p className="mt-1 text-xs text-gray-500">
-          {balanceLabel}: {transaction.balance}
+        <p className="text-muted mt-1 text-xs">
+          {balanceLabel}: <span className="tabular-nums">{transaction.balance}</span>
         </p>
       </div>
     </div>

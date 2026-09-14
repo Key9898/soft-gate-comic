@@ -25,8 +25,8 @@ const CoinPackageCard = ({
 }: CoinPackageCardProps) => {
   return (
     <motion.button
-      whileHover={{ scale: 1.03, y: -4 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={prefersReducedMotion ? undefined : { scale: 1.03, y: -4 }}
+      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
       onClick={() => onSelect(pkg)}
       className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all duration-300 ${pkg.metalClass} ${pkg.glowClass}`}
     >

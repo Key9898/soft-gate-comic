@@ -737,7 +737,7 @@ const ReaderPage = () => {
         omitJsonLd
       />
       <div
-        className="pointer-events-none fixed inset-0 z-40 bg-black transition-opacity duration-150"
+        className="pointer-events-none fixed inset-0 z-[60] bg-black transition-opacity duration-150"
         style={{ opacity: 1 - brightness }}
         aria-hidden="true"
       />
@@ -820,7 +820,9 @@ const ReaderPage = () => {
               <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gray-200/20">
                 <div
                   className="progress-bar from-primary-500 to-accent-600 h-full bg-gradient-to-r"
-                  style={{ width: `${readingProgress}%` }}
+                  style={{
+                    transform: `scaleX(${Math.max(0, Math.min(100, readingProgress)) / 100})`,
+                  }}
                   role="progressbar"
                   aria-valuenow={Math.round(readingProgress)}
                   aria-valuemin={0}
@@ -844,7 +846,7 @@ const ReaderPage = () => {
         }}
         className={`fixed left-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasPrev ? '' : 'cursor-not-allowed opacity-30'
-        } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
+        } ${darkMode ? 'bg-gray-950/80 text-gray-100 ring-1 ring-white/15' : 'bg-white/90 text-gray-800 ring-1 ring-gray-900/10'} shadow-md`}
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
@@ -859,7 +861,7 @@ const ReaderPage = () => {
         }}
         className={`fixed right-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasNext ? '' : 'cursor-not-allowed opacity-30'
-        } ${darkMode ? 'bg-gray-950/50' : 'bg-white/50'}`}
+        } ${darkMode ? 'bg-gray-950/80 text-gray-100 ring-1 ring-white/15' : 'bg-white/90 text-gray-800 ring-1 ring-gray-900/10'} shadow-md`}
       >
         <ChevronRight className="h-5 w-5" />
       </button>
@@ -1310,7 +1312,9 @@ const ReaderPanelImage = ({
       height={height}
       loading={loading}
       decoding="async"
-      fetchPriority={priority ? 'high' : undefined}
+      // React 18 does not recognise the camelCase prop on <img>: it warns once per
+      // panel and drops the hint entirely. Lowercase is passed through as-is.
+      {...(priority ? ({ fetchpriority: 'high' } as Record<string, string>) : {})}
       onError={() => setFailed(true)}
     />
   )

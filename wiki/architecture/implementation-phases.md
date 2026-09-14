@@ -248,6 +248,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 216  | 2026-09-14 | Phase 3 accessibility floor                                      | [2026-09-14-phase-3-accessibility-floor.md](../notes/2026-09-14-phase-3-accessibility-floor.md)                                                               |
 | 217  | 2026-09-14 | Phase 2 funnel and retention                                     | [2026-09-14-phase-2-funnel-retention.md](../notes/2026-09-14-phase-2-funnel-retention.md)                                                                     |
 | 218  | 2026-09-14 | Phase 4 discovery IA (partial; taxonomy deferred)                | [2026-09-14-phase-4-discovery-ia.md](../notes/2026-09-14-phase-4-discovery-ia.md)                                                                             |
+| 219  | 2026-09-14 | Phase 6 motion and polish                                        | [2026-09-14-phase-6-motion-polish.md](../notes/2026-09-14-phase-6-motion-polish.md)                                                                           |
 
 ---
 
@@ -1994,7 +1995,7 @@ Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Priva
 
 **Status:** Done
 
-Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **219**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **220**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
@@ -2038,9 +2039,17 @@ Phase 4 (GitHub epic #21, issues #14 and #15). Home's "View all" opened a modal 
 
 ---
 
+## Impl Phase 219 — Phase 6 motion and polish (2026-09-14)
+
+**Status:** Done
+
+Phase 6 (GitHub epic #23). The reading progress bar animated `width` on every scroll event; `@utility progress-bar` animates `transform` with a left origin and `ReaderPage` sets `scaleX()` — the detector's one genuine finding. `CoinPackageCard`'s hover/tap transforms now respect the `prefersReducedMotion` the component already consulted for its shimmer. React 18 rejects camelCase `fetchPriority` on `<img>`, warning once per panel and dropping the LCP hint entirely; lowercase passes through. `getProgressWidthClass` fell back to an interpolated `w-[${n}%]` the JIT never emits, so a missed value rendered a zero-width bar. The brightness scrim moved above the chrome (`z-[60]`), since toolbars staying bright over a dimmed page read as a rendering fault. Reader chevrons gained an opaque plate. `Modal` takes an `ariaLabel` for the title-less case. The checkout modal header gained a close control — Escape is suppressed while processing and step 1's footer is a lone Cancel. Ledger digits are `tabular-nums`. Below-the-fold imagery is lazy. **Two review findings did not survive checking**: replacing `CatalogBusyPanel` with `SkeletonBookCard` grids is explicitly forbidden by [loading-states](../conventions/loading-states.md) (Impl 210) and enforced by `expectNoInventoryBones` — painting six bones claims six titles before the catalog answers; and the "19 images missing width/height" are all inside CSS-pinned boxes, so there is no shift to prevent. **207** stays unused. Next is **220**. Note: [2026-09-14-phase-6-motion-polish.md](../notes/2026-09-14-phase-6-motion-polish.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **219**).
+1. Take **next free Impl** (currently **220**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

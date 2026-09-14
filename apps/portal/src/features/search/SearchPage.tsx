@@ -585,7 +585,13 @@ const SearchPage = () => {
                         <div className="relative w-20 shrink-0 sm:w-24">
                           <div className="aspect-[202/142] overflow-hidden rounded-2xl bg-gray-100">
                             {thumb ? (
-                              <img src={thumb} alt="" className="h-full w-full object-cover" />
+                              <img
+                                src={thumb}
+                                alt=""
+                                className="h-full w-full object-cover"
+                                loading="lazy"
+                                decoding="async"
+                              />
                             ) : null}
                           </div>
                           {locked ? (

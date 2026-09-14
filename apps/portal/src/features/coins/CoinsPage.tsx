@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   AlertCircle,
   CreditCard,
+  X,
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -687,13 +688,31 @@ const CoinsPage = () => {
                         </p>
                       )}
                     </div>
-                    <div className="text-right">
-                      <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
-                        {t('coinsPage.totalPrice')}
-                      </span>
-                      <p className="mt-1 text-2xl font-bold">
-                        {formatPrice(selectedPackage.price)}
-                      </p>
+                    <div className="flex items-start gap-3">
+                      <div className="text-right">
+                        <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
+                          {t('coinsPage.totalPrice')}
+                        </span>
+                        <p className="mt-1 text-2xl font-bold">
+                          {formatPrice(selectedPackage.price)}
+                        </p>
+                      </div>
+                      {/* The only ways out were the footer Cancel, the backdrop, and
+                          Escape — and Escape is suppressed while processing. On step 1
+                          the footer is a lone Cancel, so the header had no exit at all. */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPaymentModal(false)
+                          setSelectedPackage(null)
+                          setSelectedPaymentMethod(null)
+                        }}
+                        disabled={isProcessing}
+                        aria-label={t('common.close')}
+                        className="-mr-2 -mt-2 flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-40"
+                      >
+                        <X className="h-5 w-5" aria-hidden="true" />
+                      </button>
                     </div>
                   </div>
                 </div>
