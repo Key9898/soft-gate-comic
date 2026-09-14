@@ -246,6 +246,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 214  | 2026-09-14 | Phase 0 ship blockers from the UI/UX plan                        | [2026-09-14-phase-0-ship-blockers.md](../notes/2026-09-14-phase-0-ship-blockers.md)                                                                           |
 | 215  | 2026-09-14 | Phase 1 design-system core (Button, Card, SortMenu, SearchField) | [2026-09-14-phase-1-design-system-core.md](../notes/2026-09-14-phase-1-design-system-core.md)                                                                 |
 | 216  | 2026-09-14 | Phase 3 accessibility floor                                      | [2026-09-14-phase-3-accessibility-floor.md](../notes/2026-09-14-phase-3-accessibility-floor.md)                                                               |
+| 217  | 2026-09-14 | Phase 2 funnel and retention                                     | [2026-09-14-phase-2-funnel-retention.md](../notes/2026-09-14-phase-2-funnel-retention.md)                                                                     |
 
 ---
 
@@ -1992,7 +1993,7 @@ Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Priva
 
 **Status:** Done
 
-Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **217**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **218**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
@@ -2020,9 +2021,17 @@ Phase 3 (GitHub epic #20, issue #13). The theme: several controls declared ARIA 
 
 ---
 
+## Impl Phase 217 — Phase 2 funnel and retention (2026-09-14)
+
+**Status:** Done
+
+Phase 2 (GitHub epic #19, issue #12). Empty states stop claiming the wrong cause: `LibraryPage` told a forty-item shelf it was empty whenever a search matched nothing, and `NotificationsPage` said "all caught up" while a filter hid twenty unread alerts. Both branch on empty-vs-filtered with a clear-the-filter recovery, and their CTAs became verbs. The coin balance did **not** go in the nav bar: measuring against the [responsive-chrome](../conventions/responsive-chrome.md) width budget showed headroom hitting **0** at 375px and 360px, with the wordmark crushed from 31px to 9px at 360px with a four-digit balance — the silent squeeze that convention documents. It went to the mobile menu and, more usefully, onto the hub's locked episode rows, which now read `5 Coins · you have 150` or `· 20 short` instead of a bare price, so the paywall is no longer the first time a reader learns they cannot pay. Headroom measured back at 58px afterwards. The end of a series was one line of pink text plus a Report button; it now shows the next scheduled drop with its countdown, Subscribe, and a way back, ticking only when a drop is actually scheduled. Guests get one answer instead of two — the paywall followed `/login` while the end card offered register — and both carry a reason through router state that the auth pages render. Episode sheet scrolls to the current episode instead of always opening at episode 1. Profile edit gained Cancel, and its status banner is typed, announced and dismissible instead of rendering every error in the success treatment. **207** stays unused. Next is **218**. Note: [2026-09-14-phase-2-funnel-retention.md](../notes/2026-09-14-phase-2-funnel-retention.md). Convention: [responsive-chrome.md](../conventions/responsive-chrome.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **217**).
+1. Take **next free Impl** (currently **218**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

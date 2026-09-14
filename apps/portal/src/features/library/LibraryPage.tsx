@@ -185,9 +185,12 @@ const LibraryPage = () => {
     }
   }
 
-  const items = getItemsList().filter((item) =>
+  const shelfItems = getItemsList()
+  const items = shelfItems.filter((item) =>
     item.title[lang].toLowerCase().includes(searchQuery.toLowerCase())
   )
+  // An empty grid has two very different causes; the copy has to say which.
+  const hiddenBySearch = shelfItems.length > 0 && items.length === 0
 
   const tabs = [
     {
@@ -671,10 +674,19 @@ const LibraryPage = () => {
             {items.length === 0 && (
               <LibraryEmptyState
                 tab={activeTab}
-                title={t('libraryPage.noItems')}
-                description={t('libraryPage.emptyExplore')}
-                ctaLabel={t('categories.webtoons')}
-                onCtaClick={() => navigate('/categories')}
+                filtered={hiddenBySearch}
+                title={
+                  hiddenBySearch
+                    ? t('libraryPage.noSearchMatch', { query: searchQuery })
+                    : t('libraryPage.noItems')
+                }
+                description={
+                  hiddenBySearch ? t('libraryPage.noSearchMatchWhy') : t('libraryPage.emptyExplore')
+                }
+                ctaLabel={
+                  hiddenBySearch ? t('libraryPage.clearSearch') : t('libraryPage.browseWebtoons')
+                }
+                onCtaClick={() => (hiddenBySearch ? setSearchQuery('') : navigate('/categories'))}
               />
             )}
           </motion.div>

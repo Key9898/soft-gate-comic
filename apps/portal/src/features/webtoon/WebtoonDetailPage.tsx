@@ -35,6 +35,7 @@ import { useData } from '../../context/DataContext'
 import { useLibrary } from '../../context/LibraryContext'
 import { useEngagement } from '../../context/EngagementContext'
 import { useWallet } from '../../context/WalletContext'
+import { useAuth } from '../../context/AuthContext'
 import { formatCount } from '../../lib/utils/formatters'
 import { formatRating } from '../../lib/rating'
 import {
@@ -67,7 +68,8 @@ const WebtoonDetailPage = () => {
   const { webtoons, episodes, genres, isLoading } = useData()
   const { isBookmarked, toggleBookmark, setNotifyMuted, bookmarks } = useLibrary()
   const { readEpisodeNumbers, history } = useEngagement()
-  const { isEpisodeUnlocked } = useWallet()
+  const { isEpisodeUnlocked, balance } = useWallet()
+  const { isAuthenticated } = useAuth()
   const sortRef = useRef<HTMLDivElement>(null)
 
   // ── State ──────────────────────────────────────────────────
@@ -742,9 +744,28 @@ const WebtoonDetailPage = () => {
                           })}
                         </span>
                       ) : null}
+                      {/* Pre-flight: the price alone told a reader nothing about whether
+                          they could pay it. Tapping a locked row used to enter the reader
+                          and only then reveal the paywall. */}
                       {episode.isPremium && !waitFree && (
-                        <span className="bg-accent-500/10 text-accent-700 ring-accent-500/20 rounded-2xl px-2.5 py-1 text-xs font-semibold ring-1">
+                        <span
+                          data-testid="episode-price"
+                          className={`rounded-2xl px-2.5 py-1 text-xs font-semibold ring-1 ${
+                            locked && isAuthenticated && balance < episode.coinPrice
+                              ? 'bg-gray-100 text-gray-700 ring-gray-200'
+                              : 'bg-accent-500/10 text-accent-700 ring-accent-500/20'
+                          }`}
+                        >
                           {episode.coinPrice} {t('webtoonDetail.coins')}
+                          {locked && isAuthenticated ? (
+                            <span className="ml-1.5 font-bold tabular-nums">
+                              {balance >= episode.coinPrice
+                                ? t('webtoonDetail.affordable', { balance })
+                                : t('webtoonDetail.shortBy', {
+                                    n: episode.coinPrice - balance,
+                                  })}
+                            </span>
+                          ) : null}
                         </span>
                       )}
                       {isRead && (

@@ -62,7 +62,8 @@
     "storyBook": "Our Story",
     "storyPrevChapter": "Previous chapter",
     "storyNextChapter": "Next chapter",
-    "switchLanguage": "Switch to {{language}}"
+    "switchLanguage": "Switch to {{language}}",
+    "coinBalance": "Coins: {{n}}"
   },
   "rating": {
     "community": "Community",
@@ -238,7 +239,8 @@
     "seoLogin": "Sign in",
     "seoRegister": "Create account",
     "seoForgot": "Forgot password",
-    "seoReset": "Reset password"
+    "seoReset": "Reset password",
+    "reasonUnlockEpisode": "Create an account to unlock Episode {{n}} and keep your progress."
   },
   "home": {
     "emptyTitle": "No webtoons here yet",
@@ -540,7 +542,9 @@
     "linkCopied": "Link copied!",
     "comments": "Series discussion",
     "nextDrop": "Next drop",
-    "publishingSoon": "Publishing soon"
+    "publishingSoon": "Publishing soon",
+    "affordable": "· you have {{balance}}",
+    "shortBy": "· {{n}} short"
   },
   "authorPage": {
     "seoDescription": "Titles by {{name}} on SoftGate Comic.",
@@ -601,7 +605,8 @@
     "unlockedAnnounce": "Episode {{n}} unlocked. Balance is now {{balance}} coins.",
     "shortfall": "You need {{n}} more coins to unlock this episode.",
     "topUpAndReturn": "Top up and come back",
-    "stripDemo": "Demo strip — the series cover stands in for episode art. Client-swap, not the real panels."
+    "stripDemo": "Demo strip — the series cover stands in for episode art. Client-swap, not the real panels.",
+    "endOfSeriesWait": "No next episode is scheduled yet. Subscribe and we will tell you when one is."
   },
   "profilePage": {
     "episodesUnit_one": "{{count}} episode",
@@ -710,7 +715,11 @@
     "itemsSelected": "{{count}} selected",
     "deleteConfirm": "Are you sure you want to remove selected items?",
     "deleteSuccess": "Collection updated successfully",
-    "viewMode": "View mode"
+    "viewMode": "View mode",
+    "noSearchMatch": "Nothing here matches “{{query}}”",
+    "noSearchMatchWhy": "Your library still has these titles — the search is just hiding them.",
+    "clearSearch": "Clear search",
+    "browseWebtoons": "Browse webtoons"
   },
   "notificationsPage": {
     "title": "Notifications",
@@ -740,7 +749,11 @@
     "filterActivity": "Activity",
     "filterPromo": "Promo",
     "deleteConfirmBody": "This removes the notification from your inbox. It cannot be brought back.",
-    "clearReadConfirmBody": "This removes every notification you have already read. It cannot be brought back."
+    "clearReadConfirmBody": "This removes every notification you have already read. It cannot be brought back.",
+    "noneInFilter": "Nothing in this filter",
+    "noneInFilterWhy": "You have notifications, just none of this kind.",
+    "showAll": "Show all notifications",
+    "browseWebtoons": "Browse webtoons"
   },
   "coinsPage": {
     "title": "Coins",

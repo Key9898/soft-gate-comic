@@ -31,6 +31,9 @@ const LoginPage = ({
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from
+  // Set when the visitor was sent here from a paywall, so the page can say what the
+  // account is actually for instead of a generic headline.
+  const authReason = (location.state as { reason?: string } | null)?.reason
   const returnTo = safeReturnTo(from)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,6 +86,14 @@ const LoginPage = ({
       )}
       <h1 className="text-2xl font-bold text-gray-900">{t('auth.continueInBrowser')}</h1>
       <p className="mt-2 text-sm text-gray-600">{t('auth.signInToAccount')}</p>
+      {authReason ? (
+        <p
+          data-testid="auth-reason"
+          className="bg-primary-50 text-primary-800 mt-3 rounded-2xl px-3 py-2 text-sm font-semibold"
+        >
+          {authReason}
+        </p>
+      ) : null}
       <p className="mt-2 text-xs text-gray-500">{t('auth.demoAccountNote')}</p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">

@@ -58,7 +58,10 @@ describe('NotificationsPage', () => {
   it('shows an empty first-time inbox with recovery CTAs', async () => {
     render(<NotificationsPage />)
     expect(await screen.findByText(/you.re all caught up/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Webtoons' })).toHaveAttribute('href', '/categories')
+    expect(screen.getByRole('link', { name: /browse webtoons/i })).toHaveAttribute(
+      'href',
+      '/categories'
+    )
     expect(screen.getAllByRole('link', { name: 'Settings' })[0]).toHaveAttribute(
       'href',
       '/profile?tab=settings'

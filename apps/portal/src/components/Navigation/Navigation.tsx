@@ -8,10 +8,12 @@ import LanguageSwitcher from '../LanguageSwitcher'
 import SearchAutocomplete from '../SearchAutocomplete'
 import { useAuth } from '../../context/AuthContext'
 import { useEngagement } from '../../context/EngagementContext'
+import { useWallet } from '../../context/WalletContext'
 
 const Navigation = () => {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout } = useAuth()
+  const { balance } = useWallet()
   const { unreadNotificationCount } = useEngagement()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -250,12 +252,24 @@ const Navigation = () => {
                     >
                       {t('nav.library')}
                     </Link>
+                    {/* The balance lives here rather than in the bar: the bar's width
+                        budget is exhausted at 360px (see responsive-chrome.md), and an
+                        always-visible pill there crushes the wordmark. The menu has room,
+                        and the two moments the number actually decides something — the
+                        hub's locked rows and the reader header — carry it too. */}
                     <Link
                       to="/coins"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
+                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
                     >
-                      {t('nav.coins')}
+                      <span>{t('nav.coins')}</span>
+                      <span
+                        data-testid="menu-coin-balance"
+                        className="text-primary-700 inline-flex items-center gap-1.5 text-sm font-bold tabular-nums"
+                      >
+                        <Coins className="h-4 w-4" aria-hidden="true" />
+                        {balance}
+                      </span>
                     </Link>
                     <button
                       type="button"

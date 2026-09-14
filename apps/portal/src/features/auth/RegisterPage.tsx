@@ -35,6 +35,8 @@ const RegisterPage = ({
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from
+  // See LoginPage: carried from a paywall so the page can name what it is for.
+  const authReason = (location.state as { reason?: string } | null)?.reason
   const returnTo = safeReturnTo(from)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +144,14 @@ const RegisterPage = ({
       )}
       <h1 className="text-2xl font-bold text-gray-900">{t('auth.createReaderAccount')}</h1>
       <p className="mt-2 text-sm text-gray-600">{t('auth.registerLead')}</p>
+      {authReason ? (
+        <p
+          data-testid="auth-reason"
+          className="bg-primary-50 text-primary-800 mt-3 rounded-2xl px-3 py-2 text-sm font-semibold"
+        >
+          {authReason}
+        </p>
+      ) : null}
       <p className="mt-2 text-xs text-gray-500">{t('auth.demoAccountNote')}</p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">

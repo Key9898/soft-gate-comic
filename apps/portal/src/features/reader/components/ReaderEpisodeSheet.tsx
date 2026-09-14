@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Lock } from 'lucide-react'
@@ -31,6 +32,18 @@ const ReaderEpisodeSheet = ({
   isLocked,
 }: ReaderEpisodeSheetProps) => {
   const { t } = useTranslation()
+  const currentRowRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+    // The list renders ascending from episode 1, so on a 150-episode series every
+    // open started at the beginning even though aria-current marked the right row.
+    const frame = requestAnimationFrame(() => {
+      currentRowRef.current?.scrollIntoView?.({ block: 'center' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [isOpen, currentEpisodeNumber])
+
   const ordered = [...episodes].sort((a, b) => a.episodeNumber - b.episodeNumber)
   const first = ordered[0]
   const last = ordered[ordered.length - 1]
@@ -86,6 +99,7 @@ const ReaderEpisodeSheet = ({
             <li key={episode.id}>
               <button
                 type="button"
+                ref={current ? currentRowRef : undefined}
                 aria-current={current ? 'true' : undefined}
                 onClick={() => {
                   onSelect(episode.episodeNumber)

@@ -11,6 +11,7 @@ import {
   LogOut,
   Edit3,
   ChevronRight,
+  X,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/Button'
@@ -59,7 +60,11 @@ const ProfilePage = () => {
   const [bio, setBio] = useState('')
   const [email, setEmail] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [statusMessage, setStatusMessage] = useState('')
+  // Errors used to render in the success treatment (primary-50/primary-700) and
+  // never cleared, so 'avatar upload failed' looked exactly like 'saved'.
+  const [status, setStatus] = useState<{ tone: 'info' | 'error'; text: string } | null>(null)
+  const setStatusMessage = (text: string, tone: 'info' | 'error' = 'info') =>
+    setStatus(text ? { tone, text } : null)
 
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -116,7 +121,7 @@ const ProfilePage = () => {
     const file = input.files?.[0]
     if (!file) return
     if (!isAllowedAvatarFile(file)) {
-      setStatusMessage(t('profilePage.avatarTooLarge'))
+      setStatusMessage(t('profilePage.avatarTooLarge'), 'error')
       input.value = ''
       return
     }
@@ -132,9 +137,9 @@ const ProfilePage = () => {
       setStatusMessage(mock ? t('profilePage.savedLocally') : t('profilePage.saved'))
     } catch (err) {
       if (authErrorCode(err) === 'VALIDATION_ERROR') {
-        setStatusMessage(t('profilePage.avatarTooLarge'))
+        setStatusMessage(t('profilePage.avatarTooLarge'), 'error')
       } else {
-        setStatusMessage(t('profilePage.avatarFailed'))
+        setStatusMessage(t('profilePage.avatarFailed'), 'error')
       }
     } finally {
       setAvatarUploading(false)
@@ -159,6 +164,16 @@ const ProfilePage = () => {
 
     setErrors(errs)
     return Object.keys(errs).length === 0
+  }
+
+  const cancelEdit = () => {
+    if (user) {
+      setDisplayName(user.displayName)
+      setBio(user.bio || '')
+      setEmail(user.email)
+    }
+    setErrors({})
+    setIsEditing(false)
   }
 
   const handleSave = async () => {
@@ -274,14 +289,25 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-gray-50 pb-12 transition-colors duration-300">
       <SEO title={t('profile.title')} noindex />
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {statusMessage && (
-          <p
+        {status ? (
+          <div
             role="status"
-            className="bg-primary-50 text-primary-700 mb-4 rounded-2xl px-4 py-3 text-sm"
+            aria-live="polite"
+            className={`mb-4 flex items-start justify-between gap-3 rounded-2xl px-4 py-3 text-sm ${
+              status.tone === 'error' ? 'bg-red-50 text-red-700' : 'bg-primary-50 text-primary-700'
+            }`}
           >
-            {statusMessage}
-          </p>
-        )}
+            <span>{status.text}</span>
+            <button
+              type="button"
+              onClick={() => setStatus(null)}
+              aria-label={t('common.close')}
+              className="focus-visible:ring-primary-500 -my-1 -mr-2 flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-2xl focus-visible:outline-none focus-visible:ring-2"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        ) : null}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <div className="sticky top-6 rounded-3xl border bg-white p-6 shadow-sm">
@@ -380,20 +406,29 @@ const ProfilePage = () => {
                       <h3 className="text-lg font-bold text-gray-900">
                         {t('profilePage.profileInformation')}
                       </h3>
-                      <Button
-                        variant={isEditing ? 'primary' : 'outline'}
-                        size="sm"
-                        onClick={() => (isEditing ? void handleSave() : setIsEditing(true))}
-                      >
+                      <div className="flex gap-2">
+                        {/* Typing into Display Name and changing your mind had no
+                            discard path; the effect only reset on a user change. */}
                         {isEditing ? (
-                          t('profilePage.saveChanges')
-                        ) : (
-                          <>
-                            <Edit3 className="mr-2 h-4 w-4" />
-                            {t('profilePage.editProfile')}
-                          </>
-                        )}
-                      </Button>
+                          <Button variant="surface" size="sm" onClick={cancelEdit}>
+                            {t('common.cancel')}
+                          </Button>
+                        ) : null}
+                        <Button
+                          variant={isEditing ? 'primary' : 'outline'}
+                          size="sm"
+                          onClick={() => (isEditing ? void handleSave() : setIsEditing(true))}
+                        >
+                          {isEditing ? (
+                            t('profilePage.saveChanges')
+                          ) : (
+                            <>
+                              <Edit3 className="mr-2 h-4 w-4" />
+                              {t('profilePage.editProfile')}
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="space-y-5.5">

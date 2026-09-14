@@ -10,6 +10,7 @@ import {
   Gift,
   Trash2,
   Settings,
+  SearchX,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Button, { ButtonLink } from '../../components/Button'
@@ -38,6 +39,7 @@ const NotificationsPage = () => {
     { kind: 'one'; id: string } | { kind: 'read' } | null
   >(null)
 
+  const isFiltered = filter !== 'all'
   const filteredNotifications = notifications.filter((item) => {
     if (filter === 'all') return true
     if (filter === 'unread') return !item.isRead
@@ -133,23 +135,42 @@ const NotificationsPage = () => {
           <div className="overflow-hidden rounded-3xl border bg-white shadow-sm">
             {filteredNotifications.length === 0 ? (
               <div className="px-6 py-16 text-center">
-                <BellOff className="mx-auto mb-3 h-12 w-12 text-gray-300" />
-                <p className="font-bold text-gray-900">{t('notificationsPage.allCaughtUp')}</p>
-                <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
-                  {t('notificationsPage.allCaughtUpWhy')}
-                </p>
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                  <ButtonLink to="/categories" className="text-sm font-bold">
-                    {t('categories.webtoons')}
-                  </ButtonLink>
-                  <ButtonLink
-                    to="/profile?tab=settings"
-                    variant="surface"
-                    className="text-sm font-bold"
-                  >
-                    {t('profilePage.settings')}
-                  </ButtonLink>
-                </div>
+                {/* "All caught up" while a filter hides 20 unread alerts is a lie.
+                    Branch on whether the inbox is empty or merely filtered. */}
+                {isFiltered && notifications.length > 0 ? (
+                  <>
+                    <SearchX className="mx-auto mb-3 h-12 w-12 text-gray-300" aria-hidden="true" />
+                    <p className="font-bold text-gray-900">{t('notificationsPage.noneInFilter')}</p>
+                    <p className="text-muted mx-auto mt-2 max-w-sm text-sm">
+                      {t('notificationsPage.noneInFilterWhy')}
+                    </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                      <Button variant="surface" onClick={() => setFilter('all')}>
+                        {t('notificationsPage.showAll')}
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <BellOff className="mx-auto mb-3 h-12 w-12 text-gray-300" aria-hidden="true" />
+                    <p className="font-bold text-gray-900">{t('notificationsPage.allCaughtUp')}</p>
+                    <p className="text-muted mx-auto mt-2 max-w-sm text-sm">
+                      {t('notificationsPage.allCaughtUpWhy')}
+                    </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                      <ButtonLink to="/categories" className="text-sm font-bold">
+                        {t('notificationsPage.browseWebtoons')}
+                      </ButtonLink>
+                      <ButtonLink
+                        to="/profile?tab=settings"
+                        variant="surface"
+                        className="text-sm font-bold"
+                      >
+                        {t('profilePage.settings')}
+                      </ButtonLink>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <div className="divide-y divide-gray-100">

@@ -37,6 +37,7 @@ import {
   hasWaitSchedule,
   isEpisodeLocked,
   isPlaceholderStrip,
+  nextDropForSeries,
   isPublishedEpisode,
   panelPixelSize,
   publishedEpisodesForSeries,
@@ -179,6 +180,15 @@ const ReaderPage = () => {
   const episodeKey = `${webtoonId ?? ''}:${currentEpisode?.episodeNumber ?? episodeNum}`
   const fromPath = `/read/${webtoonId}/${episodeNumber}`
   const midAdAfter = currentEpisode ? readerMidAdAfterIndex(currentEpisode.images.length) : null
+  const endOfSeriesDrop = !hasNext && webtoonId ? nextDropForSeries(episodes, webtoonId) : undefined
+  const [nowTick, setNowTick] = useState(() => Date.now())
+  useEffect(() => {
+    // Only ticks once the reader is actually at the end of a series with a drop
+    // scheduled — no interval running behind every page of every episode.
+    if (!endOfSeriesDrop) return
+    const timer = window.setInterval(() => setNowTick(Date.now()), 1000)
+    return () => window.clearInterval(timer)
+  }, [endOfSeriesDrop])
 
   const related = useMemo(() => {
     if (!webtoon) return []
@@ -632,7 +642,14 @@ const ReaderPage = () => {
     setUnlockError('')
     setUnlockShortfall(0)
     if (!isAuthenticated) {
-      navigate('/login', { state: { from: { pathname: fromPath } } })
+      // The end card offers register-first while this offered login-first: two
+      // different answers to the same question. Both carry the reason now.
+      navigate(registrationOpen ? '/register' : '/login', {
+        state: {
+          from: { pathname: fromPath },
+          reason: t('auth.reasonUnlockEpisode', { n: currentEpisode.episodeNumber }),
+        },
+      })
       return
     }
     setUnlockPending(true)
@@ -1051,6 +1068,11 @@ const ReaderPage = () => {
               })
             }
             related={related}
+            nextDrop={endOfSeriesDrop}
+            now={nowTick}
+            seriesHref={`/webtoon/${webtoonId}`}
+            isSubscribed={Boolean(webtoonId && isBookmarked(webtoonId))}
+            onSubscribe={() => webtoonId && toggleBookmark(webtoonId)}
             reported={reported}
             reportConfirm={reportConfirm}
             onAskReport={handleAskReport}
