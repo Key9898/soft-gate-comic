@@ -131,7 +131,7 @@ const RegisterPage = ({
         <Link
           to="/login"
           state={{ from }}
-          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl px-6 text-sm font-semibold text-white focus-visible:ring-2 focus-visible:outline-none"
+          className="bg-primary-600 hover:bg-primary-700 focus-visible:ring-primary-500 mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl px-6 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2"
         >
           {t('auth.signInInstead')}
         </Link>
@@ -259,7 +259,7 @@ const RegisterPage = ({
         <Link
           to="/login"
           state={{ from }}
-          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium transition focus-visible:ring-2 focus-visible:outline-none"
+          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium transition focus-visible:outline-none focus-visible:ring-2"
         >
           {t('auth.signIn')}
         </Link>

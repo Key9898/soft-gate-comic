@@ -70,7 +70,7 @@ const ReaderCompletePortal = ({
       <CommentsTeaser comments={comments} onOpen={onOpenComments} darkMode={darkMode} />
 
       <div className={`mt-6 w-full max-w-md rounded-2xl border p-4 text-left ${nested}`}>
-        <p className="mb-1 text-xs font-semibold tracking-wider text-gray-500 uppercase">
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
           {t('readerPage.creatorNote')}
         </p>
         <p className={`text-sm ${muted}`}>{t('readerPage.creatorNoteBody')}</p>
@@ -81,7 +81,7 @@ const ReaderCompletePortal = ({
 
       {hasNext ? (
         <div className="mt-6 w-full max-w-md">
-          <p className="mb-3 text-xs font-semibold tracking-wider text-gray-500 uppercase">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
             {t('readerPage.nextChapter')}
           </p>
           <div className={`flex items-center justify-between rounded-2xl border p-4 ${nested}`}>
@@ -109,7 +109,7 @@ const ReaderCompletePortal = ({
 
       {!hasNext && related.length > 0 ? (
         <div className="mt-6 w-full max-w-md text-left">
-          <p className="mb-3 text-xs font-semibold tracking-wider text-gray-500 uppercase">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
             {t('webtoonDetail.youMayAlsoLike')}
           </p>
           <ul className="space-y-2">
@@ -150,7 +150,7 @@ const ReaderCompletePortal = ({
             <Link
               to="/login"
               state={{ from: { pathname: fromPath } }}
-              className="text-primary-500 hover:text-primary-400 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl px-3 text-sm font-semibold focus-visible:ring-2 focus-visible:outline-none"
+              className="text-primary-500 hover:text-primary-400 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl px-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2"
             >
               {t('nav.login')}
             </Link>

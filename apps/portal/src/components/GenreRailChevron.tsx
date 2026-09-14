@@ -26,7 +26,7 @@ const GenreRailChevron = ({ enabled, size = 'md', onClick, label }: GenreRailChe
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:ring-2 focus:outline-none ${box}`}
+      className={`text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2 ${box}`}
     >
       <ChevronRight className="h-5 w-5" aria-hidden />
     </button>

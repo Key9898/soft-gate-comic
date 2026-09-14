@@ -76,7 +76,7 @@ const HomePageSkeleton = ({
           aria-hidden="true"
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
-          <div className="relative z-10 flex w-full max-w-2xl min-w-0 flex-col text-center lg:text-left">
+          <div className="relative z-10 flex w-full min-w-0 max-w-2xl flex-col text-center lg:text-left">
             <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               {t('home.pageHeading')}
             </h1>
@@ -87,7 +87,7 @@ const HomePageSkeleton = ({
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <span className="hidden shrink-0 font-medium whitespace-nowrap text-gray-500 sm:inline">
+            <span className="hidden shrink-0 whitespace-nowrap font-medium text-gray-500 sm:inline">
               {t('home.genres')}:
             </span>
             <div className="min-w-0 flex-1">
@@ -200,7 +200,7 @@ const HomePageSkeleton = ({
             <p className="mx-auto mb-6 max-w-xl text-white">{t('home.joinDescription')}</p>
             <Link
               to={signedIn ? '/categories' : registrationOpen ? '/register' : '/login'}
-              className="focus:ring-offset-primary-700 inline-block rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+              className="focus:ring-offset-primary-700 inline-block rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
             >
               <Button variant="secondary">
                 {signedIn ? t('home.browseNow') : t('home.getStartedFree')}

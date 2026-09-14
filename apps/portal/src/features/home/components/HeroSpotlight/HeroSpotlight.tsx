@@ -84,7 +84,7 @@ const HeroSpotlight = ({
           aria-hidden="true"
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
-          <div className="relative z-10 flex w-full max-w-2xl min-w-0 flex-col text-center lg:text-left">
+          <div className="relative z-10 flex w-full min-w-0 max-w-2xl flex-col text-center lg:text-left">
             <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               {t('home.pageHeading')}
             </h1>
@@ -95,13 +95,13 @@ const HeroSpotlight = ({
               <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
                 <Link
                   to="/help"
-                  className="focus:ring-offset-primary-700 rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-offset-primary-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
                 >
                   <Button variant="secondary">{t('footer.help')}</Button>
                 </Link>
                 <Link
                   to="/creators"
-                  className="focus:ring-offset-primary-700 rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-offset-primary-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
                 >
                   <Button variant="heroOutline">{t('footer.creators')}</Button>
                 </Link>
@@ -144,22 +144,22 @@ const HeroSpotlight = ({
               aria-label={t('a11y.heroSlide', { n: safeIndex + 1, total: count })}
               className="w-full min-w-0"
             >
-              <p className="mb-1 text-xs font-semibold tracking-wide text-white/80 uppercase">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-white/80">
                 {t('home.spotlightKicker')}
               </p>
-              <h1 className="mb-3 text-sm font-semibold tracking-wide text-white/80 uppercase">
+              <h1 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/80">
                 {t('home.pageHeading')}
               </h1>
-              <h2 className="mb-4 line-clamp-2 text-3xl font-bold tracking-tight break-words sm:text-4xl md:text-[2.5rem] lg:line-clamp-1 lg:text-5xl xl:text-6xl">
+              <h2 className="mb-4 line-clamp-2 break-words text-3xl font-bold tracking-tight sm:text-4xl md:text-[2.5rem] lg:line-clamp-1 lg:text-5xl xl:text-6xl">
                 {current.title[lang]}
               </h2>
-              <p className="min-h-2lh mx-auto mb-8 line-clamp-2 max-w-md text-base break-words text-white/80 sm:max-w-lg sm:text-lg lg:mx-0">
+              <p className="min-h-2lh mx-auto mb-8 line-clamp-2 max-w-md break-words text-base text-white/80 sm:max-w-lg sm:text-lg lg:mx-0">
                 {current.description[lang]}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
                 <Link
                   to={`/webtoon/${current.id}`}
-                  className="focus:ring-offset-primary-700 rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+                  className="focus:ring-offset-primary-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
                 >
                   <Button variant="secondary" leftIcon={<Play className="h-5 w-5" />}>
                     {t('home.startReading')}
@@ -205,7 +205,7 @@ const HeroSpotlight = ({
                         aria-selected={active}
                         aria-label={t('a11y.heroSlide', { n: i + 1, total: count })}
                         onClick={() => goTo(i)}
-                        className="focus:ring-primary-400 flex min-h-11 min-w-11 items-center justify-center rounded-2xl focus:ring-2 focus:outline-none"
+                        className="focus:ring-primary-400 flex min-h-11 min-w-11 items-center justify-center rounded-2xl focus:outline-none focus:ring-2"
                       >
                         <span
                           className={`block h-2.5 w-2.5 rounded-2xl transition ${
@@ -222,7 +222,7 @@ const HeroSpotlight = ({
                     type="button"
                     onClick={() => setUserPaused((prev) => !prev)}
                     aria-label={userPaused ? t('a11y.heroPlay') : t('a11y.heroPause')}
-                    className="shape-circle focus:ring-primary-400 flex min-h-11 min-w-11 shrink-0 items-center justify-center bg-white/10 text-white shadow-sm ring-1 ring-white/20 transition hover:bg-white/20 focus:ring-2 focus:outline-none"
+                    className="shape-circle focus:ring-primary-400 flex min-h-11 min-w-11 shrink-0 items-center justify-center bg-white/10 text-white shadow-sm ring-1 ring-white/20 transition hover:bg-white/20 focus:outline-none focus:ring-2"
                   >
                     {userPaused ? (
                       <Play className="h-5 w-5" aria-hidden />
@@ -235,7 +235,7 @@ const HeroSpotlight = ({
                   type="button"
                   onClick={goNext}
                   aria-label={t('a11y.heroNext')}
-                  className="shape-circle focus:ring-primary-400 flex min-h-11 min-w-11 shrink-0 items-center justify-center bg-white/10 text-white shadow-sm ring-1 ring-white/20 transition hover:bg-white/20 focus:ring-2 focus:outline-none"
+                  className="shape-circle focus:ring-primary-400 flex min-h-11 min-w-11 shrink-0 items-center justify-center bg-white/10 text-white shadow-sm ring-1 ring-white/20 transition hover:bg-white/20 focus:outline-none focus:ring-2"
                 >
                   <ChevronRight className="h-5 w-5" aria-hidden />
                 </button>

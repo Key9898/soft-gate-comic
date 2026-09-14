@@ -45,7 +45,7 @@ const AuthSplitHero = ({
           : `pointer-events-none invisible opacity-0 ${side === 'register' ? '-translate-x-full' : 'translate-x-full'}`
       }`}
     >
-      <p className="text-2xs font-bold tracking-wider text-white/80 uppercase">
+      <p className="text-2xs font-bold uppercase tracking-wider text-white/80">
         {t('auth.roomEyebrow')}
       </p>
       <p className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -66,7 +66,7 @@ const AuthSplitHero = ({
         <Link
           to={to}
           state={{ from }}
-          className="focus-visible:ring-primary-500 hover:text-primary-700 mt-8 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white px-8 text-sm font-bold text-white transition hover:bg-white focus-visible:ring-2 focus-visible:outline-none"
+          className="focus-visible:ring-primary-500 hover:text-primary-700 mt-8 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white px-8 text-sm font-bold text-white transition hover:bg-white focus-visible:outline-none focus-visible:ring-2"
         >
           {t(isLoginInvite ? 'auth.signIn' : 'auth.signUp')}
         </Link>
@@ -90,7 +90,7 @@ const AuthSplitCard = ({ view, from }: { view: 'login' | 'register'; from?: Auth
       <div
         data-testid="auth-split-form-login"
         ref={bindInert(!isLogin)}
-        className={`relative z-[1] w-full bg-white p-6 sm:p-8 lg:absolute lg:top-0 lg:left-0 lg:h-full lg:w-1/2 lg:overflow-y-auto lg:overscroll-contain ${
+        className={`relative z-[1] w-full bg-white p-6 sm:p-8 lg:absolute lg:left-0 lg:top-0 lg:h-full lg:w-1/2 lg:overflow-y-auto lg:overscroll-contain ${
           isLogin ? 'block' : 'pointer-events-none hidden lg:block'
         }`}
         aria-hidden={!isLogin}
@@ -100,7 +100,7 @@ const AuthSplitCard = ({ view, from }: { view: 'login' | 'register'; from?: Auth
       <div
         data-testid="auth-split-form-register"
         ref={bindInert(isLogin)}
-        className={`relative z-[1] w-full bg-white p-6 sm:p-8 lg:absolute lg:top-0 lg:left-1/2 lg:h-full lg:w-1/2 lg:overflow-y-auto lg:overscroll-contain ${
+        className={`relative z-[1] w-full bg-white p-6 sm:p-8 lg:absolute lg:left-1/2 lg:top-0 lg:h-full lg:w-1/2 lg:overflow-y-auto lg:overscroll-contain ${
           isLogin ? 'pointer-events-none hidden lg:block' : 'block'
         }`}
         aria-hidden={isLogin}
@@ -110,7 +110,7 @@ const AuthSplitCard = ({ view, from }: { view: 'login' | 'register'; from?: Auth
       <div
         data-testid="auth-split-bg"
         aria-hidden
-        className={`auth-split-bg-motion pointer-events-none absolute top-1 left-1 z-[2] hidden h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] rounded-[1.25rem] bg-[url('/auth/reading-room-lg.jpg')] bg-cover bg-center lg:block ${
+        className={`auth-split-bg-motion pointer-events-none absolute left-1 top-1 z-[2] hidden h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] rounded-[1.25rem] bg-[url('/auth/reading-room-lg.jpg')] bg-cover bg-center lg:block ${
           isLogin ? 'translate-x-full' : ''
         }`}
       >

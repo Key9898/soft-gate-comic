@@ -53,7 +53,7 @@ const SeriesRatingControl = ({
 
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-2 md:items-start">
-      <p className={`text-xs font-semibold tracking-wide uppercase ${labelClass}`}>
+      <p className={`text-xs font-semibold uppercase tracking-wide ${labelClass}`}>
         {t('rating.rateSeries')}
       </p>
       <div
@@ -96,7 +96,7 @@ const SeriesRatingControl = ({
                 }
                 onClick={() => select(left)}
                 onKeyDown={onKeyDown}
-                className={`absolute inset-y-0 left-0 z-10 w-1/2 rounded-l-sm ${focusRing} focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed`}
+                className={`absolute inset-y-0 left-0 z-10 w-1/2 rounded-l-sm ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
               />
               <button
                 type="button"
@@ -107,7 +107,7 @@ const SeriesRatingControl = ({
                 tabIndex={disabled ? -1 : value === right ? 0 : -1}
                 onClick={() => select(right)}
                 onKeyDown={onKeyDown}
-                className={`absolute inset-y-0 right-0 z-10 w-1/2 rounded-r-sm ${focusRing} focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed`}
+                className={`absolute inset-y-0 right-0 z-10 w-1/2 rounded-r-sm ${focusRing} focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed`}
               />
             </span>
           )
@@ -127,7 +127,7 @@ const SeriesRatingControl = ({
               isHero
                 ? 'text-white/80 hover:text-white focus-visible:ring-white'
                 : 'text-primary-600 hover:text-primary-500 focus-visible:ring-primary-500'
-            } focus-visible:ring-2 focus-visible:outline-none`}
+            } focus-visible:outline-none focus-visible:ring-2`}
           >
             {t('rating.clear')}
           </button>

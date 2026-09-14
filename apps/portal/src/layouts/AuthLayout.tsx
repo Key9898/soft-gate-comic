@@ -25,7 +25,7 @@ const AuthLayout = () => {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
-            className="text-primary-600 focus-visible:ring-primary-500 flex items-center rounded-2xl focus-visible:ring-2 focus-visible:outline-none"
+            className="text-primary-600 focus-visible:ring-primary-500 flex items-center rounded-2xl focus-visible:outline-none focus-visible:ring-2"
           >
             <img
               src="/logo/logo.svg"

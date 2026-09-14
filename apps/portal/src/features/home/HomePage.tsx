@@ -173,7 +173,7 @@ const HomePage = () => {
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <span className="hidden shrink-0 font-medium whitespace-nowrap text-gray-500 sm:inline">
+            <span className="hidden shrink-0 whitespace-nowrap font-medium text-gray-500 sm:inline">
               {t('home.genres')}:
             </span>
             <div
@@ -194,7 +194,7 @@ const HomePage = () => {
                     key={genre.id}
                     to={genre.slug === 'all' ? '/categories' : `/categories/${genre.slug}`}
                     onClick={() => setSelectedGenre(genre.slug)}
-                    className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center rounded-2xl px-4 py-2 text-sm font-medium whitespace-nowrap transition focus:ring-2 focus:ring-offset-2 focus:outline-none ${
+                    className={`focus:ring-primary-500 inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                       selectedGenre === genre.slug
                         ? 'bg-primary-600 hover:bg-primary-700 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -230,7 +230,7 @@ const HomePage = () => {
                   <Link
                     key={webtoon.id}
                     to={`/read/${webtoon.id}/${record.episodeNumber}`}
-                    className="focus:ring-primary-500 block w-36 shrink-0 rounded-[3px] focus:ring-2 focus:ring-offset-2 focus:outline-none sm:w-40"
+                    className="focus:ring-primary-500 block w-36 shrink-0 rounded-[3px] focus:outline-none focus:ring-2 focus:ring-offset-2 sm:w-40"
                   >
                     <CatalogBookCard
                       webtoon={webtoon}
@@ -252,7 +252,7 @@ const HomePage = () => {
                   type="button"
                   onClick={() => scrollContinueByPage('right')}
                   aria-label={t('a11y.scrollContinueRight')}
-                  className="text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex min-h-[38px] min-w-[38px] shrink-0 items-center justify-center self-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:ring-2 focus:outline-none"
+                  className="text-primary-600 hover:bg-primary-50 focus:ring-primary-500 flex min-h-[38px] min-w-[38px] shrink-0 items-center justify-center self-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200/80 transition focus:outline-none focus:ring-2"
                 >
                   <ChevronRight className="h-5 w-5" aria-hidden />
                 </button>
@@ -391,7 +391,7 @@ const HomePage = () => {
             <p className="mx-auto mb-6 max-w-xl text-white">{t('home.joinDescription')}</p>
             <Link
               to={isAuthenticated ? '/categories' : registrationOpen ? '/register' : '/login'}
-              className="focus:ring-offset-primary-700 inline-block rounded-2xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:outline-none"
+              className="focus:ring-offset-primary-700 inline-block rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
             >
               <Button variant="secondary">
                 {isAuthenticated ? t('home.browseNow') : t('home.getStartedFree')}

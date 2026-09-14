@@ -19,11 +19,11 @@ const ReaderAdSlot = ({ variant, darkMode = false }: ReaderAdSlotProps) => {
       aria-label={t('readerPage.advertisement')}
       className={`flex w-full flex-col items-center justify-center gap-1 border-y px-4 py-6 ${box} ${tone}`}
     >
-      <p className="text-xs font-semibold tracking-wider uppercase">
+      <p className="text-xs font-semibold uppercase tracking-wider">
         {t('readerPage.advertisement')}
       </p>
       <p className="max-w-xs text-center text-xs">{t('readerPage.adDemo')}</p>
-      <span className="text-2xs font-semibold tracking-wider uppercase">{t('common.demo')}</span>
+      <span className="text-2xs font-semibold uppercase tracking-wider">{t('common.demo')}</span>
     </aside>
   )
 }

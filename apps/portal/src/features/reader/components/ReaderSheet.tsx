@@ -61,7 +61,7 @@ const ReaderSheet = ({ isOpen, onClose, title, darkMode = false, children }: Rea
             animate={desktopDrawer ? { x: 0 } : { y: 0 }}
             exit={desktopDrawer ? { x: '100%' } : { y: '100%' }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className={`absolute inset-x-0 bottom-0 flex max-h-[85dvh] flex-col overflow-hidden rounded-t-3xl shadow-xl md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-full md:max-w-lg md:rounded-none md:rounded-l-3xl ${
+            className={`absolute inset-x-0 bottom-0 flex max-h-[85dvh] flex-col overflow-hidden rounded-t-3xl shadow-xl md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-full md:max-w-lg md:rounded-none md:rounded-l-3xl ${
               darkMode ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'
             }`}
           >

@@ -35,7 +35,7 @@ const Breadcrumb = ({ items, className = '' }: BreadcrumbProps) => {
               ) : item.to ? (
                 <Link
                   to={item.to}
-                  className="hover:text-primary-600 focus:ring-primary-500 rounded-2xl px-1 py-0.5 transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                  className="hover:text-primary-600 focus:ring-primary-500 rounded-2xl px-1 py-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
                 >
                   {item.label}
                 </Link>

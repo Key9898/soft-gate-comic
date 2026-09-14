@@ -251,19 +251,19 @@ const ForgotPasswordPage = () => {
         <Link
           to="/login"
           state={{ from }}
-          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:ring-2 focus-visible:outline-none"
+          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:outline-none focus-visible:ring-2"
         >
           {t('auth.backToLogin')}
         </Link>
         <Link
           to="/help"
-          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:ring-2 focus-visible:outline-none"
+          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:outline-none focus-visible:ring-2"
         >
           {t('footer.help')}
         </Link>
         <Link
           to="/contact"
-          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:ring-2 focus-visible:outline-none"
+          className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 rounded-2xl font-medium focus-visible:outline-none focus-visible:ring-2"
         >
           {t('footer.contact')}
         </Link>
