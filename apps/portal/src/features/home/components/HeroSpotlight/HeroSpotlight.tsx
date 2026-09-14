@@ -144,12 +144,15 @@ const HeroSpotlight = ({
               aria-label={t('a11y.heroSlide', { n: safeIndex + 1, total: count })}
               className="w-full min-w-0"
             >
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-white/80">
+              {/* The stable page h1 stays (hero-spotlight.md: it must not rotate with
+                  the carousel) but is no longer painted: it was a second uppercase
+                  micro-line stacked under the kicker, in near-identical styling, while
+                  the site name already sits in the nav logo directly above. That
+                  doubling is what made the real headline look demoted. */}
+              <h1 className="sr-only">{t('home.pageHeading')}</h1>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/80">
                 {t('home.spotlightKicker')}
               </p>
-              <h1 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white/80">
-                {t('home.pageHeading')}
-              </h1>
               <h2 className="mb-4 line-clamp-2 break-words text-3xl font-bold tracking-tight sm:text-4xl md:text-[2.5rem] lg:line-clamp-1 lg:text-5xl xl:text-6xl">
                 {current.title[lang]}
               </h2>

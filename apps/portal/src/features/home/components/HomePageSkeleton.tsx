@@ -77,7 +77,7 @@ const HomePageSkeleton = ({
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
           <div className="relative z-10 flex w-full min-w-0 max-w-2xl flex-col text-center lg:text-left">
-            <h1 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            <h1 className="mb-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
               {t('home.pageHeading')}
             </h1>
           </div>
@@ -101,7 +101,7 @@ const HomePageSkeleton = ({
       {showContinue ? (
         <section data-testid="home-continue" className="bg-white py-8 sm:py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-6 text-xl font-bold text-gray-900 sm:text-2xl">
+            <h2 className="mb-6 text-xl font-semibold text-gray-900 sm:text-2xl">
               {t('home.continueReading')}
             </h2>
             <BusyWell />
@@ -143,7 +143,7 @@ const HomePageSkeleton = ({
           <div className="mb-4 min-w-0">
             <div className="flex items-center gap-2">
               <CalendarDays className="text-primary-600 h-5 w-5 shrink-0" aria-hidden="true" />
-              <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">{t('home.daily')}</h2>
+              <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl">{t('home.daily')}</h2>
             </div>
             <p className="mt-1 text-xs text-gray-500 sm:text-sm">{t('home.dailyDesc')}</p>
           </div>

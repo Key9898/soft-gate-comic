@@ -29,7 +29,9 @@ const PageHeader = ({
       className={`${isMasthead ? 'pb-12 pt-6 sm:pb-16 sm:pt-8' : isDocument ? 'pb-6' : 'pb-6 pt-2'} ${className}`}
     >
       {eyebrow ? (
-        <p className="text-primary-500 text-xs font-bold uppercase tracking-widest">{eyebrow}</p>
+        <p className="text-primary-500 text-xs font-semibold uppercase tracking-widest">
+          {eyebrow}
+        </p>
       ) : null}
 
       <h1
@@ -46,7 +48,7 @@ const PageHeader = ({
 
       {meta ? (
         <p
-          className={`text-2xs text-muted font-bold uppercase tracking-wider ${
+          className={`text-2xs text-muted font-semibold uppercase tracking-wider ${
             isDocument ? 'mt-2' : 'mt-1.5'
           }`}
         >

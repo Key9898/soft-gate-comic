@@ -288,7 +288,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'completed') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-900/80 px-2 py-0.5 font-semibold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusCompleted')}
         </span>
@@ -297,7 +297,7 @@ const CategoriesPage = () => {
     if (webtoon.status === 'hiatus') {
       return (
         <span
-          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-bold uppercase tracking-wider text-white ${corner}`}
+          className={`text-2xs absolute bottom-2 z-10 rounded-2xl bg-gray-500/90 px-2 py-0.5 font-semibold uppercase tracking-wider text-white ${corner}`}
         >
           {t('categories.statusHiatus')}
         </span>
@@ -462,7 +462,7 @@ const CategoriesPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-muted text-xs font-bold uppercase tracking-wider">
+                <h3 className="text-muted text-xs font-semibold uppercase tracking-wider">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">

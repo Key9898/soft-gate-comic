@@ -138,7 +138,7 @@ const Navigation = () => {
                   className="bg-primary-50 hover:bg-primary-100 focus-visible:ring-primary-500 flex min-w-0 items-center gap-2 rounded-2xl px-3 py-1.5 transition focus-visible:outline-none focus-visible:ring-2"
                 >
                   <div className="bg-primary-600 shape-circle flex h-6 w-6 shrink-0 items-center justify-center">
-                    <span className="text-xs font-bold text-white">
+                    <span className="text-xs font-semibold text-white">
                       {user.displayName.charAt(0).toUpperCase()}
                     </span>
                   </div>

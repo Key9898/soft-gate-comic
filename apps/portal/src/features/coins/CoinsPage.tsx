@@ -389,12 +389,14 @@ const CoinsPage = () => {
                 <p className="text-primary-100 text-sm font-semibold uppercase tracking-wider">
                   {t('coinsPage.yourBalance')} · {t('coinsPage.demoLabel')}
                 </p>
-                <p className="text-2xs mt-1 inline-flex rounded-2xl bg-amber-400/20 px-2 py-0.5 font-bold uppercase tracking-wide text-amber-200">
+                <p className="text-2xs mt-1 inline-flex rounded-2xl bg-amber-400/20 px-2 py-0.5 font-semibold uppercase tracking-wide text-amber-200">
                   {t('coinsPage.demoTopUpBadge')}
                 </p>
                 <div className="mt-2 flex items-center gap-3.5">
                   <Coins className="h-10 w-10 animate-pulse text-amber-300" aria-hidden="true" />
-                  <span className="text-5xl font-bold tracking-tight sm:text-6xl">{balance}</span>
+                  <span className="text-5xl font-semibold tracking-tight sm:text-6xl">
+                    {balance}
+                  </span>
                 </div>
                 <p className="text-primary-200/90 mt-3 text-sm">{t('coinsPage.useCoinsDesc')}</p>
               </div>
@@ -417,7 +419,10 @@ const CoinsPage = () => {
               aria-labelledby="coins-topup-context-heading"
               className="border-primary-200 bg-primary-50 mb-6 rounded-3xl border p-5"
             >
-              <h2 id="coins-topup-context-heading" className="text-primary-800 text-base font-bold">
+              <h2
+                id="coins-topup-context-heading"
+                className="text-primary-800 text-base font-semibold"
+              >
                 {topUpEpisode
                   ? t('coinsPage.topUpContext', { n: topUpEpisode, title: topUpSeries })
                   : t('coinsPage.topUpNeed', { n: topUpNeed })}
@@ -481,7 +486,7 @@ const CoinsPage = () => {
                     <li key={item.key}>
                       <Link
                         to={`/webtoon/${item.webtoonId}`}
-                        className="focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-2 text-sm font-bold text-gray-800 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
+                        className="focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl px-2 text-sm font-semibold text-gray-800 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
                       >
                         <span className="truncate">{item.title[lang]}</span>
                         <span className="shrink-0 text-xs font-semibold text-gray-500">
@@ -593,7 +598,7 @@ const CoinsPage = () => {
                           {item.icon}
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-gray-950">{item.title}</p>
+                          <p className="text-sm font-semibold text-gray-950">{item.title}</p>
                           <p className="mt-1 text-xs leading-relaxed text-gray-500">
                             {item.description}
                           </p>
@@ -676,10 +681,10 @@ const CoinsPage = () => {
                 <div className="from-primary-600 to-primary-800 bg-gradient-to-r p-6 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
+                      <span className="text-primary-200 text-2xs font-semibold uppercase tracking-wider">
                         {t('coinsPage.demoTopUp')}
                       </span>
-                      <h3 id={wizardTitleId} className="mt-1 text-lg font-bold">
+                      <h3 id={wizardTitleId} className="mt-1 text-lg font-semibold">
                         {selectedPackage.coins.toLocaleString()} {t('coins.coins')}
                       </h3>
                       {selectedPackage.bonus && (
@@ -690,10 +695,10 @@ const CoinsPage = () => {
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="text-right">
-                        <span className="text-primary-200 text-2xs font-bold uppercase tracking-wider">
+                        <span className="text-primary-200 text-2xs font-semibold uppercase tracking-wider">
                           {t('coinsPage.totalPrice')}
                         </span>
-                        <p className="mt-1 text-2xl font-bold">
+                        <p className="mt-1 text-2xl font-semibold">
                           {formatPrice(selectedPackage.price)}
                         </p>
                       </div>
@@ -734,7 +739,7 @@ const CoinsPage = () => {
                       )}
                     </div>
                     <span
-                      className={`text-xs font-bold ${selectedPaymentMethod === null ? 'text-primary-600' : 'text-gray-500'}`}
+                      className={`text-xs font-semibold ${selectedPaymentMethod === null ? 'text-primary-600' : 'text-gray-500'}`}
                     >
                       {t('coinsPage.stepSelectMethod')}
                     </span>
@@ -744,7 +749,7 @@ const CoinsPage = () => {
 
                   <div className="flex items-center gap-1.5">
                     <div
-                      className={`shape-circle text-2xs flex h-5 w-5 items-center justify-center font-bold ${
+                      className={`shape-circle text-2xs flex h-5 w-5 items-center justify-center font-semibold ${
                         selectedPaymentMethod !== null
                           ? 'bg-primary-600 text-white'
                           : 'bg-gray-300 text-gray-500'
@@ -753,7 +758,7 @@ const CoinsPage = () => {
                       2
                     </div>
                     <span
-                      className={`text-xs font-bold ${selectedPaymentMethod !== null ? 'text-primary-600' : 'text-muted'}`}
+                      className={`text-xs font-semibold ${selectedPaymentMethod !== null ? 'text-primary-600' : 'text-muted'}`}
                     >
                       {t('coinsPage.stepEnterDetails')}
                     </span>
@@ -840,7 +845,7 @@ const CoinsPage = () => {
                             desc: t('coinsPage.methodWaveDesc'),
                             logo: (
                               <div className="shape-circle relative flex h-8 w-8 select-none items-center justify-center bg-[#fdd835] font-bold shadow-sm">
-                                <span className="text-2xs absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-bold text-emerald-800">
+                                <span className="text-2xs absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-sans font-semibold text-emerald-800">
                                   W
                                 </span>
                                 <svg
@@ -864,7 +869,7 @@ const CoinsPage = () => {
                             name: 'A+',
                             desc: t('coinsPage.methodAplusDesc'),
                             logo: (
-                              <div className="shape-circle flex h-8 w-8 select-none items-center justify-center bg-[#ff5722] font-sans text-xs font-bold text-white shadow-sm">
+                              <div className="shape-circle flex h-8 w-8 select-none items-center justify-center bg-[#ff5722] font-sans text-xs font-semibold text-white shadow-sm">
                                 A+
                               </div>
                             ),
@@ -875,7 +880,7 @@ const CoinsPage = () => {
                             name: 'CBPay',
                             desc: t('coinsPage.methodCbDesc'),
                             logo: (
-                              <div className="flex h-8 w-8 select-none items-center justify-center rounded-2xl bg-[#01579b] font-sans text-xs font-bold text-white shadow-sm">
+                              <div className="flex h-8 w-8 select-none items-center justify-center rounded-2xl bg-[#01579b] font-sans text-xs font-semibold text-white shadow-sm">
                                 CB
                               </div>
                             ),
@@ -898,7 +903,7 @@ const CoinsPage = () => {
                           >
                             {method.logo}
                             <div>
-                              <p className="font-sans text-sm font-bold text-gray-900">
+                              <p className="font-sans text-sm font-semibold text-gray-900">
                                 {method.name}
                               </p>
                               <p className="text-2xs mt-0.5 text-gray-500">{method.desc}</p>
@@ -917,7 +922,7 @@ const CoinsPage = () => {
                         type="button"
                         disabled={isProcessing}
                         onClick={handleBackToMethods}
-                        className="text-primary-500 hover:text-primary-600 flex items-center gap-1.5 text-xs font-bold transition disabled:opacity-50"
+                        className="text-primary-500 hover:text-primary-600 flex items-center gap-1.5 text-xs font-semibold transition disabled:opacity-50"
                       >
                         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                         {t('coinsPage.backToMethods')}
@@ -926,7 +931,7 @@ const CoinsPage = () => {
                       {/* A. MMQR SCREEN SHEET */}
                       {selectedPaymentMethod === 'mmqr' && (
                         <div className="space-y-4 text-center">
-                          <p className="text-xs font-bold text-gray-500">
+                          <p className="text-xs font-semibold text-gray-500">
                             {t('coinsPage.qrInstructions')}
                           </p>
 
@@ -964,7 +969,7 @@ const CoinsPage = () => {
                           </div>
 
                           {/* Countdown clock */}
-                          <div className="flex items-center justify-center gap-1.5 text-sm font-bold text-red-500">
+                          <div className="flex items-center justify-center gap-1.5 text-sm font-semibold text-red-500">
                             <Clock
                               className="h-4.5 w-4.5 animate-spin"
                               style={{ animationDuration: '4s' }}
@@ -980,12 +985,14 @@ const CoinsPage = () => {
                               <span className="text-2xs text-muted block font-semibold">
                                 {t('coinsPage.merchantIdLabel')}
                               </span>
-                              <span className="font-mono text-sm font-bold">DEMO-TXN-8472910</span>
+                              <span className="font-mono text-sm font-semibold">
+                                DEMO-TXN-8472910
+                              </span>
                             </div>
                             <button
                               type="button"
                               onClick={() => void handleCopyMerchant()}
-                              className="text-primary-500 hover:text-primary-600 flex items-center gap-1 text-xs font-bold transition"
+                              className="text-primary-500 hover:text-primary-600 flex items-center gap-1 text-xs font-semibold transition"
                             >
                               {qrCopied ? (
                                 <span className="text-emerald-500">{t('coinsPage.copied')}</span>
@@ -1006,7 +1013,7 @@ const CoinsPage = () => {
                           <div>
                             <label
                               htmlFor="walletNumber"
-                              className="mb-2 block text-sm font-bold text-gray-700"
+                              className="mb-2 block text-sm font-semibold text-gray-700"
                             >
                               {t('coinsPage.walletNumber')} ({selectedPaymentMethod.toUpperCase()})
                             </label>
@@ -1023,7 +1030,7 @@ const CoinsPage = () => {
                               }`}
                             />
                             {phoneError && (
-                              <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-red-500">
+                              <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-red-500">
                                 <AlertCircle className="h-3.5 w-3.5" />
                                 {phoneError}
                               </p>
@@ -1043,7 +1050,7 @@ const CoinsPage = () => {
                               {/* Card Front face */}
                               <div className="card-front from-primary-700 to-primary-900 flex flex-col justify-between bg-gradient-to-br text-white">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-primary-200 text-xs font-bold tracking-widest">
+                                  <span className="text-primary-200 text-xs font-semibold tracking-widest">
                                     {t('coinsPage.cardBrandName')}
                                   </span>
                                   {/* Styled Sim Chip */}
@@ -1062,7 +1069,7 @@ const CoinsPage = () => {
                                     <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
                                       {t('coinsPage.cardholderLabel')}
                                     </span>
-                                    <span className="block max-w-[180px] truncate text-xs font-bold uppercase">
+                                    <span className="block max-w-[180px] truncate text-xs font-semibold uppercase">
                                       {cardHolder || t('coinsPage.cardholderPlaceholder')}
                                     </span>
                                   </div>
@@ -1070,7 +1077,7 @@ const CoinsPage = () => {
                                     <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
                                       {t('coinsPage.expiryLabel')}
                                     </span>
-                                    <span className="block font-mono text-xs font-bold">
+                                    <span className="block font-mono text-xs font-semibold">
                                       {cardExpiry || t('coinsPage.expiryPlaceholder')}
                                     </span>
                                   </div>
@@ -1111,7 +1118,7 @@ const CoinsPage = () => {
                             <div>
                               <label
                                 htmlFor="cardNumberInput"
-                                className="text-muted mb-1 block text-xs font-bold uppercase"
+                                className="text-muted mb-1 block text-xs font-semibold uppercase"
                               >
                                 {t('coinsPage.cardNumber')}
                               </label>
@@ -1129,7 +1136,7 @@ const CoinsPage = () => {
                             <div>
                               <label
                                 htmlFor="cardHolderInput"
-                                className="text-muted mb-1 block text-xs font-bold uppercase"
+                                className="text-muted mb-1 block text-xs font-semibold uppercase"
                               >
                                 {t('coinsPage.cardHolder')}
                               </label>
@@ -1148,7 +1155,7 @@ const CoinsPage = () => {
                               <div>
                                 <label
                                   htmlFor="cardExpiryInput"
-                                  className="text-muted mb-1 block text-xs font-bold uppercase"
+                                  className="text-muted mb-1 block text-xs font-semibold uppercase"
                                 >
                                   {t('coinsPage.cardExpiry')}
                                 </label>
@@ -1166,7 +1173,7 @@ const CoinsPage = () => {
                               <div>
                                 <label
                                   htmlFor="cardCvvInput"
-                                  className="text-muted mb-1 block text-xs font-bold uppercase"
+                                  className="text-muted mb-1 block text-xs font-semibold uppercase"
                                 >
                                   {t('coinsPage.cardCvv')}
                                 </label>

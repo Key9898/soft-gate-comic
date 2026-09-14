@@ -122,7 +122,7 @@ const ReaderEpisodeSheet = ({
                   <span className={`block text-xs font-semibold uppercase tracking-wider ${muted}`}>
                     {t('readerPage.episodeN', { n: episode.episodeNumber })}
                   </span>
-                  <span className={`block truncate text-sm font-bold ${titleClass}`}>
+                  <span className={`block truncate text-sm font-semibold ${titleClass}`}>
                     {episode.title[lang]}
                   </span>
                 </span>

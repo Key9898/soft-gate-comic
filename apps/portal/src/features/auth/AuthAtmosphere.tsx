@@ -26,7 +26,7 @@ const AuthAtmosphere = () => {
 
   return (
     <div>
-      <p className="text-primary-600 text-2xs font-bold uppercase tracking-wider">
+      <p className="text-primary-600 text-2xs font-semibold uppercase tracking-wider">
         {t('auth.roomEyebrow')}
       </p>
       <p className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">

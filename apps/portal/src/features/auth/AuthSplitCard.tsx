@@ -45,10 +45,10 @@ const AuthSplitHero = ({
           : `pointer-events-none invisible opacity-0 ${side === 'register' ? '-translate-x-full' : 'translate-x-full'}`
       }`}
     >
-      <p className="text-2xs font-bold uppercase tracking-wider text-white/80">
+      <p className="text-2xs font-semibold uppercase tracking-wider text-white/80">
         {t('auth.roomEyebrow')}
       </p>
-      <p className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+      <p className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
         {t(isLoginInvite ? 'auth.roomLoginTitle' : 'auth.roomRegisterTitle')}
       </p>
       <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/85">
@@ -66,7 +66,7 @@ const AuthSplitHero = ({
         <Link
           to={to}
           state={{ from }}
-          className="focus-visible:ring-primary-500 hover:text-primary-700 mt-8 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white px-8 text-sm font-bold text-white transition hover:bg-white focus-visible:outline-none focus-visible:ring-2"
+          className="focus-visible:ring-primary-500 hover:text-primary-700 mt-8 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white px-8 text-sm font-semibold text-white transition hover:bg-white focus-visible:outline-none focus-visible:ring-2"
         >
           {t(isLoginInvite ? 'auth.signIn' : 'auth.signUp')}
         </Link>

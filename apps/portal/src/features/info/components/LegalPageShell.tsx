@@ -45,7 +45,7 @@ const LegalRelatedPolicies = ({ current }: LegalRelatedPoliciesProps) => {
       aria-label={t('legal.relatedPolicies')}
       className="flex flex-wrap items-center gap-x-1 gap-y-1"
     >
-      <span className="text-2xs text-muted mr-2 font-bold uppercase tracking-wider">
+      <span className="text-2xs text-muted mr-2 font-semibold uppercase tracking-wider">
         {t('legal.relatedPolicies')}
       </span>
       {POLICY_LINKS.map((policy, index) => {

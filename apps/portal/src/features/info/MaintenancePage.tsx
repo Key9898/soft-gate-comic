@@ -24,7 +24,7 @@ const MaintenancePage = () => {
         description={t('maintenance.lead')}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <p className="text-primary-600 text-xs font-bold uppercase tracking-wider">
+        <p className="text-primary-600 text-xs font-semibold uppercase tracking-wider">
           {t('maintenance.windowEyebrow')}
         </p>
         <h1 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
@@ -74,10 +74,10 @@ const MaintenancePage = () => {
         </div>
 
         <section className={`${CARD} mt-4`} aria-labelledby="maintenance-window">
-          <p className="text-2xs text-muted font-bold uppercase tracking-wider">
+          <p className="text-2xs text-muted font-semibold uppercase tracking-wider">
             {t('common.demo')}
           </p>
-          <h2 id="maintenance-window" className="mt-2 text-lg font-bold text-gray-950">
+          <h2 id="maintenance-window" className="mt-2 text-lg font-semibold text-gray-950">
             {t('maintenance.windowTitle')}
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">

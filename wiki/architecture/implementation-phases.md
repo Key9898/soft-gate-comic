@@ -249,6 +249,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 217  | 2026-09-14 | Phase 2 funnel and retention                                     | [2026-09-14-phase-2-funnel-retention.md](../notes/2026-09-14-phase-2-funnel-retention.md)                                                                     |
 | 218  | 2026-09-14 | Phase 4 discovery IA (partial; taxonomy deferred)                | [2026-09-14-phase-4-discovery-ia.md](../notes/2026-09-14-phase-4-discovery-ia.md)                                                                             |
 | 219  | 2026-09-14 | Phase 6 motion and polish                                        | [2026-09-14-phase-6-motion-polish.md](../notes/2026-09-14-phase-6-motion-polish.md)                                                                           |
+| 220  | 2026-09-14 | Phase 5 visual identity (weight scale; owner-scoped)             | [2026-09-14-phase-5-visual-identity.md](../notes/2026-09-14-phase-5-visual-identity.md)                                                                       |
 
 ---
 
@@ -1995,7 +1996,7 @@ Public Hono `GET /api/legal/privacy` and `GET /api/legal/terms` read Admin Priva
 
 **Status:** Done
 
-Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **220**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
+Public Hono `GET /api/faq` and `GET /api/cookies` read Admin FAQ/Cookies CMS tables on shared Postgres (schema copy, no website FAQ/Cookies migration). Envelope `{ data }`. Never 401. Stub/`P2021` fail-open to `STUB_FAQ` / `STUB_COOKIES`. Delete-all stays empty (meta present + empty lists). Portal `/faq` `/cookies` fetch when mock is off; fail or mock keeps today’s i18n. Help hub `FAQ_POPULAR_IDS` stays catalog i18n. Cookie CMP / Privacy / Terms unchanged. Admin writes stay Admin Impl 66; this repo does not claim that number. **207** stays unused. Next is **221**. Note: [2026-09-10-faq-cookies-consume.md](../notes/2026-09-10-faq-cookies-consume.md). Convention: [portal-faq-cookies-read.md](../conventions/portal-faq-cookies-read.md), [legal-pages.md](../conventions/legal-pages.md).
 
 ---
 
@@ -2047,9 +2048,17 @@ Phase 6 (GitHub epic #23). The reading progress bar animated `width` on every sc
 
 ---
 
+## Impl Phase 220 — Phase 5 visual identity (2026-09-14)
+
+**Status:** Done (scoped by owner decision)
+
+Phase 5 (GitHub epic #22). Three items were identity decisions rather than defects and were put to the owner first: keep Inter and fix only the weight scale; leave the hardcover metaphor; document the reader's dark mode as deliberate. Weight was carrying no hierarchy — `font-bold` 318 against `font-medium` 106, with 118 bolds on `text-xs`/`text-2xs` where the weight buys nothing. 106 micro-label weights relaxed to `font-semibold` across 37 files (now bold 140 / semibold 339 / medium 106); **cover overlays keep bold at any size** because that weight fights artwork for legibility rather than expressing hierarchy. Measured after: Home rail heading 24px/700 → card title 14px/600 → deck 14px/400, three steps where all three were bold. New [type-weight-scale](../conventions/type-weight-scale.md); [portal-light-and-i18n-defaults](../conventions/portal-light-and-i18n-defaults.md) gains the reasoning for the reader dark-mode exception and its consequences. **#16 rejected**: [hero-spotlight](../conventions/hero-spotlight.md) requires a stable `h1` that does not rotate with the carousel, so promoting the slide title would change the document heading every few seconds. The real defect underneath — a `<p>` kicker and the `<h1>` stacked in near-identical styling, with the site name already in the nav logo — is fixed by making the `h1` `sr-only`. **Two more findings did not survive**: `--color-spark-*` is used by `CoinPackageCard`'s Best Value treatment exactly as [brand-color-tokens](../conventions/brand-color-tokens.md) reserves it, and #16 above. Myanmar visual layer and metaphor replacement not done — both depended on decisions declined for this phase. **207** stays unused. Next is **221**. Note: [2026-09-14-phase-5-visual-identity.md](../notes/2026-09-14-phase-5-visual-identity.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **220**).
+1. Take **next free Impl** (currently **221**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

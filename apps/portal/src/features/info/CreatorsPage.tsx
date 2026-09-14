@@ -150,7 +150,7 @@ const CreatorsPage = () => {
           <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
             {FACTS.map((fact) => (
               <div key={fact.labelKey}>
-                <dt className="text-2xs text-muted font-bold uppercase tracking-widest">
+                <dt className="text-2xs text-muted font-semibold uppercase tracking-widest">
                   {t(fact.labelKey)}
                 </dt>
                 <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>
@@ -202,11 +202,11 @@ const CreatorsPage = () => {
                   <span className={ICON_WELL}>
                     <step.icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <span className="text-2xs text-primary-500 font-bold uppercase tracking-widest">
+                  <span className="text-2xs text-primary-500 font-semibold uppercase tracking-widest">
                     {index + 1}
                   </span>
                 </div>
-                <h3 className="mt-4 text-base font-bold text-gray-900">{step.title}</h3>
+                <h3 className="mt-4 text-base font-semibold text-gray-900">{step.title}</h3>
                 <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {step.desc}
                 </p>
@@ -250,16 +250,16 @@ const CreatorsPage = () => {
           <div className="mt-8 grid grid-cols-1 items-end gap-8 sm:grid-cols-2">
             <div>
               <div className="book-media book-media-shadow relative aspect-[3/4] w-40 max-w-full bg-gray-200">
-                <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-500">
+                <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-500">
                   {t('creators.specVisualCover')}
                 </span>
               </div>
-              <p className="text-muted mt-3 text-xs font-bold uppercase tracking-wider">
+              <p className="text-muted mt-3 text-xs font-semibold uppercase tracking-wider">
                 {t('creators.specCoverLabel')}
               </p>
             </div>
             <div>
-              <p className="text-2xs text-muted mb-2 font-bold uppercase tracking-widest">
+              <p className="text-2xs text-muted mb-2 font-semibold uppercase tracking-widest">
                 {t('creators.specVisualWidth')}
               </p>
               <div className="w-24 border-x-2 border-t-2 border-gray-300 px-1 pt-1">
@@ -270,7 +270,7 @@ const CreatorsPage = () => {
                   <div className="h-12 rounded-2xl bg-gray-100" />
                 </div>
               </div>
-              <p className="text-muted mt-3 text-xs font-bold uppercase tracking-wider">
+              <p className="text-muted mt-3 text-xs font-semibold uppercase tracking-wider">
                 {t('creators.specVisualStrip')}
               </p>
             </div>
@@ -278,7 +278,7 @@ const CreatorsPage = () => {
           <dl className={`${CARD} mt-8 grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2`}>
             {SPECS.map((spec) => (
               <div key={spec.labelKey}>
-                <dt className="text-2xs text-muted font-bold uppercase tracking-widest">
+                <dt className="text-2xs text-muted font-semibold uppercase tracking-widest">
                   {t(spec.labelKey)}
                 </dt>
                 <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(spec.valueKey)}</dd>
@@ -347,10 +347,10 @@ const CreatorsPage = () => {
           <ol className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {AFTER.map((item, index) => (
               <li key={item.titleKey} className={`${CARD} p-6`}>
-                <span className="text-2xs text-primary-500 font-bold uppercase tracking-widest">
+                <span className="text-2xs text-primary-500 font-semibold uppercase tracking-widest">
                   {index + 1}
                 </span>
-                <h3 className="mt-4 text-base font-bold text-gray-900">{t(item.titleKey)}</h3>
+                <h3 className="mt-4 text-base font-semibold text-gray-900">{t(item.titleKey)}</h3>
                 <p className="mt-2 text-sm font-medium leading-relaxed text-gray-500">
                   {t(item.descKey)}
                 </p>

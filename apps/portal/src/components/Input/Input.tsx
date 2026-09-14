@@ -145,7 +145,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
             <input
               {...sharedInputProps}
-              className={`px-4.5 min-h-11 w-full bg-transparent text-sm font-bold text-gray-950 transition-all duration-200 focus:outline-none ${
+              className={`px-4.5 min-h-11 w-full bg-transparent text-sm font-semibold text-gray-950 transition-all duration-200 focus:outline-none ${
                 leftIcon ? 'pl-11' : ''
               } ${lifted ? 'pt-6.5 pb-2' : 'py-4'} ${className}`}
             />
@@ -167,7 +167,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 exit={{ opacity: 0, y: -5 }}
                 id={messageId}
                 role="alert"
-                className="ml-2 mt-1.5 flex items-center gap-1 text-xs font-bold text-red-500"
+                className="ml-2 mt-1.5 flex items-center gap-1 text-xs font-semibold text-red-500"
               >
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 {error}

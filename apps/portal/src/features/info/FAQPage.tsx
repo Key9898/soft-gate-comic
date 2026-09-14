@@ -70,7 +70,7 @@ const FAQItem = ({
             className="overflow-hidden"
           >
             <div className="px-4.5 border-t border-gray-100 py-4">
-              <p className="text-xs font-bold leading-relaxed text-gray-600 sm:text-sm">
+              <p className="text-xs font-semibold leading-relaxed text-gray-600 sm:text-sm">
                 {item.answer}
               </p>
 
@@ -80,7 +80,7 @@ const FAQItem = ({
                     <li key={`${item.id}-${related.to}`}>
                       <Link
                         to={related.to}
-                        className="link inline-flex min-h-11 items-center text-sm font-bold"
+                        className="link inline-flex min-h-11 items-center text-sm font-semibold"
                       >
                         {related.label}
                       </Link>
@@ -91,7 +91,7 @@ const FAQItem = ({
 
               <div className="mt-4 flex flex-wrap items-start justify-between gap-3 border-t border-gray-50 pt-3.5">
                 <div className="min-w-0 flex-1">
-                  <span className="text-2xs text-muted font-bold uppercase tracking-wider">
+                  <span className="text-2xs text-muted font-semibold uppercase tracking-wider">
                     {t('faq.wasHelpful')}
                   </span>
                   <p className="text-muted mt-1 text-xs font-medium">{t('faq.feedbackLocal')}</p>
@@ -103,7 +103,7 @@ const FAQItem = ({
                       <button
                         type="button"
                         onClick={() => setVote('yes')}
-                        className="text-2xs flex min-h-11 items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-bold text-gray-600 transition-all hover:bg-emerald-50 hover:text-emerald-600"
+                        className="text-2xs flex min-h-11 items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-semibold text-gray-600 transition-all hover:bg-emerald-50 hover:text-emerald-600"
                       >
                         <ThumbsUp className="h-3 w-3" aria-hidden="true" />
                         {t('faq.yes')}
@@ -111,7 +111,7 @@ const FAQItem = ({
                       <button
                         type="button"
                         onClick={() => setVote('no')}
-                        className="text-2xs flex min-h-11 items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-bold text-gray-600 transition-all hover:bg-red-50 hover:text-red-600"
+                        className="text-2xs flex min-h-11 items-center gap-1.5 rounded-2xl border border-gray-200 px-3 py-1.5 font-semibold text-gray-600 transition-all hover:bg-red-50 hover:text-red-600"
                       >
                         <ThumbsDown className="h-3 w-3" aria-hidden="true" />
                         {t('faq.no')}
@@ -121,7 +121,7 @@ const FAQItem = ({
                     <motion.div
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-2xs flex items-center gap-1.5 font-bold text-emerald-600"
+                      className="text-2xs flex items-center gap-1.5 font-semibold text-emerald-600"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                       {t('faq.feedbackThanks')}
@@ -238,7 +238,7 @@ const FAQPage = () => {
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`relative flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
+                    className={`relative flex min-h-11 items-center justify-center rounded-2xl px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all ${
                       isActive ? 'text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >

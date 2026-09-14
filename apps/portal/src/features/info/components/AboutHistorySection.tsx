@@ -106,7 +106,7 @@ function HttpHistoryList({ histories, lang }: { histories: PortalAboutHistory[];
               const monthLabel = monthKey ? t(monthKey) : String(item.month)
               return (
                 <li key={item.id}>
-                  <p className="text-2xs text-muted font-bold uppercase tracking-widest">
+                  <p className="text-2xs text-muted font-semibold uppercase tracking-widest">
                     {monthLabel}
                   </p>
                   <h3 className="mt-1 text-base font-bold text-gray-900">{title}</h3>

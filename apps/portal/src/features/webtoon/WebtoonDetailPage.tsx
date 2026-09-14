@@ -347,7 +347,7 @@ const WebtoonDetailPage = () => {
                   aria-label={`${t('webtoonDetail.viewAuthor')} ${webtoon.author.name[lang]}`}
                 >
                   <div className="shape-circle flex h-8 w-8 items-center justify-center bg-white/20">
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {webtoon.author.name[lang].charAt(0)}
                     </span>
                   </div>
@@ -419,7 +419,7 @@ const WebtoonDetailPage = () => {
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Eye className="h-4 w-4 text-white/60" />
                   <div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {formatCount(webtoon.viewCount)}
                     </span>
                     <span className="ml-1 text-xs text-white/50">{t('webtoonDetail.views')}</span>
@@ -428,7 +428,7 @@ const WebtoonDetailPage = () => {
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Heart className="h-4 w-4 text-white/60" />
                   <div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {formatCount(webtoon.likeCount)}
                     </span>
                     <span className="ml-1 text-xs text-white/50">{t('webtoon.likes')}</span>
@@ -437,14 +437,14 @@ const WebtoonDetailPage = () => {
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <BookOpen className="h-4 w-4 text-white/60" />
                   <div>
-                    <span className="text-sm font-bold text-white">{allEpisodes.length}</span>
+                    <span className="text-sm font-semibold text-white">{allEpisodes.length}</span>
                     <span className="ml-1 text-xs text-white/50">{t('webtoon.episodes')}</span>
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {formatRating(webtoon.rating)}
                     </span>
                     <span className="ml-1 text-xs text-white/50">{t('rating.community')}</span>
@@ -453,7 +453,7 @@ const WebtoonDetailPage = () => {
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Calendar className="h-4 w-4 text-white/60" aria-hidden="true" />
                   <div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {formatCatalogDate(webtoon.createdAt)}
                     </span>
                     <span className="ml-1 text-xs text-white/50">
@@ -464,7 +464,7 @@ const WebtoonDetailPage = () => {
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Clock className="h-4 w-4 text-white/60" aria-hidden="true" />
                   <div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-semibold text-white">
                       {formatCatalogDate(webtoon.updatedAt)}
                     </span>
                     <span className="ml-1 text-xs text-white/50">{t('webtoonDetail.updated')}</span>
@@ -716,7 +716,7 @@ const WebtoonDetailPage = () => {
                             <Check className="h-3.5 w-3.5" aria-hidden="true" />
                           </span>
                         ) : (
-                          <span className="text-2xs absolute bottom-1 left-1 rounded-2xl bg-black/60 px-1.5 py-0.5 font-bold text-white">
+                          <span className="text-2xs absolute bottom-1 left-1 rounded-2xl bg-black/60 px-1.5 py-0.5 font-semibold text-white">
                             {episode.episodeNumber}
                           </span>
                         )}
@@ -764,7 +764,7 @@ const WebtoonDetailPage = () => {
                         >
                           {episode.coinPrice} {t('webtoonDetail.coins')}
                           {locked && isAuthenticated ? (
-                            <span className="ml-1.5 font-bold tabular-nums">
+                            <span className="ml-1.5 font-semibold tabular-nums">
                               {balance >= episode.coinPrice
                                 ? t('webtoonDetail.affordable', { balance })
                                 : t('webtoonDetail.shortBy', {
@@ -803,7 +803,7 @@ const WebtoonDetailPage = () => {
         aria-labelledby="hub-comments-heading"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 id="hub-comments-heading" className="mb-6 text-xl font-bold text-gray-900">
+          <h2 id="hub-comments-heading" className="mb-6 text-xl font-semibold text-gray-900">
             {t('webtoonDetail.comments')}
           </h2>
           <CommentsThread commentKey={seriesCommentKey(webtoon.id)} />
@@ -814,7 +814,9 @@ const WebtoonDetailPage = () => {
         <section className="border-t border-gray-100 py-8">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-6 flex items-center justify-between gap-3">
-              <h2 className="text-xl font-bold text-gray-900">{t('webtoonDetail.otherWorks')}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t('webtoonDetail.otherWorks')}
+              </h2>
               <Link
                 to={`/author/${webtoon.author.id}`}
                 className="text-primary-600 hover:text-primary-700 focus-visible:ring-primary-500 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2"

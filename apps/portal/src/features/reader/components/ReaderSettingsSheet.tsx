@@ -82,7 +82,7 @@ const ReaderSettingsSheet = ({
             >
               {t('readerPage.brightness')}
             </label>
-            <span className="text-primary-500 text-xs font-bold tabular-nums">
+            <span className="text-primary-500 text-xs font-semibold tabular-nums">
               {Math.round(brightness * 100)}%
             </span>
           </div>

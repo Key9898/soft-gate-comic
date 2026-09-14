@@ -39,12 +39,12 @@ const CoinPackageCard = ({
       )}
 
       {pkg.popular && (
-        <span className="from-accent-500 to-accent-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold uppercase tracking-wider text-white shadow-sm">
+        <span className="from-accent-500 to-accent-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-semibold uppercase tracking-wider text-white shadow-sm">
           {popularLabel}
         </span>
       )}
       {pkg.bestValue && (
-        <span className="from-spark-500 to-spark-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-bold uppercase tracking-wider text-white shadow-sm">
+        <span className="from-spark-500 to-spark-700 text-2xs absolute right-6 top-0 rounded-b-2xl bg-gradient-to-r px-3 py-1 font-semibold uppercase tracking-wider text-white shadow-sm">
           {bestValueLabel}
         </span>
       )}
@@ -65,7 +65,7 @@ const CoinPackageCard = ({
           <div>
             <p className="text-3xl font-bold tracking-tight">{pkg.coins.toLocaleString()}</p>
             {pkg.bonus && (
-              <p className="flex items-center gap-1 text-xs font-bold text-emerald-500">
+              <p className="flex items-center gap-1 text-xs font-semibold text-emerald-500">
                 <Sparkles
                   className="h-3 w-3 animate-spin"
                   style={{ animationDuration: '3s' }}

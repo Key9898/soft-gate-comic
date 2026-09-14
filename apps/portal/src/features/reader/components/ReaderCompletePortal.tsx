@@ -98,7 +98,7 @@ const ReaderCompletePortal = ({
           </p>
           <div className={`flex items-center justify-between rounded-2xl border p-4 ${nested}`}>
             <div className="flex items-center gap-3">
-              <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-2xl font-bold text-white">
+              <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-2xl font-semibold text-white">
                 {nextEpisodeNumber}
               </div>
               <div className="text-left">

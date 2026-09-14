@@ -812,7 +812,7 @@ const ReaderPage = () => {
                     className={`flex min-h-11 items-center gap-1 rounded-2xl px-2.5 py-2.5 transition ${chromeHover}`}
                   >
                     <MessageCircle className="h-5 w-5" />
-                    <span className="text-xs font-bold">{commentsThread.comments.length}</span>
+                    <span className="text-xs font-semibold">{commentsThread.comments.length}</span>
                   </button>
                 </div>
               </div>

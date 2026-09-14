@@ -67,8 +67,10 @@ function MockTeamList() {
               loading="lazy"
               className={PHOTO_CLASS}
             />
-            <h3 className="mt-4 text-base font-bold text-gray-900">{name}</h3>
-            <p className="text-2xs text-muted mt-1 font-bold uppercase tracking-widest">{role}</p>
+            <h3 className="mt-4 text-base font-semibold text-gray-900">{name}</h3>
+            <p className="text-2xs text-muted mt-1 font-semibold uppercase tracking-widest">
+              {role}
+            </p>
           </li>
         )
       })}
@@ -95,7 +97,9 @@ function HttpTeamList({ members, lang }: { members: PortalAboutMember[]; lang: s
               />
             ) : null}
             <h3 className="mt-4 text-base font-bold text-gray-900">{name}</h3>
-            <p className="text-2xs text-muted mt-1 font-bold uppercase tracking-widest">{role}</p>
+            <p className="text-2xs text-muted mt-1 font-semibold uppercase tracking-widest">
+              {role}
+            </p>
           </li>
         )
       })}

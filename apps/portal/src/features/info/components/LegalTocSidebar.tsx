@@ -31,7 +31,7 @@ const LegalTocSidebar = ({ sections }: LegalTocSidebarProps) => {
   return (
     <div className="rounded-3xl border border-gray-200/60 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <h3 className="text-muted flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+        <h3 className="text-muted flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
           <BookOpen className="text-primary-500 h-4.5 w-4.5" aria-hidden />
           {t('legal.toc')}
         </h3>

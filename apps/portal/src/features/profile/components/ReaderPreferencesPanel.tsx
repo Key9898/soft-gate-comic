@@ -59,11 +59,11 @@ const ReaderPreferencesPanel = () => {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h3 className="text-lg font-bold text-gray-900">{t('profilePage.preferences')}</h3>
         {mock ? (
-          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
+          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
             {t('profilePage.prefsDeviceChip')}
           </span>
         ) : (
-          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-600">
+          <span className="rounded-2xl bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
             {t('profilePage.prefsAccountChip')}
           </span>
         )}
@@ -116,7 +116,7 @@ const ReaderPreferencesPanel = () => {
             <label className="text-muted text-sm font-semibold uppercase tracking-wider">
               {t('readerPage.brightness')}
             </label>
-            <span className="text-primary-600 text-xs font-bold">
+            <span className="text-primary-600 text-xs font-semibold">
               {Math.round(prefs.brightness * 100)}%
             </span>
           </div>

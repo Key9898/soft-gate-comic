@@ -117,7 +117,7 @@ const NotificationSettingsMatrix = () => {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[36rem] border-separate border-spacing-y-2 text-left">
           <thead>
-            <tr className="text-2xs text-muted font-bold uppercase tracking-wider">
+            <tr className="text-2xs text-muted font-semibold uppercase tracking-wider">
               <th className="px-2 py-2 font-bold">{t('profilePage.settingsCategory')}</th>
               <th className="px-2 py-2 text-center font-bold">{t('profilePage.channelInApp')}</th>
               <th className="px-2 py-2 text-center font-bold">{t('profilePage.channelEmail')}</th>
@@ -156,7 +156,7 @@ const NotificationSettingsMatrix = () => {
                 </p>
               </th>
               <td className="px-2 py-2 text-center">
-                <span className="text-xs font-bold text-gray-600">
+                <span className="text-xs font-semibold text-gray-600">
                   {t('profilePage.prefAccountLocked')}
                 </span>
               </td>

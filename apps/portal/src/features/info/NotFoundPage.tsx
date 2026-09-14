@@ -76,7 +76,7 @@ const NotFoundPage = ({
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-500">{t(copy.descKey)}</p>
 
         <div className="mt-8 w-full max-w-md text-left">
-          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
+          <h2 className="text-muted text-xs font-semibold uppercase tracking-wider">
             {t('search.title')}
           </h2>
           <div className="mt-4">
@@ -98,7 +98,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl">
-          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
+          <h2 className="text-muted text-xs font-semibold uppercase tracking-wider">
             {t('notFound.goHere')}
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -112,7 +112,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-3xl text-left">
-          <h2 className="text-muted text-center text-xs font-bold uppercase tracking-wider">
+          <h2 className="text-muted text-center text-xs font-semibold uppercase tracking-wider">
             {t('notFound.tryTitle')}
           </h2>
           <p className="mt-3 text-center text-sm leading-relaxed text-gray-500">
@@ -154,7 +154,7 @@ const NotFoundPage = ({
         </div>
 
         <div className="mt-12 w-full max-w-xl">
-          <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
+          <h2 className="text-muted text-xs font-semibold uppercase tracking-wider">
             {t('notFound.helpTitle')}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-500">{t('notFound.helpDesc')}</p>

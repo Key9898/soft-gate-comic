@@ -169,7 +169,7 @@ const AuthorPage = () => {
                 <SearchAutocomplete className="mx-auto max-w-md" />
               </div>
               <div className="mt-8 w-full text-left">
-                <h3 className="text-muted text-xs font-bold uppercase tracking-wider">
+                <h3 className="text-muted text-xs font-semibold uppercase tracking-wider">
                   {t('notFound.goHere')}
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">

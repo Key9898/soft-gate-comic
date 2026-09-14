@@ -320,7 +320,7 @@ const ProfilePage = () => {
                       className="shape-circle h-24 w-24 object-cover"
                     />
                   ) : (
-                    <span className="text-3xl font-bold text-white">
+                    <span className="text-3xl font-semibold text-white">
                       {displayName.charAt(0).toUpperCase()}
                     </span>
                   )}
@@ -336,7 +336,7 @@ const ProfilePage = () => {
                     />
                   </label>
                 </div>
-                <h1 className="mt-4 text-lg font-bold text-gray-900">{displayName}</h1>
+                <h1 className="mt-4 text-lg font-semibold text-gray-900">{displayName}</h1>
                 <p className="text-muted text-xs font-semibold">@{user.username}</p>
                 <p className="text-2xs text-muted mt-2 font-medium">
                   {t('profilePage.localStatsNote', {
@@ -349,8 +349,10 @@ const ProfilePage = () => {
               <div className="mt-6 grid grid-cols-2 gap-3.5">
                 {stats.map((stat) => (
                   <div key={stat.label} className="rounded-2xl border bg-gray-50 p-3.5 text-center">
-                    <p className="text-xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="text-2xs text-muted mt-0.5 font-bold uppercase">{stat.label}</p>
+                    <p className="text-xl font-semibold text-gray-900">{stat.value}</p>
+                    <p className="text-2xs text-muted mt-0.5 font-semibold uppercase">
+                      {stat.label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -368,7 +370,7 @@ const ProfilePage = () => {
                     }`}
                   >
                     <tab.icon className="h-5 w-5" />
-                    <span className="text-sm font-bold">{tab.label}</span>
+                    <span className="text-sm font-semibold">{tab.label}</span>
                     <ChevronRight className="ml-auto h-4 w-4 opacity-50" />
                     {activeTab === tab.id && (
                       <motion.div
@@ -385,7 +387,7 @@ const ProfilePage = () => {
                   className="flex min-h-[44px] w-full items-center gap-3 rounded-2xl px-4 py-3 text-red-600 transition-colors hover:bg-red-50"
                 >
                   <LogOut className="h-5 w-5" />
-                  <span className="text-sm font-bold">{t('profilePage.logout')}</span>
+                  <span className="text-sm font-semibold">{t('profilePage.logout')}</span>
                 </button>
               </nav>
             </div>
@@ -403,7 +405,7 @@ const ProfilePage = () => {
                 <>
                   <div className="rounded-3xl border bg-white p-6 text-left shadow-sm">
                     <div className="mb-6 flex items-center justify-between">
-                      <h3 className="text-lg font-bold text-gray-900">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {t('profilePage.profileInformation')}
                       </h3>
                       <div className="flex gap-2">
@@ -454,7 +456,7 @@ const ProfilePage = () => {
                       <div className="text-left">
                         <label
                           htmlFor={bioId}
-                          className="text-muted mb-2 block text-xs font-bold uppercase"
+                          className="text-muted mb-2 block text-xs font-semibold uppercase"
                         >
                           {t('profilePage.bio')}
                         </label>
@@ -474,7 +476,7 @@ const ProfilePage = () => {
                       </div>
 
                       <div className="border-t border-gray-100 pt-4">
-                        <p className="text-muted text-xs font-bold">
+                        <p className="text-muted text-xs font-semibold">
                           {t('profilePage.joinedOn', {
                             date: new Date(user.createdAt).toLocaleDateString(
                               lang === 'mm' ? 'my-MM' : 'en-US',

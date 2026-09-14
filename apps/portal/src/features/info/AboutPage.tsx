@@ -102,7 +102,7 @@ const AboutPage = () => {
             <dl className={`${CARD} grid gap-x-8 gap-y-6 p-8 sm:grid-cols-2 lg:grid-cols-4`}>
               {FACTS.map((fact) => (
                 <div key={fact.labelKey}>
-                  <dt className="text-2xs text-muted font-bold uppercase tracking-widest">
+                  <dt className="text-2xs text-muted font-semibold uppercase tracking-widest">
                     {t(fact.labelKey)}
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold text-gray-900">{t(fact.valueKey)}</dd>

@@ -45,7 +45,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
         <TrendingUp className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         {t('profilePage.weeklyActivity')}
         {demoLabel ? (
-          <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-bold text-gray-500">
+          <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-semibold text-gray-500">
             {demoLabel}
           </span>
         ) : null}
@@ -74,7 +74,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: -35, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="text-2xs absolute top-0 z-30 whitespace-nowrap rounded-2xl bg-gray-950 px-2.5 py-1.5 font-bold text-white shadow-lg"
+                    className="text-2xs absolute top-0 z-30 whitespace-nowrap rounded-2xl bg-gray-950 px-2.5 py-1.5 font-semibold text-white shadow-lg"
                   >
                     {t('profilePage.episodesUnit', { count: d.count })}
                   </motion.div>
@@ -91,7 +91,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
                 />
               </div>
 
-              <span className="text-2xs text-muted mt-2 font-bold uppercase">{d.day}</span>
+              <span className="text-2xs text-muted mt-2 font-semibold uppercase">{d.day}</span>
             </div>
           )
         })}

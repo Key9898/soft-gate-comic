@@ -217,7 +217,7 @@ const SearchPage = () => {
 
   const recovery = (
     <div className="mt-8 w-full">
-      <h2 className="text-muted text-xs font-bold uppercase tracking-wider">
+      <h2 className="text-muted text-xs font-semibold uppercase tracking-wider">
         {t('notFound.goHere')}
       </h2>
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -535,7 +535,7 @@ const SearchPage = () => {
                           className="shape-circle h-12 w-12 shrink-0 object-cover"
                         />
                       ) : (
-                        <div className="bg-primary-50 text-primary-700 shape-circle flex h-12 w-12 shrink-0 items-center justify-center font-bold">
+                        <div className="bg-primary-50 text-primary-700 shape-circle flex h-12 w-12 shrink-0 items-center justify-center font-semibold">
                           {author.name[lang].charAt(0)}
                         </div>
                       )}

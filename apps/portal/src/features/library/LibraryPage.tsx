@@ -338,8 +338,8 @@ const LibraryPage = () => {
                   }`}
                 >
                   <tab.icon className="h-4.5 w-4.5" />
-                  <span className="text-sm font-bold">{tab.label}</span>
-                  <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-bold">
+                  <span className="text-sm font-semibold">{tab.label}</span>
+                  <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-semibold">
                     {tab.count}
                   </span>
                   {activeTab === tab.id && (
@@ -413,7 +413,7 @@ const LibraryPage = () => {
           <div className="bg-primary-50/50 border-primary-100/30 mb-4 flex items-center justify-between rounded-2xl border px-5 py-3">
             <button
               onClick={handleSelectAll}
-              className="text-primary-600 flex items-center gap-2 text-xs font-bold transition hover:opacity-80"
+              className="text-primary-600 flex items-center gap-2 text-xs font-semibold transition hover:opacity-80"
             >
               {isAllSelected ? (
                 <>
@@ -427,7 +427,7 @@ const LibraryPage = () => {
                 </>
               )}
             </button>
-            <span className="text-xs font-bold text-gray-500">
+            <span className="text-xs font-semibold text-gray-500">
               {t('libraryPage.itemsSelected', { count: selectedItems.length })}
             </span>
           </div>
@@ -535,7 +535,7 @@ const LibraryPage = () => {
                           to={continueHref(item)}
                           onClick={(event) => event.stopPropagation()}
                           size="sm"
-                          className="mt-2 gap-1 px-3 text-xs font-bold"
+                          className="mt-2 gap-1 px-3 text-xs font-semibold"
                         >
                           <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                           {t('libraryPage.continueReading')}
@@ -595,7 +595,7 @@ const LibraryPage = () => {
                             decoding="async"
                           />
                         ) : (
-                          <span className="text-2xl font-bold text-white opacity-40">
+                          <span className="text-2xl font-semibold text-white opacity-40">
                             {item.title[lang].charAt(0)}
                           </span>
                         )}
@@ -603,7 +603,7 @@ const LibraryPage = () => {
 
                       {/* Info layout */}
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate text-base font-bold leading-tight text-gray-900">
+                        <h3 className="truncate text-base font-semibold leading-tight text-gray-900">
                           {item.title[lang]}
                         </h3>
                         <p className="mt-1 text-xs font-semibold text-gray-500">
@@ -659,7 +659,7 @@ const LibraryPage = () => {
                             <Link
                               to={continueHref(item)}
                               onClick={(event) => event.stopPropagation()}
-                              className="hover:bg-primary-50 text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 items-center gap-1 rounded-2xl px-3 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 sm:inline-flex"
+                              className="hover:bg-primary-50 text-primary-600 focus-visible:ring-primary-500 hidden min-h-11 items-center gap-1 rounded-2xl px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 sm:inline-flex"
                             >
                               <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
                               {t('libraryPage.continueReading')}
@@ -708,7 +708,7 @@ const LibraryPage = () => {
               className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex w-[90%] max-w-lg items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/95 px-6 py-3.5 text-sm shadow-2xl backdrop-blur-md"
             >
               <div className="flex flex-col">
-                <span className="text-2xs text-muted font-bold uppercase tracking-wider">
+                <span className="text-2xs text-muted font-semibold uppercase tracking-wider">
                   {t('libraryPage.title')}
                 </span>
                 <span className="font-bold text-gray-900">

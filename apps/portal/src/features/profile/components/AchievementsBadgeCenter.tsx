@@ -77,11 +77,11 @@ export const AchievementsBadgeCenter = ({
           box-shadow: 0 5px 15px -3px rgba(245, 158, 11, 0.4), 0 4px 6px -4px rgba(245, 158, 11, 0.4);
         }
       `}</style>
-      <h4 className="text-muted mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+      <h4 className="text-muted mb-5 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider">
         <Award className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         {t('profilePage.achievements')}
         {demoLabel ? (
-          <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-bold text-gray-500">
+          <span className="text-2xs rounded-2xl bg-gray-100 px-2 py-0.5 font-semibold text-gray-500">
             {demoLabel}
           </span>
         ) : null}
@@ -129,7 +129,7 @@ export const AchievementsBadgeCenter = ({
               </div>
             )}
 
-            <p className="text-xs font-bold leading-tight text-gray-900">{ach.title}</p>
+            <p className="text-xs font-semibold leading-tight text-gray-900">{ach.title}</p>
             <p className="text-2xs text-muted mt-1 leading-normal">{ach.desc}</p>
           </motion.div>
         ))}

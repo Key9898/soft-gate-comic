@@ -94,7 +94,7 @@ function SortMenu<T extends string>({
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
-        className="px-4.5 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-bold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
+        className="px-4.5 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl border border-gray-200 bg-white py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-800 shadow-sm transition-all hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
       >
         <ListFilter className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         <span>{activeLabel}</span>
@@ -142,7 +142,7 @@ function SortMenu<T extends string>({
                       onChange(option.value)
                       close()
                     }}
-                    className={`focus-visible:ring-primary-500 flex min-h-11 w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 ${
+                    className={`focus-visible:ring-primary-500 flex min-h-11 w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 ${
                       isSelected
                         ? 'bg-primary-50 text-primary-600'
                         : 'text-gray-600 hover:bg-gray-50'

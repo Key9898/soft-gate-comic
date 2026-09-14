@@ -187,11 +187,11 @@ const ContactPage = () => {
                         <ch.icon className="h-5.5 w-5.5 stroke-[2.2]" aria-hidden="true" />
                       </div>
                       <div>
-                        <p className="text-2xs text-muted font-bold uppercase tracking-widest">
+                        <p className="text-2xs text-muted font-semibold uppercase tracking-widest">
                           {ch.title}
                         </p>
                         <p
-                          className="mt-1 text-sm font-bold text-gray-900"
+                          className="mt-1 text-sm font-semibold text-gray-900"
                           translate={ch.href ? 'no' : undefined}
                         >
                           {ch.value}
@@ -232,7 +232,7 @@ const ContactPage = () => {
                     aria-hidden="true"
                   />
                   <span>
-                    <span className="block text-sm font-bold text-gray-900">
+                    <span className="block text-sm font-semibold text-gray-900">
                       {t('footer.creators')}
                     </span>
                     <span className="mt-1 block text-xs font-medium text-gray-500">
@@ -249,7 +249,7 @@ const ContactPage = () => {
                     aria-hidden="true"
                   />
                   <span>
-                    <span className="block text-sm font-bold text-gray-900">
+                    <span className="block text-sm font-semibold text-gray-900">
                       {t('footer.press')}
                     </span>
                     <span className="mt-1 block text-xs font-medium text-gray-500">
@@ -265,20 +265,20 @@ const ContactPage = () => {
 
             <div className="lg:col-span-7">
               <div className="mb-6 rounded-3xl border border-gray-200/60 bg-white p-5 shadow-sm sm:p-6">
-                <h2 className="text-lg font-bold text-gray-900">{t('contact.tryHelp')}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('contact.tryHelp')}</h2>
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">
                   {t('contact.tryHelpDesc')}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-x-4">
                   <Link
                     to="/help"
-                    className="link inline-flex min-h-11 items-center text-sm font-bold"
+                    className="link inline-flex min-h-11 items-center text-sm font-semibold"
                   >
                     {t('footer.help')}
                   </Link>
                   <Link
                     to="/faq"
-                    className="link inline-flex min-h-11 items-center text-sm font-bold"
+                    className="link inline-flex min-h-11 items-center text-sm font-semibold"
                   >
                     {t('footer.faq')}
                   </Link>
@@ -287,16 +287,16 @@ const ContactPage = () => {
 
               <div className="rounded-3xl border border-gray-200/60 bg-white p-6 shadow-xl sm:p-8">
                 <div className="mb-6">
-                  <h2 className="flex items-center gap-2 text-lg font-bold uppercase tracking-wider text-gray-900">
+                  <h2 className="flex items-center gap-2 text-lg font-semibold uppercase tracking-wider text-gray-900">
                     <span className="bg-primary-500 shape-circle h-2 w-2" aria-hidden="true" />
                     {t('contact.sendMessage')}
                   </h2>
-                  <p className="text-2xs text-muted mt-1 font-bold uppercase tracking-wider">
+                  <p className="text-2xs text-muted mt-1 font-semibold uppercase tracking-wider">
                     {t('contact.formHint')}
                   </p>
                   {!isPitch && (
                     <>
-                      <p className="mt-4 text-xs font-bold uppercase tracking-wider text-gray-500">
+                      <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
                         {t('contact.writerTitle')}
                       </p>
                       <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600">
@@ -327,10 +327,10 @@ const ContactPage = () => {
                       className="flex flex-col items-center rounded-2xl border-2 border-dashed border-emerald-100 bg-emerald-500/5 py-12 text-center"
                     >
                       <CheckCircle2 className="mb-4 h-14 w-14 stroke-[2.5] text-emerald-500" />
-                      <h4 className="text-sm font-bold text-gray-900">
+                      <h4 className="text-sm font-semibold text-gray-900">
                         {t('contact.successTitle')}
                       </h4>
-                      <p className="mt-2 pl-6 pr-6 text-xs font-bold leading-relaxed text-gray-500">
+                      <p className="mt-2 pl-6 pr-6 text-xs font-semibold leading-relaxed text-gray-500">
                         {t('contact.successDesc')}
                       </p>
                     </motion.div>
@@ -386,7 +386,7 @@ const ContactPage = () => {
                           >
                             <label
                               htmlFor={synopsisId}
-                              className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
+                              className="text-muted pl-1 text-xs font-semibold uppercase tracking-wider"
                             >
                               {t('creators.fieldSynopsis')}
                             </label>
@@ -403,7 +403,10 @@ const ContactPage = () => {
                               }`}
                             />
                             {errors.synopsis && (
-                              <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
+                              <p
+                                role="alert"
+                                className="text-2xs ml-2 mt-1 font-semibold text-red-500"
+                              >
                                 {errors.synopsis}
                               </p>
                             )}
@@ -411,7 +414,7 @@ const ContactPage = () => {
                           <div className="text-left">
                             <label
                               htmlFor={coverId}
-                              className="px-4.5 flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-200 bg-gray-50/50 text-sm font-bold text-gray-900"
+                              className="px-4.5 flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-200 bg-gray-50/50 text-sm font-semibold text-gray-900"
                             >
                               <input
                                 id={coverId}
@@ -424,7 +427,10 @@ const ContactPage = () => {
                               {t('creators.fieldCoverReady')}
                             </label>
                             {errors.cover && (
-                              <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
+                              <p
+                                role="alert"
+                                className="text-2xs ml-2 mt-1 font-semibold text-red-500"
+                              >
                                 {errors.cover}
                               </p>
                             )}
@@ -438,7 +444,7 @@ const ContactPage = () => {
                           <motion.div className="space-y-2 text-left">
                             <label
                               htmlFor={notesId}
-                              className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
+                              className="text-muted pl-1 text-xs font-semibold uppercase tracking-wider"
                             >
                               {t('creators.fieldNotes')}
                             </label>
@@ -447,7 +453,7 @@ const ContactPage = () => {
                               value={notes}
                               onChange={(e) => setNotes(e.target.value)}
                               rows={3}
-                              className="focus:border-primary-500 focus:ring-primary-500 px-4.5 w-full resize-none rounded-2xl border-2 border-gray-200 py-3.5 text-sm font-bold transition focus:outline-none focus:ring-1"
+                              className="focus:border-primary-500 focus:ring-primary-500 px-4.5 w-full resize-none rounded-2xl border-2 border-gray-200 py-3.5 text-sm font-semibold transition focus:outline-none focus:ring-1"
                             />
                           </motion.div>
                         </>
@@ -458,7 +464,7 @@ const ContactPage = () => {
                         >
                           <label
                             htmlFor={messageId}
-                            className="text-muted pl-1 text-xs font-bold uppercase tracking-wider"
+                            className="text-muted pl-1 text-xs font-semibold uppercase tracking-wider"
                           >
                             {t('contact.message')}
                           </label>
@@ -476,7 +482,10 @@ const ContactPage = () => {
                             }`}
                           />
                           {errors.message && (
-                            <p role="alert" className="text-2xs ml-2 mt-1 font-bold text-red-500">
+                            <p
+                              role="alert"
+                              className="text-2xs ml-2 mt-1 font-semibold text-red-500"
+                            >
                               {errors.message}
                             </p>
                           )}
@@ -485,7 +494,7 @@ const ContactPage = () => {
 
                       <Button
                         type="submit"
-                        className="mt-2 w-full rounded-2xl text-xs font-bold uppercase tracking-wider"
+                        className="mt-2 w-full rounded-2xl text-xs font-semibold uppercase tracking-wider"
                       >
                         <Send className="h-4 w-4 stroke-[2.2]" />
                         {t('contact.send')}
