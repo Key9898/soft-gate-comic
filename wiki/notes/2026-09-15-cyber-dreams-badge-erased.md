@@ -34,7 +34,7 @@ The property that matters: colour flows in from the surrounding ground, and **no
 
 The first donor was a wider strip that carried a puddle edge, and the high-pass kept it — a recognisable ring pasted into the patch, invisible at delivery size and obvious in a full-resolution A/B. Narrowing the donor to plain ground fixed it.
 
-That is **twice** that a patch which resembles its surroundings has passed casual review. The A/B at 1:1 is not optional. (Impl 230 then found the same rule broken a third time, on an encoder change — see [that note](2026-09-15-cover-encoding-restored.md).)
+That is **twice** that a patch which resembles its surroundings has passed casual review. The A/B at 1:1 is not optional. (Impl 232 then found the same rule broken a third time, on an encoder change — see [that note](2026-09-15-cover-encoding-restored.md).)
 
 ## Encoding
 
@@ -44,7 +44,7 @@ Re-encoding at the source's own 4:2:0 measured 44.6 dB PSNR and a worst pixel of
 
 The sources are the `<img>` fallback in `responsiveImage.ts`, so their size is not only a repository concern — and every AVIF/WebP rung the browser actually fetches is derived from them.
 
-**This is the finding Impl 224 needed and did not have.** Impl 224 hit the same question — the source re-encodes larger, what now — and answered it with `palette: true`, costing 37.1 dB. Here the same question was answered by measuring three candidate encodings against the original. Impl 230 applies this one to the two covers 224 quantised.
+**This is the finding Impl 224 needed and did not have.** Impl 224 hit the same question — the source re-encodes larger, what now — and answered it with `palette: true`, costing 37.1 dB. Here the same question was answered by measuring three candidate encodings against the original. Impl 232 applies this one to the two covers 224 quantised.
 
 ## Verification
 
@@ -64,4 +64,4 @@ It removes another company's brand from a page we serve, which is worth doing be
 ## Left open
 
 - The artwork itself, for all nine covers: see [#28](https://github.com/Key9898/soft-gate-comic/issues/28) and the brief.
-- `the-last-horizon.png` still carries `[AUTHOR NAME]` / `[ARTIST NAME]`, and all nine covers still have baked-in titles.
+- ~~`the-last-horizon.png` still carries `[AUTHOR NAME]` / `[ARTIST NAME]`~~ — erased by Impl 230 (`6e47e55`). Baked-in titles remain on **eight of nine**; Impl 231 (`a2f5e4f`) took the `love-in-seoul` lockup off.
