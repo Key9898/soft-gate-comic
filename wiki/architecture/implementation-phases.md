@@ -251,6 +251,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 219  | 2026-09-14 | Phase 6 motion and polish                                                      | [2026-09-14-phase-6-motion-polish.md](../notes/2026-09-14-phase-6-motion-polish.md)                                                                           |
 | 220  | 2026-09-14 | Phase 5 visual identity (weight scale; owner-scoped)                           | [2026-09-14-phase-5-visual-identity.md](../notes/2026-09-14-phase-5-visual-identity.md)                                                                       |
 | 221  | 2026-09-15 | Rail labels renamed (Most read / Rising this week / New episodes / New series) | [2026-09-15-rail-label-rename.md](../notes/2026-09-15-rail-label-rename.md)                                                                                   |
+| 222  | 2026-09-15 | Native bcrypt + host-sized libuv threadpool (API auth off the event loop)      | [2026-09-15-native-bcrypt-threadpool.md](../notes/2026-09-15-native-bcrypt-threadpool.md)                                                                     |
 
 ---
 
@@ -2065,9 +2066,17 @@ Closes the item left open on GitHub #21. Phase 4 declined to collapse the six di
 
 ---
 
+## Impl Phase 222 — Native bcrypt and a host-sized libuv threadpool (2026-09-15)
+
+**Status:** Done
+
+GitHub #25, split out of #24. `apps/api` hashed with `bcryptjs` at cost 12, entirely on the main thread. The per-hash cost was never the point: `bcryptjs`'s async API chunks with `setImmediate`, so one cost-12 hash still consumed ~86% of the event loop (3 timer ticks fired where ~21 were expected), and ten concurrent hashes took **2172ms against 226ms for one** — no parallelism at all, with **1000ms of event-loop lag** landing on every unrelated request in the process. Native `bcrypt` runs the same algorithm in a C++ addon on libuv's threadpool: ten concurrent now **648ms** with **2ms** max lag, single-hash unchanged at 213ms, which is correct because it is the same work moved rather than reduced. **No migration** — bcrypt stores cost and salt inside the `$2b$` hash and both libraries accept the same format; `passwordConcurrency.test.ts` pins a hash literally written by the previous `bcryptjs` deployment and verifies it through the native module, so this is proven not assumed. `bcrypt` is added to root `pnpm.onlyBuiltDependencies`, without which pnpm skips the postinstall build silently and the import fails at runtime rather than at install. #24's `NODE_ENV=test` cost drop survives — native `bcrypt` takes the same cost argument, so the API suite stays fast; production stays at 12 deliberately. **The swap exposed a second ceiling**: libuv defaults to 4 threads regardless of core count, so the fifth concurrent login queued (699ms at 4 against 295ms at 12). `resolveThreadpoolSize` sizes from the host clamped to `[4, 16]` — never below libuv's own default, capped because threads past the core count stop helping while each costs a stack — and leaves an explicit `UV_THREADPOOL_SIZE` alone. libuv reads the size once at first pool use, so setting it inside the server is a race; `scripts/start.js` sets it and spawns the server as a child with the value already in its environment, forwarding `SIGINT`/`SIGTERM` so the container stop path still lands. **`argon2` and `node:crypto` `scrypt` were weighed and declined** on the issue: both are migrations (argon2 a native module besides) for a system whose bcrypt cost is already sound. **207** stays unused. Next is **223**. Note: [2026-09-15-native-bcrypt-threadpool.md](../notes/2026-09-15-native-bcrypt-threadpool.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **222**).
+1. Take **next free Impl** (currently **223**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).
