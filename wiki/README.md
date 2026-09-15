@@ -55,6 +55,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [conventions/in-app-search.md](conventions/in-app-search.md) — search lib + autocomplete + SearchPage; Demo searches chips (Impl 145)
 - [conventions/border-radius.md](conventions/border-radius.md) — Soft-Expressive radius map (Impl 10) + book-media exception
 - [conventions/book-cover-presentation.md](conventions/book-cover-presentation.md) — BookCard + HeroBook3D (Impl 16–18)
+- [conventions/cover-patch-measurement.md](conventions/cover-patch-measurement.md) — how Impl 229–234 measure a cover patch; neutralise-vs-mask PSNR gap, the 4/255 floor, boundary-block rim
 - [conventions/catalog-tiles.md](conventions/catalog-tiles.md) — discovery tile fields + New badge (Impl 96); Daily board (Impl 150); Premium top-left (Impl 152); Daily drops not catalog tiles (Impl 153); Demo Updated/New dates (Impl 154)
 - [conventions/portal-catalog-read.md](conventions/portal-catalog-read.md) — mock localStorage vs `GET /api/catalog` published read model (Impl 172); Prisma catalog from Admin tables when persist is Prisma (Impl 195); empty chrome (Impl 196); load-fail vs empty (Impl 198); Admin CoinPackage (Impl 201); live join port split (Impl 202); refused origin = API not listening
 - [conventions/portal-settings-read.md](conventions/portal-settings-read.md) — mock vs `GET /api/settings` (Impl 173); Prisma Admin PlatformSettings (Impl 200); live join (Impl 202)
