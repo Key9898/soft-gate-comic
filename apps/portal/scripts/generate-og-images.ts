@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 import { mockWebtoons } from '@softgate/shared'
+import { hasGeneratedOgImage } from '../src/lib/seo/ogImage.js'
 
 const WIDTH = 1200
 const HEIGHT = 630
@@ -59,14 +60,18 @@ async function main() {
   mkdirSync(outDir, { recursive: true })
   const logoPath = path.join(publicDir, 'logo/logo.png')
 
-  const published = mockWebtoons.filter((webtoon) => webtoon.status !== 'draft')
+  // Same predicate the page uses to decide whether to advertise an og:image,
+  // so the two cannot drift into advertising a file nobody generates.
+  const targets = mockWebtoons.filter(hasGeneratedOgImage)
   let generated = 0
-  for (const webtoon of published) {
-    if (!webtoon.coverImage) continue
-    const coverPath = path.join(publicDir, webtoon.coverImage.replace(/^\//, ''))
+  for (const webtoon of targets) {
+    const coverPath = path.join(publicDir, (webtoon.coverImage as string).replace(/^\//, ''))
     if (!existsSync(coverPath)) {
-      console.warn(`skip ${webtoon.id}: cover not found at ${coverPath}`)
-      continue
+      // Not a warning: the page is already emitting an og:image URL for this
+      // series, so a missing cover means a guaranteed 404 on every share.
+      throw new Error(
+        `${webtoon.id} (${webtoon.title.en}) advertises an og:image but its cover is missing at ${coverPath}`
+      )
     }
     const outPath = path.join(outDir, `${webtoon.id}.png`)
     await composeOgImage(coverPath, outPath, logoPath)

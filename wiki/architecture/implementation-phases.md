@@ -257,6 +257,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 225  | 2026-09-15 | Orphaned `draft-story.png` deleted; orphan-cover guard added                   | [2026-09-15-orphan-cover-removed.md](../notes/2026-09-15-orphan-cover-removed.md)                                                                             |
 | 226  | 2026-09-15 | HeroBook3D joins the cover ladder (768 rung); cover artwork brief              | [2026-09-15-hero-cover-ladder.md](../notes/2026-09-15-hero-cover-ladder.md)                                                                                   |
 | 227  | 2026-09-15 | Series titles are one string in both locales; demo-chip guard                  | [2026-09-15-series-titles-one-locale.md](../notes/2026-09-15-series-titles-one-locale.md)                                                                     |
+| 228  | 2026-09-15 | One predicate decides which series get an OG image                             | [2026-09-15-og-image-contract.md](../notes/2026-09-15-og-image-contract.md)                                                                                   |
 
 ---
 
@@ -2119,9 +2120,17 @@ Follows #29, closed as not planned: five of nine series titles had `mm` identica
 
 ---
 
+## Impl Phase 228 — One predicate decides which series get an OG image (2026-09-15)
+
+**Status:** Done
+
+Asked for as "a staleness guard for `generate:og`". **That guard is not needed**: `generate:og` runs inside the build (Impl 223 / `4d64c60`) and its output is gitignored, so there is no committed artifact that can go stale and a content-hash manifest would guard nothing — the loose-end note claiming otherwise predated that change. **The real gap was two predicates that could disagree**: `ogImageForWebtoon` emitted `/og/{id}.png` for any webtoon with a local cover, while the generator required non-draft _and_ a cover present on disk. A draft with a local cover satisfied the page and failed the generator, so the page would advertise an `og:image` that was never produced and every share of it would 404. The sets happen to agree today (all nine series non-draft with local covers), so nothing is broken — the divergence is latent, and silent in both directions: the generator's skip was a `console.warn` inside a build log, and the 404 only shows when someone shares a link, on a surface the product cannot observe. **Fixed structurally, not with a test**: `hasGeneratedOgImage` now lives beside `ogImageForWebtoon` and the generator imports it, so page and generator cannot drift. The generator's missing-cover branch also changed from `warn` + `continue` to a thrown error — by the time it is reached the page is already advertising that image, so skipping past it ships a guaranteed 404. Three guards: advertised state must equal the predicate, every advertised image must exist once built, and a draft is never advertised; the last two were exercised (probe test, and moving `blood-moon.png` aside to see the build fail) rather than assumed. **Near miss recorded in the note**: the first probe attempt scripted an edit to `data.ts` whose `rfind` returned `-1` and appended a duplicate of the entire file (1360 lines) — caught by reading `git diff --stat` before anything else and restored from a backup taken first. **207** stays unused. Next is **229**. Note: [2026-09-15-og-image-contract.md](../notes/2026-09-15-og-image-contract.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **228**).
+1. Take **next free Impl** (currently **229**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).
