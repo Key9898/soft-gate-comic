@@ -1,12 +1,12 @@
 ---
-title: Impl 230 — Two covers restored to full colour after a 256-colour re-encode
+title: Impl 232 — Two covers restored to full colour after a 256-colour re-encode
 type: note
 date: 2026-09-15
 tags: [portal, covers, images, encoding, branding, softgate]
-impl: 230
+impl: 232
 ---
 
-# Impl 230 — Two covers restored to full colour after a 256-colour re-encode
+# Impl 232 — Two covers restored to full colour after a 256-colour re-encode
 
 [Impl 224](2026-09-15-cover-branding-removal.md) erased "Webtoon Original" from `golden-age.png` and "A Webtoon Original" from `shadow-knight.png`, then wrote both back as **8-bit colormap PNG**. The erasure was right; the encoder was not. This re-applies the erasure to the pre-224 sources and keeps them full colour.
 
@@ -66,4 +66,5 @@ Impl 224's own lesson was **diff a patch against the original at full resolution
 ## Left open
 
 - ~~`wiki/` has no entry for **Impl 229** (`3a89667`, the Cyber Dreams badge removal); it shipped as code only.~~ Written retroactively: [2026-09-15-cyber-dreams-badge-erased.md](2026-09-15-cyber-dreams-badge-erased.md).
-- Everything else in [#28](https://github.com/Key9898/soft-gate-comic/issues/28): `[AUTHOR NAME]` / `[ARTIST NAME]` on `the-last-horizon.png`, and baked-in titles on all nine covers. Blur-erasure and inpainting are both stopgaps for a brand-name problem; `wiki/references/cover-artwork-brief.md` is still the actual fix.
+- **Impl 230 (`6e47e55`) and 231 (`a2f5e4f`) shipped as code only too**, landing on `development` while this work was in review. They are rowed in the phase index as unwritten rather than skipped, so the gap reads as a gap. Not written here: they are recent enough that whoever wrote them may still document them, and three retroactive notes in one PR is the wrong place to fix a habit.
+- Everything else in [#28](https://github.com/Key9898/soft-gate-comic/issues/28): baked-in titles on **eight of nine** covers — Impl 231 took the `love-in-seoul` lockup off, and Impl 230 took the `[AUTHOR NAME]` / `[ARTIST NAME]` line off `the-last-horizon`. Blur-erasure and inpainting are both stopgaps for a brand-name problem; `wiki/references/cover-artwork-brief.md` is still the actual fix.
