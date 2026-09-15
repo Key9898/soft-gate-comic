@@ -9,7 +9,7 @@ tags: [covers, artwork, brief, images, softgate]
 
 For whoever produces the replacement covers, tracked in [#34](https://github.com/Key9898/soft-gate-comic/issues/34). Nine files. No code change is needed to accept them.
 
-> **Status, 2026-09-15.** [#28](https://github.com/Key9898/soft-gate-comic/issues/28) is closed: every piece of baked text that could be removed by editing the raster has been removed (Impl 229–234), and **five of the nine covers now satisfy the no-text rule below** — `campus-life`, `cyber-dreams`, `love-in-seoul`, `golden-age`, `shadow-knight`. What is left needs an artist and lives on #34. **The format requirements in this brief still apply to all nine**, because none of that work changed the aspect ratio: every cover is still a 1024 square losing roughly 12.5% off each side.
+> **Status, 2026-09-15.** [#28](https://github.com/Key9898/soft-gate-comic/issues/28) is closed: every piece of baked text that could be removed by editing the raster has been removed (Impl 229–234), and **as of Impl 234 (`88331ed`) five of the nine covers satisfy the no-text rule below** — `campus-life`, `cyber-dreams`, `love-in-seoul`, `golden-age`, `shadow-knight`. What is left needs an artist and lives on #34. Re-check that count against the images rather than against this note — it was stated as final four times during #28 and a commit invalidated it within the hour each time ([cover-patch-measurement](../conventions/cover-patch-measurement.md)). **The format requirements in this brief still apply to all nine**, because none of that work changed the aspect ratio: every cover is still a 1024 square losing roughly 12.5% off each side.
 
 ## The one rule
 

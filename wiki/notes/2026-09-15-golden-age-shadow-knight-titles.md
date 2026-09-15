@@ -10,7 +10,7 @@ impl: 234
 
 [Impl 232](2026-09-15-remaining-covers-erased.md) worked the rest of #28's covers but skipped these two, because [Impl 233](2026-09-15-cover-encoding-restored.md) was re-rendering them from their pre-Impl-224 sources at the same time and editing them in parallel would have collided. They were recorded as **untested, not rejected** — the distinction mattered, because both titles turned out to be erasable.
 
-`golden-age.png` loses `GOLDEN AGE`, `A Historical Epic` and its flourishes. `shadow-knight.png` loses `SHADOW KNIGHT` and `The Legendary Warrior Returns`. **Five of nine covers now carry no baked text at all.**
+`golden-age.png` loses `GOLDEN AGE`, `A Historical Epic` and its flourishes. `shadow-knight.png` loses `SHADOW KNIGHT` and `The Legendary Warrior Returns`. **As of this phase, five of the nine covers carry no baked text** — re-check against the images rather than against this line, per [cover-patch-measurement](../conventions/cover-patch-measurement.md); the count was stated as final four times between Impl 224 and 234 and a commit invalidated it within the hour each time.
 
 ## The hedge was worth making
 
