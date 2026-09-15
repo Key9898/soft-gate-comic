@@ -1,4 +1,4 @@
-import type { Episode } from './types'
+import type { Episode } from './types.js'
 
 export type WaitForFreeEpisode = Pick<Episode, 'isPremium' | 'freeAt'>
 

@@ -1,5 +1,5 @@
-import type { SharedData } from './types'
-import { applyCatalogSeed, exportToJSON, SHARED_DATA_SCHEMA_VERSION } from './data'
+import type { SharedData } from './types.js'
+import { applyCatalogSeed, exportToJSON, SHARED_DATA_SCHEMA_VERSION } from './data.js'
 
 export const saveToLocalStorage = (data: SharedData) => {
   localStorage.setItem(

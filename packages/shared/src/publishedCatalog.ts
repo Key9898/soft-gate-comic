@@ -1,5 +1,5 @@
-import type { Author, CoinPackage, Episode, Genre, SharedData, Webtoon } from './types'
-import { getSharedData } from './data'
+import type { Author, CoinPackage, Episode, Genre, SharedData, Webtoon } from './types.js'
+import { getSharedData } from './data.js'
 
 export type PublishedCatalog = {
   authors: Author[]
@@ -10,8 +10,8 @@ export type PublishedCatalog = {
 }
 
 export { getSharedData }
-export type { WaitForFreeEpisode } from './waitForFree'
-export { hasWaitSchedule, isEpisodeLocked, isWaitFreeNow, parseFreeAt } from './waitForFree'
+export type { WaitForFreeEpisode } from './waitForFree.js'
+export { hasWaitSchedule, isEpisodeLocked, isWaitFreeNow, parseFreeAt } from './waitForFree.js'
 
 export const publishedCatalogFrom = (
   data: Pick<SharedData, 'authors' | 'genres' | 'webtoons' | 'episodes' | 'coinPackages'>

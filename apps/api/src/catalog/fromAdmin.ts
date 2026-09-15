@@ -182,8 +182,12 @@ export function publishedCatalogFromAdmin(input: {
 }): PublishedCatalog {
   const authorsById = new Map(input.authors.map((row) => [row.id, row]))
   const genresById = new Map(input.genres.map((row) => [row.id, row]))
+  // A plain boolean predicate does not narrow the rows it keeps, so
+  // `contentRating` stayed `string` downstream. Declaring the predicate carries
+  // the isContentRating check through to the map below. Runtime is unchanged.
   const ratedRows = input.webtoons.filter(
-    (row) => isContentRating(row.contentRating) && authorsById.has(row.authorId)
+    (row): row is AdminWebtoonRow & { contentRating: ContentRating } =>
+      isContentRating(row.contentRating) && authorsById.has(row.authorId)
   )
 
   const webtoons: Webtoon[] = ratedRows.map((row) => {

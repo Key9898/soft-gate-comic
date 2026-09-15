@@ -16,7 +16,7 @@ import type {
   ScheduledEpisode,
   StoryChapter,
   SharedData,
-} from './types'
+} from './types.js'
 
 export const mockDashboardStats: DashboardStats = {
   totalUsers: 125430,

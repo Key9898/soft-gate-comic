@@ -7,15 +7,19 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "node": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
     "./catalog": {
       "types": "./dist/publishedCatalog.d.ts",
-      "import": "./src/publishedCatalog.ts",
+      "node": "./dist/publishedCatalog.js",
       "default": "./src/publishedCatalog.ts"
     },
     "./settings": {
       "types": "./dist/portalSettings.d.ts",
-      "import": "./src/portalSettings.ts",
+      "node": "./dist/portalSettings.js",
       "default": "./src/portalSettings.ts"
     }
   },
