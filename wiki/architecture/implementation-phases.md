@@ -253,6 +253,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 221  | 2026-09-15 | Rail labels renamed (Most read / Rising this week / New episodes / New series) | [2026-09-15-rail-label-rename.md](../notes/2026-09-15-rail-label-rename.md)                                                                                   |
 | 222  | 2026-09-15 | Native bcrypt + host-sized libuv threadpool (API auth off the event loop)      | [2026-09-15-native-bcrypt-threadpool.md](../notes/2026-09-15-native-bcrypt-threadpool.md)                                                                     |
 | 223  | 2026-09-15 | Responsive image pipeline (AVIF/WebP ladder, banner as `img`, staleness guard) | [2026-09-15-responsive-image-pipeline.md](../notes/2026-09-15-responsive-image-pipeline.md)                                                                   |
+| 224  | 2026-09-15 | Competitor branding blur-erased from two covers (#28); cyber-dreams left       | [2026-09-15-cover-branding-removal.md](../notes/2026-09-15-cover-branding-removal.md)                                                                         |
 
 ---
 
@@ -2083,9 +2084,17 @@ The portal shipped `banner.png` at **10667x6000 / 2486 kB** into a band at most 
 
 ---
 
+## Impl Phase 224 — Competitor branding removed from two covers (2026-09-15)
+
+**Status:** Done (2 of 3; `cyber-dreams` needs artwork)
+
+First item of [#28](https://github.com/Key9898/soft-gate-comic/issues/28). Three covers carried Naver's product branding — `golden-age` "Webtoon Original", `shadow-knight` "A Webtoon Original", `cyber-dreams` a white `WEBTOON` badge plus `SEASON 1` — i.e. three covers on a SoftGate portal claiming to be another platform's originals. **Clone-stamping failed twice and the second failure nearly shipped**: on `golden-age` it looked clean in a wide crop and at 240px, so it was applied, and only a full-resolution A/B against the original revealed it had pasted a **duplicate temple roof** inside a hard-edged box — it passed casual review purely because the duplicate blended with surrounding architecture. The durable lesson is the review method: **diff a patch against the original at full resolution**; judging at delivery size hides pasted content that resembles its surroundings. Two intermediate failures are also recorded in the note because both were silent: an SVG feather using `mix-blend-mode: multiply` produced a fully opaque mask (flat grey rectangle), and a cosine mask with 0.45 falloff left 90% of the patch semi-transparent so the text bled through and raising blur sigma from 18 to 60 changed nothing — a 3x sigma with no visible effect was the tell. Shipped approach is a Gaussian blur under a raw-pixel cosine-falloff alpha (feather 0.10 / 0.16); erased regions read as atmospheric haze, visible at 100% but not at any size a cover renders (183px card, 384px hero, 340px OG). **`cyber-dreams` deliberately untouched** — its badge is large, opaque and white over detailed wet asphalt, flanked by both boots so no same-row clone source is wide enough, and blur yields a pale smear worse than the logo. Sharp's default PNG nearly tripled the sources (1037 -> 2653 kB); `palette: true` + `compressionLevel: 9, effort: 10` gave 595/633 kB — **smaller than the originals** — with no banding on the `golden-age` sunset gradient, the worst case for 256-colour quantisation. **The Impl 223 manifest guard had its first real exercise** and failed the gate on the source edit exactly as designed. **207** stays unused. Next is **225**. Note: [2026-09-15-cover-branding-removal.md](../notes/2026-09-15-cover-branding-removal.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **224**).
+1. Take **next free Impl** (currently **225**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 222**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 225**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
@@ -260,6 +260,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-15-rail-label-rename.md](notes/2026-09-15-rail-label-rename.md) — Impl 221 rail labels (Most read / Rising this week / New episodes / New series)
 - [notes/2026-09-15-native-bcrypt-threadpool.md](notes/2026-09-15-native-bcrypt-threadpool.md) — Impl 222 native bcrypt + host-sized libuv threadpool (#25; no hash migration)
 - [notes/2026-09-15-responsive-image-pipeline.md](notes/2026-09-15-responsive-image-pipeline.md) — Impl 223 AVIF/WebP ladder, banner as `img`, manifest staleness guard (#4 asset half)
+- [notes/2026-09-15-cover-branding-removal.md](notes/2026-09-15-cover-branding-removal.md) — Impl 224 competitor branding blur-erased from two covers (#28)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150
