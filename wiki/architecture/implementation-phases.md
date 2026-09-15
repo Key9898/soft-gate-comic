@@ -254,6 +254,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 222  | 2026-09-15 | Native bcrypt + host-sized libuv threadpool (API auth off the event loop)      | [2026-09-15-native-bcrypt-threadpool.md](../notes/2026-09-15-native-bcrypt-threadpool.md)                                                                     |
 | 223  | 2026-09-15 | Responsive image pipeline (AVIF/WebP ladder, banner as `img`, staleness guard) | [2026-09-15-responsive-image-pipeline.md](../notes/2026-09-15-responsive-image-pipeline.md)                                                                   |
 | 224  | 2026-09-15 | Competitor branding blur-erased from two covers (#28); cyber-dreams left       | [2026-09-15-cover-branding-removal.md](../notes/2026-09-15-cover-branding-removal.md)                                                                         |
+| 225  | 2026-09-15 | Orphaned `draft-story.png` deleted; orphan-cover guard added                   | [2026-09-15-orphan-cover-removed.md](../notes/2026-09-15-orphan-cover-removed.md)                                                                             |
 
 ---
 
@@ -2092,9 +2093,17 @@ First item of [#28](https://github.com/Key9898/soft-gate-comic/issues/28). Three
 
 ---
 
+## Impl Phase 225 — Orphaned draft cover deleted, orphan guard added (2026-09-15)
+
+**Status:** Done
+
+[#28](https://github.com/Key9898/soft-gate-comic/issues/28) asked for the baked **"Comming Soon"** typo on `draft-story.png` to be fixed. Checking first showed the typo was not the defect: **the file is referenced by nothing** — no component, route or catalog entry. `data.ts` holds nine literal `coverImage` values against ten files on disk and no cover path is built dynamically, so no runtime path could reach it; the draft series `draft-1-99` uses `the-last-horizon.png`. It was 486 kB copied into `dist/client` every build, generating eight variants every regeneration, for an image no visitor could see. Repairing the typo would have corrected text nobody reads in a file that should not ship. Deleted — which removes the typo outright and takes one of #28's unfilled `[Author Name]` placeholders with it; variants drop 90 -> 82, manifest 11 -> 10 sources, and the file stays recoverable from history. **Nothing was watching**, which is the durable finding: an unreferenced asset produces no error, no warning and no failing test, and here it also hid two content defects from anyone who might have reported them, because nobody could see the image to notice. `imageVariants.test.ts` now asserts every committed cover is referenced by the catalog, watched failing first by restoring the file. The guard covers `/webtoon-covers/` only — a live catalog serves from R2, which it cannot and should not police; the point is local committed assets, which ship in the bundle whether or not anything uses them. **207** stays unused. Next is **226**. Note: [2026-09-15-orphan-cover-removed.md](../notes/2026-09-15-orphan-cover-removed.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **225**).
+1. Take **next free Impl** (currently **226**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

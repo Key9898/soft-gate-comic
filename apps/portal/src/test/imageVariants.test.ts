@@ -9,11 +9,31 @@ import {
   sourceFilesIn,
 } from '../../scripts/imageVariants.config'
 import { coverSources, bannerSources, COVER_SIZES } from '../lib/images/responsiveImage'
+import { mockWebtoons } from '@softgate/shared'
 
 const publicDir = path.resolve(__dirname, '../../public')
 const manifestFile = path.join(publicDir, MANIFEST_PATH)
 
 const hashFile = (file: string) => createHash('sha256').update(readFileSync(file)).digest('hex')
+
+// `draft-story.png` sat here for weeks referenced by nothing: 486kB copied into
+// dist on every build, generating eight variants, for an image no route could
+// reach — and carrying a baked "Comming Soon" typo and an unfilled
+// `[Author Name]` nobody could see to report. An orphan is a shipping cost and a
+// place for defects to hide.
+describe('every committed cover is actually used', () => {
+  it('has no cover the catalog never references', () => {
+    const referenced = new Set(
+      mockWebtoons
+        .map((webtoon) => webtoon.coverImage)
+        .filter((src): src is string => Boolean(src?.startsWith('/webtoon-covers/')))
+        .map((src) => src.slice('/webtoon-covers/'.length))
+    )
+    const onDisk = sourceFilesIn(readdirSync(path.join(publicDir, 'webtoon-covers')))
+    const orphans = onDisk.filter((name) => !referenced.has(name))
+    expect(orphans, `unreferenced cover(s): ${orphans.join(', ')}`).toEqual([])
+  })
+})
 
 describe('generated image variants stay in step with their sources', () => {
   it('has a manifest', () => {
