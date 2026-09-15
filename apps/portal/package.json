@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:spa": "vite",
     "dev:ssr": "tsx server/dev.ts",
-    "build": "tsc -b && vite build --outDir dist/client && vite build --ssr src/entry-server.tsx --outDir dist/server && tsx scripts/generate-sitemap.ts",
+    "build": "tsc -b && tsx scripts/generate-image-variants.ts && tsx scripts/generate-og-images.ts && vite build --outDir dist/client && vite build --ssr src/entry-server.tsx --outDir dist/server && tsx scripts/generate-sitemap.ts",
     "preview": "tsx server/index.ts",
     "generate:og": "tsx scripts/generate-og-images.ts",
     "generate:images": "tsx scripts/generate-image-variants.ts",

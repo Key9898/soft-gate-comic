@@ -69,3 +69,15 @@ docs/
 
 # Claude Code worktrees (local isolated checkouts, never committed)
 .claude/worktrees/
+
+# Generated image derivatives — produced by the portal build (generate:og,
+# generate:images) before vite copies public/ into dist. Committing them was
+# the old precedent; the build owns them now.
+#
+# image-variants.json is deliberately NOT ignored: it is the staleness guard,
+# it is ~1kB, and `test:run` only dependsOn `^build`, so tests run in parallel
+# with the portal's own build. A fresh clone must have the manifest before the
+# generators run or the guard cannot check anything.
+apps/portal/public/og/
+apps/portal/public/webtoon-covers/r/
+apps/portal/public/banner/r/

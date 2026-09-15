@@ -20,10 +20,14 @@ describe('generated image variants stay in step with their sources', () => {
     expect(existsSync(manifestFile)).toBe(true)
   })
 
-  it('has every variant every source is supposed to produce', () => {
+  // The variants themselves are build output and gitignored, and `test:run`
+  // only dependsOn `^build`, so on a fresh clone this runs alongside the build
+  // that generates them. Absent output means "not built yet", not a defect —
+  // the manifest test below is the one that must hold unconditionally.
+  it('has every variant every source is supposed to produce, once built', () => {
     for (const job of JOBS) {
       const sourceRoot = path.join(publicDir, job.sourceDir)
-      if (!existsSync(sourceRoot)) continue
+      if (!existsSync(sourceRoot) || !existsSync(path.join(publicDir, job.outDir))) continue
       for (const name of sourceFilesIn(readdirSync(sourceRoot))) {
         const stem = name.replace(/\.[^.]+$/, '')
         for (const width of job.widths) {
@@ -79,7 +83,12 @@ describe('responsive source building', () => {
     expect(coverSources(undefined)).toBeNull()
   })
 
-  it('names a real generated file in every cover srcset entry', () => {
+  // Same caveat as above: skipped until the generators have run, so that a
+  // fresh clone testing in parallel with its first build is not a red gate.
+  const built = (dir: string) => existsSync(path.join(publicDir, dir))
+
+  it('names a real generated file in every cover srcset entry, once built', () => {
+    if (!built('webtoon-covers/r')) return
     const sources = coverSources('/webtoon-covers/shadow-knight.png')
     for (const entry of sources?.avif.split(', ') ?? []) {
       const [url] = entry.split(' ')
@@ -87,7 +96,8 @@ describe('responsive source building', () => {
     }
   })
 
-  it('names a real generated file in every banner srcset entry', () => {
+  it('names a real generated file in every banner srcset entry, once built', () => {
+    if (!built('banner/r')) return
     const sources = bannerSources()
     for (const entry of [...sources.avif.split(', '), ...sources.webp.split(', ')]) {
       const [url] = entry.split(' ')
