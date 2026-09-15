@@ -267,6 +267,8 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-15-series-titles-one-locale.md](notes/2026-09-15-series-titles-one-locale.md) — Impl 227 series titles one string in both locales + demo-chip guard (#29)
 - [notes/2026-09-15-og-image-contract.md](notes/2026-09-15-og-image-contract.md) — Impl 228 one predicate for OG images; generator fails loudly on a missing cover
 - [notes/2026-09-15-cyber-dreams-badge-erased.md](notes/2026-09-15-cyber-dreams-badge-erased.md) — Impl 229 WEBTOON badge erased by masked push-pull fill + regrain; JPEG 4:4:4 (#28)
+- [notes/2026-09-15-last-horizon-credits-erased.md](notes/2026-09-15-last-horizon-credits-erased.md) — Impl 230 credit placeholders erased; gold needs a luminance threshold, shadow needs dilation 12 (#28)
+- [notes/2026-09-15-love-in-seoul-lockup-removed.md](notes/2026-09-15-love-in-seoul-lockup-removed.md) — Impl 231 title lockup off; 8-bit fill ghosting found by contrast stretch (#28)
 - [notes/2026-09-15-cover-encoding-restored.md](notes/2026-09-15-cover-encoding-restored.md) — Impl 232 two covers back to full colour after Impl 224's 256-colour re-encode (#28)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
