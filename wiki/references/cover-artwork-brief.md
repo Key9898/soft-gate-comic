@@ -7,7 +7,9 @@ tags: [covers, artwork, brief, images, softgate]
 
 # Cover artwork replacement brief
 
-For whoever produces the replacement covers tracked in [#28](https://github.com/Key9898/soft-gate-comic/issues/28). Nine files. No code change is needed to accept them.
+For whoever produces the replacement covers, tracked in [#34](https://github.com/Key9898/soft-gate-comic/issues/34). Nine files. No code change is needed to accept them.
+
+> **Status, 2026-09-15.** [#28](https://github.com/Key9898/soft-gate-comic/issues/28) is closed: every piece of baked text that could be removed by editing the raster has been removed (Impl 229–234), and **five of the nine covers now satisfy the no-text rule below** — `campus-life`, `cyber-dreams`, `love-in-seoul`, `golden-age`, `shadow-knight`. What is left needs an artist and lives on #34. **The format requirements in this brief still apply to all nine**, because none of that work changed the aspect ratio: every cover is still a 1024 square losing roughly 12.5% off each side.
 
 ## The one rule
 
@@ -21,7 +23,7 @@ All of it already exists as catalog data and is already drawn by the UI. Removin
 
 ### Why this matters more than it looks
 
-Baked text makes a cover **impossible to localise**. The portal ships English and Burmese, and the Burmese locale swaps every live string but cannot touch a picture. `love-in-seoul.png` currently has `서울의 사랑 / Love in Seoul` painted into it — Korean — while the catalog's Burmese title for that series is `ဆိုးလ်မြို့က ချစ်ခြင်းတရား`. A Burmese reader sees one title in the text and a different one, in a third language, in the art.
+Baked text makes a cover **impossible to localise**. The portal ships English and Burmese, and the Burmese locale swaps every live string but cannot touch a picture. `love-in-seoul.png` had `서울의 사랑 / Love in Seoul` painted into it — Korean — while the catalog's Burmese title for that series is `ဆိုးလ်မြို့က ချစ်ခြင်းတရား`, so a Burmese reader saw one title in the text and a different one, in a third language, in the art. That lockup was removed in [Impl 231](../notes/2026-09-15-love-in-seoul-lockup-removed.md); the point stands for any cover that bakes a title.
 
 A text-free cover works in both locales and in any locale added later.
 
@@ -98,17 +100,30 @@ Two guards will catch mistakes rather than letting them ship:
 - Replacing a file without regenerating fails `pnpm check` with the exact command to run — a sha256 per source is pinned in `image-variants.json`.
 - Adding a cover the catalog does not reference fails `pnpm check` naming the file. If a new series is being added, its entry in `packages/shared/src/data.ts` must come with it.
 
-## Still outstanding on #28 until this lands
+## Still outstanding until this lands
 
-- `cyber-dreams.png` — a white `WEBTOON` badge and `SEASON 1`. This is Naver's branding. It could not be removed by editing: the badge is large, opaque and flanked by both boots, leaving no clean region to patch from.
-- `the-last-horizon.png` — `STORY BY [AUTHOR NAME] | ART BY [ARTIST NAME]`, an unfilled template shipping to visitors.
-- Baked titles and taglines on all nine.
+Tracked on [#34](https://github.com/Key9898/soft-gate-comic/issues/34). Each of these was masked, filled and reviewed at full resolution before being judged unfixable — the attempts are recorded so nobody repeats them.
 
-Two covers were partly fixed in place (Impl 224): `golden-age` and `shadow-knight` had a competitor's brand name blur-erased. Those erasures are a stopgap — the softened band is invisible at rendered sizes but visible at 100%, and both still carry their baked titles.
+**Four covers still bake their titles.** In every case a load-bearing element of the composition runs behind the text, so an in-place fill has nothing to reconstruct from:
+
+| File                   | Text                                                  | What is behind it                                   |
+| ---------------------- | ----------------------------------------------------- | --------------------------------------------------- |
+| `blood-moon.png`       | `BLOOD MOON`                                          | The moon's upper limb; its red glow is the lighting |
+| `ocean-dreams.png`     | `OCEAN DREAMS` + `An Adventure Across the Seven Seas` | The ship's mast, rigging and flag                   |
+| `forest-spirit.png`    | `FOREST SPIRIT` + `A MAGICAL JOURNEY`                 | Dense canopy                                        |
+| `the-last-horizon.png` | `THE LAST HORIZON` + `AN EPIC FANTASY ADVENTURE`      | A constellation field                               |
+
+**One residual artefact.** `shadow-knight.png` carries a Gaussian-blur patch at `209x31+408+288` where Impl 224 erased `A Webtoon Original`: 0.47 high-frequency energy where the surrounding sky measures 1.64–3.15, about 4x flatter than it should be. Visible at 1:1, invisible at 183px and 384px. A redo was attempted and abandoned — see [Impl 234](../notes/2026-09-15-golden-age-shadow-knight-titles.md) and the #34 thread. `golden-age.png` has the same class of patch and it is **inert**, so there is nothing to do there.
+
+**All nine still need the format work** in _Format_ above, regardless of text.
 
 ## Related
 
 - [Impl 223](../notes/2026-09-15-responsive-image-pipeline.md) — the variant pipeline and the staleness manifest
 - [Impl 224](../notes/2026-09-15-cover-branding-removal.md) — branding removal, and why editing raster artwork is a poor substitute for replacing it
 - [Impl 225](../notes/2026-09-15-orphan-cover-removed.md) — the orphan guard
+- [Impl 229](../notes/2026-09-15-cyber-dreams-badge-erased.md) — masked push-pull fill, the technique that replaced blur-erasure
+- [Impl 231](../notes/2026-09-15-love-in-seoul-lockup-removed.md) — the first cover to satisfy this brief's no-text rule
+- [Impl 232](../notes/2026-09-15-remaining-covers-erased.md) — which titles can be erased and which cannot, and why
+- [Impl 234](../notes/2026-09-15-golden-age-shadow-knight-titles.md) — the last two covers cleared, and the mask-gap lesson
 - [book-cover-presentation](../conventions/book-cover-presentation.md) — the hardcover metaphor these covers sit inside
