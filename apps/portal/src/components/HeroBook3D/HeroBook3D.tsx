@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { coverSources, HERO_COVER_SIZES } from '../../lib/images/responsiveImage'
 
 type HeroBook3DBase = {
   coverImage?: string
@@ -22,6 +23,7 @@ const HeroBook3D = (props: HeroBook3DProps) => {
   const imgRef = useRef<HTMLImageElement>(null)
   const [imgFailed, setImgFailed] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
+  const sources = coverSources(coverImage)
   const isLinked = 'href' in props && typeof props.href === 'string'
   const coverTabbable = !isLinked || props.coverTabbable !== false
 
@@ -41,15 +43,23 @@ const HeroBook3D = (props: HeroBook3DProps) => {
         <div className="absolute inset-0 animate-pulse bg-gray-200" aria-hidden="true" />
       ) : null}
       {coverImage && !imgFailed ? (
-        <img
-          ref={imgRef}
-          src={coverImage}
-          alt=""
-          className={`h-full w-full object-cover ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
-          draggable={false}
-          onLoad={() => setImgLoaded(true)}
-          onError={() => setImgFailed(true)}
-        />
+        <picture>
+          {sources ? (
+            <>
+              <source type="image/avif" srcSet={sources.avif} sizes={HERO_COVER_SIZES} />
+              <source type="image/webp" srcSet={sources.webp} sizes={HERO_COVER_SIZES} />
+            </>
+          ) : null}
+          <img
+            ref={imgRef}
+            src={coverImage}
+            alt=""
+            className={`h-full w-full object-cover ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            draggable={false}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgFailed(true)}
+          />
+        </picture>
       ) : (
         <span className="text-sm text-white/60">{t('common.coverImage')}</span>
       )}

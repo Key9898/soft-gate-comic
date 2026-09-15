@@ -32,7 +32,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 
 ### Architecture & references
 
-- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 226**)
+- [architecture/implementation-phases.md](architecture/implementation-phases.md) — SoftGate Comic Impl master (**next: 227**)
 - [architecture/implementation-phases-legacy.md](architecture/implementation-phases-legacy.md) — legacy immersive archive
 - [references/pm-tracker-airtable.md](references/pm-tracker-airtable.md) — Airtable PM tracker (legacy-era rows)
 - [references/api-contract.md](references/api-contract.md) — legacy EDC frontend ↔ backend API contract
@@ -40,6 +40,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - Pre-backend Admin catalog/settings contract (list lives in Admin wiki; do not invent conflicting portal fields): [`../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md`](../../soft-gate-comic-admin-dashboard/wiki/references/website-integration.md)
 - [references/admin-coin-packages.md](references/admin-coin-packages.md) — Admin CoinPackage → `/coins` (UI 168, Prisma catalog 201)
 - [references/avatar-manifest.md](references/avatar-manifest.md) — (legacy/reference; not SoftGate portal runtime)
+- [references/cover-artwork-brief.md](references/cover-artwork-brief.md) — brief for replacing the nine covers: no baked text, 3:4 native, safe areas (#28)
 
 ### Conventions (SoftGate portal)
 
@@ -262,6 +263,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-15-responsive-image-pipeline.md](notes/2026-09-15-responsive-image-pipeline.md) — Impl 223 AVIF/WebP ladder, banner as `img`, manifest staleness guard (#4 asset half)
 - [notes/2026-09-15-cover-branding-removal.md](notes/2026-09-15-cover-branding-removal.md) — Impl 224 competitor branding blur-erased from two covers (#28)
 - [notes/2026-09-15-orphan-cover-removed.md](notes/2026-09-15-orphan-cover-removed.md) — Impl 225 orphaned draft cover deleted + orphan guard (#28)
+- [notes/2026-09-15-hero-cover-ladder.md](notes/2026-09-15-hero-cover-ladder.md) — Impl 226 HeroBook3D srcset + 768 rung, cover artwork brief (#28)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150

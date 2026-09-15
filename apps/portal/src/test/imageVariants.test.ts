@@ -8,7 +8,12 @@ import {
   FORMAT_EXTENSIONS,
   sourceFilesIn,
 } from '../../scripts/imageVariants.config'
-import { coverSources, bannerSources, COVER_SIZES } from '../lib/images/responsiveImage'
+import {
+  coverSources,
+  bannerSources,
+  COVER_SIZES,
+  HERO_COVER_SIZES,
+} from '../lib/images/responsiveImage'
 import { mockWebtoons } from '@softgate/shared'
 
 const publicDir = path.resolve(__dirname, '../../public')
@@ -89,7 +94,7 @@ describe('responsive source building', () => {
     const sources = coverSources('/webtoon-covers/shadow-knight.png')
     expect(sources).not.toBeNull()
     expect(sources?.avif).toBe(
-      '/webtoon-covers/r/shadow-knight-192.avif 192w, /webtoon-covers/r/shadow-knight-288.avif 288w, /webtoon-covers/r/shadow-knight-384.avif 384w, /webtoon-covers/r/shadow-knight-576.avif 576w'
+      '/webtoon-covers/r/shadow-knight-192.avif 192w, /webtoon-covers/r/shadow-knight-288.avif 288w, /webtoon-covers/r/shadow-knight-384.avif 384w, /webtoon-covers/r/shadow-knight-576.avif 576w, /webtoon-covers/r/shadow-knight-768.avif 768w'
     )
     expect(sources?.fallback).toBe('/webtoon-covers/shadow-knight.png')
   })
@@ -123,6 +128,20 @@ describe('responsive source building', () => {
       const [url] = entry.split(' ')
       expect(existsSync(path.join(publicDir, url.replace(/^\//, ''))), `missing ${url}`).toBe(true)
     }
+  })
+
+  // Impl 223 wired `BookCard` and missed `HeroBook3D`, so the largest cover
+  // surface kept downloading the full source while the small one was optimised.
+  // The ladder has to reach the hero's own widest slot, not just the card's.
+  it('reaches the hero slot, which is wider than any card slot', () => {
+    const widest = Math.max(
+      ...(coverSources('/webtoon-covers/shadow-knight.png')?.avif.match(/(\d+)w/g) ?? []).map((w) =>
+        Number.parseInt(w, 10)
+      )
+    )
+    // HeroBook3D is xl:w-96 (384px) on the detail page; 2x needs 768.
+    expect(HERO_COVER_SIZES).toContain('384px')
+    expect(widest).toBeGreaterThanOrEqual(768)
   })
 
   it('describes the widest cover slot it can actually be asked for', () => {

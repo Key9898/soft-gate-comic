@@ -255,6 +255,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 223  | 2026-09-15 | Responsive image pipeline (AVIF/WebP ladder, banner as `img`, staleness guard) | [2026-09-15-responsive-image-pipeline.md](../notes/2026-09-15-responsive-image-pipeline.md)                                                                   |
 | 224  | 2026-09-15 | Competitor branding blur-erased from two covers (#28); cyber-dreams left       | [2026-09-15-cover-branding-removal.md](../notes/2026-09-15-cover-branding-removal.md)                                                                         |
 | 225  | 2026-09-15 | Orphaned `draft-story.png` deleted; orphan-cover guard added                   | [2026-09-15-orphan-cover-removed.md](../notes/2026-09-15-orphan-cover-removed.md)                                                                             |
+| 226  | 2026-09-15 | HeroBook3D joins the cover ladder (768 rung); cover artwork brief              | [2026-09-15-hero-cover-ladder.md](../notes/2026-09-15-hero-cover-ladder.md)                                                                                   |
 
 ---
 
@@ -2101,9 +2102,17 @@ First item of [#28](https://github.com/Key9898/soft-gate-comic/issues/28). Three
 
 ---
 
+## Impl Phase 226 — HeroBook3D joins the cover ladder; cover artwork brief (2026-09-15)
+
+**Status:** Done
+
+**Impl 223 left a regression**: it wired `BookCard` to a `<picture>` ladder and stopped, so `HeroBook3D` kept rendering `src={coverImage}` with no `srcset` — **the largest cover surface in the product downloaded the full source while the smallest was optimised**. Home spotlight and every series detail page pulled ~633 kB per cover into a frame at most 384px wide. Found while writing the artwork brief: enumerating where covers appear forced a look at each consumer, which the original change never did. Transferable lesson — 223 optimised the component it happened to be editing instead of auditing every consumer of the asset. **The ladder was also too short**: `HeroBook3D` is `w-56 sm:w-72 lg:w-80 xl:w-96`, up to 384px, needing **768** at 2x, but the ladder stopped at 576 — so wiring `<picture>` alone would still have shipped a soft cover on any retina desktop. 768 added, which is also the ceiling the sources allow (1024 square, 1024 tall at 3:4 = 768 wide; beyond is upscaling). `HERO_COVER_SIZES` is separate from `COVER_SIZES` because the hero is a fixed-width column, not a grid cell, so slots are exact rather than viewport-relative; Home steps one rung smaller and the shared string over-estimates it by one breakpoint — the right way to be wrong, since an over-estimate costs bytes and an under-estimate ships a soft cover on the largest surface the art appears on. Verified at 1400px / DPR 2 in a 384px slot: browser selects `shadow-knight-768.avif` at **77 kB** against the **633 kB** PNG. A test **pins the gap rather than the fix** — the ladder must reach 768 and `HERO_COVER_SIZES` must name the 384px slot — so the hero cannot quietly fall off again. Variants 82 -> 100. Also ships [cover-artwork-brief](../references/cover-artwork-brief.md) for #28: nine covers, no baked text, **3:4 native (1152x1536)** rather than today's squares (~12.5% cropped off each side by `object-cover`), **readability at 183px as the acceptance test**, and the safe areas an artist cannot otherwise know (spine gradient over the left 5%, badge stacks in both top corners, oversized rank numeral bottom-left, 3px progress bar). Noted while compiling it: **five of nine `mm` titles are identical to `en`** — untranslated, a content gap rather than an artwork one. **207** stays unused. Next is **227**. Note: [2026-09-15-hero-cover-ladder.md](../notes/2026-09-15-hero-cover-ladder.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **226**).
+1. Take **next free Impl** (currently **227**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

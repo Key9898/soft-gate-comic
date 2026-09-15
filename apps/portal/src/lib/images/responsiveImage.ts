@@ -1,5 +1,5 @@
 const COVER_PREFIX = '/webtoon-covers/'
-const COVER_WIDTHS = [192, 288, 384, 576]
+const COVER_WIDTHS = [192, 288, 384, 576, 768]
 const BANNER_WIDTHS = [640, 960, 1280, 1920, 2560]
 
 /**
@@ -10,6 +10,16 @@ const BANNER_WIDTHS = [640, 960, 1280, 1920, 2560]
  */
 export const COVER_SIZES =
   '(min-width: 1280px) 183px, (min-width: 1024px) 224px, (min-width: 768px) 31vw, (min-width: 640px) 29vw, 44vw'
+
+/**
+ * `HeroBook3D`'s own ladder: `w-56 sm:w-72 lg:w-80 xl:w-96` on the detail page.
+ * It is a fixed-width column, not a grid cell, so these are exact rather than
+ * viewport-relative. Home steps one rung smaller, which this over-estimates by
+ * a single breakpoint — safe, since an over-estimate costs bytes and an
+ * under-estimate ships a soft cover on the largest surface the art appears on.
+ */
+export const HERO_COVER_SIZES =
+  '(min-width: 1280px) 384px, (min-width: 1024px) 320px, (min-width: 640px) 288px, 224px'
 
 export interface ResponsiveSources {
   avif: string
