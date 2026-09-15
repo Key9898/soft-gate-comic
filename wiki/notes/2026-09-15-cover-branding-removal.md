@@ -63,7 +63,10 @@ Confirmed on the shipped `-384.avif` variants at card size: `golden-age` and `sh
 
 ## Left open
 
-- `cyber-dreams.png` — needs artwork.
-- Everything else in #28: `[AUTHOR NAME]` / `[ARTIST NAME]` placeholders on `the-last-horizon.png` and `draft-story.png`, the baked `Comming Soon` typo, and baked-in titles on all ten covers (which is what makes covers unlocalisable — `love-in-seoul.png` shows a Korean title while the `mm` catalog title is Burmese).
+- ~~`cyber-dreams.png` — needs artwork.~~ Its badge was removed without artwork by [Impl 229](2026-09-15-cyber-dreams-badge-erased.md); the cover still needs artwork for the reasons below.
+- Everything else in #28, as of 2026-09-15:
+  - `[AUTHOR NAME]` / `[ARTIST NAME]` on `the-last-horizon.png`. This originally also named `draft-story.png` and the baked `Comming Soon` typo on it — both went with the file, which [Impl 225](2026-09-15-orphan-cover-removed.md) deleted as unreferenced. **Nine covers, not ten.**
+  - Baked-in titles on **all nine**, which is what makes the covers unlocalisable. This originally cited `love-in-seoul.png` showing a Korean title against a Burmese `mm` catalog title; [Impl 227](2026-09-15-series-titles-one-locale.md) then set that title to `Love in Seoul` in both locales, which makes the example **sharper, not stale**: the cover reads `서울의 사랑` above `Love in Seoul`, so it bakes in a title the catalog now renders in **neither** locale.
+  - Baked credits beyond the placeholders: `blood-moon.png` carries `SEASON 1 | WRITTEN & ILLUSTRATED BY NIGHTMARE` and `campus-life.png` carries four character names. Same class of defect as the titles — catalog data painted into pixels.
 
 Blur-erasure is a stopgap for a brand-name problem, not a substitute for clean artwork. The covers should carry artwork only; title, tagline, author, artist and season are all catalog fields already rendered by `BookCard`.
