@@ -48,7 +48,7 @@ The technique is unchanged from Impl 224 — a Gaussian blur of the whole cover 
 
 **Sigma 24**, up from the ~16 that best fits Impl 224's shipped patch. Lower sigmas erase the letterforms but leave a darker residue from their drop shadows.
 
-**Encoded JPEG quality 100, 4:4:4**, following [Impl 229](https://github.com/Key9898/soft-gate-comic/commit/3a89667)'s finding that re-encoding at the source's own 4:2:0 costs a second generation of chroma subsampling on saturated edges. 1.36 MB and 1.18 MB, against 610/649 kB for the palette PNGs and 1.06/0.95 MB for the sources. The sources are the `<img>` fallback in `responsiveImage.ts`, so this is not only a repository cost — it is the right trade anyway, since the AVIF/WebP rungs a browser actually fetches are derived from these and inherit whatever is thrown away here.
+**Encoded JPEG quality 100, 4:4:4**, following [Impl 229](2026-09-15-cyber-dreams-badge-erased.md)'s finding that re-encoding at the source's own 4:2:0 costs a second generation of chroma subsampling on saturated edges. 1.36 MB and 1.18 MB, against 610/649 kB for the palette PNGs and 1.06/0.95 MB for the sources. The sources are the `<img>` fallback in `responsiveImage.ts`, so this is not only a repository cost — it is the right trade anyway, since the AVIF/WebP rungs a browser actually fetches are derived from these and inherit whatever is thrown away here.
 
 ## Verification
 
@@ -65,5 +65,5 @@ Impl 224's own lesson was **diff a patch against the original at full resolution
 
 ## Left open
 
-- `wiki/` has no entry for **Impl 229** (`3a89667`, the Cyber Dreams badge removal); it shipped as code only. The quick index, the phase list and the notes folder all skip from 228 to 230.
+- ~~`wiki/` has no entry for **Impl 229** (`3a89667`, the Cyber Dreams badge removal); it shipped as code only.~~ Written retroactively: [2026-09-15-cyber-dreams-badge-erased.md](2026-09-15-cyber-dreams-badge-erased.md).
 - Everything else in [#28](https://github.com/Key9898/soft-gate-comic/issues/28): `[AUTHOR NAME]` / `[ARTIST NAME]` on `the-last-horizon.png`, and baked-in titles on all nine covers. Blur-erasure and inpainting are both stopgaps for a brand-name problem; `wiki/references/cover-artwork-brief.md` is still the actual fix.
