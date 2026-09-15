@@ -27,13 +27,23 @@ The lesson is the review method, not the technique: **a patch must be diffed aga
 - An SVG feather using `mix-blend-mode: multiply` silently produced a fully opaque mask, so the result was a flat grey rectangle.
 - The first working raw-pixel mask used a falloff of 0.45 of the region height from each edge — 90% of the patch was semi-transparent, so the original text bled straight through and increasing the blur sigma from 18 to 60 changed almost nothing. The giveaway was that a 3x sigma increase had no visible effect.
 
-The shipped approach is a Gaussian blur under a cosine-falloff alpha built as raw pixels, feather 0.10 horizontal and 0.16 vertical. The erased regions read as atmospheric haze — a soft band, visible on close inspection at 100%, invisible at every size a cover actually renders (183px card, 384px hero, 340px OG).
+The shipped approach is a Gaussian blur under a cosine-falloff alpha built as raw pixels, feather 0.10 horizontal and 0.16 vertical. (A feather expressed as a _fraction_ of the region puts the outermost glyphs inside the ramp — [Impl 230](2026-09-15-cover-encoding-restored.md) specifies it in pixels instead and grows the region by exactly the ramp width, so the glyphs sit in the full-alpha core by construction.) The erased regions read as atmospheric haze — a soft band, visible on close inspection at 100%, invisible at every size a cover actually renders (183px card, 384px hero, 340px OG).
 
 **`cyber-dreams` cannot be patched this way.** Its badge is large, opaque and white, sitting on detailed wet asphalt between the character's boots. Blur turns it into a pale smear that is worse than the logo, and there is no clean same-row region wide enough to clone from — the badge is flanked by both boots. It needs real artwork. Left untouched rather than shipping a visible smear.
 
-## Re-encoding
+## Re-encoding — wrong, and reverted by [Impl 230](2026-09-15-cover-encoding-restored.md)
 
-Sharp's default PNG output nearly tripled the sources (`golden-age` 1037 -> 2653 kB). `palette: true` with `compressionLevel: 9, effort: 10` brought them to 595 and 633 kB — **smaller than the originals** — and a full-resolution comparison of the sunset gradient in `golden-age`, the worst case for 256-colour quantisation, shows no banding.
+> **Corrected 2026-09-15.** The paragraph below is what was decided and shipped. The claim it ends on — "shows no banding" — is false, and the whole decision rests on a mistake about what the sources were. Kept verbatim because the reasoning error is the point; see [Impl 230](2026-09-15-cover-encoding-restored.md) for the measurements and the fix.
+
+> Sharp's default PNG output nearly tripled the sources (`golden-age` 1037 -> 2653 kB). `palette: true` with `compressionLevel: 9, effort: 10` brought them to 595 and 633 kB — **smaller than the originals** — and a full-resolution comparison of the sunset gradient in `golden-age`, the worst case for 256-colour quantisation, shows no banding.
+
+Two errors, one inside the other.
+
+**The sources were never PNG.** `golden-age.png` and `shadow-knight.png` are JPEG q100 4:2:0 carrying a `.png` extension, as are the other seven covers. "Sharp's default PNG output nearly tripled the sources" is comparing a lossless PNG re-encode against a lossy JPEG original — a size increase that says nothing about PNG and everything about the format the file already was. The right response was to write JPEG back. Instead the tripling was read as a PNG problem and answered with `palette: true`, which is the only knob that could have made it worse: these are neon and gradient illustrations, the worst case for a 256-colour palette. `magick identify` reports the format; nothing here ever asked it.
+
+**"Shows no banding" was an eyeball at a glance, not a comparison.** Measured after the fact: outside the erased region, `golden-age` is **37.1 dB PSNR with a worst pixel 70 of 255**, `shadow-knight` **39.5 dB / 139 of 255**, and over 95% of every pixel in both files changed. A smooth sky patch on `golden-age` went from **7,030 distinct colours to 137**. The artefact is dither grain rather than hard bands, which is why a glance missed it — sharp's quantiser dithers, so 256 colours over a gradient reads as texture, and "no banding" is technically true of an image that is nonetheless visibly degraded. The check was run on the one thing the edit had touched; the damage was everywhere it had not.
+
+This is the same failure as the clone-stamp near-miss above, one level up. There the lesson was **diff a patch against the original at full resolution**. Here a full-resolution diff was available and would have shown 95% of the file changed by a step that was supposed to change nothing — but the diff was never taken, because re-encoding did not feel like an edit. **An encoder change is an edit to every pixel, and earns the same A/B as a patch.**
 
 ## The staleness guard earned itself
 
