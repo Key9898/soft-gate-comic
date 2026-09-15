@@ -71,14 +71,14 @@ export const mockPopularWebtoons: PopularWebtoon[] = [
   },
   {
     id: '2',
-    title: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
+    title: { mm: 'Love in Seoul', en: 'Love in Seoul' },
     views: 1800000,
     likes: 98000,
     revenue: 9800,
   },
   {
     id: '7',
-    title: { mm: 'သွေးနက်လ', en: 'Blood Moon' },
+    title: { mm: 'Blood Moon', en: 'Blood Moon' },
     views: 1100000,
     likes: 78000,
     revenue: 7800,
@@ -279,7 +279,7 @@ export const mockWebtoons: Webtoon[] = [
   },
   {
     id: '2',
-    title: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
+    title: { mm: 'Love in Seoul', en: 'Love in Seoul' },
     description: {
       mm: 'ဆိုးလ်မြို့၏ လူစည်ကားသော လမ်းမကြီးများတွင် ဖြစ်ပွားသော နွေးထွေးလှသည့် အချစ်ဇာတ်လမ်းတစ်ပုဒ်။',
       en: 'A heartwarming love story set in the bustling streets of Seoul.',
@@ -354,7 +354,7 @@ export const mockWebtoons: Webtoon[] = [
   },
   {
     id: '5',
-    title: { mm: 'ရွှေခေတ်', en: 'Golden Age' },
+    title: { mm: 'Golden Age', en: 'Golden Age' },
     description: {
       mm: 'ရှေးခေတ်တွင် ဖြစ်ပွားသော သမိုင်းဝင် ဇာတ်လမ်းကြီးတစ်ပုဒ်။',
       en: 'An epic historical saga set in ancient times.',
@@ -400,7 +400,7 @@ export const mockWebtoons: Webtoon[] = [
   },
   {
     id: '7',
-    title: { mm: 'သွေးနက်လ', en: 'Blood Moon' },
+    title: { mm: 'Blood Moon', en: 'Blood Moon' },
     description: {
       mm: 'သင့်ကို ခုံရင်ခွဲစေမည့် ကြောက်ရွံ့ဖွယ် ဇာတ်လမ်း။',
       en: 'A terrifying horror story that will keep you on the edge.',
@@ -448,7 +448,7 @@ export const mockWebtoons: Webtoon[] = [
   },
   {
     id: '9',
-    title: { mm: 'တက္ကသိုလ်ဘဝ', en: 'Campus Life' },
+    title: { mm: 'Campus Life', en: 'Campus Life' },
     description: {
       mm: 'တက္ကသိုလ်ကျောင်းသားများ၏ နေ့စဉ်ဘဝ ဇာတ်လမ်း။',
       en: 'Daily life stories of university students.',
@@ -611,7 +611,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '6',
     webtoonId: '2',
-    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 1', en: 'Episode 1' },
     description: { mm: 'အပိုင်း 1 အကျဉ်းချုပ်', en: 'Episode 1 summary' },
     images: [],
@@ -627,7 +627,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '7',
     webtoonId: '2',
-    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 2', en: 'Episode 2' },
     description: { mm: 'အပိုင်း 2 အကျဉ်းချုပ်', en: 'Episode 2 summary' },
     images: [],
@@ -643,7 +643,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '8',
     webtoonId: '2',
-    webtoonTitle: { mm: 'ဆိုးလ်မြို့က ချစ်ခြင်းတရား', en: 'Love in Seoul' },
+    webtoonTitle: { mm: 'Love in Seoul', en: 'Love in Seoul' },
     title: { mm: 'အပိုင်း 3', en: 'Episode 3' },
     description: { mm: 'အပိုင်း 3 အကျဉ်းချုပ်', en: 'Episode 3 summary' },
     images: [],
@@ -758,7 +758,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '15',
     webtoonId: '5',
-    webtoonTitle: { mm: 'ရွှေခေတ်', en: 'Golden Age' },
+    webtoonTitle: { mm: 'Golden Age', en: 'Golden Age' },
     title: { mm: 'အပိုင်း 1', en: 'Episode 1' },
     description: { mm: 'အပိုင်း 1 အကျဉ်းချုပ်', en: 'Episode 1 summary' },
     images: [],
@@ -774,7 +774,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '16',
     webtoonId: '5',
-    webtoonTitle: { mm: 'ရွှေခေတ်', en: 'Golden Age' },
+    webtoonTitle: { mm: 'Golden Age', en: 'Golden Age' },
     title: { mm: 'အပိုင်း 2', en: 'Episode 2' },
     description: { mm: 'အပိုင်း 2 အကျဉ်းချုပ်', en: 'Episode 2 summary' },
     images: [],
@@ -790,7 +790,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '17',
     webtoonId: '5',
-    webtoonTitle: { mm: 'ရွှေခေတ်', en: 'Golden Age' },
+    webtoonTitle: { mm: 'Golden Age', en: 'Golden Age' },
     title: { mm: 'အပိုင်း 3', en: 'Episode 3' },
     description: { mm: 'အပိုင်း 3 အကျဉ်းချုပ်', en: 'Episode 3 summary' },
     images: [],
@@ -854,7 +854,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '21',
     webtoonId: '7',
-    webtoonTitle: { mm: 'သွေးနက်လ', en: 'Blood Moon' },
+    webtoonTitle: { mm: 'Blood Moon', en: 'Blood Moon' },
     title: { mm: 'အပိုင်း 1', en: 'Episode 1' },
     description: { mm: 'အပိုင်း 1 အကျဉ်းချုပ်', en: 'Episode 1 summary' },
     images: [],
@@ -870,7 +870,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '22',
     webtoonId: '7',
-    webtoonTitle: { mm: 'သွေးနက်လ', en: 'Blood Moon' },
+    webtoonTitle: { mm: 'Blood Moon', en: 'Blood Moon' },
     title: { mm: 'အပိုင်း 2', en: 'Episode 2' },
     description: { mm: 'အပိုင်း 2 အကျဉ်းချုပ်', en: 'Episode 2 summary' },
     images: [],
@@ -886,7 +886,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '23',
     webtoonId: '7',
-    webtoonTitle: { mm: 'သွေးနက်လ', en: 'Blood Moon' },
+    webtoonTitle: { mm: 'Blood Moon', en: 'Blood Moon' },
     title: { mm: 'အပိုင်း 3', en: 'Episode 3' },
     description: { mm: 'အပိုင်း 3 အကျဉ်းချုပ်', en: 'Episode 3 summary' },
     images: [],
@@ -952,7 +952,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '27',
     webtoonId: '9',
-    webtoonTitle: { mm: 'တက္ကသိုလ်ဘဝ', en: 'Campus Life' },
+    webtoonTitle: { mm: 'Campus Life', en: 'Campus Life' },
     title: { mm: 'အပိုင်း 1', en: 'Episode 1' },
     description: { mm: 'အပိုင်း 1 အကျဉ်းချုပ်', en: 'Episode 1 summary' },
     images: [],
@@ -968,7 +968,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '28',
     webtoonId: '9',
-    webtoonTitle: { mm: 'တက္ကသိုလ်ဘဝ', en: 'Campus Life' },
+    webtoonTitle: { mm: 'Campus Life', en: 'Campus Life' },
     title: { mm: 'အပိုင်း 2', en: 'Episode 2' },
     description: { mm: 'အပိုင်း 2 အကျဉ်းချုပ်', en: 'Episode 2 summary' },
     images: [],
@@ -984,7 +984,7 @@ export const mockEpisodes: Episode[] = [
   {
     id: '29',
     webtoonId: '9',
-    webtoonTitle: { mm: 'တက္ကသိုလ်ဘဝ', en: 'Campus Life' },
+    webtoonTitle: { mm: 'Campus Life', en: 'Campus Life' },
     title: { mm: 'အပိုင်း 3', en: 'Episode 3' },
     description: { mm: 'အပိုင်း 3 အကျဉ်းချုပ်', en: 'Episode 3 summary' },
     images: [],

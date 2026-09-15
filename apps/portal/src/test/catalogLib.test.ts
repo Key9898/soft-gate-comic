@@ -88,10 +88,25 @@ describe('formatCatalogDate', () => {
 describe('mock catalog calendar', () => {
   const yearOf = (iso: string) => iso.slice(0, 4)
 
-  it('keeps Love in Seoul MM literary and EN cover-brand', () => {
-    const loveInSeoul = mockWebtoons.find((webtoon) => webtoon.id === '2')
-    expect(loveInSeoul?.title.mm).toBe('ဆိုးလ်မြို့က ချစ်ခြင်းတရား')
-    expect(loveInSeoul?.title.en).toBe('Love in Seoul')
+  // Series titles are the same string in both locales (Impl 227). Four were
+  // translated and five were not, which read as an unfinished catalogue rather
+  // than a rule; the owner chose one rule over a partial translation. Descriptions
+  // and author names stay translated — this is about titles only.
+  it('keeps every series title identical across locales', () => {
+    for (const webtoon of mockWebtoons) {
+      expect(webtoon.title.mm, `${webtoon.title.en} title differs by locale`).toBe(webtoon.title.en)
+    }
+  })
+
+  it('still translates descriptions and author names', () => {
+    const translatedDescriptions = mockWebtoons.filter(
+      (webtoon) => webtoon.description.mm !== webtoon.description.en
+    )
+    expect(translatedDescriptions.length).toBeGreaterThan(0)
+    const translatedAuthors = mockWebtoons.filter(
+      (webtoon) => webtoon.author.name.mm !== webtoon.author.name.en
+    )
+    expect(translatedAuthors.length).toBeGreaterThan(0)
   })
 
   it('keeps series, episodes, and users in 2026', () => {

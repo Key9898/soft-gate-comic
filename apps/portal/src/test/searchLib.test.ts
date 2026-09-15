@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import type { Author, Episode, Genre, Webtoon } from '@softgate/shared'
+import { mockWebtoons, mockAuthors } from '@softgate/shared'
 import {
   escapeRegExp,
   searchWebtoons,
@@ -181,5 +182,24 @@ describe('DEMO_SEARCH_CHIPS', () => {
       'Ko Zaw',
     ])
     expect(new Set(DEMO_SEARCH_CHIPS.map((chip) => chip.en)).size).toBe(6)
+  })
+
+  // A chip that matches nothing is worse than no chip: it offers the visitor a
+  // suggested search and then hands them an empty result page. This was an
+  // unguarded dependency — reverting the Burmese series titles (Impl 227) broke
+  // the `ဆိုးလ်` and `သွေးနက်လ` chips, and the assertions above stayed green
+  // because they only check the English labels.
+  it('every chip finds something in its own locale', () => {
+    for (const chip of DEMO_SEARCH_CHIPS) {
+      for (const lang of ['en', 'mm'] as const) {
+        const term = chip[lang]
+        const hits =
+          searchWebtoons(mockWebtoons, { q: term, lang }).length +
+          searchAuthors(mockAuthors, term, lang).length
+        expect(hits, `chip "${chip.en}" finds nothing for ${lang} term "${term}"`).toBeGreaterThan(
+          0
+        )
+      }
+    }
   })
 })

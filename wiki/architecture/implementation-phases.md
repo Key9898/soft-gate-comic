@@ -256,6 +256,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 224  | 2026-09-15 | Competitor branding blur-erased from two covers (#28); cyber-dreams left       | [2026-09-15-cover-branding-removal.md](../notes/2026-09-15-cover-branding-removal.md)                                                                         |
 | 225  | 2026-09-15 | Orphaned `draft-story.png` deleted; orphan-cover guard added                   | [2026-09-15-orphan-cover-removed.md](../notes/2026-09-15-orphan-cover-removed.md)                                                                             |
 | 226  | 2026-09-15 | HeroBook3D joins the cover ladder (768 rung); cover artwork brief              | [2026-09-15-hero-cover-ladder.md](../notes/2026-09-15-hero-cover-ladder.md)                                                                                   |
+| 227  | 2026-09-15 | Series titles are one string in both locales; demo-chip guard                  | [2026-09-15-series-titles-one-locale.md](../notes/2026-09-15-series-titles-one-locale.md)                                                                     |
 
 ---
 
@@ -2110,9 +2111,17 @@ First item of [#28](https://github.com/Key9898/soft-gate-comic/issues/28). Three
 
 ---
 
+## Impl Phase 227 — Series titles are one string in both locales (2026-09-15)
+
+**Status:** Done
+
+Follows #29, closed as not planned: five of nine series titles had `mm` identical to `en`. Closing it decided those five stay English, which left **no rule** — four Burmese titles and five Latin ones side by side in the same rail, reading as an unfinished translation rather than a decision. Owner chose the coherent direction: revert the four rather than complete the five. 18 occurrences in `data.ts`, `title` and `webtoonTitle` only (each episode repeats its series title, so four series produce eighteen edits). **Descriptions and author names stay translated** — this is about titles as proper nouns, not a retreat from Burmese; `ကိုဇော်` is still the `mm` form of `Ko Zaw`, and a companion test pins that so a later sweep cannot read this as "stop translating". **A dependency would have broken silently**: `DEMO_SEARCH_CHIPS` offered `ဆိုးလ်` and `သွေးနက်လ`, which matched _only_ because those titles were Burmese — reverting left two suggested searches pointing at nothing, i.e. the product offers a search and hands back an empty page. The existing chip test asserted length, the six English labels and uniqueness, but never that a chip finds anything; a new test runs every chip through `searchWebtoons` and `searchAuthors` in both locales requiring a hit, watched failing by restoring one chip. **The first version of that guard was vacuous and passed**: `searchWebtoons(webtoons, filters)` takes an options object, not `(list, term, lang)`, so a bare string meant no query filter and returned the whole catalogue — going green immediately was the tell, since a test written for a live breakage should fail before it passes. Also replaced `catalogLib`'s `keeps Love in Seoul MM literary and EN cover-brand`, which pinned the now-reversed decision, with an assertion of the rule across **every** series rather than one hardcoded pair. **207** stays unused. Next is **228**. Note: [2026-09-15-series-titles-one-locale.md](../notes/2026-09-15-series-titles-one-locale.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **227**).
+1. Take **next free Impl** (currently **228**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).
