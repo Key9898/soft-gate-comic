@@ -105,6 +105,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [decisions/010-brevo-mail.md](decisions/010-brevo-mail.md) — mail helper not boot; HTML in repo; enumeration-safe forgot (Impl 187)
 - [decisions/011-portal-http-local.md](decisions/011-portal-http-local.md) — example `false` + helper unset still mock; profile cookie writers (Impl 188)
 - [decisions/012-development-branch.md](decisions/012-development-branch.md) — `main` product/Vercel; `development` leader-dev track
+- [decisions/013-generated-assets-not-purged.md](decisions/013-generated-assets-not-purged.md) — derivatives leave git going forward; history is not rewritten (and why)
 
 ### Recent SoftGate notes
 
