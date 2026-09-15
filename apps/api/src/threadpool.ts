@@ -8,12 +8,10 @@
  * environment before the server process starts. That is why this is a launcher
  * rather than a line inside the server.
  *
- * Note what this does and does not buy today: password hashing currently uses
- * `bcryptjs`, which is pure JavaScript and never touches the threadpool, so
- * this does nothing for login latency until #25 is resolved. It helps fs and
- * dns concurrency now, and it is the prerequisite for #25's fix to scale at
- * all — measured there, raising the pool from 4 to 16 cut ten concurrent
- * threadpool hashes from 627ms to 283ms.
+ * This directly sets the login ceiling. Password hashing uses native bcrypt,
+ * which runs on this pool, so the pool size is how many logins can hash at
+ * once — measured in #25, ten concurrent cost-12 hashes took 699ms at the
+ * default of 4 and 295ms at 12.
  */
 
 /** libuv's own default. Never go below it — that would be a regression. */

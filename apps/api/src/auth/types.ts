@@ -16,9 +16,9 @@ export const MIN_USERNAME_LENGTH = 3
 export const PRODUCTION_BCRYPT_COST = 12
 
 /**
- * Tests only. `bcryptjs` is pure JS, so cost 12 is ~220ms per hash or compare
- * on an idle machine. The auth suites chain several of those per test, which
- * pushed them past Vitest's 5s default under CPU contention — see #24.
+ * Tests only. Cost 12 is ~210ms per hash or compare even on native bcrypt, and
+ * the auth suites chain several of those per test, which pushed them past
+ * Vitest's 5s default under CPU contention — see #24.
  *
  * The switch reads NODE_ENV directly rather than taking an env var, so there is
  * no setting a deployment can get wrong: only a process that already declares

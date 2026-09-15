@@ -56,7 +56,8 @@
       "esbuild",
       "browser-tabs-lock",
       "prisma",
-      "@prisma/engines"
+      "@prisma/engines",
+      "bcrypt"
     ]
   }
 }
