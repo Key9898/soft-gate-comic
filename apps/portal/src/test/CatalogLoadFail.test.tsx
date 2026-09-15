@@ -49,7 +49,7 @@ describe('catalog HTTP load-fail chrome', () => {
     )
 
     expect((await screen.findAllByText(FAIL_DECK, {}, { timeout: 8000 })).length).toBeGreaterThan(0)
-    expect(screen.getByRole('heading', { name: /^popular$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^most read$/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start here/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /^daily$/i })).toBeInTheDocument()
     expect(
@@ -85,7 +85,7 @@ describe('catalog HTTP load-fail chrome', () => {
     expect(screen.queryByRole('heading', { name: /go here/i })).not.toBeInTheDocument()
   }, 15000)
 
-  it('keeps Search Popular and New headings with fail copy, not Help/Creators', async () => {
+  it('keeps Search Most read and New series headings with fail copy, not Help/Creators', async () => {
     stubCatalogHttpFail()
     window.history.pushState({}, '', '/search')
     render(
@@ -98,8 +98,8 @@ describe('catalog HTTP load-fail chrome', () => {
       await screen.findByRole('heading', { level: 1, name: 'Search' }, { timeout: 8000 })
     ).toBeInTheDocument()
     expect((await screen.findAllByText(FAIL_NOTE)).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('heading', { name: 'Popular' }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('heading', { name: 'New Releases' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'Most read' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'New series' }).length).toBeGreaterThan(0)
     expect(
       screen.queryByText(/there are no published series to search yet/i)
     ).not.toBeInTheDocument()

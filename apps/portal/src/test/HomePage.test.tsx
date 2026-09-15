@@ -20,16 +20,16 @@ describe('HomePage', () => {
 
   it('renders ranking, trending, daily, updated, and new rails', () => {
     render(<HomePage />)
-    expect(screen.getByRole('heading', { name: 'Popular' })).toBeInTheDocument()
-    expect(screen.getByText('Trending Now')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Most read' })).toBeInTheDocument()
+    expect(screen.getByText('Rising this week')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Daily' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Updated' })).toBeInTheDocument()
-    expect(screen.getByText('New Releases')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'New episodes' })).toBeInTheDocument()
+    expect(screen.getByText('New series')).toBeInTheDocument()
   })
 
   it('renders new releases section', () => {
     render(<HomePage />)
-    expect(screen.getByText('New Releases')).toBeInTheDocument()
+    expect(screen.getByText('New series')).toBeInTheDocument()
   })
 
   it('renders genres section', () => {
@@ -57,7 +57,7 @@ describe('HomePage', () => {
     // View All navigates now; it used to open a modal showing the same six items.
     const viewAllLinks = screen.getAllByRole('link', { name: 'View All' })
     expect(viewAllLinks).toHaveLength(3)
-    const ranking = screen.getByRole('heading', { name: 'Popular' }).closest('section')
+    const ranking = screen.getByRole('heading', { name: 'Most read' }).closest('section')
     expect(ranking).toBeTruthy()
     expect(ranking?.querySelector('ol')).toBeTruthy()
     const popularRanks = ranking?.querySelectorAll('[data-testid="rank-mark"]')
@@ -84,9 +84,9 @@ describe('HomePage', () => {
       'href',
       '/ranking'
     )
-    const trending = screen.getByRole('heading', { name: 'Trending Now' }).closest('section')
+    const trending = screen.getByRole('heading', { name: 'Rising this week' }).closest('section')
     expect(trending).toBeTruthy()
-    expect(trending?.textContent).toContain('Titles rising this week, not all-time reads.')
+    expect(trending?.textContent).toContain('Ranked by reads over the last seven days.')
     expect(trending?.textContent).not.toContain('View All')
     const daily = screen.getByRole('heading', { name: 'Daily' }).closest('section')
     expect(daily).toBeTruthy()
@@ -94,17 +94,17 @@ describe('HomePage', () => {
     expect(daily?.querySelector('.lucide-calendar-days')).toBeTruthy()
     expect(daily?.textContent).not.toContain('View All')
     expect(daily?.querySelector('a[href^="/categories"]')).toBeNull()
-    const updated = screen.getByRole('heading', { name: 'Updated' }).closest('section')
+    const updated = screen.getByRole('heading', { name: 'New episodes' }).closest('section')
     expect(updated).toBeTruthy()
-    expect(updated?.textContent).toContain('Latest published episode activity, not new series.')
+    expect(updated?.textContent).toContain('Series that published a chapter most recently.')
     expect(updated?.querySelector('.lucide-clock')).toBeTruthy()
     expect(within(updated!).getByRole('link', { name: 'View All' })).toHaveAttribute(
       'href',
       '/categories?sort=recentlyUpdated'
     )
-    const newReleases = screen.getByRole('heading', { name: 'New Releases' }).closest('section')
+    const newReleases = screen.getByRole('heading', { name: 'New series' }).closest('section')
     expect(newReleases).toBeTruthy()
-    expect(newReleases?.textContent).toContain('Newly added series, not new episodes.')
+    expect(newReleases?.textContent).toContain('Titles most recently added to the catalogue.')
     expect(newReleases?.querySelector('.lucide-sparkles')).toBeTruthy()
     expect(within(newReleases!).getByRole('link', { name: 'View All' })).toHaveAttribute(
       'href',
@@ -129,9 +129,9 @@ describe('HomePage', () => {
     // so "View All" showed strictly less than the rail behind it.
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     for (const [heading, href] of [
-      ['Popular', '/ranking'],
-      ['Updated', '/categories?sort=recentlyUpdated'],
-      ['New Releases', '/categories?sort=new'],
+      ['Most read', '/ranking'],
+      ['New episodes', '/categories?sort=recentlyUpdated'],
+      ['New series', '/categories?sort=new'],
     ] as const) {
       const section = screen.getByRole('heading', { name: heading }).closest('section')
       expect(within(section!).getByRole('link', { name: 'View All' })).toHaveAttribute('href', href)
@@ -164,8 +164,8 @@ describe('HomePage', () => {
     expect(board.getByText('Love in Seoul')).toBeInTheDocument()
     expect(board.queryByText('Golden Age')).not.toBeInTheDocument()
     expect(board.queryByText('Forest Spirit')).not.toBeInTheDocument()
-    const updated = screen.getByRole('heading', { name: 'Updated' }).closest('section')
-    expect(updated?.textContent).toContain('Latest published episode activity, not new series.')
+    const updated = screen.getByRole('heading', { name: 'New episodes' }).closest('section')
+    expect(updated?.textContent).toContain('Series that published a chapter most recently.')
     expect(updated?.querySelector('.lucide-clock')).toBeTruthy()
   })
 
@@ -177,9 +177,9 @@ describe('HomePage', () => {
     expect(screen.getAllByText(/\d{1,2} [A-Z][a-z]{2} 2026/).length).toBeGreaterThan(0)
   })
 
-  it('badges the newest releases even inside Popular', () => {
+  it('badges the newest releases even inside Most read', () => {
     render(<HomePage />)
-    const ranking = screen.getByRole('heading', { name: 'Popular' }).closest('section')
+    const ranking = screen.getByRole('heading', { name: 'Most read' }).closest('section')
     expect(ranking).toBeTruthy()
     expect(ranking?.textContent).toContain('Love in Seoul')
     expect(screen.getByRole('link', { name: '1. Shadow Knight' })).toBeInTheDocument()
@@ -188,7 +188,7 @@ describe('HomePage', () => {
     expect(newMarks.length).toBeGreaterThanOrEqual(6)
   })
 
-  it('shows a start-here rail for guests, not a Popular eyebrow', () => {
+  it('shows a start-here rail for guests, not a Most read eyebrow', () => {
     render(<HomePage />)
     const startHere = screen.getByRole('heading', { name: 'Start here' }).closest('section')
     expect(startHere).toBeTruthy()
@@ -207,9 +207,9 @@ describe('HomePage', () => {
     expect(startHere?.textContent).not.toContain('Campus Life')
     expect(startHere?.textContent).not.toContain('Shadow Knight')
     expect(startHere?.textContent).not.toContain('Cyber Dreams')
-    const ranking = screen.getByRole('heading', { name: 'Popular' }).closest('section')
+    const ranking = screen.getByRole('heading', { name: 'Most read' }).closest('section')
     expect(ranking?.textContent).not.toContain('Start here')
-    expect(ranking?.textContent).toContain('Most-read series on SoftGate Comic')
+    expect(ranking?.textContent).toContain('Ranked by total reads across the catalogue.')
     expect(screen.getByRole('button', { name: /get started for free/i })).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { level: 1, name: /softgate comic — myanmar webtoons/i })
@@ -289,6 +289,6 @@ describe('HomePage continue XOR start here', () => {
     )
     expect(forYou?.querySelector('ol')).toBeNull()
     expect(forYou?.querySelector('a[href="/ranking"]')).toBeNull()
-    expect(screen.getByRole('heading', { name: 'Popular' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Most read' })).toBeInTheDocument()
   })
 })

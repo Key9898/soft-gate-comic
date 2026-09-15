@@ -108,7 +108,7 @@ describe('page skeletons', () => {
     const { container, unmount } = render(<HomePageSkeleton />)
     expect(screen.getByTestId('home-start-here')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start here/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /^popular$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^most read$/i })).toBeInTheDocument()
     expect(screen.queryByTestId('home-continue')).not.toBeInTheDocument()
     expect(screen.queryByTestId('home-for-you')).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /for you/i })).not.toBeInTheDocument()
@@ -188,7 +188,7 @@ describe('page skeletons', () => {
     const { container, unmount } = render(<CategoriesPageSkeleton ranked />)
     expect(container.querySelector('.radial-wash-primary')).toBeTruthy()
     expect(screen.getByText('Numbered chart')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: 'Popular' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Most read' })).toBeInTheDocument()
     expectNoInventoryBones(container)
     expect(screen.getByTestId('genre-rail-chevron-slot')).toBeInTheDocument()
     unmount()
@@ -214,8 +214,8 @@ describe('page skeletons', () => {
 
   it('Categories skeleton sort button follows the sort job', () => {
     const { unmount } = render(<CategoriesPageSkeleton sort="new" />)
-    expect(screen.getByRole('heading', { level: 1, name: 'New Releases' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'New Releases' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'New series' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'New series' })).toBeInTheDocument()
     unmount()
   })
 
@@ -224,8 +224,8 @@ describe('page skeletons', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Demo searches' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Browse genres' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Popular' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'New Releases' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Most read' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'New series' })).toBeInTheDocument()
     expect(screen.getByText(/no recent searches yet/i)).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /view all/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /go here/i })).not.toBeInTheDocument()
@@ -350,8 +350,8 @@ describe('HomePage loading vs empty resolution', () => {
       })
     ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start here/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /^popular$/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /trending now/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^most read$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /rising this week/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /^daily$/i })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /for you/i })).not.toBeInTheDocument()
     expect(
@@ -364,7 +364,7 @@ describe('HomePage loading vs empty resolution', () => {
 
   it('renders real content with mock data and no busy region', () => {
     render(<HomePage />)
-    expect(screen.getByText(/trending now/i)).toBeInTheDocument()
+    expect(screen.getByText(/rising this week/i)).toBeInTheDocument()
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 })

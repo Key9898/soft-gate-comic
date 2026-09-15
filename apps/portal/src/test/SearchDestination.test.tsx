@@ -51,7 +51,7 @@ describe('Search destination', () => {
     installStorage()
   })
 
-  it('shows a visible h1, browse genres, popular and new rails, and recovery', async () => {
+  it('shows a visible h1, browse genres, most-read and new-series rails, and recovery', async () => {
     renderSearch()
     expect(await screen.findByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Browse genres' })).toBeInTheDocument()
@@ -60,14 +60,14 @@ describe('Search destination', () => {
       screen.getByText('Example queries for this Demo catalog — not live trends.')
     ).toBeInTheDocument()
     expect(screen.queryByText('Trending Searches')).not.toBeInTheDocument()
-    expect(screen.getAllByRole('heading', { name: 'Popular' }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('heading', { name: 'New Releases' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'Most read' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'New series' }).length).toBeGreaterThan(0)
     expect(screen.getByRole('link', { name: /^categories$/i })).toHaveAttribute(
       'href',
       '/categories'
     )
-    expect(screen.getByRole('link', { name: /^popular$/i })).toHaveAttribute('href', '/ranking')
-    expect(screen.getByRole('link', { name: /^new releases$/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /^most read$/i })).toHaveAttribute('href', '/ranking')
+    expect(screen.getByRole('link', { name: /^new series$/i })).toHaveAttribute(
       'href',
       '/categories?sort=new'
     )
@@ -105,8 +105,8 @@ describe('Search destination', () => {
       'href',
       '/categories'
     )
-    expect(screen.getByRole('link', { name: /^popular$/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /^new releases$/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^most read$/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^new series$/i })).toBeInTheDocument()
   })
 
   it('renders an image on episode hits', async () => {
@@ -127,14 +127,14 @@ describe('Search destination', () => {
     expect(screen.queryByText('Trending Searches')).not.toBeInTheDocument()
   })
 
-  it('keeps Popular and New headings with catalog-empty chrome when there are no titles', async () => {
+  it('keeps Most read and New series headings with catalog-empty chrome when there are no titles', async () => {
     store.set('softgate-shared-data', EMPTY_SHARED_DATA)
     renderSearch()
     expect(await screen.findByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Browse genres' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Demo searches' })).toBeInTheDocument()
-    expect(screen.getAllByRole('heading', { name: 'Popular' }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('heading', { name: 'New Releases' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'Most read' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('heading', { name: 'New series' }).length).toBeGreaterThan(0)
     expect(
       await screen.findByText(/there are no published series to search yet/i)
     ).toBeInTheDocument()

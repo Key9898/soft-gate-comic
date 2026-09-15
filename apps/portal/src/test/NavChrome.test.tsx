@@ -63,17 +63,17 @@ describe('Navigation chrome (Impl 73)', () => {
     expect(categories.some((link) => link.getAttribute('aria-current') === 'page')).toBe(true)
     expect(
       screen
-        .getAllByRole('link', { name: /^popular$/i })
+        .getAllByRole('link', { name: /^most read$/i })
         .every((link) => !link.getAttribute('aria-current'))
     ).toBe(true)
   })
 
-  it('marks Popular current on /ranking', () => {
+  it('marks Most read current on /ranking', () => {
     window.history.pushState({}, '', '/ranking')
     render(<Navigation />)
     expect(
       screen
-        .getAllByRole('link', { name: /^popular$/i })
+        .getAllByRole('link', { name: /^most read$/i })
         .some((link) => link.getAttribute('aria-current') === 'page')
     ).toBe(true)
     expect(

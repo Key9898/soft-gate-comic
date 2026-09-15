@@ -22,12 +22,12 @@ function renderCategories(path: string) {
 }
 
 describe('Categories ranking chrome', () => {
-  it('ranks on /ranking and labels the sort control Popular', async () => {
+  it('ranks on /ranking and labels the sort control Most read', async () => {
     renderCategories('/ranking')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Popular' })).toBeInTheDocument()
-    expect(screen.getByText('Most-read series on SoftGate Comic')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Popular' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Popular' })).toHaveAttribute(
+    expect(await screen.findByRole('heading', { level: 1, name: 'Most read' })).toBeInTheDocument()
+    expect(screen.getByText('Ranked by total reads across the catalogue.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Most read' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Most read' })).toHaveAttribute(
       'aria-expanded',
       'false'
     )
@@ -42,7 +42,7 @@ describe('Categories ranking chrome', () => {
 
   it('uses an ordered chart grid and sticky filters on /ranking', async () => {
     renderCategories('/ranking')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Popular' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Most read' })).toBeInTheDocument()
     expect(screen.getByText('Numbered chart')).toBeInTheDocument()
     expect(document.querySelector('.radial-wash-primary')).toBeTruthy()
     expect(document.querySelector('ol')).toBeTruthy()
@@ -56,7 +56,7 @@ describe('Categories ranking chrome', () => {
 
   it('replace-navigates all-genre sort=popular to /ranking', async () => {
     renderCategories('/categories?sort=popular')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Popular' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Most read' })).toBeInTheDocument()
     await waitFor(() => {
       expect(screen.getByRole('link', { name: '1. Shadow Knight' })).toBeInTheDocument()
     })
@@ -76,20 +76,18 @@ describe('Categories ranking chrome', () => {
     expect(document.querySelector('.radial-wash-primary')).toBeNull()
   })
 
-  it('does not rank New Releases sort', async () => {
+  it('does not rank New series sort', async () => {
     renderCategories('/categories?sort=new')
-    expect(
-      await screen.findByRole('heading', { level: 1, name: 'New Releases' })
-    ).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'New series' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: '1. Campus Life' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: '1. Shadow Knight' })).not.toBeInTheDocument()
     expect(document.querySelector('ol')).toBeNull()
   })
 
-  it('titles Recently Updated without ranks', async () => {
+  it('titles New episodes without ranks', async () => {
     renderCategories('/categories?sort=recentlyUpdated')
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Recently Updated' })
+      await screen.findByRole('heading', { level: 1, name: 'New episodes' })
     ).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: '1. Shadow Knight' })).not.toBeInTheDocument()
     const movedTile = screen.getByRole('link', { name: /Shadow Knight/ })

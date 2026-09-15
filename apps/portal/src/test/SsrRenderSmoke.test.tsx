@@ -46,7 +46,7 @@ describe('SSR render smoke (node, no DOM)', () => {
     const { html, status } = await render('/')
     expect(status).toBe(200)
     expect(html).toContain('<main')
-    expect(html).toContain('Trending Now')
+    expect(html).toContain('Rising this week')
   })
 
   it('renders the series hub content on the server', async () => {

@@ -25,8 +25,8 @@ describe('NotFoundPage', () => {
       'href',
       '/categories'
     )
-    expect(screen.getByRole('link', { name: /^popular$/i })).toHaveAttribute('href', '/ranking')
-    expect(screen.getByRole('link', { name: /^new releases$/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /^most read$/i })).toHaveAttribute('href', '/ranking')
+    expect(screen.getByRole('link', { name: /^new series$/i })).toHaveAttribute(
       'href',
       '/categories?sort=new'
     )
