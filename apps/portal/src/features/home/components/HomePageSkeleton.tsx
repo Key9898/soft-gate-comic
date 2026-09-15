@@ -5,6 +5,7 @@ import { CalendarDays, Clock, Play, Sparkles, TrendingUp } from 'lucide-react'
 import Button from '../../../components/Button'
 import CatalogBusyPanel from '../../../components/CatalogBusyPanel'
 import GenreRailChevron from '../../../components/GenreRailChevron'
+import HeroBanner from './HeroSpotlight/HeroBanner'
 import SEO from '../../../components/SEO/SEO'
 import { buildOrganizationJsonLd, buildWebsiteJsonLd } from '../../../components/SEO/jsonLd'
 import { SkeletonSection } from '../../../components/Skeleton'
@@ -66,11 +67,7 @@ const HomePageSkeleton = ({
         jsonLd={[buildWebsiteJsonLd(), buildOrganizationJsonLd()]}
       />
       <section className="safe-top relative -mt-16 overflow-visible pt-16 text-white">
-        <div
-          className="pointer-events-none absolute inset-0 overflow-hidden bg-gray-950 bg-cover bg-center"
-          style={{ backgroundImage: `url('/banner/banner.png')` }}
-          aria-hidden="true"
-        />
+        <HeroBanner />
         <div
           className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
           aria-hidden="true"

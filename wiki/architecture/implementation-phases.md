@@ -252,6 +252,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 220  | 2026-09-14 | Phase 5 visual identity (weight scale; owner-scoped)                           | [2026-09-14-phase-5-visual-identity.md](../notes/2026-09-14-phase-5-visual-identity.md)                                                                       |
 | 221  | 2026-09-15 | Rail labels renamed (Most read / Rising this week / New episodes / New series) | [2026-09-15-rail-label-rename.md](../notes/2026-09-15-rail-label-rename.md)                                                                                   |
 | 222  | 2026-09-15 | Native bcrypt + host-sized libuv threadpool (API auth off the event loop)      | [2026-09-15-native-bcrypt-threadpool.md](../notes/2026-09-15-native-bcrypt-threadpool.md)                                                                     |
+| 223  | 2026-09-15 | Responsive image pipeline (AVIF/WebP ladder, banner as `img`, staleness guard) | [2026-09-15-responsive-image-pipeline.md](../notes/2026-09-15-responsive-image-pipeline.md)                                                                   |
 
 ---
 
@@ -2074,9 +2075,17 @@ GitHub #25, split out of #24. `apps/api` hashed with `bcryptjs` at cost 12, enti
 
 ---
 
+## Impl Phase 223 — Responsive image pipeline (2026-09-15)
+
+**Status:** Done (asset half of #4; artwork half still open)
+
+The portal shipped `banner.png` at **10667x6000 / 2486 kB** into a band at most 576px tall, and ten **1024x1024 / ~950 kB** covers into slots at most 183px wide — roughly 12 MB of imagery for a page whose largest image slot is 183px. Covers are square while `BookCard` renders `aspect-[3/4]`, so a quarter of every cover was downloaded and discarded by `object-cover`. `scripts/generate-image-variants.ts` (sharp, modelled on `generate-og-images.ts`) writes AVIF + WebP at four cover widths and five banner widths — 90 files, 3.7 MB committed, matching the `og/` precedent of script-generated committed output. Cover rungs stop at 576 (183px at 3x is 549) and are **pre-cropped to 3/4** so the browser never fetches discarded pixels. Measured at 375px / DPR 2: banner **32 kB** (was 2486), cover **28 kB** (was ~950). **The banner stopped being a CSS background**: `background-image` cannot carry `srcset`/`sizes` and cannot take `fetchpriority`, which matters because it is Home's LCP element. New `HeroBanner` backs all three call sites (`HeroSpotlight` x2, `HomePageSkeleton`) with `<picture>`; the `fetchpriority` spread is lowercase for the Impl 219 reason — React 18 rejects the camelCase prop on `img` and drops the hint silently. `coverSources` returns `null` for anything not a local `/webtoon-covers/*` file, so R2 covers from a live catalog render as a plain `img` rather than 404ing every `source`. **The staleness guard is the load-bearing part**: #4 will replace the artwork _in place_, keeping filenames, so existence checks would pass while stale variants shipped and the new art never reached a visitor. The generator writes `public/image-variants.json` (sha256 per source) and `imageVariants.test.ts` fails `pnpm check` with the command to run — watched failing first by appending one byte to `blood-moon.png`. `generate:images` is deliberately **not** in `build`, matching `generate:og`; the manifest test is what makes that safe. `SkeletonStates.test.tsx` was pinning the mechanism (inline `style` containing the banner URL) rather than the intent, and now asserts the artwork and an AVIF source. **207** stays unused. Next is **224**. Note: [2026-09-15-responsive-image-pipeline.md](../notes/2026-09-15-responsive-image-pipeline.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **223**).
+1. Take **next free Impl** (currently **224**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).

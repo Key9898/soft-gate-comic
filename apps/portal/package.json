@@ -10,6 +10,7 @@
     "build": "tsc -b && vite build --outDir dist/client && vite build --ssr src/entry-server.tsx --outDir dist/server && tsx scripts/generate-sitemap.ts",
     "preview": "tsx server/index.ts",
     "generate:og": "tsx scripts/generate-og-images.ts",
+    "generate:images": "tsx scripts/generate-image-variants.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest",

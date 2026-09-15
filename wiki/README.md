@@ -258,6 +258,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-14-phase-5-visual-identity.md](notes/2026-09-14-phase-5-visual-identity.md) — Impl 220 Phase 5 (weight scale, reader dark-mode exception; #16 rejected with reasoning)
 - [notes/2026-09-15-rail-label-rename.md](notes/2026-09-15-rail-label-rename.md) — Impl 221 rail labels (Most read / Rising this week / New episodes / New series)
 - [notes/2026-09-15-native-bcrypt-threadpool.md](notes/2026-09-15-native-bcrypt-threadpool.md) — Impl 222 native bcrypt + host-sized libuv threadpool (#25; no hash migration)
+- [notes/2026-09-15-responsive-image-pipeline.md](notes/2026-09-15-responsive-image-pipeline.md) — Impl 223 AVIF/WebP ladder, banner as `img`, manifest staleness guard (#4 asset half)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150

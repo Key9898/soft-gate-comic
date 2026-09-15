@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import RankMark from '../RankMark'
+import { coverSources, COVER_SIZES } from '../../lib/images/responsiveImage'
 
 export interface BookCardProps {
   coverImage?: string
@@ -44,6 +45,7 @@ const BookCard = ({
   const { t } = useTranslation()
   const imgRef = useRef<HTMLImageElement>(null)
   const showImage = Boolean(coverImage) && !imageFailed
+  const sources = coverSources(coverImage)
 
   useEffect(() => {
     if (imageLoaded || imageFailed || !coverImage) return
@@ -69,18 +71,26 @@ const BookCard = ({
         )}
 
         {showImage ? (
-          <img
-            ref={imgRef}
-            src={coverImage}
-            alt={title}
-            onLoad={onImageLoad}
-            onError={onImageError}
-            loading="lazy"
-            decoding="async"
-            className={`absolute inset-0 z-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+          <picture>
+            {sources ? (
+              <>
+                <source type="image/avif" srcSet={sources.avif} sizes={COVER_SIZES} />
+                <source type="image/webp" srcSet={sources.webp} sizes={COVER_SIZES} />
+              </>
+            ) : null}
+            <img
+              ref={imgRef}
+              src={coverImage}
+              alt={title}
+              onLoad={onImageLoad}
+              onError={onImageError}
+              loading="lazy"
+              decoding="async"
+              className={`absolute inset-0 z-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </picture>
         ) : (
           !showCoverLabel && (
             <span className="relative z-0 text-sm text-white/60">{t('common.cover')}</span>

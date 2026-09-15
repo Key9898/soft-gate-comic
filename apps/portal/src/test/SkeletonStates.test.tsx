@@ -88,10 +88,12 @@ describe('page skeletons', () => {
     const hero = container.querySelector('section.safe-top')
     expect(hero).toBeTruthy()
     expect(hero?.classList.contains('bg-gray-950')).toBe(false)
-    const withBanner = Array.from(hero?.querySelectorAll('[style]') ?? []).some((el) =>
-      (el.getAttribute('style') ?? '').includes('/banner/banner.png')
-    )
-    expect(withBanner).toBe(true)
+    // The banner is a `picture`/`img` rather than a CSS background (Impl 223) so
+    // it can carry srcset and a fetchpriority hint; assert the artwork is there,
+    // not the mechanism that paints it.
+    const banner = hero?.querySelector('img[src="/banner/banner.png"]')
+    expect(banner).toBeTruthy()
+    expect(hero?.querySelector('source[type="image/avif"]')).toBeTruthy()
     const withGradient = Array.from(hero?.querySelectorAll('div') ?? []).some((el) =>
       el.className.includes('from-gray-950/70')
     )
