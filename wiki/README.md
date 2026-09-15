@@ -271,6 +271,7 @@ When the user asks to remember something (decision, snippet, note, ref), the wik
 - [notes/2026-09-15-love-in-seoul-lockup-removed.md](notes/2026-09-15-love-in-seoul-lockup-removed.md) — Impl 231 title lockup off; 8-bit fill ghosting found by contrast stretch (#28)
 - [notes/2026-09-15-remaining-covers-erased.md](notes/2026-09-15-remaining-covers-erased.md) — Impl 232 three covers lose remaining text; four titles cannot be erased (#28)
 - [notes/2026-09-15-cover-encoding-restored.md](notes/2026-09-15-cover-encoding-restored.md) — Impl 233 two covers back to full colour after Impl 224's 256-colour re-encode (#28)
+- [notes/2026-09-15-golden-age-shadow-knight-titles.md](notes/2026-09-15-golden-age-shadow-knight-titles.md) — Impl 234 titles off Golden Age and Shadow Knight; dilate wide but leave no gaps (#28)
 - [notes/2026-09-08-development-branch.md](notes/2026-09-08-development-branch.md) — git `development` branch for leader dev stack
 - [notes/2026-08-19-catalog-premium-left.md](notes/2026-08-19-catalog-premium-left.md) — Impl 152
 - [notes/2026-08-19-daily.md](notes/2026-08-19-daily.md) — Impl 150

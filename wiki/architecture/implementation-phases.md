@@ -263,6 +263,7 @@ Legacy immersive / EDC-era phase log (not SoftGate Comic runtime): [implementati
 | 231  | 2026-09-15 | Title lockup taken off the Love in Seoul cover; 8-bit fill ghosting (#28)      | [2026-09-15-love-in-seoul-lockup-removed.md](../notes/2026-09-15-love-in-seoul-lockup-removed.md)                                                             |
 | 232  | 2026-09-15 | Text erased from three more covers; three left alone with reasons (#28)        | [2026-09-15-remaining-covers-erased.md](../notes/2026-09-15-remaining-covers-erased.md)                                                                       |
 | 233  | 2026-09-15 | Two covers restored to full colour after Impl 224's 256-colour re-encode       | [2026-09-15-cover-encoding-restored.md](../notes/2026-09-15-cover-encoding-restored.md)                                                                       |
+| 234  | 2026-09-15 | Titles off Golden Age and Shadow Knight; five covers now text-free (#28)       | [2026-09-15-golden-age-shadow-knight-titles.md](../notes/2026-09-15-golden-age-shadow-knight-titles.md)                                                       |
 
 ---
 
@@ -2175,9 +2176,17 @@ Worked the rest of [#28](https://github.com/Key9898/soft-gate-comic/issues/28)'s
 
 ---
 
+## Impl Phase 234 — Titles taken off Golden Age and Shadow Knight (2026-09-15)
+
+**Status:** Done
+
+[Impl 232](#impl-phase-232--what-can-be-erased-on-the-remaining-covers-and-what-cannot-2026-09-15) skipped these two because [Impl 233](#impl-phase-233--two-covers-restored-to-full-colour-2026-09-15) was re-rendering them in parallel, and recorded them as **untested, not rejected**. Both turned out erasable: `golden-age` loses `GOLDEN AGE`, `A Historical Epic` and its flourishes, `shadow-knight` loses `SHADOW KNIGHT` and `The Legendary Warrior Returns`, and **five of nine covers now carry no baked text at all**. **The hedge is the transferable part** — Impl 232 could have written these off with the other four and been believed, since four of seven titles had just failed and "needs artwork" was the expected answer; marking them untested cost a sentence and was the difference between two shipped covers and two waiting on an artist who was never needed. Both titles sit on sky, the condition all three earlier successes shared, and that was visible from the cover before any masking. **Mask geometry cost three attempts on `golden-age` and inverts the lesson of Impl 230, 231 and 232**, each of which was fixed by dilating wider. Attempt 1 used two boxes, title and tagline, leaving an uncovered band between them; the title's descenders and shadow sat half in the sampling ring and half out, and the fill **dragged** them into dark horizontal streaks — invisible at 45%, obvious at 1:1. Attempts 2 and 3 tried to spare the temple's upturned eave, which the tagline's left flourish sits on, first with a polygon exclusion below the eave and then by cutting the box's lower edge on the left; **both destroyed more roof, not less**, because excluding dark pixels from the mask _core_ does nothing about the dilation around neighbouring letters sweeping the same region — a narrower core with the same dilation is not a narrower hole. The shipped mask is a single box at dilation 18, wider than either attempt that tried to protect the roof and the one that damages it least. **Dilate wide, but leave no gaps** — two different instructions, and a gap inside a mask is worse than no mask, because half-sampled content is dragged rather than replaced. Verified: `golden-age`'s title box held **12,798 dark pixels before and 331 after** (survivors at `195-297 x 136-160`, the eave corner, not a letterform) with the tagline box **3,157 → 0** and all change inside `674x199+165+24`; `shadow-knight`'s title box **19,658 bright before, 2,545 after** (survivors one blob at the box edge, the moon's glow) with the tagline box **1,851 → 0** and all change inside `503x287+251+24`; no ghosting on either under Impl 231's contrast-stretch probe; outside the patches **59.8 dB and 60.3 dB**, worst pixel 4 and 3 of 255, and both files got _smaller_ (1.32 MB from 1.36, 1.10 MB from 1.18). **Honest limit**: `golden-age`'s eave corner is blurred where the descenders and glow overlapped it — visible at 1:1, invisible at 384px, same class as Impl 232's `CHLOE` patch on the library arch, and the reason the single-box mask shipped over the two that looked more careful and were worse. `shadow-knight` has no structural conflict at all. **Four titles remain and were each attempted and rejected on the result in Impl 232**: `blood-moon` (moon), `ocean-dreams` (mast and rigging), `forest-spirit` (canopy), `the-last-horizon` (constellation field). **207** stays unused. Next is **235**. Note: [2026-09-15-golden-age-shadow-knight-titles.md](../notes/2026-09-15-golden-age-shadow-knight-titles.md).
+
+---
+
 ## How to append
 
-1. Take **next free Impl** (currently **234**).
+1. Take **next free Impl** (currently **235**).
 2. Add a row to Quick index + a `## Impl Phase N` section here.
 3. Mirror in `wiki/notes/YYYY-MM-DD-<slug>.md` and `docs/sessions/YYYY-MM-DD-session-summary.md` with `phases: [N]`.
 4. Lark Title should start with `Impl N — …` for new work going forward (do not backfill historical Lark tasks unless asked).
