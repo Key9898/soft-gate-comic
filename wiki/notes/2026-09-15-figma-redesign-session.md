@@ -156,3 +156,39 @@ Within `hero-spotlight.md` (static banner, stable h1, series h2, copy left, dots
 - Each former page is now a same-named **section** on that page, stacked top to bottom in the old page order. Inside a section the frames sit in one row, ordered by their previous reading order (top-left first), 160px apart with 120px section padding. Total: 81 frames across 11 sections.
 - One flow starting point is set: `Guest · Home` on `Home / Desktop`. No prototype links have been drawn yet; that is the next step.
 - Foundations, component, and Assets pages were not touched.
+
+## Addendum 14 — Screens page review and remaining-screen gap list (2026-09-16)
+
+State of the `Screens` page (the page was renamed from `🎬 Prototype`; addendum 13 still uses the old name):
+
+- 81 frames across 11 sections, matching addendum 13. Flow starting point `Guest · Home` is set; no prototype reactions exist anywhere on the page yet.
+- The `Assets` page is empty. The reading-room photos and downscaled covers noted in addendum 8 are no longer on that canvas; image fills inside the screen frames still render.
+- Profile frames show the four tabs from `ProfilePage.tsx` (Profile / Settings / Preferences / Security) but only three tab frames exist. The Preferences tab (`ReaderPreferencesPanel`) has never been designed.
+- Mobile parity is thin: 66 desktop frames against 15 mobile. Profile has no mobile frame; Coins, Auth, Categories, Search and Notifications have one each.
+
+Remaining screens, by priority:
+
+1. **Routes with no frame at all** (all under `features/info`):
+   - `/privacy`, `/terms`, `/cookies` — one `LegalPageShell` layout (TOC sidebar, readability controls, layered notice) covers all three.
+   - `/help`, `/faq`, `/contact` — the support funnel: Help hub, FAQ accordion, Contact form with pitch fields.
+   - `/about` — story book, history and team sections.
+   - `/creators` — ten sections plus the intake form.
+   - `/press` — kit, images, facts, news, press contact.
+   - `/maintenance` — three states in code (open / paused / window).
+   - Generic 404 (`*`). Only the genre and author variants exist.
+   - Full-page `CatalogLoadFailPage`; the Home load-fail frame may already cover it.
+2. **Global chrome never framed:** mobile nav menu open (links, coin pill, logout), mobile header search expanded, `ErrorBoundary` fallback, `SortMenu` popover, Library success toast.
+3. **Missing states inside covered sections:**
+   - Profile: Preferences tab, delete-account confirm dialog, skeleton, mobile.
+   - Notifications: delete / clear-all-read confirm dialog.
+   - Reader: mobile end of episode, mobile locked premium, desktop comments panel, mobile display settings sheet, guest nudges, mobile 18+ gate.
+   - Webtoon Detail: mobile guest, mobile 18+, mobile skeleton, subscribe age-gate dialog, share sheet.
+   - Home: mobile signed-in, mobile skeleton.
+   - Categories: mobile Popular chart, mobile skeleton, mobile empty filters.
+   - Search: mobile empty destination, mobile autocomplete, mobile no results.
+   - Library: mobile Likes, mobile edit mode, mobile empty states.
+   - Coins: History tab active, mobile checkout sheets, skeleton.
+   - Auth: Forgot / Reset mobile, Register validation error, Login mobile error.
+4. **Prototype wiring:** guest Home → hub → reader → end of episode → locked Ep. 5 → Coins top-up → checkout → back.
+
+Suggested order: prototype links first, then the legal shell and support funnel, then generic 404 / maintenance / error boundary, then About / Creators / Press, then mobile parity, then dialog states. Roughly 30 desktop and 20 mobile frames reach full route coverage.
