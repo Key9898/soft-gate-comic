@@ -192,3 +192,18 @@ Remaining screens, by priority:
 4. **Prototype wiring:** guest Home → hub → reader → end of episode → locked Ep. 5 → Coins top-up → checkout → back.
 
 Suggested order: prototype links first, then the legal shell and support funnel, then generic 404 / maintenance / error boundary, then About / Creators / Press, then mobile parity, then dialog states. Roughly 30 desktop and 20 mobile frames reach full route coverage.
+
+## Addendum 15 — Legal shell frames (2026-09-17)
+
+New `Legal` section on the `Screens` page, below Author. Six frames, built from `LegalPageShell.tsx`, `LegalTocSidebar.tsx`, `ReadabilityControls.tsx`, `LegalCmsSections.tsx` and the i18n fallback copy (`legalFallback.ts`):
+
+- **Legal / Desktop — Privacy Policy (/privacy)** — the reference frame. Guest Top Nav, `radial-wash-primary` behind a max-w-7xl column, Breadcrumb (Home › Legal › Privacy Policy), PageHeader variant=document (eyebrow, h1, "Last updated" meta), Related-policies strip with `aria-current`, then the 4-column grid: sticky sidebar with the Table of Contents card (scroll-spy active on At a glance, h3 items indented) and Readability Controls (Text Zoom stepper at Medium, Contrast radios with Default checked), and the 3-column content card: `#glance` numbered list on the primary tint, nine CMS sections (three h3 sub-sections with the left rule, bullet lists, the Your Rights `Profile → Security` and `Contact page` links), `#contact` with the mailto and Contact-page links, closing Related strip, Footer.
+- **Legal / Desktop — Terms of Service (/terms)** — same shell, 14 sections including the Permitted / Prohibited h3 bullet lists and the Coins list; TOC has 16 items and is annotated as the overflow case for the thin primary scrollbar.
+- **Legal / Desktop — Cookie Policy (/cookies) · storage dl** — same shell, 10 sections plus the 2-column `dl` storage grid with all 16 rows from `GET /api/cookies` (bordered `rounded-2xl` cells, equal height per row).
+- **Legal / Desktop — Privacy · Sepia + X-Large** — readability state: card on `sepia/50` with `sepia/200` border and `sepia/900` text, body copy at 24px, size label X-Large with the zoom-in button at disabled opacity, Sepia radio checked (Tailwind amber-100 / amber-800, no token exists), Default unchecked.
+- **Legal / Mobile — Privacy Policy · TOC collapsed** — 375 wide, mobile Top Nav and Footer, breadcrumb and Related strips wrap, single column: TOC card with the header-only collapsed state and the 44px chevron button, Readability card, content card at p-6 with body copy at 16px.
+- **Legal / Mobile — Privacy Policy · TOC open** — same, nav visible and chevron rotated.
+
+Conventions kept: h2 stays 18px and h3 16px at every zoom step; body copy is Semi Bold at 90% opacity on the card text colour; markers and links use the same size as the body. Surfaces, text and borders are bound to the Color / Primitives variables; `radius/card` in the file is 16, so the shell cards use a literal 24 for `rounded-3xl` (a `radius/panel` = 24 token exists and could be bound instead). Icons (book-open, settings, zoom-in, zoom-out, chevrons) are imported Lucide SVGs, not the Icons page components, because the set lacks the zoom and settings glyphs.
+
+Not done: Terms and Cookies mobile frames (they follow the Privacy mobile frame exactly), a Myanmar-locale legal frame, and a frame for the API-live "Last updated" date differing from the fallback.
