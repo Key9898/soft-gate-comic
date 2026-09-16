@@ -123,3 +123,7 @@ Applied in Figma after a design critique of the Reader page:
 - Categories: genre 404 frame (NotFound variant=genre, search + three Go here).
 - Home: Myanmar-locale desktop sample (Padauk stands in for Noto Sans Myanmar; real `locales/mm` strings; 1.7–1.8 line-height; annotation on lang=mm rules).
 - New pages: **Profile** (Profile tab with honest stats, Profile Information, Reading Insights, Achievements; Settings tab with one-switch-per-category prefs and In-app/Email/Push follow copy, Account & security locked, push enable, language + reader dark; Security tab with change password and delete account type-to-confirm), **Notifications** (inbox with unread dot rows as links + sibling delete, filters with counts, Mark all read / Clear all read, all-caught-up empty with settings link, filter-empty, mobile), **Author** (`/author/:id` guest Follow, Following, empty works, author 404, mobile; no follower counts, followDemo line).
+
+## Addendum 9 — Library list view
+
+- List-view layouts added for the grid tabs: **Subscribed · List** (thumb 56×76, title + Up badge, `genre · Episodes n of total · k new`, Last Read line, `notify-mute` bell, chevron; whole row → `/webtoon/:id`), **Likes · List** (same row without bell), and **Mobile Subscribed · List**. View toggle shows List active. History stays rows in both modes.
