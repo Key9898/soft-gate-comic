@@ -127,3 +127,25 @@ Applied in Figma after a design critique of the Reader page:
 ## Addendum 9 — Library list view
 
 - List-view layouts added for the grid tabs: **Subscribed · List** (thumb 56×76, title + Up badge, `genre · Episodes n of total · k new`, Last Read line, `notify-mute` bell, chevron; whole row → `/webtoon/:id`), **Likes · List** (same row without bell), and **Mobile Subscribed · List**. View toggle shows List active. History stays rows in both modes.
+
+## Addendum 10 — Home hero (banner) rework
+
+Within `hero-spotlight.md` (static banner, stable h1, series h2, copy left, dots → Pause/Play → right arrow under CTAs, HeroBook3D):
+
+- Banner art re-cropped so the "SOFT GATE" lettering sits behind the book instead of the dead middle; left→right veil with a teal stage glow behind the book so cover and background read as one scene.
+- Copy column and book share one centre line (hero 600 tall); bottom 220px fades into the page background so the genre strip no longer hits a hard edge.
+- Book drawn as the shipped hardcover: cover with 3/10 radius, spine crease, page edge, back board, ground shadow, −3° tilt; annotated enter / hover-straighten / pointer-only behaviour.
+- Active dot carries the 5s autoplay progress (pauses on hover / Pause); ticks stay `rounded-2xl` with 44px hits.
+- Mobile: stack is copy → CTAs (full width) → pager → book centred below, matching the below-`lg` enter axis; deck keeps two lines; hero hugs content (730).
+- Applied to Home desktop, Home signed-in, and Home mobile.
+
+## Addendum 11 — Hero background: banner art replaced
+
+- The `/banner/banner.png` logo art is gone from the Home hero in Figma. Background is now a static brand gradient (ink → teal-900) with a soft teal glow top-left and a magenta glow behind the book; veil reduced to a light top scrim; no bottom fade. Book simplified to cover + page edge + one shadow.
+- One comparison frame on the Home page: `ALT · Hero with blurred cover-art backdrop` — per-slide blurred cover at 45% / blur 60. Prettier, but it rotates with the slide, which `hero-spotlight.md` currently forbids ("background does not rotate"). Adopting it needs a spec change.
+- If the gradient direction is adopted in code, the hero loses the banner dependency; Home skeleton / empty / load-fail keep the same gradient chrome.
+
+## Addendum 12 — Hero as full-bleed key art (proposal)
+
+- Home hero (desktop, signed-in, mobile) now follows the Tapas home carousel / Webtoons `detail_bg` pattern: the story's key art fills the whole hero, a left→right scrim carries the copy on desktop and a bottom scrim carries it on mobile; no HeroBook3D. Whole hero is pointer-only → hub; keyboard path stays Start reading. Previous gradient + book version kept on the Home page as `ALT · previous hero`.
+- This is a **spec change** to `hero-spotlight.md`: background rotates with the slide, and each spotlight needs a landscape key-art asset (≥1600×600, focal point right). The Figma uses the portrait cover cropped as a stand-in. Crossfade 400 ms; reduced-motion cuts. Pager chrome, h1/h2, copy clamps, autoplay rules unchanged.
