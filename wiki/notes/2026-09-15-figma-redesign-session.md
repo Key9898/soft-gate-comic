@@ -149,3 +149,10 @@ Within `hero-spotlight.md` (static banner, stable h1, series h2, copy left, dots
 
 - Home hero (desktop, signed-in, mobile) now follows the Tapas home carousel / Webtoons `detail_bg` pattern: the story's key art fills the whole hero, a left→right scrim carries the copy on desktop and a bottom scrim carries it on mobile; no HeroBook3D. Whole hero is pointer-only → hub; keyboard path stays Start reading. Previous gradient + book version kept on the Home page as `ALT · previous hero`.
 - This is a **spec change** to `hero-spotlight.md`: background rotates with the slide, and each spotlight needs a landscape key-art asset (≥1600×600, focal point right). The Figma uses the portrait cover cropped as a stand-in. Crossfade 400 ms; reduced-motion cuts. Pager chrome, h1/h2, copy clamps, autoplay rules unchanged.
+
+## Addendum 13 — All screens collected on one Prototype page (2026-09-16)
+
+- The eleven per-screen pages (Home, Categories, Search, Webtoon Detail, Reader, Library, Coins, Auth, Profile, Notifications, Author) are gone. Every screen frame was **moved**, not copied, onto a single `🎬 Prototype` page under `——— SCREENS ———`, so node IDs and component links are unchanged and Figma prototype connections can be drawn between any two screens.
+- Each former page is now a same-named **section** on that page, stacked top to bottom in the old page order. Inside a section the frames sit in one row, ordered by their previous reading order (top-left first), 160px apart with 120px section padding. Total: 81 frames across 11 sections.
+- One flow starting point is set: `Guest · Home` on `Home / Desktop`. No prototype links have been drawn yet; that is the next step.
+- Foundations, component, and Assets pages were not touched.
