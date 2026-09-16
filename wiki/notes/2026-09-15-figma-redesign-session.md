@@ -207,3 +207,24 @@ New `Legal` section on the `Screens` page, below Author. Six frames, built from 
 Conventions kept: h2 stays 18px and h3 16px at every zoom step; body copy is Semi Bold at 90% opacity on the card text colour; markers and links use the same size as the body. Surfaces, text and borders are bound to the Color / Primitives variables; `radius/card` in the file is 16, so the shell cards use a literal 24 for `rounded-3xl` (a `radius/panel` = 24 token exists and could be bound instead). Icons (book-open, settings, zoom-in, zoom-out, chevrons) are imported Lucide SVGs, not the Icons page components, because the set lacks the zoom and settings glyphs.
 
 Not done: Terms and Cookies mobile frames (they follow the Privacy mobile frame exactly), a Myanmar-locale legal frame, and a frame for the API-live "Last updated" date differing from the fallback.
+
+## Addendum 16 — Support funnel frames (2026-09-17)
+
+New `Support` section on the `Screens` page, below Legal. Thirteen frames built from `HelpPage.tsx`, `FAQPage.tsx`, `ContactPage.tsx`, `faqCatalog.ts`, `infoStyles.ts` and the English copy:
+
+- **Help / Desktop — Help Center** — breadcrumb (Home › Support › Help Center), PageHeader variant=compact with the SearchField as its child, the honest-intro panel with six topic tiles (Getting Started, Payments, Account Security, Library, Safety, Contact) deep-linking to `/faq?cat=` or `/faq#qN`, the Browse-all banner, Popular Articles (`FAQ_POPULAR_IDS` q2 / q7 / q12 / q13 / q14), and the two bottom cards (Publishing a series? / Need More Help? with the editorial primary CTA).
+- **Help / Desktop — search "coins"** — focused SearchField and the results panel with the six matching deep links.
+- **FAQ / Desktop — All FAQs · q1 open** — five category buttons, four groups with all 20 questions, q1 expanded with answer, the local-only feedback line and Yes / No thumbs; Still need help section.
+- **FAQ / Desktop — ?cat=payments · q7 open · voted** — Payments active, only that group, related Coins link, "Noted on this page only." vote state.
+- **FAQ / Desktop — Search no results** and **— Empty** (CMS has published nothing; different copy from a search miss).
+- **Contact / Desktop — default form** — Get in Touch column (email and address channel cards, Publish with Us / Press path cards, hours lines), Try Help first card, Send a Message card with the reader checklist, three floating inputs, Message textarea, full-width Send.
+- **Contact / Desktop — validation errors**, **— ?intent=submit** (subject prefilled `Series submission`, handbook link, pitch fields: series title, genre, finished episodes, synopsis, 3:4 cover checkbox, other platforms, notes), **— success** (dashed emerald "Opening your email app…" block).
+- **Help / Mobile**, **FAQ / Mobile**, **Contact / Mobile** — 375-wide single-column versions cloned from the desktop blocks (topic tiles, bottom cards, path cards and the 12-col grid stacked; 24px h1; p-6 panels; 14px questions / 12px answers).
+
+Conventions and caveats:
+
+- Section chrome is the shared info-page rhythm: `radial-wash-primary`, SECTION_RULE (border-t, py-20), the dot heading in uppercase tracking, INFO_CARD panels, INFO_PRIMARY_CTA = `Button` Primary lg with the label forced to 12px uppercase Bold.
+- Contact fields are drawn as `Input variant=floating` (label inside a 2px border) because the Figma `Input` component is the stacked variant only. The Send button is the `Button` component; its left icon is the default arrow, not Lucide `send`, which the icon set lacks.
+- `setBoundVariableForPaint` discards the paint `opacity` you pass in. Every tint in the Legal and Support frames (8–10% icon boxes, 35% h3 rules, 5% error and success tints, 50–60% list backgrounds) had to be re-applied by mapping `node.fills` afterwards. Re-binding a paint to the variable it already carries can also render black until the base colour is set to the resolved value; the FAQ payments pills hit this.
+
+Not done: Help search no-match state, FAQ mobile filtered states, Contact mobile pitch / error / success, a Myanmar-locale support frame.
