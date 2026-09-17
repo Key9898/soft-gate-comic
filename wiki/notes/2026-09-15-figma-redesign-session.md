@@ -243,3 +243,16 @@ New `Recovery` section on the `Screens` page, below Support. Ten frames from `No
 Caveats: Button instances show the component's default left icon where the code uses Lucide `Home`, `HelpCircle`, `Mail` or `BookOpen`; the icon set lacks those glyphs. The 404 book cards are clones of the Author-page catalog cards, so they carry the age badge and deck line that `showCoverLabel=false` hides in code.
 
 Not done: 404 Myanmar-locale frame, Maintenance for a signed-in nav, and the `CatalogLoadFailPage` full-page variant (the Home load-fail frame stands in).
+
+## Addendum 18 — About, Publish with Us and Press frames (2026-09-17)
+
+New `Company` section on the `Screens` page, below Recovery. Six frames from `AboutPage.tsx` (with `StoryBook`, `AboutHistorySection`, `AboutTeamSection`), `CreatorsPage.tsx` and `PressPage.tsx`, all on the i18n fallback copy:
+
+- **About / Desktop — Who we are**: masthead PageHeader (left-rule deck), facts dl card, How this portal works (three icon-well cards), Our Story with the shipped `.story-reader` (episode rail with 01 selected and "Now reading", pane with "Episode 1 of 3", prev disabled / next, splash image, chapter body), Our history timeline (four mock rows, studio photo on the first), Mission / Vision cards, Our Values (centred heading, four cards), Our team (four stand-in tiles with initials and the stand-in note), Get involved CTA card.
+- **Creators / Desktop — Publish with Us**: masthead, facts dl, ten INFO_TOC_LINK chips, Why publish here, How it works (numbered steps), 3:4 catalog covers (three Book Cards cloned from the Author grid), Format handbook (cover and 800px strip visuals, six-spec dl, footnote), pitch checklist, What we look for / Do not send, After you send, Rights and earnings, five-question dl, Ready-to-share CTA card, and the fixed bottom pitch bar pinned to the frame bottom.
+- **Press / Desktop — Press**: masthead, seven TOC chips, About boilerplate with the Copy button, nine-fact sheet with the website link, News table with the amber Demo slot row, Brand Assets (ZIP CTA, three asset cards using the nav logo image, five palette swatches with hex, Do / Don't lists, trademark), Product images (three stand-in stills with Demo badges), Spokesperson card, Media Contact card with related links and the last-updated line.
+- **About / Mobile**, **Creators / Mobile**, **Press / Mobile**: 375-wide clones with every grid stacked, rail-above-pane story reader, 2-up team grid, book cards in a column, and the mobile pitch bar without the lead text.
+
+Caveats: no team portraits or press-kit stills exist in the file, so those slots are teal tiles with initials or the reading-room photo; the About HTTP states (history / team loading skeleton, empty, error with Retry) and the Press copy-failed textarea are not framed; the Demo badges use Tailwind amber because the palette has no amber token; the news table keeps its two columns on mobile and is annotated as horizontally scrolling.
+
+Every portal route now has at least one desktop frame on the `Screens` page.
