@@ -228,3 +228,18 @@ Conventions and caveats:
 - `setBoundVariableForPaint` discards the paint `opacity` you pass in. Every tint in the Legal and Support frames (8–10% icon boxes, 35% h3 rules, 5% error and success tints, 50–60% list backgrounds) had to be re-applied by mapping `node.fills` afterwards. Re-binding a paint to the variable it already carries can also render black until the base colour is set to the resolved value; the FAQ payments pills hit this.
 
 Not done: Help search no-match state, FAQ mobile filtered states, Contact mobile pitch / error / success, a Myanmar-locale support frame.
+
+## Addendum 17 — 404, Maintenance and ErrorBoundary frames (2026-09-17)
+
+New `Recovery` section on the `Screens` page, below Support. Ten frames from `NotFoundPage.tsx`, `MaintenancePage.tsx`, `MaintenanceGate.tsx` and `ErrorBoundary.tsx`:
+
+- **404 / Desktop — Page not found** (splat route, MainLayout chrome, `variant=page`): the NotFound treatment already used by the Genre and Author 404 frames (alert-circle badge, `404 · PAGE` eyebrow, display h1, deck, SearchAutocomplete, Go here chips) plus the sections those frames left out: the Go home primary CTA, Try a series (three `BookCard`s from `rankingWebtoons`, with the honesty note) and Still need help (Help Center / Contact surface buttons). Left-aligned like the existing 404 frames; the shipped page is centred, so this is a file-wide design decision, not a code mirror.
+- **404 / Desktop — Series not found** and **— Episode not found** (the episode variant adds the Back to series secondary button and renders `withSiteChrome`).
+- **404 / Mobile — Page not found**.
+- **Maintenance / Desktop** (`/maintenance`, reached through the `MaintenanceGate` redirect, under MainLayout): Status eyebrow, h1, lead, honesty line, What's paused and What still works cards, Return window (Demo) card, action row (Sign in primary, Help Center / FAQ / Contact / mailto surface buttons). **Maintenance / Mobile** stacks the cards.
+- **MaintenanceGate — settings loading**: the blank `bg-gray-50` screen with the sr-only status line, kept as a frame so the prototype has a state for it.
+- **ErrorBoundary / Desktop — route fallback** (RouteErrorBoundary inside MainLayout `main`, nav and footer survive), **— outer fallback** (app root crashed, no chrome) and **ErrorBoundary / Mobile**. Title, body, Try again (primary) and Go to Home (secondary, plain anchor).
+
+Caveats: Button instances show the component's default left icon where the code uses Lucide `Home`, `HelpCircle`, `Mail` or `BookOpen`; the icon set lacks those glyphs. The 404 book cards are clones of the Author-page catalog cards, so they carry the age badge and deck line that `showCoverLabel=false` hides in code.
+
+Not done: 404 Myanmar-locale frame, Maintenance for a signed-in nav, and the `CatalogLoadFailPage` full-page variant (the Home load-fail frame stands in).
