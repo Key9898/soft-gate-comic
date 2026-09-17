@@ -280,3 +280,12 @@ Prototype: about 300 `ON_CLICK` navigations. Every desktop screen's Top Nav (log
 Build notes: the skeleton frames are clones with every free text and design-system instance swapped for gray-200 bones (nodes inside instances are left alone); the Reader mobile end-of-episode reuses the desktop in-flow card at 375 with FILL widths, so its inner layout is approximate; a `use_figma` script that throws is rolled back in full, which is why two batches had to be re-run.
 
 Not done: Home signed-in nav on mobile (the Top Nav component has no `Device=Mobile, Auth=SignedIn` variant), Coins mobile checkout steps 2–4, Search sort menu open, Reader guest nudge as a standalone toast, and prototype links inside mobile frames.
+
+## Addendum 20 — Last open items (2026-09-17)
+
+- **Top Nav component**: new variant `Device=Mobile, Auth=SignedIn` on the Navigation & Footer page — logo, search toggle, notifications bell with the accent unread dot, language, menu (Library, Coins and the avatar sit in the menu below `lg`, matching `Navigation.tsx`). Every signed-in mobile frame (Home signed-in, Library ×5, Coins ×5, Notifications, Profile, Webtoon Detail signed-in and 18+) now uses it.
+- **Coins mobile**: checkout steps 2a (MMQR), 3 (Processing) and 4 (Success) as bottom sheets, cloned from the desktop modals.
+- **Search**: results desktop with the SortMenu popover open (Most popular checked; Recently updated, Highest rated, Title A–Z).
+- **Mobile prototype links**: every mobile frame's Tab Bar (Home / Browse / Library / Coins / Profile) and Top Nav (logo, search, bell, menu) navigate; the mobile story flow runs Home → guest hub → reader → end of episode → locked → Coins → checkout 1 → 2a → 3 (2 s) → 4 → Coins; login submit → signed-in Home; the open menu's Login and Categories links.
+
+Totals after this pass: 157 frames on the `Screens` page, roughly 600 nodes carrying prototype reactions, two flow starting points.
