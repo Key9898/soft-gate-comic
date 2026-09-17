@@ -256,3 +256,27 @@ New `Company` section on the `Screens` page, below Recovery. Six frames from `Ab
 Caveats: no team portraits or press-kit stills exist in the file, so those slots are teal tiles with initials or the reading-room photo; the About HTTP states (history / team loading skeleton, empty, error with Retry) and the Press copy-failed textarea are not framed; the Demo badges use Tailwind amber because the palette has no amber token; the news table keeps its two columns on mobile and is annotated as horizontally scrolling.
 
 Every portal route now has at least one desktop frame on the `Screens` page.
+
+## Addendum 19 — Gap list closed: chrome states, dialogs, mobile parity, prototype links (2026-09-17)
+
+Every item left open by addendum 14 now has a frame in its own section (appended to the right of the existing row), and the prototype is wired.
+
+Chrome and dialogs:
+
+- Home: mobile nav menu open (guest links + Login, X in the bar), mobile header search expanded.
+- Categories: Browse desktop with the SortMenu popover open (`role=menu`, five `menuitemradio` rows, Browse checked, transparent outside-click catcher).
+- Library: Subscribed desktop with the fixed emerald success toast.
+- Notifications: Inbox with the Clear All Read `ConfirmDialog`.
+- Profile: Preferences tab (`ReaderPreferencesPanel`: strip theme, brightness, font size, image fit, "This device" chip), Delete Account `ConfirmDialog` with the type-your-username field (Confirm disabled while unmatched), mobile Profile tab, desktop skeleton.
+- Webtoon Detail: 18+ hub with the subscribe age-gate Modal, signed-in hub with the "Link copied!" share status, mobile guest (Start reading primary, Subscribe accent), mobile 18+ (badge + notice), mobile skeleton.
+- Reader: mobile end of episode, mobile locked premium, mobile 18+ gate, desktop comments drawer (ReaderSheet ≥md is a right drawer), mobile display settings sheet.
+- Coins: History tab active, desktop skeleton, mobile checkout sheet.
+- Auth: Forgot step 1 mobile, Reset incomplete-link mobile, Register desktop with validation errors, Login mobile with the `loginFailed` alert.
+
+Mobile parity: Home signed-in (Continue reading rail first, join panel hidden) and skeleton; Categories Popular chart, skeleton, empty filters; Search empty destination, autocomplete open, no results; Library Likes (2-up grid), edit mode, empty Subscribed.
+
+Prototype: about 300 `ON_CLICK` navigations. Every desktop screen's Top Nav (logo, Categories, Most read, New series, Log in, search) and Footer (nine links) point at the matching frames; the story flow runs guest Home → hub → reader → end of episode → locked Ep. 5 → Coins top-up context → checkout 1 → MMQR → processing (2 s `AFTER_TIMEOUT`) → success → wallet; login submit → signed-in Home; Help / FAQ / About / Creators / 404 CTAs. Flow starting points: `Guest · Home` and `Guest · Home (mobile)`. Reader guest nudges were already part of the end-of-episode card, so no separate frame.
+
+Build notes: the skeleton frames are clones with every free text and design-system instance swapped for gray-200 bones (nodes inside instances are left alone); the Reader mobile end-of-episode reuses the desktop in-flow card at 375 with FILL widths, so its inner layout is approximate; a `use_figma` script that throws is rolled back in full, which is why two batches had to be re-run.
+
+Not done: Home signed-in nav on mobile (the Top Nav component has no `Device=Mobile, Auth=SignedIn` variant), Coins mobile checkout steps 2–4, Search sort menu open, Reader guest nudge as a standalone toast, and prototype links inside mobile frames.
