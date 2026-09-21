@@ -258,7 +258,7 @@ const FAQPage = () => {
             <div className="space-y-6">
               {filteredFAQ.map((cat) => (
                 <div key={cat.id} className="space-y-3">
-                  <h3 className="text-primary-500 pl-1.5 text-sm font-bold uppercase tracking-wider">
+                  <h3 className="text-primary-500 pl-1.5 text-sm font-semibold uppercase tracking-wider">
                     {cat.category}
                   </h3>
                   <div className="space-y-2">

@@ -64,7 +64,7 @@ function MockHistoryList() {
     <ol className="mt-10 space-y-10">
       {MOCK_HISTORY.map((item) => (
         <li key={item.titleKey} className="grid gap-6 lg:grid-cols-12 lg:items-start">
-          <p className="text-primary-600 text-sm font-bold uppercase tracking-widest lg:col-span-2">
+          <p className="text-primary-600 text-sm font-semibold uppercase tracking-widest lg:col-span-2">
             {t(item.yearKey)}
           </p>
           <div className="lg:col-span-10">
@@ -96,7 +96,7 @@ function HttpHistoryList({ histories, lang }: { histories: PortalAboutHistory[];
     <ol className="mt-10 space-y-12">
       {groups.map((group) => (
         <li key={group.year} className="grid gap-6 lg:grid-cols-12 lg:items-start">
-          <p className="text-primary-600 text-sm font-bold uppercase tracking-widest lg:col-span-2">
+          <p className="text-primary-600 text-sm font-semibold uppercase tracking-widest lg:col-span-2">
             {String(group.year)}
           </p>
           <ol className="space-y-10 lg:col-span-10">

@@ -8,7 +8,7 @@ import { buttonClasses } from '../../../components/Button'
  *
  * Sizing, focus and the touch floor come from `buttonClasses`; only the voice lives here.
  */
-const EDITORIAL_VOICE = 'text-xs font-bold uppercase tracking-wider'
+const EDITORIAL_VOICE = 'text-xs font-semibold uppercase tracking-wider'
 
 export const INFO_PRIMARY_CTA = buttonClasses({
   variant: 'primary',

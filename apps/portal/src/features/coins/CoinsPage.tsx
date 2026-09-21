@@ -726,7 +726,7 @@ const CoinsPage = () => {
                 <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-6 py-3">
                   <div className="flex items-center gap-1.5">
                     <div
-                      className={`shape-circle text-2xs flex h-5 w-5 items-center justify-center font-bold ${
+                      className={`shape-circle text-2xs flex h-5 w-5 items-center justify-center font-semibold ${
                         selectedPaymentMethod === null
                           ? 'bg-primary-600 text-white'
                           : 'bg-emerald-500 text-white'
@@ -1066,7 +1066,7 @@ const CoinsPage = () => {
 
                                 <div className="flex items-end justify-between">
                                   <div>
-                                    <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
+                                    <span className="text-primary-300 block text-[8px] font-semibold uppercase tracking-wider">
                                       {t('coinsPage.cardholderLabel')}
                                     </span>
                                     <span className="block max-w-[180px] truncate text-xs font-semibold uppercase">
@@ -1074,7 +1074,7 @@ const CoinsPage = () => {
                                     </span>
                                   </div>
                                   <div className="text-right">
-                                    <span className="text-primary-300 block text-[8px] font-bold uppercase tracking-wider">
+                                    <span className="text-primary-300 block text-[8px] font-semibold uppercase tracking-wider">
                                       {t('coinsPage.expiryLabel')}
                                     </span>
                                     <span className="block font-mono text-xs font-semibold">
@@ -1088,7 +1088,7 @@ const CoinsPage = () => {
                               <div className="card-back from-primary-900 to-primary-950 flex flex-col justify-between bg-gradient-to-br p-0 py-5 text-white">
                                 <div className="h-10 w-full bg-black/60" />
                                 <div className="px-5">
-                                  <span className="text-primary-300 mb-1 block text-[8px] font-bold uppercase">
+                                  <span className="text-primary-300 mb-1 block text-[8px] font-semibold uppercase">
                                     {t('coinsPage.signatureLabel')}
                                   </span>
                                   <div className="flex h-8 w-full items-center rounded-2xl bg-white pr-3 text-right font-mono text-sm font-bold italic text-gray-800 shadow-inner">
@@ -1097,7 +1097,7 @@ const CoinsPage = () => {
                                   </div>
                                 </div>
                                 <div className="px-5 text-right">
-                                  <span className="text-primary-400 text-[9px] font-bold">
+                                  <span className="text-primary-400 text-[9px] font-semibold">
                                     {t('coinsPage.cardNetworkLabel')}
                                   </span>
                                 </div>

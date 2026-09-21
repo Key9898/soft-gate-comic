@@ -41,7 +41,7 @@ export const WeeklyReadingChart = ({ history = [], demoLabel }: WeeklyReadingCha
 
   return (
     <div className="rounded-3xl border border-gray-100 bg-white p-6 text-left shadow-sm">
-      <h4 className="text-muted mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+      <h4 className="text-muted mb-5 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider">
         <TrendingUp className="text-primary-500 h-4.5 w-4.5" aria-hidden="true" />
         {t('profilePage.weeklyActivity')}
         {demoLabel ? (
