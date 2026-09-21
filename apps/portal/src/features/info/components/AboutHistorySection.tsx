@@ -7,11 +7,11 @@ import {
   type PortalAboutHistory,
 } from '../../../lib/about/history'
 import { useAboutHistories } from '../useAboutHistories'
+import { INFO_SECTION_HEADING, INFO_SECTION_RULE } from './infoStyles'
 
-const SECTION_HEADING =
-  'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
+const SECTION_HEADING = INFO_SECTION_HEADING
 
-const SECTION_RULE = 'border-t border-gray-200/60 py-20'
+const SECTION_RULE = INFO_SECTION_RULE
 
 const MOCK_HISTORY = [
   {

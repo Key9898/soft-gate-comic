@@ -3,11 +3,11 @@ import { Skeleton } from '../../../components/Skeleton/Skeleton'
 import { pickBilingual } from '../../../lib/about/history'
 import type { PortalAboutMember, PortalAboutMeta } from '../../../lib/about/team'
 import { useAboutTeam } from '../useAboutTeam'
+import { INFO_SECTION_HEADING, INFO_SECTION_RULE } from './infoStyles'
 
-const SECTION_HEADING =
-  'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
+const SECTION_HEADING = INFO_SECTION_HEADING
 
-const SECTION_RULE = 'border-t border-gray-200/60 py-20'
+const SECTION_RULE = INFO_SECTION_RULE
 
 const MOCK_TEAM = [
   {

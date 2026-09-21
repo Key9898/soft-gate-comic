@@ -10,11 +10,11 @@ import PageHeader from '../../components/PageHeader'
 import Input, { type InputProps } from '../../components/Input'
 import { getInfoPageMeta } from '../../lib/info/pageMeta'
 import { useSettings } from '../../context/SettingsContext'
+import { INFO_SECTION_HEADING, INFO_SECTION_RULE } from './components/infoStyles'
 
-const SECTION_HEADING =
-  'flex items-center gap-2 text-xl font-bold tracking-wider text-balance text-gray-900 uppercase'
+const SECTION_HEADING = INFO_SECTION_HEADING
 
-const SECTION_RULE = 'border-t border-gray-200/60 py-20'
+const SECTION_RULE = INFO_SECTION_RULE
 
 const PITCH_MIN_FINISHED_EPISODES = 3
 
