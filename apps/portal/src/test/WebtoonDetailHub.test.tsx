@@ -97,10 +97,13 @@ describe('WebtoonDetailPage series hub', () => {
       'href',
       '/categories/action'
     )
-    expect(screen.getByRole('link', { name: 'မှော်' })).toHaveAttribute(
-      'href',
-      `/search?q=${encodeURIComponent('မှော်')}`
-    )
+    // One copy per breakpoint since issue #38 split the overview; both must resolve
+    // to the same search.
+    const tagLinks = screen.getAllByRole('link', { name: 'မှော်' })
+    expect(tagLinks).toHaveLength(2)
+    tagLinks.forEach((link) => {
+      expect(link).toHaveAttribute('href', `/search?q=${encodeURIComponent('မှော်')}`)
+    })
   })
 
   it('titles related series as you may also like, not Featured', async () => {

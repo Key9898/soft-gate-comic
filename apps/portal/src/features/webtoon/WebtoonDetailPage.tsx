@@ -15,8 +15,6 @@ import {
   BookOpen,
   Sparkles,
   Filter,
-  Calendar,
-  Clock,
   Bell,
   BellOff,
 } from 'lucide-react'
@@ -54,6 +52,7 @@ import {
 import { findGenreByToken, resolveGenreLabel } from '../../lib/categories'
 import { seriesCommentKey } from '../../lib/comments'
 import WebtoonDetailSkeleton from './components/WebtoonDetailSkeleton'
+import SeriesOverview from './components/SeriesOverview'
 import NotFoundPage from '../info/NotFoundPage'
 
 type EpisodeTab = 'all' | 'free' | 'premium'
@@ -78,7 +77,6 @@ const WebtoonDetailPage = () => {
   const [activeTab, setActiveTab] = useState<EpisodeTab>('all')
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest')
   const [showSortDropdown, setShowSortDropdown] = useState(false)
-  const [showFullDescription, setShowFullDescription] = useState(false)
   const [shareStatus, setShareStatus] = useState('')
   const [now, setNow] = useState(() => Date.now())
 
@@ -126,9 +124,14 @@ const WebtoonDetailPage = () => {
   )
   const notifyMuted = Boolean(subscribedRecord?.notifyMuted)
 
+  // Only worth offering when it is not already where the primary CTA sends the reader.
   const showLatestCta = Boolean(
     latestEpisode && latestEpisode.episodeNumber !== primaryRead.episodeNumber
   )
+  const latestEpisodeHref =
+    showLatestCta && latestEpisode && webtoon
+      ? `/read/${webtoon.id}/${latestEpisode.episodeNumber}`
+      : undefined
 
   const primaryHref = webtoon ? `/read/${webtoon.id}/${primaryRead.episodeNumber}` : '/'
   const primaryLabel =
@@ -290,132 +293,108 @@ const WebtoonDetailPage = () => {
         ]}
       />
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative overflow-visible bg-gray-900">
+      <section data-testid="hub-hero" className="relative overflow-visible bg-gray-900">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <div className={`absolute inset-0 ${webtoon.coverColor} opacity-20 blur-3xl`} />
           <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/80 to-gray-900" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-          <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:gap-10">
-            {/* ── Cover Art ── */}
-            <div className="w-56 flex-shrink-0 overflow-visible px-2 sm:w-72 lg:w-80 xl:w-96">
-              <HeroBook3D
-                coverImage={
-                  webtoon.coverImage && !failedImages.has(`cover-${webtoon.id}`)
-                    ? webtoon.coverImage
-                    : undefined
-                }
-                coverColor={webtoon.coverColor}
-                title={webtoon.title[lang]}
-                description={webtoon.description[lang]}
-                href={primaryHref}
-                ctaLabel={primaryLabel}
-              />
+          {/* Below md the cover shares a row with the series identity and the stats and
+              actions run full width beneath it; from md up `contents` dissolves that
+              wrapper so the two become grid cells of the classic two-column hero. */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-[auto_1fr] md:items-start md:gap-x-10 md:gap-y-6">
+            <div className="flex items-start gap-4 md:contents">
+              {/* ── Cover Art ── */}
+              <div className="w-40 flex-shrink-0 overflow-visible sm:w-48 md:col-start-1 md:row-span-2 md:w-56 md:px-2 lg:w-80 xl:w-96">
+                <HeroBook3D
+                  coverImage={
+                    webtoon.coverImage && !failedImages.has(`cover-${webtoon.id}`)
+                      ? webtoon.coverImage
+                      : undefined
+                  }
+                  coverColor={webtoon.coverColor}
+                  title={webtoon.title[lang]}
+                  description={webtoon.description[lang]}
+                  href={primaryHref}
+                  ctaLabel={primaryLabel}
+                />
+              </div>
+
+              {/* ── Info Panel ── */}
+              <motion.div
+                {...getAnimationProps(
+                  { opacity: 0, y: 20 },
+                  { opacity: 1, y: 0 },
+                  { duration: 0.5, delay: 0.1 }
+                )}
+                data-testid="hub-hero-header"
+                className="min-w-0 flex-1 text-left md:col-start-2 md:row-start-1"
+              >
+                {/* Status Badge */}
+                <span
+                  className={`mb-3 inline-block rounded-2xl px-3 py-1 text-xs font-semibold backdrop-blur ${status.className}`}
+                >
+                  {status.label}
+                </span>
+                <ContentRatingBadge
+                  rating={webtoon.contentRating}
+                  className="mb-3 ml-2 inline-block"
+                />
+
+                {/* Title */}
+                <h1 className="mb-3 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+                  {webtoon.title[lang]}
+                </h1>
+
+                {/* Author + Genre Pills */}
+                <div className="mb-4 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+                  <Link
+                    to={`/author/${webtoon.author.id}`}
+                    className="flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                    aria-label={`${t('webtoonDetail.viewAuthor')} ${webtoon.author.name[lang]}`}
+                  >
+                    <div className="shape-circle flex h-8 w-8 items-center justify-center bg-white/20">
+                      <span className="text-sm font-semibold text-white">
+                        {webtoon.author.name[lang].charAt(0)}
+                      </span>
+                    </div>
+                    <span className="font-medium text-white">{webtoon.author.name[lang]}</span>
+                  </Link>
+                  <span className="hidden text-white/40 sm:inline">|</span>
+                  <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                    {webtoon.genres.map((genre) => {
+                      const catalogGenre = findGenreByToken(genres, genre)
+                      const label = resolveGenreLabel(genre, genres, lang)
+                      const className =
+                        'rounded-2xl bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm'
+                      if (!catalogGenre || catalogGenre.slug === 'all') {
+                        return (
+                          <span key={genre} className={className}>
+                            {label}
+                          </span>
+                        )
+                      }
+                      return (
+                        <Link
+                          key={genre}
+                          to={`/categories/${catalogGenre.slug}`}
+                          className={`${className} inline-flex min-h-11 items-center transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900`}
+                        >
+                          {label}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
-            {/* ── Info Panel ── */}
-            <motion.div
-              {...getAnimationProps(
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0 },
-                { duration: 0.5, delay: 0.1 }
-              )}
-              className="w-full min-w-0 flex-1 text-center md:text-left"
-            >
-              {/* Status Badge */}
-              <span
-                className={`mb-3 inline-block rounded-2xl px-3 py-1 text-xs font-semibold backdrop-blur ${status.className}`}
-              >
-                {status.label}
-              </span>
-              <ContentRatingBadge
-                rating={webtoon.contentRating}
-                className="mb-3 ml-2 inline-block"
-              />
-
-              {/* Title */}
-              <h1 className="mb-3 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-                {webtoon.title[lang]}
-              </h1>
-
-              {/* Author + Genre Pills */}
-              <div className="mb-4 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-                <Link
-                  to={`/author/${webtoon.author.id}`}
-                  className="flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
-                  aria-label={`${t('webtoonDetail.viewAuthor')} ${webtoon.author.name[lang]}`}
-                >
-                  <div className="shape-circle flex h-8 w-8 items-center justify-center bg-white/20">
-                    <span className="text-sm font-semibold text-white">
-                      {webtoon.author.name[lang].charAt(0)}
-                    </span>
-                  </div>
-                  <span className="font-medium text-white">{webtoon.author.name[lang]}</span>
-                </Link>
-                <span className="hidden text-white/40 sm:inline">|</span>
-                <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
-                  {webtoon.genres.map((genre) => {
-                    const catalogGenre = findGenreByToken(genres, genre)
-                    const label = resolveGenreLabel(genre, genres, lang)
-                    const className =
-                      'rounded-2xl bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm'
-                    if (!catalogGenre || catalogGenre.slug === 'all') {
-                      return (
-                        <span key={genre} className={className}>
-                          {label}
-                        </span>
-                      )
-                    }
-                    return (
-                      <Link
-                        key={genre}
-                        to={`/categories/${catalogGenre.slug}`}
-                        className={`${className} inline-flex min-h-11 items-center transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900`}
-                      >
-                        {label}
-                      </Link>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {webtoon.tags.length > 0 ? (
-                <div className="mb-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-                  {webtoon.tags.map((tag) => (
-                    <Link
-                      key={tag}
-                      to={`/search?q=${encodeURIComponent(tag)}`}
-                      className="inline-flex min-h-11 items-center rounded-2xl bg-white/5 px-3 py-1 text-xs font-medium text-white/80 ring-1 ring-white/10 transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
-                    >
-                      {tag}
-                    </Link>
-                  ))}
-                </div>
-              ) : null}
-
-              {/* Description with toggle */}
-              <div className="mb-6 max-w-2xl">
-                <p
-                  className={`leading-relaxed text-white/70 ${!showFullDescription ? 'line-clamp-3' : ''}`}
-                >
-                  {webtoon.description[lang]}
-                </p>
-                {webtoon.description[lang].length > 120 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowFullDescription(!showFullDescription)}
-                    className="text-primary-300 hover:text-primary-200 mt-1 text-sm font-medium transition"
-                  >
-                    {showFullDescription
-                      ? t('webtoonDetail.readLess')
-                      : t('webtoonDetail.readMore')}
-                  </button>
-                )}
-              </div>
-
+            {/* Stats, overview and actions span the full width below the cover row on
+                mobile, and sit under the identity in column two from md up. */}
+            <div className="min-w-0 md:col-start-2 md:row-start-2">
               {/* Stats Bar — glassmorphic mini-cards */}
-              <div className="scrollbar-hide mb-6 flex flex-nowrap items-center justify-start gap-3 overflow-x-auto sm:flex-wrap sm:justify-center sm:gap-4 md:justify-start">
+              <div className="scrollbar-hide mb-6 flex flex-nowrap items-center justify-start gap-3 overflow-x-auto sm:flex-wrap sm:gap-4">
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Eye className="h-4 w-4 text-white/60" />
                   <div>
@@ -450,52 +429,23 @@ const WebtoonDetailPage = () => {
                     <span className="ml-1 text-xs text-white/50">{t('rating.community')}</span>
                   </div>
                 </div>
-                <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
-                  <Calendar className="h-4 w-4 text-white/60" aria-hidden="true" />
-                  <div>
-                    <span className="text-sm font-semibold text-white">
-                      {formatCatalogDate(webtoon.createdAt)}
-                    </span>
-                    <span className="ml-1 text-xs text-white/50">
-                      {t('webtoonDetail.published')}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
-                  <Clock className="h-4 w-4 text-white/60" aria-hidden="true" />
-                  <div>
-                    <span className="text-sm font-semibold text-white">
-                      {formatCatalogDate(webtoon.updatedAt)}
-                    </span>
-                    <span className="ml-1 text-xs text-white/50">{t('webtoonDetail.updated')}</span>
-                  </div>
-                </div>
               </div>
 
-              {nextDrop ? (
-                <div
-                  data-testid="hub-next-drop"
-                  className="mb-6 rounded-2xl bg-white/10 px-4 py-3 text-left backdrop-blur-sm"
-                >
-                  <p className="text-xs font-medium uppercase tracking-wide text-white/60">
-                    {t('webtoonDetail.nextDrop')}
-                  </p>
-                  <UpcomingDropMeta
-                    className="mt-1"
-                    episode={nextDrop}
-                    now={now}
-                    lang={lang}
-                    tone="hero"
-                  />
-                </div>
-              ) : null}
-
-              <div className="mb-6 flex justify-center md:justify-start">
-                <SeriesRatingControl webtoonId={webtoon.id} variant="hero" />
-              </div>
+              {/* Dates, tags and synopsis sit in the dark header from md up; below that
+                  the mobile copy after this section carries them (issue #38). */}
+              <SeriesOverview
+                tone="hero"
+                testId="hub-overview-desktop"
+                className="mb-6 hidden md:flex"
+                description={webtoon.description[lang]}
+                tags={webtoon.tags}
+                publishedOn={formatCatalogDate(webtoon.createdAt)}
+                updatedOn={formatCatalogDate(webtoon.updatedAt)}
+                latestEpisodeHref={latestEpisodeHref}
+              />
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
+              <div className="flex flex-wrap items-center gap-3">
                 <Link
                   to={primaryHref}
                   className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
@@ -504,16 +454,6 @@ const WebtoonDetailPage = () => {
                     {primaryLabel}
                   </Button>
                 </Link>
-                {showLatestCta && latestEpisode ? (
-                  <Link
-                    to={`/read/${webtoon.id}/${latestEpisode.episodeNumber}`}
-                    className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
-                  >
-                    <Button size="lg" variant="heroOutline">
-                      {t('webtoonDetail.latestEpisode')}
-                    </Button>
-                  </Link>
-                ) : null}
                 <Button
                   size="lg"
                   variant={isBookmarked(webtoon.id) ? 'secondary' : 'heroOutline'}
@@ -576,14 +516,51 @@ const WebtoonDetailPage = () => {
                   <span className="text-xs font-semibold text-emerald-300">{shareStatus}</span>
                 ) : null}
               </div>
-            </motion.div>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════ MOBILE OVERVIEW ═══════ */}
+      {/* Below md the dark header stops after the primary actions, so the synopsis,
+          tags, dates and the secondary read CTA land here on the light surface. */}
+      <section className="md:hidden">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+          <SeriesOverview
+            tone="body"
+            testId="hub-overview-mobile"
+            description={webtoon.description[lang]}
+            tags={webtoon.tags}
+            publishedOn={formatCatalogDate(webtoon.createdAt)}
+            updatedOn={formatCatalogDate(webtoon.updatedAt)}
+            latestEpisodeHref={latestEpisodeHref}
+          />
         </div>
       </section>
 
       {/* ═══════ EPISODE LIST SECTION ═══════ */}
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Both designs put the next drop with the episodes rather than in the
+              header — it is a schedule note about the list below it. */}
+          {nextDrop ? (
+            <div
+              data-testid="hub-next-drop"
+              className="mb-6 rounded-2xl border border-gray-200/60 bg-gray-50 px-4 py-3 text-left"
+            >
+              <p className="text-2xs text-muted font-semibold uppercase tracking-wider">
+                {t('webtoonDetail.nextDrop')}
+              </p>
+              <UpcomingDropMeta
+                className="mt-1"
+                episode={nextDrop}
+                now={now}
+                lang={lang}
+                tone="page"
+              />
+            </div>
+          ) : null}
+
           {/* Tab Bar + Sort */}
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Tabs */}
@@ -794,6 +771,14 @@ const WebtoonDetailPage = () => {
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* The design keeps rating out of the header too: desktop sidebar, mobile just
+          above the discussion. */}
+      <section data-testid="hub-rating" className="border-t border-gray-100 py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SeriesRatingControl webtoonId={webtoon.id} variant="card" />
         </div>
       </section>
 
