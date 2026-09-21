@@ -83,7 +83,11 @@ const ReaderCompleteCard = ({
   const titleClass = darkMode ? 'text-gray-100' : 'text-gray-900'
 
   return (
-    <div onClick={stop} className={`mt-12 rounded-3xl border p-6 text-center sm:p-8 ${cardBg}`}>
+    <div
+      onClick={stop}
+      data-testid="reader-complete-card"
+      className={`mt-12 rounded-3xl border p-6 text-center sm:p-8 ${cardBg}`}
+    >
       <h2 className="mb-6 text-xl font-bold tracking-tight sm:text-2xl">
         {t('readerPage.chapterComplete')}
       </h2>
@@ -96,17 +100,6 @@ const ReaderCompleteCard = ({
         darkMode={darkMode}
         nested={nested}
       />
-
-      <CompleteComments
-        comments={comments}
-        onOpen={onOpenComments}
-        onAdd={onAddComment}
-        isAuthenticated={isAuthenticated}
-        darkMode={darkMode}
-        nested={nested}
-      />
-
-      <CreatorNote nested={nested} muted={muted} />
 
       {hasNext ? (
         <NextUpRow
@@ -131,6 +124,17 @@ const ReaderCompleteCard = ({
           muted={muted}
         />
       )}
+
+      <CreatorNote nested={nested} muted={muted} />
+
+      <CompleteComments
+        comments={comments}
+        onOpen={onOpenComments}
+        onAdd={onAddComment}
+        isAuthenticated={isAuthenticated}
+        darkMode={darkMode}
+        nested={nested}
+      />
 
       {related.length > 0 ? (
         <div className="mt-6 w-full max-w-md text-left">

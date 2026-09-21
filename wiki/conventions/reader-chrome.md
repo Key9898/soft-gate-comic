@@ -60,7 +60,7 @@ In-flow Demo slots only — never overlay, splash, autoplay, or an ad network. L
 
 ## Chapter-end
 
-Quiet complete card (no party emoji / bounce). Rating, comments teaser, creator-note Demo, next episode or same-genre related (hub filter, max 6, hide when empty), guest nudge, episode report. Report is `softgate_episode_reports_v1` (`id:n`), auth + confirm, no API. Share copies locale-prefix-free `/read/:id/:n`. Footer shows published `n / total` and catalog `likeCount` (Demo, same honesty as the hub).
+Quiet complete card (no party emoji / bounce). Rating, reactions (Demo counts, device-local), next episode with its thumb and access state, creator-note Demo, comments teaser + composer, same-genre related (hub filter, max 3, hide when empty), guest nudge, Back to series, episode report. Related shows alongside a next episode, not only at end of series. Report is `softgate_episode_reports_v1` (`id:n`), auth + confirm, no API. Share copies locale-prefix-free `/read/:id/:n`. Footer shows published `n / total` and catalog `likeCount` (Demo, same honesty as the hub).
 
 Clicks inside the complete card `stopPropagation` so they do not toggle chrome.
 
