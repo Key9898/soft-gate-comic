@@ -1066,6 +1066,7 @@ const ReaderPage = () => {
             lang={lang}
             comments={commentsThread.comments}
             onOpenComments={() => setShowComments(true)}
+            onAddComment={commentsThread.add}
             hasNext={hasNext}
             nextEpisode={nextEpisode}
             nextEpisodeNumber={episodeNum + 1}

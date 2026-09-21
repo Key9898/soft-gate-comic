@@ -623,7 +623,10 @@
     "reactionSad": "Made me cry",
     "reactionFunny": "Made me laugh",
     "reactionShock": "Shocking",
-    "reactionFire": "Fire"
+    "reactionFire": "Fire",
+    "commentPlaceholder": "Say something about this episode",
+    "commentSpoiler": "Mark as spoiler",
+    "commentPost": "Post"
   },
   "profilePage": {
     "episodesUnit_one": "{{count}} episode",

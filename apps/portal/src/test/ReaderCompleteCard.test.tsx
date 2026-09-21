@@ -9,6 +9,7 @@ import { SettingsProvider } from '../context/SettingsContext'
 import { LibraryProvider } from '../context/LibraryContext'
 import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
+import { SESSION_STORAGE_KEY } from '../lib/auth/types'
 import ReaderPage from '../features/reader/ReaderPage'
 
 const renderReader = (path: string) =>
@@ -33,6 +34,19 @@ const renderReader = (path: string) =>
       </DataProvider>
     </HelmetProvider>
   )
+
+// Layers the session seed on top of the Map-backed store below rather than
+// replacing its getItem entirely: the composer's post round-trips through
+// writeStore/readStore (both backed by that Map), so a getItem override that
+// unconditionally returns null for every other key would silently drop the
+// write and the posted comment would never reach the teaser.
+const seedSession = () => {
+  vi.mocked(window.localStorage.getItem).mockImplementation((key: string) =>
+    key === SESSION_STORAGE_KEY
+      ? JSON.stringify({ id: 'u_test', email: 'test@example.com', username: 'tester' })
+      : (reactionStore.get(key) ?? null)
+  )
+}
 
 // The global localStorage mock in src/test/setup.ts always returns null from getItem
 // and never persists what setItem writes, so it cannot round-trip a toggle across two
@@ -93,5 +107,24 @@ describe('reader next-up', () => {
     expect(row).toHaveTextContent('Unlock this episode for')
     await user.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByText('Premium Episode')).toBeInTheDocument()
+  })
+})
+
+describe('reader comments composer', () => {
+  it('is hidden for a guest', async () => {
+    renderReader('/read/1/1')
+    await screen.findByTestId('reader-reactions')
+    expect(screen.queryByTestId('reader-comment-composer')).not.toBeInTheDocument()
+  })
+
+  it('posts a comment that shows up in the teaser', async () => {
+    const user = userEvent.setup()
+    seedSession()
+    renderReader('/read/1/1')
+    const box = await screen.findByTestId('reader-comment-composer')
+    const field = box.querySelector('textarea') as HTMLTextAreaElement
+    await user.type(field, 'Great episode')
+    await user.click(screen.getByRole('button', { name: 'Post' }))
+    expect(await screen.findByText('Great episode')).toBeInTheDocument()
   })
 })

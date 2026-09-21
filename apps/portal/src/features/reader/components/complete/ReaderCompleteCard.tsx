@@ -3,7 +3,7 @@ import type { Episode, Webtoon } from '@softgate/shared'
 import type { StoredComment } from '../../../../lib/comments'
 import RatingControl from './RatingControl'
 import EpisodeReactions from './EpisodeReactions'
-import CommentsBlock from './CommentsBlock'
+import CompleteComments from './CompleteComments'
 import CreatorNote from './CreatorNote'
 import NextUpRow from './NextUpRow'
 import EndOfSeries from './EndOfSeries'
@@ -18,6 +18,7 @@ export type ReaderCompletePortalProps = {
   lang: 'mm' | 'en'
   comments: StoredComment[]
   onOpenComments: () => void
+  onAddComment: (content: string, spoiler: boolean) => void
   hasNext: boolean
   nextEpisode?: Episode
   nextEpisodeNumber: number
@@ -52,6 +53,7 @@ const ReaderCompleteCard = ({
   lang,
   comments,
   onOpenComments,
+  onAddComment,
   hasNext,
   nextEpisode,
   nextEpisodeNumber,
@@ -94,7 +96,14 @@ const ReaderCompleteCard = ({
         nested={nested}
       />
 
-      <CommentsBlock comments={comments} onOpenComments={onOpenComments} darkMode={darkMode} />
+      <CompleteComments
+        comments={comments}
+        onOpen={onOpenComments}
+        onAdd={onAddComment}
+        isAuthenticated={isAuthenticated}
+        darkMode={darkMode}
+        nested={nested}
+      />
 
       <CreatorNote nested={nested} muted={muted} />
 

@@ -623,7 +623,10 @@
     "reactionSad": "ငိုချင်စရာ",
     "reactionFunny": "ရယ်ရတယ်",
     "reactionShock": "အံ့အားသင့်စရာ",
-    "reactionFire": "မီးလောင်နေတယ်"
+    "reactionFire": "မီးလောင်နေတယ်",
+    "commentPlaceholder": "ဤအပိုင်းအကြောင်း ရေးပါ",
+    "commentSpoiler": "အကြောင်းအရာ ဖော်ပြချက်အဖြစ် မှတ်ပါ",
+    "commentPost": "တင်မည်"
   },
   "profilePage": {
     "episodesUnit": "အပိုင်း {{count}} ပိုင်း",
