@@ -12,7 +12,7 @@ const TONES: Record<ChipTone, { on: string; off: string }> = {
 }
 
 export const CHIP_BASE =
-  'px-4.5 focus-visible:ring-primary-500 relative flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-2xl py-2.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2'
+  'px-4.5 focus-visible:ring-primary-500 relative flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-chip py-2.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2'
 
 export function chipClasses(selected: boolean, tone: ChipTone = 'filter', className = '') {
   return `${CHIP_BASE} ${selected ? TONES[tone].on : TONES[tone].off} ${className}`.trim()

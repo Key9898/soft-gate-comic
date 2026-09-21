@@ -12,6 +12,11 @@
   --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
 
+  /* The radius scale was flat: buttons, inputs, chips and cards all sat at 16px, so
+     nothing told you a chip was a lighter control than a button. Chips get a 12px step
+     of their own; everything else stays on rounded-2xl. */
+  --radius-chip: 0.75rem;
+
   /* Primary = logo SoftGate letter #69c9ca at 400; CTA fill #0e9494 at 600 (WCAG-safe). */
   --color-primary-50: rgb(240 252 252);
   --color-primary-100: rgb(210 244 245);
