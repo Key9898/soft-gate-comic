@@ -42,7 +42,12 @@
     "login": "ဝင်ရောက်သည်",
     "register": "မှတ်ပုံတင်သည်",
     "logout": "ထွက်သည်",
-    "menu": "မီနူး"
+    "menu": "မီနူး",
+    "tabHome": "ပင်မ",
+    "tabBrowse": "ရှာဖွေ",
+    "tabLibrary": "စာကြည့်တိုက်",
+    "tabCoins": "ဒင်္ဂါး",
+    "tabProfile": "ကိုယ်ရေး"
   },
   "a11y": {
     "breadcrumb": "လမ်းညွှန်အဆင့်များ",

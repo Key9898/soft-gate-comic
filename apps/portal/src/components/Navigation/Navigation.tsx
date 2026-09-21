@@ -1,19 +1,17 @@
 import { useState, useMemo, useId } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Menu, X, Search, Bell, BookMarked, Coins, User, LogOut } from 'lucide-react'
+import { Menu, X, Search, Bell, BookMarked, Coins, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '../Button'
 import LanguageSwitcher from '../LanguageSwitcher'
 import SearchAutocomplete from '../SearchAutocomplete'
 import { useAuth } from '../../context/AuthContext'
 import { useEngagement } from '../../context/EngagementContext'
-import { useWallet } from '../../context/WalletContext'
 
 const Navigation = () => {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout } = useAuth()
-  const { balance } = useWallet()
   const { unreadNotificationCount } = useEngagement()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -28,6 +26,13 @@ const Navigation = () => {
       { name: t('home.newReleases'), path: '/categories?sort=new' },
     ],
     [t]
+  )
+
+  // The Tab Bar owns Home, Browse (/categories), Library, Coins and Profile below md,
+  // so the mobile menu keeps only what it does not reach (issue #37).
+  const menuLinks = useMemo(
+    () => navLinks.filter((link) => link.path !== '/categories'),
+    [navLinks]
   )
 
   const isActive = (path: string) => {
@@ -170,9 +175,7 @@ const Navigation = () => {
               aria-label={t('nav.menu')}
               aria-expanded={isMenuOpen}
               aria-controls={isMenuOpen ? menuId : undefined}
-              className={`hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 ${
-                isAuthenticated ? 'lg:hidden' : 'md:hidden'
-              }`}
+              className={`hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 min-w-11 items-center justify-center rounded-2xl p-2 text-gray-600 transition focus-visible:outline-none focus-visible:ring-2 ${'md:hidden'}`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -212,13 +215,11 @@ const Navigation = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className={`overflow-hidden border-t border-gray-200 bg-white ${
-              isAuthenticated ? 'lg:hidden' : 'md:hidden'
-            }`}
+            className={`overflow-hidden border-t border-gray-200 bg-white ${'md:hidden'}`}
           >
-            <div className="space-y-3 px-4 py-4">
+            <div data-testid="nav-mobile-menu" className="space-y-3 px-4 py-4">
               <div className="space-y-3 md:hidden">
-                {navLinks.map((link) => (
+                {menuLinks.map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
@@ -237,40 +238,10 @@ const Navigation = () => {
               <div className="border-t border-gray-200 pt-3">
                 {isAuthenticated && user ? (
                   <>
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center gap-2 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
-                    >
-                      <User className="h-4 w-4" aria-hidden="true" />
-                      {user.displayName}
-                    </Link>
-                    <Link
-                      to="/library"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
-                    >
-                      {t('nav.library')}
-                    </Link>
-                    {/* The balance lives here rather than in the bar: the bar's width
-                        budget is exhausted at 360px (see responsive-chrome.md), and an
-                        always-visible pill there crushes the wordmark. The menu has room,
-                        and the two moments the number actually decides something — the
-                        hub's locked rows and the reader header — carry it too. */}
-                    <Link
-                      to="/coins"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="hover:text-primary-600 focus-visible:ring-primary-500 flex min-h-11 items-center justify-between gap-3 rounded-2xl py-2 text-sm font-medium text-gray-600 focus-visible:outline-none focus-visible:ring-2"
-                    >
-                      <span>{t('nav.coins')}</span>
-                      <span
-                        data-testid="menu-coin-balance"
-                        className="text-primary-700 inline-flex items-center gap-1.5 text-sm font-bold tabular-nums"
-                      >
-                        <Coins className="h-4 w-4" aria-hidden="true" />
-                        {balance}
-                      </span>
-                    </Link>
+                    {/* Profile, Library and Coins live in the Tab Bar below md, so the
+                        menu keeps only the actions the bar has no room for. The balance
+                        used to sit here for want of space in the bar; the Coins tab now
+                        reaches it in one tap from every screen. */}
                     <button
                       type="button"
                       onClick={() => {

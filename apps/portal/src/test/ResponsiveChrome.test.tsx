@@ -78,14 +78,17 @@ describe('Responsive chrome — breakpoint ladder (Impl 77)', () => {
     )
     expect(guestBurger).toBeTruthy()
 
+    // Since the Tab Bar landed (issue #37) the hamburger hides at md for everyone.
+    // It used to survive to lg when signed in, which meant a member and a guest got
+    // different chrome at the same width for no reason the reader could see.
     signIn()
     const { container } = render(<Navigation />)
     const memberBurger = container.querySelectorAll('nav button')
     const burger = [...memberBurger].find(
       (b) => b.getAttribute('aria-label') === i18n.t('nav.menu')
     )
-    expect(burger?.className).toContain('lg:hidden')
-    expect(burger?.className).not.toContain('md:hidden')
+    expect(burger?.className).toContain('md:hidden')
+    expect(burger?.className).not.toContain('lg:hidden')
   })
 
   it('drops the language label until xl', () => {
@@ -149,7 +152,7 @@ describe('Responsive chrome — disclosure semantics (Impl 77)', () => {
     expect(container.querySelector(`#${CSS.escape(controls as string)}`)).toBeTruthy()
   })
 
-  it('hides the duplicated nav links inside the menu from md up', () => {
+  it('leaves Coins and Library in one place only, now the Tab Bar carries them', () => {
     signIn()
     const { container } = render(<Navigation />)
     fireEvent.click(screen.getByRole('button', { name: i18n.t('nav.menu') }))
@@ -157,8 +160,10 @@ describe('Responsive chrome — disclosure semantics (Impl 77)', () => {
       (el) => el.className.includes('space-y-3') && el.className.includes('md:hidden')
     )
     expect(linksBlock).toBeTruthy()
-    expect(screen.getAllByRole('link', { name: /coins/i }).length).toBeGreaterThan(1)
-    expect(screen.getAllByRole('link', { name: /library/i }).length).toBeGreaterThan(1)
+    // These used to appear twice: a desktop icon and again as a menu row. The menu
+    // rows went with issue #37, so only the desktop shortcut is left here.
+    expect(screen.getAllByRole('link', { name: /coins/i })).toHaveLength(1)
+    expect(screen.getAllByRole('link', { name: /library/i })).toHaveLength(1)
   })
 
   it('resolves the menu label in both locales', () => {

@@ -42,7 +42,12 @@
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
-    "menu": "Menu"
+    "menu": "Menu",
+    "tabHome": "Home",
+    "tabBrowse": "Browse",
+    "tabLibrary": "Library",
+    "tabCoins": "Coins",
+    "tabProfile": "Profile"
   },
   "a11y": {
     "breadcrumb": "Breadcrumb",
