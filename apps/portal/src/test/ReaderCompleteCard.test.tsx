@@ -10,6 +10,7 @@ import { LibraryProvider } from '../context/LibraryContext'
 import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
 import { SESSION_STORAGE_KEY } from '../lib/auth/types'
+import { unlockEpisode } from '../lib/wallet'
 import ReaderPage from '../features/reader/ReaderPage'
 
 const renderReader = (path: string) =>
@@ -107,6 +108,21 @@ describe('reader next-up', () => {
     expect(row).toHaveTextContent('Unlock this episode for')
     await user.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByText('Premium Episode')).toBeInTheDocument()
+  })
+
+  // packages/shared/src/data.ts: series 1 episode 5 is premium with freeAt
+  // 2026-08-26T05:00:00.000Z, which is already in the past. hasWaitSchedule alone
+  // (isPremium + a parseable freeAt) can't tell that the wait window already elapsed,
+  // so the row must also check !isWaitFreeNow before printing "Free on <date>" --
+  // otherwise an already-free episode keeps advertising a lock that isn't there.
+  // Episode 4 is itself premium and coin-locked (no freeAt of its own), so it has to be
+  // unlocked in the wallet store first to reach the complete card that lists episode 5 next.
+  it('does not show the wait-free line once freeAt has already passed', async () => {
+    seedSession()
+    unlockEpisode('u_test', '1', 4, 5, 'test setup: unlock episode 4')
+    renderReader('/read/1/4')
+    const row = await screen.findByTestId('reader-next-up')
+    expect(row).not.toHaveTextContent('Free on')
   })
 })
 

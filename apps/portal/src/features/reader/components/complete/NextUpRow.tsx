@@ -2,7 +2,12 @@ import { Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Episode } from '@softgate/shared'
 import Button from '../../../../components/Button'
-import { episodeThumbSrc, formatWaitFreeAt, hasWaitSchedule } from '../../../../lib/catalog'
+import {
+  episodeThumbSrc,
+  formatWaitFreeAt,
+  hasWaitSchedule,
+  isWaitFreeNow,
+} from '../../../../lib/catalog'
 
 export type NextUpRowProps = {
   episode?: Episode
@@ -28,7 +33,7 @@ const NextUpRow = ({
   const { t } = useTranslation()
   const thumb = episode ? episodeThumbSrc(episode, seriesCover) : seriesCover
   const freeAt = episode?.freeAt
-  const waiting = Boolean(episode && hasWaitSchedule(episode) && freeAt)
+  const waiting = Boolean(episode && hasWaitSchedule(episode) && !isWaitFreeNow(episode) && freeAt)
 
   return (
     <div data-testid="reader-next-up" className="mt-6 w-full max-w-md">
