@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
@@ -11,6 +11,7 @@ import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
 import { SESSION_STORAGE_KEY } from '../lib/auth/types'
 import { unlockEpisode } from '../lib/wallet'
+import { COMMENT_MAX_LENGTH } from '../lib/comments'
 import ReaderPage from '../features/reader/ReaderPage'
 
 const renderReader = (path: string) =>
@@ -142,6 +143,23 @@ describe('reader comments composer', () => {
     await user.type(field, 'Great episode')
     await user.click(screen.getByRole('button', { name: 'Post' }))
     expect(await screen.findByText('Great episode')).toBeInTheDocument()
+  })
+
+  // comments.ts:trimmedContent rejects any content over COMMENT_MAX_LENGTH (500) and
+  // addComment returns null for it, so posting an unclamped 600-char draft silently
+  // drops the comment: submit() clears the draft either way, so nothing tells the user
+  // their comment never made it into the teaser. The textarea needs a maxLength/onChange
+  // clamp, matching apps/portal/src/components/Comments/Comments.tsx's ComposerFields.
+  it('clamps a pasted draft to the comment max length instead of losing it', async () => {
+    const user = userEvent.setup()
+    seedSession()
+    renderReader('/read/1/1')
+    const box = await screen.findByTestId('reader-comment-composer')
+    const field = box.querySelector('textarea') as HTMLTextAreaElement
+    fireEvent.change(field, { target: { value: 'a'.repeat(600) } })
+    expect(field.value.length).toBe(COMMENT_MAX_LENGTH)
+    await user.click(screen.getByRole('button', { name: 'Post' }))
+    expect(await screen.findByText('a'.repeat(COMMENT_MAX_LENGTH))).toBeInTheDocument()
   })
 })
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import CommentsTeaser from '../../../../components/Comments/CommentsTeaser'
 import Button from '../../../../components/Button'
-import type { StoredComment } from '../../../../lib/comments'
+import { COMMENT_MAX_LENGTH, type StoredComment } from '../../../../lib/comments'
 
 export type CompleteCommentsProps = {
   comments: StoredComment[]
@@ -25,6 +25,7 @@ const CompleteComments = ({
   const [draft, setDraft] = useState('')
   const [spoiler, setSpoiler] = useState(false)
   const canPost = draft.trim().length > 0
+  const remaining = COMMENT_MAX_LENGTH - draft.length
 
   const submit = () => {
     if (!canPost) return
@@ -47,13 +48,23 @@ const CompleteComments = ({
           <textarea
             id="reader-comment-draft"
             value={draft}
-            onChange={(event) => setDraft(event.target.value)}
+            onChange={(event) => setDraft(event.target.value.slice(0, COMMENT_MAX_LENGTH))}
             placeholder={t('readerPage.commentPlaceholder')}
             rows={3}
+            maxLength={COMMENT_MAX_LENGTH}
             className={`w-full rounded-2xl border p-3 text-sm ${
               darkMode ? 'border-white/10 bg-white/5 text-gray-100' : 'border-gray-200 bg-white'
             }`}
           />
+          <div className="mt-1 flex justify-end">
+            <span
+              className={`text-xs ${
+                remaining < 20 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}
+            >
+              {draft.length}/{COMMENT_MAX_LENGTH}
+            </span>
+          </div>
           <div className="mt-3 flex items-center justify-between gap-3">
             <label className="flex min-h-11 items-center gap-2 text-sm">
               <input
