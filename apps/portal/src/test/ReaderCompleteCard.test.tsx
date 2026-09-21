@@ -90,6 +90,26 @@ describe('reader reactions', () => {
     await user.click(screen.getByRole('button', { name: 'Fire' }))
     expect(screen.getByRole('button', { name: 'Fire' })).toHaveAttribute('aria-pressed', 'false')
   })
+
+  // EpisodeReactions never seeds `picked` from localStorage in its initial state (the reader
+  // server-renders and the server has no store) -- it hydrates via a useEffect once mounted.
+  // toggleReaction's return value drives setPicked directly, so a test that only clicks within
+  // a single mount can't tell the hydrating effect apart from a deleted one; both leave the
+  // button pressed until unmount. Unmount and remount to prove the pick survives the remount.
+  it('keeps a reaction pressed after the component remounts', async () => {
+    const user = userEvent.setup()
+    const first = renderReader('/read/1/1')
+    const fire = await screen.findByRole('button', { name: 'Fire' })
+    await user.click(fire)
+    expect(screen.getByRole('button', { name: 'Fire' })).toHaveAttribute('aria-pressed', 'true')
+
+    first.unmount()
+    renderReader('/read/1/1')
+    expect(await screen.findByRole('button', { name: 'Fire' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+  })
 })
 
 describe('reader next-up', () => {
