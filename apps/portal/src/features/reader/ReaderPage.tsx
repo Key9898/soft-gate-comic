@@ -1061,6 +1061,7 @@ const ReaderPage = () => {
         {!locked ? (
           <ReaderCompletePortal
             webtoonId={webtoonId!}
+            episodeNumber={episodeNum}
             darkMode={darkMode}
             lang={lang}
             comments={commentsThread.comments}

@@ -617,7 +617,13 @@
     "shortfall": "You need {{n}} more coins to unlock this episode.",
     "topUpAndReturn": "Top up and come back",
     "stripDemo": "Demo strip — the series cover stands in for episode art. Client-swap, not the real panels.",
-    "endOfSeriesWait": "No next episode is scheduled yet. Subscribe and we will tell you when one is."
+    "endOfSeriesWait": "No next episode is scheduled yet. Subscribe and we will tell you when one is.",
+    "reactions": "Reactions",
+    "reactionLove": "Love it",
+    "reactionSad": "Made me cry",
+    "reactionFunny": "Made me laugh",
+    "reactionShock": "Shocking",
+    "reactionFire": "Fire"
   },
   "profilePage": {
     "episodesUnit_one": "{{count}} episode",

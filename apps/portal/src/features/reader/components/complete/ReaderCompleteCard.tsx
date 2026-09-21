@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Episode, Webtoon } from '@softgate/shared'
 import type { StoredComment } from '../../../../lib/comments'
 import RatingControl from './RatingControl'
+import EpisodeReactions from './EpisodeReactions'
 import CommentsBlock from './CommentsBlock'
 import CreatorNote from './CreatorNote'
 import NextEpisodeBlock from './NextEpisodeBlock'
@@ -12,6 +13,7 @@ import ReportControl from './ReportControl'
 
 export type ReaderCompletePortalProps = {
   webtoonId: string
+  episodeNumber: number
   darkMode: boolean
   lang: 'mm' | 'en'
   comments: StoredComment[]
@@ -43,6 +45,7 @@ const stop = (e: { stopPropagation: () => void }) => {
 
 const ReaderCompleteCard = ({
   webtoonId,
+  episodeNumber,
   darkMode,
   lang,
   comments,
@@ -79,6 +82,13 @@ const ReaderCompleteCard = ({
       </h2>
 
       <RatingControl webtoonId={webtoonId} darkMode={darkMode} />
+
+      <EpisodeReactions
+        webtoonId={webtoonId}
+        episodeNumber={episodeNumber}
+        darkMode={darkMode}
+        nested={nested}
+      />
 
       <CommentsBlock comments={comments} onOpenComments={onOpenComments} darkMode={darkMode} />
 
