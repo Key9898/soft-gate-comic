@@ -9,10 +9,12 @@ import { SettingsProvider } from '../context/SettingsContext'
 import { LibraryProvider } from '../context/LibraryContext'
 import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
+import type { Webtoon } from '@softgate/shared'
 import { SESSION_STORAGE_KEY } from '../lib/auth/types'
 import { unlockEpisode } from '../lib/wallet'
 import { COMMENT_MAX_LENGTH } from '../lib/comments'
 import ReaderPage from '../features/reader/ReaderPage'
+import RelatedList from '../features/reader/components/complete/RelatedList'
 
 const renderReader = (path: string) =>
   render(
@@ -164,16 +166,40 @@ describe('reader comments composer', () => {
 })
 
 describe('reader related and back to series', () => {
-  it('shows at most three related series alongside a next episode', async () => {
+  it('shows related series alongside a next episode', async () => {
     renderReader('/read/1/1')
     const list = await screen.findByTestId('reader-related')
-    expect(list.querySelectorAll('li').length).toBeLessThanOrEqual(3)
+    expect(list.querySelectorAll('li').length).toBeGreaterThan(0)
     expect(screen.getByTestId('reader-next-up')).toBeInTheDocument()
   })
 
   it('offers Back to series even when a next episode exists', async () => {
     renderReader('/read/1/1')
     expect(await screen.findByRole('link', { name: 'Back to series' })).toBeInTheDocument()
+  })
+
+  // webtoon 1's related memo returns exactly RELATED_MAX (3) items, so a test that reads
+  // it through the reader page can never exercise RelatedList's own `.slice(0, RELATED_MAX)`
+  // -- deleting the slice would leave that route's test green. Render RelatedList directly
+  // with more than three items so the cap itself is the thing under test.
+  it('caps the related list at three items even when given more', () => {
+    const sixRelated = Array.from({ length: 6 }, (_, index) => ({
+      id: `related-${index}`,
+      title: { en: `Related ${index}`, mm: `Related ${index}` },
+      coverImage: undefined,
+    })) as unknown as Webtoon[]
+
+    render(
+      <MemoryRouter>
+        <RelatedList related={sixRelated} lang="en" nested="" titleClass="" />
+      </MemoryRouter>
+    )
+
+    const items = screen.getAllByRole('listitem')
+    expect(items).toHaveLength(3)
+    expect(screen.getByText('Related 0')).toBeInTheDocument()
+    expect(screen.getByText('Related 2')).toBeInTheDocument()
+    expect(screen.queryByText('Related 3')).not.toBeInTheDocument()
   })
 })
 
