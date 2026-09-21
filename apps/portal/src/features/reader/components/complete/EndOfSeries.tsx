@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { Episode } from '@softgate/shared'
-import Button, { ButtonLink } from '../../../../components/Button'
+import Button from '../../../../components/Button'
 import UpcomingDropMeta from '../../../../components/UpcomingDropMeta'
 
 export type EndOfSeriesProps = {
@@ -8,28 +8,25 @@ export type EndOfSeriesProps = {
   lang: 'mm' | 'en'
   nextDrop?: Episode
   now: number
-  seriesHref: string
   isSubscribed: boolean
   onSubscribe: () => void
   nested: string
   muted: string
-  onStop: (e: { stopPropagation: () => void }) => void
 }
 
 // The end of a series is the product's peak-end moment and it used to be a single line of pink
 // text followed by a Report button. nextDropForSeries and UpcomingDropMeta already existed and
-// were used on the hub.
+// were used on the hub. Back to series now lives in the card footer (ReaderCompleteCard) so it
+// renders once regardless of whether the series has ended.
 const EndOfSeries = ({
   darkMode,
   lang,
   nextDrop,
   now,
-  seriesHref,
   isSubscribed,
   onSubscribe,
   nested,
   muted,
-  onStop,
 }: EndOfSeriesProps) => {
   const { t } = useTranslation()
 
@@ -55,13 +52,10 @@ const EndOfSeries = ({
       ) : (
         <p className={`mt-2 text-sm ${muted}`}>{t('readerPage.endOfSeriesWait')}</p>
       )}
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-4">
         <Button size="sm" variant={isSubscribed ? 'surface' : 'primary'} onClick={onSubscribe}>
           {isSubscribed ? t('webtoonDetail.subscribed') : t('webtoonDetail.subscribe')}
         </Button>
-        <ButtonLink size="sm" variant="surface" to={seriesHref} onClick={onStop}>
-          {t('reader.backToWebtoon')}
-        </ButtonLink>
       </div>
     </div>
   )

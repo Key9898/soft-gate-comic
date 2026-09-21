@@ -128,3 +128,17 @@ describe('reader comments composer', () => {
     expect(await screen.findByText('Great episode')).toBeInTheDocument()
   })
 })
+
+describe('reader related and back to series', () => {
+  it('shows at most three related series alongside a next episode', async () => {
+    renderReader('/read/1/1')
+    const list = await screen.findByTestId('reader-related')
+    expect(list.querySelectorAll('li').length).toBeLessThanOrEqual(3)
+    expect(screen.getByTestId('reader-next-up')).toBeInTheDocument()
+  })
+
+  it('offers Back to series even when a next episode exists', async () => {
+    renderReader('/read/1/1')
+    expect(await screen.findByRole('link', { name: 'Back to series' })).toBeInTheDocument()
+  })
+})

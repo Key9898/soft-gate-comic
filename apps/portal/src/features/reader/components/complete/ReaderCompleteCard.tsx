@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Episode, Webtoon } from '@softgate/shared'
 import type { StoredComment } from '../../../../lib/comments'
+import { ButtonLink } from '../../../../components/Button'
 import RatingControl from './RatingControl'
 import EpisodeReactions from './EpisodeReactions'
 import CompleteComments from './CompleteComments'
@@ -124,16 +125,14 @@ const ReaderCompleteCard = ({
           lang={lang}
           nextDrop={nextDrop}
           now={now}
-          seriesHref={seriesHref}
           isSubscribed={isSubscribed}
           onSubscribe={onSubscribe}
           nested={nested}
           muted={muted}
-          onStop={stop}
         />
       )}
 
-      {!hasNext && related.length > 0 ? (
+      {related.length > 0 ? (
         <div className="mt-6 w-full max-w-md text-left">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
             {t('webtoonDetail.youMayAlsoLike')}
@@ -151,7 +150,10 @@ const ReaderCompleteCard = ({
         />
       ) : null}
 
-      <div className="mt-6 w-full max-w-md">
+      <div className="mt-6 flex w-full max-w-md flex-col items-center gap-2">
+        <ButtonLink size="sm" variant="surface" to={seriesHref} onClick={stop}>
+          {t('reader.backToWebtoon')}
+        </ButtonLink>
         <ReportControl
           reported={reported}
           reportConfirm={reportConfirm}

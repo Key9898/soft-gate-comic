@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import userEvent from '@testing-library/user-event'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { AuthProvider } from '../context/AuthContext'
 import { DataProvider } from '../context/DataContext'
 import { SettingsProvider } from '../context/SettingsContext'
@@ -69,9 +69,11 @@ describe('Reader chrome', () => {
     renderReader('/read/1/1')
     expect(await screen.findByRole('heading', { name: 'The Beginning' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Episode List' }))
-    expect(await screen.findByRole('dialog', { name: 'Episode List' })).toBeInTheDocument()
+    const dialog = await screen.findByRole('dialog', { name: 'Episode List' })
     expect(screen.queryByText('series hub')).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Back to series' })).toHaveAttribute(
+    // Scoped to the dialog: the reader complete card below the strip now also offers its
+    // own Back to series link in its footer (Task 6), so an unscoped query would match both.
+    expect(within(dialog).getByRole('link', { name: 'Back to series' })).toHaveAttribute(
       'href',
       '/webtoon/1'
     )

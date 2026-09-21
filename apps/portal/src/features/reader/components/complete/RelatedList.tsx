@@ -8,10 +8,12 @@ export type RelatedListProps = {
   titleClass: string
 }
 
+const RELATED_MAX = 3
+
 const RelatedList = ({ related, lang, nested, titleClass }: RelatedListProps) => {
   return (
-    <ul className="space-y-2">
-      {related.map((item) => (
+    <ul className="space-y-2" data-testid="reader-related">
+      {related.slice(0, RELATED_MAX).map((item) => (
         <li key={item.id}>
           <Link
             to={`/webtoon/${item.id}`}
