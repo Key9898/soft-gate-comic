@@ -39,6 +39,7 @@ import HomeRankingChart from './components/HomeRankingChart'
 import HomePageSkeleton from './components/HomePageSkeleton'
 import CatalogEmptyPanel from '../../components/CatalogEmptyPanel'
 import { ChipLink } from '../../components/Chip'
+import { entranceMotionProps } from '../../lib/motion/entrance'
 
 const CONTINUE_CAP = 12
 
@@ -144,10 +145,7 @@ const HomePage = () => {
     animate: MotionProps['animate'],
     transition: MotionProps['transition']
   ): MotionProps => {
-    if (prefersReducedMotion) {
-      return { initial: false, animate, transition: { duration: 0 } }
-    }
-    return { initial, animate, transition }
+    return entranceMotionProps(initial, animate, transition, prefersReducedMotion)
   }
 
   return (

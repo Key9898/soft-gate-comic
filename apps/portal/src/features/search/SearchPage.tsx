@@ -52,6 +52,7 @@ import {
 } from './searchParams'
 import SortMenu from '../../components/SortMenu'
 import Chip from '../../components/Chip'
+import { entranceMotionProps } from '../../lib/motion/entrance'
 
 const SearchPage = () => {
   const { t, i18n } = useTranslation()
@@ -185,7 +186,7 @@ const SearchPage = () => {
     initial: MotionProps['initial'],
     animate: MotionProps['animate'],
     transition: MotionProps['transition']
-  ): MotionProps => ({ initial, animate, transition })
+  ): MotionProps => entranceMotionProps(initial, animate, transition)
 
   const sortOptions: { value: WebtoonSortBy; label: string }[] = [
     { value: 'popular', label: t('search.filters.sortPopular') },

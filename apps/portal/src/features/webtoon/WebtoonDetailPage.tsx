@@ -53,6 +53,7 @@ import { findGenreByToken, resolveGenreLabel } from '../../lib/categories'
 import { seriesCommentKey } from '../../lib/comments'
 import WebtoonDetailSkeleton from './components/WebtoonDetailSkeleton'
 import SeriesOverview from './components/SeriesOverview'
+import { entranceMotionProps } from '../../lib/motion/entrance'
 import NotFoundPage from '../info/NotFoundPage'
 
 type EpisodeTab = 'all' | 'free' | 'premium'
@@ -199,17 +200,11 @@ const WebtoonDetailPage = () => {
     return eps
   }, [allEpisodes, activeTab, sortOrder])
 
-  // ── Reduced motion helper (matches HomePage) ───────────────
   const getAnimationProps = (
     initial: MotionProps['initial'],
     animate: MotionProps['animate'],
     transition: MotionProps['transition']
-  ): MotionProps => {
-    if (prefersReducedMotion) {
-      return { initial: false, animate, transition: { duration: 0 } }
-    }
-    return { initial, animate, transition }
-  }
+  ): MotionProps => entranceMotionProps(initial, animate, transition, prefersReducedMotion)
 
   if (isLoading) {
     return <WebtoonDetailSkeleton />
