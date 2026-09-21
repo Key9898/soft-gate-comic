@@ -5,7 +5,7 @@ import RatingControl from './RatingControl'
 import EpisodeReactions from './EpisodeReactions'
 import CommentsBlock from './CommentsBlock'
 import CreatorNote from './CreatorNote'
-import NextEpisodeBlock from './NextEpisodeBlock'
+import NextUpRow from './NextUpRow'
 import EndOfSeries from './EndOfSeries'
 import RelatedList from './RelatedList'
 import GuestNudge from './GuestNudge'
@@ -21,6 +21,8 @@ export type ReaderCompletePortalProps = {
   hasNext: boolean
   nextEpisode?: Episode
   nextEpisodeNumber: number
+  nextEpisodeLocked: boolean
+  seriesCover?: string
   onNext: () => void
   isAuthenticated: boolean
   fromPath: string
@@ -53,6 +55,8 @@ const ReaderCompleteCard = ({
   hasNext,
   nextEpisode,
   nextEpisodeNumber,
+  nextEpisodeLocked,
+  seriesCover,
   onNext,
   isAuthenticated,
   fromPath,
@@ -95,9 +99,11 @@ const ReaderCompleteCard = ({
       <CreatorNote nested={nested} muted={muted} />
 
       {hasNext ? (
-        <NextEpisodeBlock
-          nextEpisode={nextEpisode}
-          nextEpisodeNumber={nextEpisodeNumber}
+        <NextUpRow
+          episode={nextEpisode}
+          episodeNumber={nextEpisodeNumber}
+          locked={nextEpisodeLocked}
+          seriesCover={seriesCover}
           lang={lang}
           onNext={onNext}
           nested={nested}

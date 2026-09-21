@@ -73,3 +73,25 @@ describe('reader reactions', () => {
     expect(screen.getByRole('button', { name: 'Fire' })).toHaveAttribute('aria-pressed', 'false')
   })
 })
+
+describe('reader next-up', () => {
+  it('shows the next episode with its thumb', async () => {
+    renderReader('/read/1/1')
+    const row = await screen.findByTestId('reader-next-up')
+    expect(row.querySelector('img')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument()
+  })
+
+  // packages/shared/src/data.ts: series 1 episode 2 is not premium (its successor,
+  // episode 3, isn't either) so /read/1/2 never produces a locked next-up. Episode 4
+  // is the premium one with no freeAt (a straight lock, not a wait-for-free window),
+  // so reading episode 3 is the path that actually exercises the locked state.
+  it('marks a locked next episode and still routes to it', async () => {
+    const user = userEvent.setup()
+    renderReader('/read/1/3')
+    const row = await screen.findByTestId('reader-next-up')
+    expect(row).toHaveTextContent('Unlock this episode for')
+    await user.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByText('Premium Episode')).toBeInTheDocument()
+  })
+})

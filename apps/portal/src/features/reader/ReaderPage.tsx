@@ -1069,6 +1069,16 @@ const ReaderPage = () => {
             hasNext={hasNext}
             nextEpisode={nextEpisode}
             nextEpisodeNumber={episodeNum + 1}
+            nextEpisodeLocked={
+              nextEpisode
+                ? isEpisodeLocked(
+                    nextEpisode,
+                    typeof webtoonId === 'string' &&
+                      isEpisodeUnlocked(webtoonId, nextEpisode.episodeNumber)
+                  )
+                : false
+            }
+            seriesCover={webtoon?.coverImage}
             onNext={() => goToEpisode(episodeNum + 1)}
             isAuthenticated={isAuthenticated}
             fromPath={fromPath}
