@@ -16,6 +16,9 @@ export type EndOfSeriesProps = {
   onStop: (e: { stopPropagation: () => void }) => void
 }
 
+// The end of a series is the product's peak-end moment and it used to be a single line of pink
+// text followed by a Report button. nextDropForSeries and UpcomingDropMeta already existed and
+// were used on the hub.
 const EndOfSeries = ({
   darkMode,
   lang,
@@ -31,9 +34,6 @@ const EndOfSeries = ({
   const { t } = useTranslation()
 
   return (
-    /* The end of a series is the product's peak-end moment and it used to be a
-       single line of pink text followed by a Report button. nextDropForSeries and
-       UpcomingDropMeta already existed and were used on the hub. */
     <div
       data-testid="reader-end-of-series"
       className={`mt-6 w-full max-w-md rounded-2xl border p-4 text-left ${nested}`}

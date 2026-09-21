@@ -1,13 +1,14 @@
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Episode, Webtoon } from '@softgate/shared'
-import Button from '../../../../components/Button'
-import { SeriesRatingControl } from '../../../../components/SeriesRating'
-import CommentsTeaser from '../../../../components/Comments/CommentsTeaser'
 import type { StoredComment } from '../../../../lib/comments'
+import RatingControl from './RatingControl'
+import CommentsBlock from './CommentsBlock'
+import CreatorNote from './CreatorNote'
+import NextEpisodeBlock from './NextEpisodeBlock'
 import EndOfSeries from './EndOfSeries'
-import ReportControl from './ReportControl'
 import RelatedList from './RelatedList'
+import GuestNudge from './GuestNudge'
+import ReportControl from './ReportControl'
 
 export type ReaderCompletePortalProps = {
   webtoonId: string
@@ -77,46 +78,21 @@ const ReaderCompleteCard = ({
         {t('readerPage.chapterComplete')}
       </h2>
 
-      <div className="mb-6 w-full max-w-md">
-        <SeriesRatingControl webtoonId={webtoonId} variant="card" darkMode={darkMode} />
-      </div>
+      <RatingControl webtoonId={webtoonId} darkMode={darkMode} />
 
-      <CommentsTeaser comments={comments} onOpen={onOpenComments} darkMode={darkMode} />
+      <CommentsBlock comments={comments} onOpenComments={onOpenComments} darkMode={darkMode} />
 
-      <div className={`mt-6 w-full max-w-md rounded-2xl border p-4 text-left ${nested}`}>
-        <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          {t('readerPage.creatorNote')}
-        </p>
-        <p className={`text-sm ${muted}`}>{t('readerPage.creatorNoteBody')}</p>
-        <span className="text-primary-500 mt-2 inline-block text-xs font-semibold">
-          {t('common.demo')}
-        </span>
-      </div>
+      <CreatorNote nested={nested} muted={muted} />
 
       {hasNext ? (
-        <div className="mt-6 w-full max-w-md">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-            {t('readerPage.nextChapter')}
-          </p>
-          <div className={`flex items-center justify-between rounded-2xl border p-4 ${nested}`}>
-            <div className="flex items-center gap-3">
-              <div className="bg-primary-600 flex h-12 w-12 items-center justify-center rounded-2xl font-semibold text-white">
-                {nextEpisodeNumber}
-              </div>
-              <div className="text-left">
-                <span className="text-primary-500 block text-xs font-semibold">
-                  {t('readerPage.episodeN', { n: nextEpisodeNumber })}
-                </span>
-                <span className={`block max-w-[180px] truncate text-sm font-bold ${titleClass}`}>
-                  {nextEpisode ? nextEpisode.title[lang] : ''}
-                </span>
-              </div>
-            </div>
-            <Button size="sm" onClick={onNext}>
-              {t('readerPage.nextEpisode')}
-            </Button>
-          </div>
-        </div>
+        <NextEpisodeBlock
+          nextEpisode={nextEpisode}
+          nextEpisodeNumber={nextEpisodeNumber}
+          lang={lang}
+          onNext={onNext}
+          nested={nested}
+          titleClass={titleClass}
+        />
       ) : (
         <EndOfSeries
           darkMode={darkMode}
@@ -142,25 +118,12 @@ const ReaderCompleteCard = ({
       ) : null}
 
       {!isAuthenticated ? (
-        <div className={`mt-6 w-full max-w-md rounded-2xl border p-4 ${nested}`}>
-          <p
-            className={`mb-3 text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}
-          >
-            {t('readerPage.guestNudge')}
-          </p>
-          <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
-            <Button size="sm" onClick={onGuestRegister}>
-              {t('readerPage.createFreeAccount')}
-            </Button>
-            <Link
-              to="/login"
-              state={{ from: { pathname: fromPath } }}
-              className="text-primary-500 hover:text-primary-400 focus-visible:ring-primary-500 flex min-h-11 items-center rounded-2xl px-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2"
-            >
-              {t('nav.login')}
-            </Link>
-          </div>
-        </div>
+        <GuestNudge
+          darkMode={darkMode}
+          fromPath={fromPath}
+          onGuestRegister={onGuestRegister}
+          nested={nested}
+        />
       ) : null}
 
       <div className="mt-6 w-full max-w-md">
