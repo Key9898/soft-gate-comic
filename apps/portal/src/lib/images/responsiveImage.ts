@@ -21,6 +21,18 @@ export const COVER_SIZES =
 export const HERO_COVER_SIZES =
   '(min-width: 1280px) 384px, (min-width: 1024px) 320px, (min-width: 640px) 288px, 224px'
 
+/**
+ * The Home hero's blurred `coverImage` backdrop (HeroBackdrop.tsx): full-bleed at
+ * `object-cover`, so its real on-screen size is ~100vw, but it also renders at 65%
+ * opacity under a 40px blur - a treatment that makes every rung in `COVER_WIDTHS`
+ * visually indistinguishable (see the opacity/blur comment in HeroBackdrop.tsx).
+ * Deliberately understating the display size to the browser's srcset selection
+ * pins it to the smallest rung (192w) at 1x and keeps it off the 768w top of the
+ * ladder through 2x, instead of the ~768w every visitor gets from `100vw` today.
+ * The sharp `keyArt` branch does not use this - it genuinely wants full width.
+ */
+export const HERO_BACKDROP_BLUR_SIZES = '192px'
+
 export interface ResponsiveSources {
   avif: string
   webp: string
