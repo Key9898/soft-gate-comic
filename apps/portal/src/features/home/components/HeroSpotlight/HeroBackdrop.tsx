@@ -48,8 +48,18 @@ const HeroBackdropImage = ({ backdrop, priority }: HeroBackdropImageProps) => {
              the actual filtered/transformed element: the CSS filter's edge falloff
              reaches further than a 10% overscan absorbs. scale-125 pushes that
              falloff far enough outside the clipped box to be imperceptible at every
-             hero height from 22rem to 36rem. */
-          blurred ? 'scale-125 object-center opacity-45 blur-[60px]' : 'object-right'
+             hero height from 22rem to 36rem (still true at blur-[40px]: a smaller
+             blur radius only shrinks the falloff further).
+
+             opacity-65 + blur-[40px] replaces the original opacity-45 + blur-[60px]
+             (wiki/notes/2026-09-22-home-hero-full-bleed-design.md's original values):
+             stacked with the pre-existing HeroSpotlight scrim, those values rasterized
+             to a near-flat dark slab with no discernible cover art. Rasterizing the
+             rendered composite across the demo catalog put the worst-case deck-text
+             contrast at 5.32:1 and title contrast at 6.25:1 with this pairing (WCAG AA
+             needs 4.5:1 / 3:1) — see HeroSpotlight.tsx's scrim comment for the other
+             half of the fix. */
+          blurred ? 'scale-125 object-center opacity-65 blur-[40px]' : 'object-right'
         }`}
       />
     </picture>
@@ -65,7 +75,7 @@ interface HeroBackdropCrossfadeProps {
 /**
  * Crossfades the backdrop image between slides. A `key` on the wrapper would replace
  * the element outright instead of transitioning it, so this keeps the outgoing image
- * mounted underneath while the incoming one fades in over it (Impl 39, Task 3). Under
+ * mounted underneath while the incoming one fades in over it (issue #39, Task 3). Under
  * reduced motion the swap is instant: no outgoing layer, no transition classes.
  */
 const HeroBackdropCrossfade = ({

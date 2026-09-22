@@ -136,8 +136,16 @@ const HeroSpotlight = ({
     >
       <div data-testid="hero-pointer-target" onClick={handleHeroPointerNavigate}>
         <HeroBackdrop slide={current} priority={index === 0} reducedMotion={prefersReducedMotion} />
+        {/* Lighter than the empty/load-fail state's scrim below: that one sits over the
+            sharp, full-opacity banner. This one sits over a per-slide backdrop that is
+            already dimmed by HeroBackdropImage's own opacity/blur, so the original
+            /70 /30 /45 stack (tuned for the banner, before this backdrop existed)
+            quadruple-darkened the art into a near-flat slab. Rasterizing the rendered
+            composite across the demo catalog put the worst-case deck-text contrast at
+            5.32:1 and title contrast at 6.25:1 with this pairing (WCAG AA needs
+            4.5:1 / 3:1). See HeroBackdrop.tsx's image-class comment for the other half. */}
         <div
-          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
+          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/50 via-gray-950/20 to-gray-950/30"
           aria-hidden="true"
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
