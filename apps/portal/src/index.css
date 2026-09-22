@@ -237,11 +237,6 @@ html[lang='mm'] textarea {
   );
 }
 
-.hero-spotlight-pair {
-  container-type: inline-size;
-  container-name: hero-pair;
-}
-
 .hero-book-scene {
   --hero-book-thickness: 32px;
   position: relative;
