@@ -874,7 +874,10 @@ const ReaderPage = () => {
       >
         {locked ? (
           <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
-            <div className="shape-circle border-edge bg-raised mb-6 flex h-24 w-24 items-center justify-center border shadow-lg backdrop-blur">
+            <div
+              data-testid="reader-lock-badge"
+              className="shape-circle border-edge bg-edge-subtle mb-6 flex h-24 w-24 items-center justify-center border shadow-lg backdrop-blur"
+            >
               <Lock className="text-accent-500 h-10 w-10" />
             </div>
             <h2 className="mb-2 text-2xl font-bold">{t('readerPage.premiumEpisode')}</h2>
