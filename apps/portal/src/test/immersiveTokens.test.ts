@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
 const TOKENS = [
-  'base',
+  'canvas',
   'surface',
   'surface-nested',
   'raised',
@@ -19,9 +19,16 @@ const TOKENS = [
 
 const css = () => readFileSync(path.resolve(__dirname, '../index.css'), 'utf8')
 
+const themeBlock = () => {
+  const contents = css()
+  const start = contents.indexOf('@theme {')
+  expect(start).toBeGreaterThan(-1)
+  return contents.slice(start, contents.indexOf('\n}', start))
+}
+
 describe('immersive colour tokens', () => {
   it('declares every semantic token in the theme block', () => {
-    const theme = css().slice(css().indexOf('@theme {'))
+    const theme = themeBlock()
     for (const token of TOKENS) {
       expect(theme).toContain(`--color-${token}:`)
     }
