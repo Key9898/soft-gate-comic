@@ -29,21 +29,16 @@ const ReaderSettingsSheet = ({
   onFontSize,
 }: ReaderSettingsSheetProps) => {
   const { t } = useTranslation()
-  const idle = darkMode
-    ? 'border-white/10 bg-white/5 hover:border-white/20'
-    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+  // Border/bg tokenise (edge + surface-nested); the hover-border accent has no token
+  // equivalent and stays branched.
+  const idle = `border-edge bg-surface-nested ${darkMode ? 'hover:border-white/20' : 'hover:border-gray-300'}`
   const active = 'border-primary-500 bg-primary-600/10 text-primary-500'
-  const legendTone = darkMode ? 'text-gray-300' : 'text-muted-strong'
+  const legendTone = 'text-ink-secondary'
   const legend = `mb-3 block text-sm font-semibold tracking-wider uppercase ${legendTone}`
   const option = `flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`
 
   return (
-    <ReaderSheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={t('readerPage.settings')}
-      darkMode={darkMode}
-    >
+    <ReaderSheet isOpen={isOpen} onClose={onClose} title={t('readerPage.settings')}>
       <div className="space-y-6">
         {/* Each group is a fieldset/legend + radiogroup. These used to be bare <label>
             elements wrapping nothing, so the groups had no accessible name and the
@@ -87,7 +82,7 @@ const ReaderSettingsSheet = ({
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Sun className={`h-4 w-4 ${darkMode ? 'text-gray-400' : 'text-muted'}`} aria-hidden />
+            <Sun className="text-ink-muted h-4 w-4" aria-hidden />
             <input
               id="reader-brightness"
               type="range"
@@ -96,14 +91,9 @@ const ReaderSettingsSheet = ({
               step="0.05"
               value={brightness}
               onChange={(e) => onBrightness(parseFloat(e.target.value))}
-              className={`accent-primary-500 h-1.5 w-full cursor-pointer appearance-none rounded-2xl ${
-                darkMode ? 'bg-gray-700' : 'bg-gray-200'
-              }`}
+              className="accent-primary-500 bg-track h-1.5 w-full cursor-pointer appearance-none rounded-2xl"
             />
-            <Sun
-              className={`h-5 w-5 ${darkMode ? 'text-gray-300' : 'text-gray-400'}`}
-              aria-hidden
-            />
+            <Sun className="text-ink-muted h-5 w-5" aria-hidden />
           </div>
         </div>
 
