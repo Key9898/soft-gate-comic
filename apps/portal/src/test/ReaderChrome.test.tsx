@@ -191,4 +191,22 @@ describe('Reader chrome', () => {
     renderReader('/read/1/1')
     expect(await screen.findByTestId('reader-root')).not.toHaveAttribute('data-theme')
   })
+
+  // Regression for Task 5 review: bg-raised ("hover and pressed fills") was briefly used on
+  // two static, never-hovered elements — the locked-episode badge and the ad slot container —
+  // because its light value happened to match. bg-edge-subtle is the token whose immersive
+  // *and* light values both match what these sites originally rendered.
+  it('gives the locked-episode badge a static fill token, not the hover/pressed one', async () => {
+    renderReader('/read/1/4')
+    const badge = await screen.findByTestId('reader-lock-badge')
+    expect(badge.className).toMatch(/\bbg-edge-subtle\b/)
+    expect(badge.className).not.toMatch(/\bbg-raised\b/)
+  })
+
+  it('gives the ad slot a static fill token, not the hover/pressed one', async () => {
+    renderReader('/read/1/1')
+    const adSlot = await screen.findByTestId('reader-ad-end')
+    expect(adSlot.className).toMatch(/\bbg-edge-subtle\b/)
+    expect(adSlot.className).not.toMatch(/\bbg-raised\b/)
+  })
 })

@@ -94,6 +94,15 @@ is a new, separate token; reader sites currently using `text-muted` move onto it
 WCAG-safe teal the issue asks for, and the light palette comment in `index.css` documents
 why. Aliasing it again under a second name would give the same colour two sources of truth.
 
+**`--color-edge-subtle` as a fill, not just a border.** Two static, non-interactive
+elements — the locked-episode lock badge in `ReaderPage.tsx` and `ReaderAdSlot.tsx`'s
+container — use `bg-edge-subtle`, not a border. They were originally `white/5` on
+`gray-100`, which is `edge-subtle`'s exact value pair; `raised` (`white/10`/`gray-100`)
+only matched on the light side and was a Task 5 review finding. Reusing a
+"divider"-named token as a background is a naming wrinkle, not a mismatch: the value is
+what a decorative static fill needs, and neither site is ever hovered or pressed, so
+`raised` — "hover and pressed fills" — was always the wrong role regardless of value.
+
 ## The pixel-identity trade
 
 The issue's acceptance says "Light portal pages are pixel-identical before and after." The
@@ -119,7 +128,24 @@ deliberate and enumerated here:
 - Immersive-side muted settles on `gray-400`; the sites currently using `gray-300` for a
   muted role move one step dimmer.
 
-Every other pair maps onto a token with no change of value.
+Every other pair maps onto a token with no change of value, with two immersive-side
+exceptions found in Task 5 review and enumerated here rather than silently shipped:
+
+- `border-white/5` becomes `border-edge` (`white/10` immersive) at five static chrome/card
+  edges — `ReaderPage.tsx`'s header and footer chrome bars, `ReaderSkeleton.tsx`'s mirrored
+  header and footer chrome bars, and `ReaderCompleteCard.tsx`'s card border. All five paired
+  `white/5` with `gray-200` on the light side, a combination no single token holds:
+  `edge-subtle` is `white/5`/`gray-100` (light side off by one step) and `edge` is
+  `white/10`/`gray-200` (light side exact, immersive doubled). `edge` is kept because its
+  role — "panel and control edges" — is what these five sites actually are, unlike
+  `edge-subtle`'s "interior dividers"; the doubled immersive opacity is a deliberate,
+  accepted uplift to keep a chrome edge visible against the near-black immersive canvas,
+  not an accident of the refactor.
+- `text-white` becomes `text-ink` (`gray-100` immersive) on `ReaderSheet.tsx`'s panel text.
+  The two values are visually indistinguishable (`white` vs. `rgb(243 244 246)`), and every
+  other immersive title/body site already used `gray-100`, not literal white, before this
+  refactor — `text-ink` brings this one outlier in line with the rest of the Reader instead
+  of freezing its inconsistency.
 
 ## Two things that are not colour
 

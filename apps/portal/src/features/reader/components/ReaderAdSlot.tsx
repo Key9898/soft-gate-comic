@@ -7,7 +7,7 @@ type ReaderAdSlotProps = {
 const ReaderAdSlot = ({ variant }: ReaderAdSlotProps) => {
   const { t } = useTranslation()
   const box = variant === 'end' ? 'min-h-[280px] aspect-square max-h-[360px]' : 'min-h-[120px]'
-  const tone = 'border-edge bg-raised text-ink-muted'
+  const tone = 'border-edge bg-edge-subtle text-ink-muted'
 
   return (
     <aside
