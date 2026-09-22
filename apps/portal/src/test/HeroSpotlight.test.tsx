@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, act } from './utils'
+import { render, screen, fireEvent, act, waitFor } from './utils'
 import type { Webtoon } from '@softgate/shared'
 import HeroSpotlight, { AUTOPLAY_MS } from '../features/home/components/HeroSpotlight'
 
@@ -390,5 +390,83 @@ describe('hero backdrop', () => {
       />
     )
     expect(container.querySelector('[data-testid="hero-backdrop-banner"]')).toBeInTheDocument()
+  })
+
+  it('cuts the backdrop crossfade under reduced motion', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query.includes('prefers-reduced-motion'),
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const backdrop = container.querySelector('[data-testid="hero-backdrop"]')
+    expect(backdrop?.className).not.toMatch(/transition/)
+  })
+
+  it('crossfades the backdrop when motion is allowed', () => {
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const backdrop = container.querySelector('[data-testid="hero-backdrop"]')
+    expect(backdrop?.className).toMatch(/duration-400/)
+  })
+
+  it('crossfades the backdrop image when the slide changes, not a hard cut', async () => {
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      { ...slides[1], keyArt: '/webtoon-covers/beta-key-art.jpg' },
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const firstImg = container.querySelector('[data-testid="hero-backdrop"] img')
+    expect(firstImg).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
+
+    fireEvent.click(screen.getByRole('button', { name: /next spotlight/i }))
+
+    const outgoingImg = container.querySelector('[data-testid="hero-backdrop-outgoing"] img')
+    expect(outgoingImg).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
+    const incomingImg = container.querySelector('[data-testid="hero-backdrop"] img')
+    expect(incomingImg).toHaveAttribute('src', '/webtoon-covers/beta-key-art.jpg')
+
+    await waitFor(() => {
+      expect(
+        container.querySelector('[data-testid="hero-backdrop-outgoing"]')
+      ).not.toBeInTheDocument()
+    })
   })
 })

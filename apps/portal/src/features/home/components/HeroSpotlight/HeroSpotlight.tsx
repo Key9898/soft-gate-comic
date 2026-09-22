@@ -75,7 +75,7 @@ const HeroSpotlight = ({
   if (!current) {
     return (
       <section className="safe-top relative -mt-16 overflow-visible pt-16 text-white">
-        <HeroBackdrop priority />
+        <HeroBackdrop priority reducedMotion={prefersReducedMotion} />
         <div
           className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
           aria-hidden="true"
@@ -122,7 +122,7 @@ const HeroSpotlight = ({
       onFocus={() => setHoverPaused(true)}
       onBlur={handleBlur}
     >
-      <HeroBackdrop slide={current} priority={index === 0} />
+      <HeroBackdrop slide={current} priority={index === 0} reducedMotion={prefersReducedMotion} />
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
         aria-hidden="true"
