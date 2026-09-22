@@ -354,7 +354,7 @@ describe('hero backdrop', () => {
 
   it('paints the first slide cover as the backdrop, eager and high priority', () => {
     const backdropSlides = [
-      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      { ...slides[0], keyArt: '/hero-key-art/alpha-key-art.jpg' },
       ...slides.slice(1),
     ]
     const { container } = render(
@@ -410,11 +410,35 @@ describe('hero backdrop', () => {
     expect(backdrop?.className).not.toMatch(/\bblur-\[60px\]/)
   })
 
+  // The blurred wash is indistinguishable across the cover variant ladder's rungs (see
+  // the opacity/blur comment above), so it lies about its display size to pin srcset
+  // selection to a small rung instead of the 768w top of the ladder that a `100vw` hint
+  // resolves to for nearly every visitor.
+  it('gives the blurred branch a small-rung sizes hint instead of 100vw', () => {
+    const backdropSlides = [
+      { ...slides[0], coverImage: '/webtoon-covers/alpha-cover.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const sources = container.querySelectorAll('[data-testid="hero-backdrop"] picture source')
+    expect(sources.length).toBeGreaterThan(0)
+    sources.forEach((source) => {
+      expect(source).toHaveAttribute('sizes', '192px')
+    })
+  })
+
   // The keyArt (sharp) branch's own treatment is untouched by the visibility fix:
   // no opacity/blur classes, still object-right.
   it('renders a slide with keyArt sharp, with no opacity or blur classes', () => {
     const backdropSlides = [
-      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      { ...slides[0], keyArt: '/hero-key-art/alpha-key-art.jpg' },
       ...slides.slice(1),
     ]
     const { container } = render(
@@ -431,7 +455,32 @@ describe('hero backdrop', () => {
     expect(backdrop?.className).not.toMatch(/\bblur-/)
   })
 
-  // Pins the softened slide-branch scrim (halved from the pre-existing /70 /30 /45
+  // coverSources() is backed by a variant job that crops to 3:4 and caps at 768px wide -
+  // a portrait ladder sized for card slots. It must never apply to keyArt, even if a
+  // keyArt asset happened to live under /webtoon-covers/ (the path coverSources matches
+  // on): keyArt is landscape and wants to render sharp and full width, not centre-cropped
+  // to portrait and capped at 768px. Guards against a regression that would route sharp
+  // key art back through the cover pipeline regardless of where the asset is hosted.
+  it('never routes keyArt through coverSources, even under a /webtoon-covers/ path', () => {
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const picture = container.querySelector('[data-testid="hero-backdrop"] picture')
+    expect(picture?.querySelector('source')).not.toBeInTheDocument()
+    const backdrop = picture?.querySelector('img')
+    expect(backdrop).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
+  })
+
+  // Pins the softened lg+ slide-branch scrim (halved from the pre-existing /70 /30 /45
   // stack, which was tuned for the sharp, full-opacity banner and quadruple-darkened
   // the blurred cover wash into a near-flat slab when stacked on top of it).
   it('softens the slide-branch scrim so it no longer stacks with the backdrop dimming', () => {
@@ -486,7 +535,7 @@ describe('hero backdrop', () => {
       })),
     })
     const backdropSlides = [
-      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      { ...slides[0], keyArt: '/hero-key-art/alpha-key-art.jpg' },
       ...slides.slice(1),
     ]
     const { container } = render(
@@ -503,7 +552,7 @@ describe('hero backdrop', () => {
 
   it('crossfades the backdrop when motion is allowed', () => {
     const backdropSlides = [
-      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      { ...slides[0], keyArt: '/hero-key-art/alpha-key-art.jpg' },
       ...slides.slice(1),
     ]
     const { container } = render(
@@ -520,8 +569,8 @@ describe('hero backdrop', () => {
 
   it('crossfades the backdrop image when the slide changes, not a hard cut', async () => {
     const backdropSlides = [
-      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
-      { ...slides[1], keyArt: '/webtoon-covers/beta-key-art.jpg' },
+      { ...slides[0], keyArt: '/hero-key-art/alpha-key-art.jpg' },
+      { ...slides[1], keyArt: '/hero-key-art/beta-key-art.jpg' },
     ]
     const { container } = render(
       <HeroSpotlight
@@ -532,14 +581,14 @@ describe('hero backdrop', () => {
       />
     )
     const firstImg = container.querySelector('[data-testid="hero-backdrop"] img')
-    expect(firstImg).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
+    expect(firstImg).toHaveAttribute('src', '/hero-key-art/alpha-key-art.jpg')
 
     fireEvent.click(screen.getByRole('button', { name: /next spotlight/i }))
 
     const outgoingImg = container.querySelector('[data-testid="hero-backdrop-outgoing"] img')
-    expect(outgoingImg).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
+    expect(outgoingImg).toHaveAttribute('src', '/hero-key-art/alpha-key-art.jpg')
     const incomingImg = container.querySelector('[data-testid="hero-backdrop"] img')
-    expect(incomingImg).toHaveAttribute('src', '/webtoon-covers/beta-key-art.jpg')
+    expect(incomingImg).toHaveAttribute('src', '/hero-key-art/beta-key-art.jpg')
 
     await waitFor(() => {
       expect(

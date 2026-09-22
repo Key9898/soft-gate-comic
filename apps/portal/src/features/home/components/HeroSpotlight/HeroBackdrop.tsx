@@ -4,7 +4,7 @@ import {
   heroBackdrop,
   type HeroBackdrop as HeroBackdropDescriptor,
 } from '../../../../lib/images/heroBackdrop'
-import { coverSources } from '../../../../lib/images/responsiveImage'
+import { coverSources, HERO_BACKDROP_BLUR_SIZES } from '../../../../lib/images/responsiveImage'
 import HeroBanner from './HeroBanner'
 
 export interface HeroBackdropProps {
@@ -29,13 +29,30 @@ interface HeroBackdropImageProps {
 const HeroBackdropImage = ({ backdrop, priority }: HeroBackdropImageProps) => {
   if (backdrop.kind === 'banner') return null
 
-  const sources = coverSources(backdrop.src)
   const blurred = backdrop.kind === 'cover'
+  // coverSources is backed by a variant job (imageVariants.config.ts) that crops to 3:4
+  // and caps at 768px wide - a portrait ladder sized for card slots, not this full-bleed
+  // hero. Only the blurred `cover` branch may use it: at 65% opacity under a 40px blur, a
+  // 768px-wide, centre-cropped-to-portrait source is indistinguishable from anything wider.
+  // The sharp `keyArt` branch must never route through it - `keyArt` is landscape key art
+  // that renders sharp and full-bleed, and coverSources would centre-crop it to portrait
+  // and cap it at 768px across a hero that can be 1600px+, exactly the softness the blurred
+  // fallback exists to avoid. Nothing sets `keyArt` in the catalog today, so this guard is
+  // latent - but it is what keeps a future `keyArt` asset dropped into `/webtoon-covers/`
+  // (as this file's own test fixtures used to, before they moved) from silently losing
+  // sharpness.
+  const sources = blurred ? coverSources(backdrop.src) : null
+  // The blurred branch lies about its display size to pin srcset selection to a small
+  // rung (see HERO_BACKDROP_BLUR_SIZES) - the blur/opacity treatment makes every rung
+  // indistinguishable, so there is no reason to ship the 768w top of the ladder. The
+  // sharp keyArt branch, when it gets its own sources in future, genuinely wants full
+  // width and should keep 100vw.
+  const imageSizes = blurred ? HERO_BACKDROP_BLUR_SIZES : '100vw'
 
   return (
     <picture>
-      {sources ? <source type="image/avif" srcSet={sources.avif} sizes="100vw" /> : null}
-      {sources ? <source type="image/webp" srcSet={sources.webp} sizes="100vw" /> : null}
+      {sources ? <source type="image/avif" srcSet={sources.avif} sizes={imageSizes} /> : null}
+      {sources ? <source type="image/webp" srcSet={sources.webp} sizes={imageSizes} /> : null}
       <img
         src={sources ? sources.fallback : backdrop.src}
         alt=""
