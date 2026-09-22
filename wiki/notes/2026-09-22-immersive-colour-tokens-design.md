@@ -1,0 +1,162 @@
+# Immersive colour mode as real tokens
+
+Design for issue #35. Written 2026-09-22.
+
+## The decision
+
+Webtoon Detail, the Reader and the Home hero overlays each hardcode their dark surfaces
+per page. This replaces those literals with a semantic token set that re-binds under a
+`data-theme="immersive"` scope.
+
+Two things were settled before writing this, both recorded because neither is obvious from
+the issue text.
+
+**The hero overlay is deferred.** Issue #35 names three surfaces. The hero overlay is the
+subject of PR #49 (issue #39), which is open and under review, and whose scrim stops were
+tuned by measurement to hold 5.30:1 deck contrast. Converting it now would edit unmerged
+lines and force that tuning to be re-derived against token names. The hero conversion
+becomes a follow-up once #49 merges. This design covers Webtoon Detail and the Reader.
+
+**Normalise the roles; do not freeze the inconsistency.** See "The pixel-identity trade".
+
+## Why the two surfaces differ
+
+They are not the same problem.
+
+- **Webtoon Detail** has no light/dark toggle. Its hub hero is a fixed `bg-gray-900`
+  (`WebtoonDetailPage.tsx:291`) with 19 dark literals around it. It is always immersive.
+- **The Reader** treats dark as a _user preference_: `darkMode` in
+  `apps/portal/src/lib/reader/prefs.ts`, default true, persisted per device. It is threaded
+  as a prop through 18 files and branched in 37 ternaries.
+
+So the mechanism has to serve a static scope and a toggled one with the same tokens.
+
+## Mechanism
+
+Semantic variables are declared in the existing `@theme` block in
+`apps/portal/src/index.css` alongside the palette already there. A
+`data-theme="immersive"` attribute on a subtree root re-binds them for everything inside.
+
+- Webtoon Detail's hub hero sets the attribute statically.
+- The Reader sets it when the `darkMode` pref is on and omits it when off, so the existing
+  toggle keeps working — it drives CSS instead of markup branching.
+- No other page sets it, which is what makes "light pages unchanged" testable rather than
+  asserted.
+
+The switching mechanism is recorded as **ADR 014**; the ADRs currently run to 013.
+
+The prize is not only the tokens. With the values behind an attribute, the 37 ternaries
+collapse to single class names and most of the `darkMode` prop threading through those 18
+files stops being necessary.
+
+## The token set
+
+Derived from the pairs actually in use, not invented — the Figma Foundations frames named
+in the issue were unreachable while writing this.
+
+**On the key names.** The issue suggests keying them `--color-bg-surface`. In Tailwind v4 a
+`--color-X` variable generates the utilities `bg-X`, `text-X` and `border-X`, so that key
+would render as `bg-bg-surface` at every call site. The names below are chosen so the
+generated utility reads naturally: `bg-surface`, `text-ink`, `border-edge`.
+
+| Token                    | Immersive     | Light      | Utility              | Role                         |
+| ------------------------ | ------------- | ---------- | -------------------- | ---------------------------- |
+| `--color-base`           | `gray-950`    | `gray-50`  | `bg-base`            | page behind everything       |
+| `--color-surface`        | `gray-900/60` | `white/80` | `bg-surface`         | cards and panels             |
+| `--color-surface-nested` | `white/5`     | `gray-50`  | `bg-surface-nested`  | a panel inside a panel       |
+| `--color-raised`         | `white/10`    | `gray-100` | `bg-raised`          | hover and pressed fills      |
+| `--color-track`          | `gray-700`    | `gray-200` | `bg-track`           | progress and slider tracks   |
+| `--color-ink`            | `gray-100`    | `gray-900` | `text-ink`           | titles and body              |
+| `--color-ink-secondary`  | `gray-300`    | `gray-700` | `text-ink-secondary` | supporting copy              |
+| `--color-ink-muted`      | `gray-400`    | `gray-600` | `text-ink-muted`     | meta, eyebrows, placeholders |
+| `--color-edge`           | `white/10`    | `gray-200` | `border-edge`        | panel and control edges      |
+| `--color-edge-subtle`    | `white/5`     | `gray-100` | `border-edge-subtle` | interior dividers            |
+| `--color-danger-surface` | `red-500/10`  | `red-50`   | `bg-danger-surface`  | destructive confirm blocks   |
+| `--color-danger-edge`    | `red-500/40`  | `red-200`  | `border-danger-edge` | the same blocks' edges       |
+
+**On the existing `--color-muted`.** `index.css` already defines `--color-muted` and
+`--color-muted-strong`, used portal-wide as `text-muted` / `text-muted-strong` on light
+pages. Redefining them inside the immersive scope would make every existing `text-muted`
+call site theme-aware for free, which is tempting — and rejected here. Those two serve
+pages this issue does not touch, and silently changing a portal-wide token from inside a
+reader change is how a colour regression reaches a surface nobody tested. `--color-ink-muted`
+is a new, separate token; reader sites currently using `text-muted` move onto it explicitly.
+
+`brand/primary` is not redefined. The existing `--color-primary-600` is already the
+WCAG-safe teal the issue asks for, and the light palette comment in `index.css` documents
+why. Aliasing it again under a second name would give the same colour two sources of truth.
+
+## The pixel-identity trade
+
+The issue's acceptance says "Light portal pages are pixel-identical before and after." The
+Reader in light mode **is** a light portal page, and the existing pairs are internally
+inconsistent, so the two goals cannot both hold:
+
+- `darkMode ? 'text-gray-400' : 'text-gray-600'` — 4 sites
+- `darkMode ? 'text-gray-400' : 'text-muted'` — 3 sites
+- `darkMode ? 'text-gray-400' : 'text-gray-500'` — 3 sites
+
+One dark value, three light values, same role. Collapsing them to `--color-ink-muted`
+necessarily moves some pixels.
+
+**The resolution:** normalise, and state the criterion precisely. Light pages _outside the
+Reader_ are pixel-identical and tested as such. The Reader's light-mode deltas are
+deliberate and enumerated here:
+
+- `text-gray-500` at 3 muted sites becomes `gray-600`. Darker; contrast improves. The
+  palette comment in `index.css` already says `gray-500` is 4.42:1 on the `gray-50` body
+  and misses AA, so these three sites were failing and this fixes them.
+- `text-gray-400` at 1 light-mode site becomes `gray-600`. That site was at 2.85:1, which
+  the same comment calls failing at every size.
+- Immersive-side muted settles on `gray-400`; the sites currently using `gray-300` for a
+  muted role move one step dimmer.
+
+Every other pair maps onto a token with no change of value.
+
+## Two things that are not colour
+
+`darkMode ? 'hero' : 'page'` and `darkMode ? 'dark' : 'light'` pass _variant_ props to
+child components, not classes. They are not token candidates and stay as they are.
+
+`darkMode ? 'text-muted' : 'text-muted'` has identical branches — dead branching that has
+been doing nothing. It is deleted rather than tokenised.
+
+## Staging
+
+Two phases inside one branch, because the mechanism should be proven on the small surface
+before the large one.
+
+- **Phase A** — tokens in `@theme`, the `data-theme="immersive"` binding, ADR 014, and
+  Webtoon Detail converted. 19 literals, no toggle, no prop threading.
+- **Phase B** — the Reader converted: 37 ternaries, and the `darkMode` prop removed from
+  the components that only used it to pick classes.
+
+Phase A ships a working mechanism even if Phase B is deferred.
+
+## Testing
+
+- A source sweep asserting no `bg-gray-950`, `bg-gray-900`, `text-gray-400`-style literal
+  in the converted files, in the manner of `apps/portal/src/test/SmallTypeWeight.test.tsx`,
+  which already enforces a convention this way.
+- `data-theme="immersive"` is present on Detail's hub hero, and on the Reader root only
+  when the `darkMode` pref is on.
+- Toggling the Reader's dark preference still changes the rendered theme, driven by the
+  attribute rather than by class branching.
+- The token declarations exist in the built stylesheet, not merely in source — the check
+  `apps/portal/src/test/ChipRadiusWeight.test.tsx` performs for `--radius-chip`.
+- A light page outside the Reader renders the same class names before and after.
+- Contrast: `--color-ink-muted` on `--color-base` clears 4.5:1 in both modes, measured
+  rather than assumed.
+
+## Out of scope
+
+- The Home hero overlay, pending PR #49. A follow-up issue is filed when this lands.
+- Any colour change to light pages outside the Reader.
+- The `text-muted` / `text-muted-strong` utilities already in `index.css`, which serve light
+  pages across the portal and are not reader-specific.
+
+## Acceptance
+
+Restated from the issue, with the tension resolved: no hardcoded ink or gray literals
+remain in Webtoon Detail or the Reader; light pages outside the Reader are pixel-identical;
+the Reader's light-mode deltas are the enumerated list above and nothing else.
