@@ -4,7 +4,7 @@ type: convention
 date: 2026-08-17
 tags: [motion, a11y, reduced-motion, softgate]
 impl: 90
-updated: 2026-09-10
+updated: 2026-09-22
 impl_updated: 208
 ---
 
@@ -26,11 +26,10 @@ This is a standing product rule, not a one-off Home-hero exception.
 
 ## Must not
 
-- Gate HeroBook3D enter or hover behind `no-preference`.
+- Gate HeroBook3D hover behind `no-preference`.
 - Use discrete `pointer-events` keyframes with `animation-fill-mode: both` to “pause hover during enter” (`hero-book-enter-hit` stuck Home hover at `none`).
-- Assume Detail hover working means Home hover works (Home-only enter classes can block hit-testing).
-- Put Home enter `translate` on `.hero-book-scene` (the `perspective` node) or come-forward Z on the same node as rotate — production minify can flatten Z while straighten still plays (Impl 99).
-- Treat Hero Pause/Play as autoplay-only (Impl 100). It does not gate HeroBook3D enter or hover.
+- Put come-forward Z on the same node as rotate — production minify can flatten Z while straighten still plays (Impl 99).
+- Treat Hero Pause/Play as autoplay-only (Impl 100). It does not gate HeroBook3D hover.
 
 ## Allowed reduce-motion (not product book motion)
 
