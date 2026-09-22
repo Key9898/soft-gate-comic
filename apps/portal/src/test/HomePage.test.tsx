@@ -189,7 +189,7 @@ describe('HomePage', () => {
   })
 
   it('shows a start-here rail for guests, not a Most read eyebrow', () => {
-    render(<HomePage />)
+    const { container } = render(<HomePage />)
     const startHere = screen.getByRole('heading', { name: 'Start here' }).closest('section')
     expect(startHere).toBeTruthy()
     expect(startHere?.textContent).toContain(
@@ -216,7 +216,7 @@ describe('HomePage', () => {
     ).toBeInTheDocument()
     expect(screen.getByText("This week's spotlight")).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Love in Seoul' })).toBeInTheDocument()
-    expect(screen.getByTestId('hero-book-cover-link')).not.toHaveAttribute('href')
+    expect(container.querySelector('[data-testid="hero-backdrop"]')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'For You' })).not.toBeInTheDocument()
   })
 

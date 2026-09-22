@@ -400,28 +400,6 @@ html[lang='mm'] textarea {
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0s;
 }
 
-.hero-book-enter {
-  --hero-book-enter-from: 0 calc(-100% - 2rem);
-  transform-style: preserve-3d;
-  animation: hero-book-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@media (min-width: 1024px) {
-  .hero-book-enter {
-    --hero-book-enter-from: calc(100% - 100cqi) 0;
-  }
-}
-
-@keyframes hero-book-enter {
-  from {
-    translate: var(--hero-book-enter-from);
-  }
-
-  to {
-    translate: none;
-  }
-}
-
 .story-reader {
   display: grid;
   grid-template-columns: 1fr;
@@ -984,17 +962,12 @@ html[lang='mm'] textarea {
      dialog). It does not cover motion fired by Tab: :focus-within on the hero book
      rotated a large object during plain keyboard navigation, with no way to opt out.
      Under reduce the book keeps its authored resting angle and simply stops moving —
-     the hover/focus straighten, the come-forward push and the enter slide are all
-     neutralised. The radial dialog enter animation stays: the visitor opened it. */
+     the hover/focus straighten and the come-forward push are both neutralised. The
+     radial dialog enter animation stays: the visitor opened it. */
   .hero-book,
   .hero-book-motion,
   .hero-book-float-shadow {
     transition: none !important;
-  }
-
-  .hero-book-enter {
-    animation: none !important;
-    translate: none !important;
   }
 
   .hero-book-scene:hover .hero-book,
