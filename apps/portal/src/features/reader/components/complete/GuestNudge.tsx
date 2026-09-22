@@ -3,20 +3,17 @@ import { useTranslation } from 'react-i18next'
 import Button from '../../../../components/Button'
 
 export type GuestNudgeProps = {
-  darkMode: boolean
   fromPath: string
   onGuestRegister: () => void
   nested: string
 }
 
-const GuestNudge = ({ darkMode, fromPath, onGuestRegister, nested }: GuestNudgeProps) => {
+const GuestNudge = ({ fromPath, onGuestRegister, nested }: GuestNudgeProps) => {
   const { t } = useTranslation()
 
   return (
     <div className={`mt-6 w-full max-w-md rounded-2xl border p-4 ${nested}`}>
-      <p className={`mb-3 text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-        {t('readerPage.guestNudge')}
-      </p>
+      <p className="text-ink-secondary mb-3 text-sm font-semibold">{t('readerPage.guestNudge')}</p>
       <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
         <Button size="sm" onClick={onGuestRegister}>
           {t('readerPage.createFreeAccount')}

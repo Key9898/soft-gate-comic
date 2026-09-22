@@ -19,16 +19,10 @@ const LABEL_KEY: Record<Reaction, string> = {
 export type EpisodeReactionsProps = {
   webtoonId: string
   episodeNumber: number
-  darkMode: boolean
   nested: string
 }
 
-const EpisodeReactions = ({
-  webtoonId,
-  episodeNumber,
-  darkMode,
-  nested,
-}: EpisodeReactionsProps) => {
+const EpisodeReactions = ({ webtoonId, episodeNumber, nested }: EpisodeReactionsProps) => {
   const { t } = useTranslation()
   // Never seed from localStorage: the reader server-renders and the server has no store.
   const [picked, setPicked] = useState<Reaction | undefined>(undefined)
@@ -58,9 +52,7 @@ const EpisodeReactions = ({
                 className={`flex min-h-11 items-center gap-1.5 rounded-2xl border px-3 text-sm transition-colors ${
                   isPicked
                     ? 'border-primary-500 text-primary-600'
-                    : darkMode
-                      ? 'border-white/10 text-gray-300'
-                      : 'border-gray-200 text-gray-700'
+                    : 'border-edge text-ink-secondary'
                 }`}
               >
                 <span aria-hidden="true">{reaction}</span>

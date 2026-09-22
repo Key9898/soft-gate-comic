@@ -52,16 +52,10 @@ const CompleteComments = ({
             placeholder={t('readerPage.commentPlaceholder')}
             rows={3}
             maxLength={COMMENT_MAX_LENGTH}
-            className={`w-full rounded-2xl border p-3 text-sm ${
-              darkMode ? 'border-white/10 bg-white/5 text-gray-100' : 'border-gray-200 bg-white'
-            }`}
+            className="border-edge bg-surface-nested text-ink w-full rounded-2xl border p-3 text-sm"
           />
           <div className="mt-1 flex justify-end">
-            <span
-              className={`text-xs ${
-                remaining < 20 ? 'text-red-500' : darkMode ? 'text-gray-400' : 'text-gray-500'
-              }`}
-            >
+            <span className={`text-xs ${remaining < 20 ? 'text-red-500' : 'text-ink-muted'}`}>
               {draft.length}/{COMMENT_MAX_LENGTH}
             </span>
           </div>
