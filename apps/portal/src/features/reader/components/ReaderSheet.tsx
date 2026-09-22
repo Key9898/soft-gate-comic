@@ -9,11 +9,10 @@ interface ReaderSheetProps {
   isOpen: boolean
   onClose: () => void
   title: string
-  darkMode?: boolean
   children: ReactNode
 }
 
-const ReaderSheet = ({ isOpen, onClose, title, darkMode = false, children }: ReaderSheetProps) => {
+const ReaderSheet = ({ isOpen, onClose, title, children }: ReaderSheetProps) => {
   const { t } = useTranslation()
   const panelRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
@@ -61,15 +60,9 @@ const ReaderSheet = ({ isOpen, onClose, title, darkMode = false, children }: Rea
             animate={desktopDrawer ? { x: 0 } : { y: 0 }}
             exit={desktopDrawer ? { x: '100%' } : { y: '100%' }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className={`absolute inset-x-0 bottom-0 flex max-h-[85dvh] flex-col overflow-hidden rounded-t-3xl shadow-xl md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-full md:max-w-lg md:rounded-none md:rounded-l-3xl ${
-              darkMode ? 'bg-gray-950 text-white' : 'bg-white text-gray-900'
-            }`}
+            className="bg-canvas text-ink absolute inset-x-0 bottom-0 flex max-h-[85dvh] flex-col overflow-hidden rounded-t-3xl shadow-xl md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-full md:max-w-lg md:rounded-none md:rounded-l-3xl"
           >
-            <div
-              className={`flex items-center justify-between border-b px-4 py-3 ${
-                darkMode ? 'border-white/10' : 'border-gray-200'
-              }`}
-            >
+            <div className="border-edge flex items-center justify-between border-b px-4 py-3">
               <h2 id={titleId} className="text-lg font-semibold">
                 {title}
               </h2>
@@ -78,9 +71,7 @@ const ReaderSheet = ({ isOpen, onClose, title, darkMode = false, children }: Rea
                 title={t('common.close')}
                 aria-label={t('common.close')}
                 onClick={onClose}
-                className={`flex min-h-11 min-w-11 items-center justify-center rounded-2xl ${
-                  darkMode ? 'text-gray-300 hover:bg-white/10' : 'text-gray-400 hover:bg-gray-100'
-                }`}
+                className="text-ink-muted hover:bg-raised flex min-h-11 min-w-11 items-center justify-center rounded-2xl"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
               </button>
