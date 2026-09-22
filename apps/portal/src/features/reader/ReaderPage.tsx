@@ -728,6 +728,8 @@ const ReaderPage = () => {
 
   return (
     <div
+      data-testid="reader-root"
+      data-theme={darkMode ? 'immersive' : undefined}
       className={`min-h-screen ${bgClass} ${textClass} ${fontClass} transition-colors duration-300`}
     >
       <SEO
