@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act, waitFor } from './utils'
 import type { Webtoon } from '@softgate/shared'
 import HeroSpotlight, { AUTOPLAY_MS } from '../features/home/components/HeroSpotlight'
@@ -271,6 +271,25 @@ describe('HeroSpotlight', () => {
     expect(title.parentElement?.parentElement?.className).toMatch(/\brelative\b/)
   })
 
+  it('constrains the copy column to a left column on lg+, matching the empty-state max width', () => {
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const title = screen.getByRole('heading', { level: 2, name: 'Alpha Trending' })
+    const copyColumn = title.parentElement?.parentElement
+    expect(copyColumn?.className).toMatch(/\blg:max-w-2xl\b/)
+    expect(copyColumn?.className).not.toMatch(/\bflex-1\b/)
+    // Below lg the copy stays full width and centred, unchanged from today.
+    expect(copyColumn?.className).toMatch(/\bw-full\b/)
+    expect(copyColumn?.className).toMatch(/\btext-center\b/)
+    expect(copyColumn?.className).toMatch(/\blg:text-left\b/)
+  })
+
   it('clamps hero title and deck without slicing catalog copy', () => {
     const longTitle = 'The Unreasonably Long Spotlight Title That Must Remain Intact In The DOM'
     const longDeck =
@@ -440,5 +459,146 @@ describe('hero backdrop', () => {
         container.querySelector('[data-testid="hero-backdrop-outgoing"]')
       ).not.toBeInTheDocument()
     })
+  })
+})
+
+describe('hero pointer-only navigation', () => {
+  const isBookmarked = vi.fn(() => false)
+  const toggleBookmark = vi.fn()
+
+  beforeEach(() => {
+    isBookmarked.mockClear()
+    toggleBookmark.mockClear()
+    window.history.pushState({}, '', '/')
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+  })
+
+  afterEach(() => {
+    window.history.pushState({}, '', '/')
+  })
+
+  it('navigates to the series hub when clicking the hero background', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const pointerTarget = container.querySelector('[data-testid="hero-pointer-target"]')
+    expect(pointerTarget).toBeInTheDocument()
+    fireEvent.click(pointerTarget as Element)
+    expect(window.location.pathname).toBe('/webtoon/1')
+  })
+
+  it('is a pointer-only div: no href, not tabbable, and adds no link to the accessibility tree', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const pointerTarget = container.querySelector('[data-testid="hero-pointer-target"]')
+    expect(pointerTarget).toBeInTheDocument()
+    expect(pointerTarget?.tagName).toBe('DIV')
+    expect(pointerTarget).not.toHaveAttribute('href')
+    expect(pointerTarget).not.toHaveAttribute('tabindex')
+    expect((pointerTarget as HTMLElement).tabIndex).toBe(-1)
+
+    // Only the real Start Reading link should be exposed to the SR link list.
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(1)
+    expect(links[0]).toHaveAttribute('href', '/webtoon/1')
+  })
+
+  it('does not navigate when clicking Pause, and Pause still pauses autoplay', () => {
+    vi.useFakeTimers()
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /pause spotlight/i }))
+    expect(window.location.pathname).toBe('/')
+
+    act(() => {
+      vi.advanceTimersByTime(AUTOPLAY_MS)
+    })
+    expect(screen.getByText('Alpha Trending')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
+  it('does not navigate when clicking Save/bookmark', () => {
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /subscribe/i }))
+    expect(window.location.pathname).toBe('/')
+    expect(toggleBookmark).toHaveBeenCalledWith('1')
+  })
+
+  it('does not navigate when clicking a pager dot', () => {
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    fireEvent.click(screen.getByRole('tab', { name: /spotlight 2 of 3/i }))
+    expect(window.location.pathname).toBe('/')
+    expect(screen.getByText('Beta Trending')).toBeInTheDocument()
+  })
+
+  it('does not navigate when clicking the next arrow', () => {
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /next spotlight/i }))
+    expect(window.location.pathname).toBe('/')
+  })
+
+  it('does not navigate when clicking Start Reading directly (Link handles its own navigation)', () => {
+    render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /start reading/i }))
+    // Still ends up at the hub via the real Link, not a duplicate navigate() call.
+    expect(window.location.pathname).toBe('/webtoon/1')
   })
 })
