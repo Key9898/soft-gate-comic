@@ -480,10 +480,15 @@ describe('hero backdrop', () => {
     expect(backdrop).toHaveAttribute('src', '/webtoon-covers/alpha-key-art.jpg')
   })
 
-  // Pins the softened lg+ slide-branch scrim (halved from the pre-existing /70 /30 /45
-  // stack, which was tuned for the sharp, full-opacity banner and quadruple-darkened
-  // the blurred cover wash into a near-flat slab when stacked on top of it).
-  it('softens the slide-branch scrim so it no longer stacks with the backdrop dimming', () => {
+  // Pins the lg+ slide-branch scrim, lighter than the pre-existing /70 /30 /45 stack
+  // (which was tuned for the sharp, full-opacity banner and quadruple-darkened the
+  // blurred cover wash into a near-flat slab when stacked on top of it) but strengthened
+  // from an earlier /50 /20 /30 pass: a bounding-box contrast measurement (which could
+  // sample the deck <p>'s min-h-2lh reserved-but-unpainted space) missed a real failure
+  // on "Love in Seoul"'s two-line-wrapped deck (3.77-4.40:1 across desktop widths). Glyph
+  // line-box measurement puts /60 /40 /40's worst case at 5.30:1 deck-text / 7.63:1 title
+  // (WCAG AA needs 4.5:1 / 3:1) — see .superpowers/sdd/contrast-resolution-report.md.
+  it('strengthens the lg+ slide-branch scrim enough to clear WCAG AA on the deck text', () => {
     const { container } = render(
       <HeroSpotlight
         slides={slides}
@@ -498,17 +503,18 @@ describe('hero backdrop', () => {
     expect(scrim).toBeInTheDocument()
     const classes = scrim?.className.split(' ') ?? []
     expect(classes).toContain('lg:bg-gradient-to-r')
-    expect(classes).toContain('lg:from-gray-950/50')
-    expect(classes).toContain('lg:via-gray-950/20')
-    expect(classes).toContain('lg:to-gray-950/30')
+    expect(classes).toContain('lg:from-gray-950/60')
+    expect(classes).toContain('lg:via-gray-950/40')
+    expect(classes).toContain('lg:to-gray-950/40')
   })
 
   // Design spec (wiki/notes/2026-09-22-home-hero-full-bleed-design.md, Layout): "Mobile:
   // bottom scrim, copy over it." Below lg the copy column is centred, so it sits over the
   // weakest middle stop of the lg+ left-to-right ramp - this pins the dedicated bottom-up
-  // gradient instead, strong enough (per the rasterized worst case across the demo catalog:
-  // 5.64:1 deck, 6.00:1 title at 375x812, both clearing WCAG AA's 4.5:1 / 3:1) to carry the
-  // vertically-centred copy, which sits in the upper half of the hero box.
+  // gradient instead, strong enough (per the worst case across the demo catalog and mobile
+  // widths 320-390px, measured against real glyph line boxes: 4.79:1 deck, 6.12:1 title,
+  // both clearing WCAG AA's 4.5:1 / 3:1) to carry the vertically-centred copy, which sits
+  // in the upper half of the hero box.
   it('uses a bottom-up scrim below lg, carrying the vertically-centred mobile copy', () => {
     const { container } = render(
       <HeroSpotlight
