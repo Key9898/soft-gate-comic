@@ -39,7 +39,7 @@ Reads Admin `FaqMeta` / `FaqItem` / `CookieMeta` / `CookieStorageRow`. Schema co
 | ---------------------------------- | ----------------------------------------------- |
 | Missing FAQ/cookie table (`P2021`) | matching stub                                   |
 | Null meta and empty lists          | matching stub                                   |
-| Meta present and empty lists       | `{ items: [] }` / empty `rows` (not stub 20/16) |
+| Meta present and empty lists       | `{ items: [] }` / empty `rows` (not stub 20/17) |
 | Other Prisma errors                | rethrow (500)                                   |
 
 FAQ public rows: `published === true` only; omit `published`. Drop unknown `relatedTo` / unknown `storageKey` / unknown FAQ category (do not 500). Cookie rows have no published flag. Glance length must be 5 or the mapper uses stub glance.
