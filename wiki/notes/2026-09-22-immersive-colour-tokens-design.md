@@ -57,11 +57,19 @@ in the issue were unreachable while writing this.
 **On the key names.** The issue suggests keying them `--color-bg-surface`. In Tailwind v4 a
 `--color-X` variable generates the utilities `bg-X`, `text-X` and `border-X`, so that key
 would render as `bg-bg-surface` at every call site. The names below are chosen so the
-generated utility reads naturally: `bg-surface`, `text-ink`, `border-edge`.
+generated utility reads naturally: `bg-surface`, `text-ink`, `border-edge`. A key also has
+to clear Tailwind's own default theme namespaces, not just its siblings in this table:
+`--color-base` collides with the default `--text-base` font-size step, because a
+`--color-X` variable and Tailwind's font-size scale both feed the `text-X` utility — with
+both `--text-base` and `--color-base` defined, `text-base` becomes ambiguous and Tailwind
+silently resolves it to the colour, dropping `font-size` portal-wide. That token is named
+`--color-canvas` instead, verified against every default namespace (color, font-size,
+spacing, radius, shadow, leading, tracking, breakpoint, container) before use. Check a new
+key the same way before adding it.
 
 | Token                    | Immersive     | Light      | Utility              | Role                         |
 | ------------------------ | ------------- | ---------- | -------------------- | ---------------------------- |
-| `--color-base`           | `gray-950`    | `gray-50`  | `bg-base`            | page behind everything       |
+| `--color-canvas`         | `gray-950`    | `gray-50`  | `bg-canvas`          | page behind everything       |
 | `--color-surface`        | `gray-900/60` | `white/80` | `bg-surface`         | cards and panels             |
 | `--color-surface-nested` | `white/5`     | `gray-50`  | `bg-surface-nested`  | a panel inside a panel       |
 | `--color-raised`         | `white/10`    | `gray-100` | `bg-raised`          | hover and pressed fills      |
@@ -145,7 +153,7 @@ Phase A ships a working mechanism even if Phase B is deferred.
 - The token declarations exist in the built stylesheet, not merely in source — the check
   `apps/portal/src/test/ChipRadiusWeight.test.tsx` performs for `--radius-chip`.
 - A light page outside the Reader renders the same class names before and after.
-- Contrast: `--color-ink-muted` on `--color-base` clears 4.5:1 in both modes, measured
+- Contrast: `--color-ink-muted` on `--color-canvas` clears 4.5:1 in both modes, measured
   rather than assumed.
 
 ## Out of scope
