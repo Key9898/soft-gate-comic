@@ -35,6 +35,9 @@ export interface Webtoon {
   title: BilingualText
   description: BilingualText
   coverImage?: string
+  /** Landscape hero art, >= 1600x600, focal point right. Falls back to a blurred
+   *  `coverImage` wash when absent - see wiki/conventions/hero-spotlight.md. */
+  keyArt?: string
   coverColor: string
   author: Author
   genres: string[]
