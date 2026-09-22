@@ -44,7 +44,7 @@ describe('immersive colour tokens', () => {
   })
 
   it('re-binds every one of them in the immersive scope', () => {
-    const scope = css().slice(css().indexOf("[data-theme='immersive']"))
+    const scope = immersiveScope()
     for (const token of TOKENS) {
       expect(scope).toContain(`--color-${token}:`)
     }
@@ -118,7 +118,11 @@ describe('ink-muted on canvas contrast', () => {
 //   above the boundary, outside the hero JSX, and is an explicit, documented descope
 //   (see the design note's "Status badge family" section) rather than a regression
 //   target — it is intentionally not covered here.
-// - The Reader: exactly the ten files Task 5's inventory converted. `Comments/*`,
+// - The Reader: Task 5's inventory (the six top-level Reader files) plus every file in
+//   `features/reader/components/complete/` — the chapter-end card and everything it
+//   renders. That directory was under-covered after Task 5: four of its ten files were
+//   in the original inventory and six were not, even though they render inside the same
+//   `data-theme="immersive"` scope and carry the same literal-gray risk. `Comments/*`,
 //   `SeriesRatingControl.tsx`, and the Home hero files were never part of this
 //   conversion (see the design note's "Out of scope") and are not scanned — sweeping
 //   them would fail on code this issue deliberately left alone.
@@ -126,8 +130,17 @@ describe('ink-muted on canvas contrast', () => {
 // `black` is excluded from the watched colour set: the brightness dimmer and the modal
 // backdrop scrim use literal black regardless of theme, and were never one of the
 // twelve light/dark token pairs.
+//
+// The prefix list includes `ring-offset` ahead of (in addition to) `ring`: `ring-offset-`
+// is a distinct Tailwind utility family from `ring-`, not a variant of it, so a colour
+// glued directly to `ring-offset-` (e.g. `ring-offset-gray-900`, the literal Task 3
+// replaced with `ring-offset-canvas` at three sites in WebtoonDetailPage.tsx) would
+// otherwise slip past a sweep that only recognises `ring-`. Widening does not
+// false-fail `ring-offset-canvas` or `ring-offset-2`: `canvas` is not one of the watched
+// literal colour names, and `2` is a spacing value, not a colour, so neither reaches the
+// colour alternation below.
 const COLOR_LITERAL =
-  /\b(?:bg|text|border|ring|from|via|to)-(?:gray-(?:50|100|200|300|400|500|600|700|800|900|950)(?:\/\d{1,3})?|white(?:\/\d{1,3})?|red-(?:50|200|500\/10|500\/40))\b/g
+  /\b(?:bg|text|border|ring-offset|ring|from|via|to)-(?:gray-(?:50|100|200|300|400|500|600|700|800|900|950)(?:\/\d{1,3})?|white(?:\/\d{1,3})?|red-(?:50|200|500\/10|500\/40))\b/g
 
 type LiteralException = { file: string; literal: string; reason: string }
 
@@ -142,6 +155,12 @@ const READER_FILES = [
   'features/reader/components/complete/EpisodeReactions.tsx',
   'features/reader/components/complete/ReaderCompleteCard.tsx',
   'features/reader/components/complete/CompleteComments.tsx',
+  'features/reader/components/complete/CreatorNote.tsx',
+  'features/reader/components/complete/NextUpRow.tsx',
+  'features/reader/components/complete/EndOfSeries.tsx',
+  'features/reader/components/complete/RelatedList.tsx',
+  'features/reader/components/complete/ReportControl.tsx',
+  'features/reader/components/complete/RatingControl.tsx',
 ]
 
 const HERO_FILE = 'features/webtoon/WebtoonDetailPage.tsx'
@@ -263,18 +282,54 @@ const EXCEPTIONS: LiteralException[] = [
     reason: 'hover-border, no token match (Task 5)',
   },
 
-  // EpisodeReactions.tsx / ReaderCompleteCard.tsx — static uppercase eyebrow labels.
-  // Neither component ever received a `darkMode` prop, so neither was ever a ternary
-  // site; Task 5's report noted this explicitly and left it unfixed.
+  // complete/ — static uppercase eyebrow labels, six instances across four files. These
+  // are pre-existing `text-gray-500` labels that were never behind a `darkMode` ternary
+  // — unlike the rest of this file's exceptions, they were never dark/light pairs with a
+  // dropped branch, just a literal that sat outside Task 5's original inventory. (An
+  // earlier version of this comment claimed EpisodeReactions.tsx and
+  // ReaderCompleteCard.tsx "never received a `darkMode` prop" — both do, for other class
+  // sites; the accurate distinction is that this specific label was never a ternary,
+  // not that the component never saw the prop.) Left as-is rather than tokenised or
+  // ternary'd: the correct fix is out of scope for issue #35's conversion.
   {
     file: 'features/reader/components/complete/EpisodeReactions.tsx',
     literal: 'text-gray-500',
-    reason: 'static eyebrow label, pre-existing, out of scope',
+    reason: 'static eyebrow label, pre-existing, never a darkMode ternary',
   },
   {
     file: 'features/reader/components/complete/ReaderCompleteCard.tsx',
     literal: 'text-gray-500',
-    reason: 'static eyebrow label, pre-existing, out of scope',
+    reason: 'static eyebrow label, pre-existing, never a darkMode ternary',
+  },
+  {
+    file: 'features/reader/components/complete/CreatorNote.tsx',
+    literal: 'text-gray-500',
+    reason: 'static eyebrow label, pre-existing, never a darkMode ternary',
+  },
+  {
+    file: 'features/reader/components/complete/NextUpRow.tsx',
+    literal: 'text-gray-500',
+    reason:
+      'static eyebrow label + locked/waiting meta text, pre-existing, never a darkMode ternary',
+  },
+
+  // CompleteComments.tsx — the comment-composer textarea's fill. `bg-surface-nested` (Task
+  // 5's first pass) matched its own container 1:1 in light mode (gray-50 on gray-50), a
+  // real regression: the container and the input inside it became visually
+  // indistinguishable. No existing token holds "white in light, white/5 in immersive" —
+  // that pair is `--color-surface-nested`'s exact immersive value but not its light one —
+  // and this is the only Reader site that needs it, so it stays a literal `darkMode`
+  // ternary rather than a thirteenth token (see the design note's "The comment composer's
+  // textarea fill" section for the full reasoning).
+  {
+    file: 'features/reader/components/complete/CompleteComments.tsx',
+    literal: 'bg-white',
+    reason: 'input-fill ternary, light branch, one-off (Task 5 review)',
+  },
+  {
+    file: 'features/reader/components/complete/CompleteComments.tsx',
+    literal: 'bg-white/5',
+    reason: 'input-fill ternary, immersive branch, one-off (Task 5 review)',
   },
 
   // WebtoonDetailPage.tsx hub hero — decorative glass chrome. Task 3 checked each of
