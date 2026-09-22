@@ -18,8 +18,10 @@ yet - addendum 12 of `wiki/notes/2026-09-15-figma-redesign-session.md` says the 
 the portrait cover cropped as a stand-in, and issue #39 lists the real thing as a content
 task. Cover sources are 1024px square and `apps/portal/scripts/imageVariants.config.ts`
 deliberately stops the ladder at 768 wide because "anything beyond it would be upscaling".
-Stretching one across a 1600px hero is visibly soft on every desktop. Rendered at 45%
-opacity under `blur(60px)` - the treatment addendum 11 already records as its ALT frame -
+Stretching one across a 1600px hero is visibly soft on every desktop. Rendered at 65%
+opacity under `blur(40px)` - revised from the addendum 11 ALT frame's 45% / `blur(60px)`
+after that pairing, stacked with the pre-existing `HeroSpotlight` scrim, rasterized to a
+near-flat dark slab with no discernible art (see "Fix: backdrop visibility" below) -
 the softness is invisible and the result reads as a deliberate colour wash. Real landscape
 art renders sharp through the same component with no code change.
 
@@ -54,13 +56,30 @@ The backdrop resolves in three steps, in order:
 1. `keyArt` when the slide has one - rendered sharp and full-bleed, `object-cover` with
    `object-position: right` so the focal point survives the crop. The blurred fallback in
    step 2 stays centred; a blurred wash has no focal point to preserve.
-2. Otherwise the slide's `coverImage`, at 45% opacity under `blur(60px)` - the opacity and
-   blur addendum 11 records for its ALT frame.
+2. Otherwise the slide's `coverImage`, at 65% opacity under `blur(40px)` - revised from
+   the 45% / `blur(60px)` addendum 11 records for its ALT frame; see "Fix: backdrop
+   visibility" below for why.
 3. Otherwise the existing `/banner/banner.png` chrome, unchanged.
 
 Step 3 is what keeps the empty, loading and load-fail states identical to today. Those
 states have no slide, so they never reach steps 1 or 2, and Impl 196 / 198 / 210 do not
 move.
+
+## Fix: backdrop visibility (post-launch correction)
+
+The addendum 11 ALT frame's 45% opacity / `blur(60px)` was measured against a mock that
+did not also carry `HeroSpotlight`'s pre-existing left-to-right scrim
+(`from-gray-950/70 via-gray-950/30 to-gray-950/45`, originally tuned for the sharp,
+full-opacity banner). Shipped together, the two stacked: `bg-gray-950` wrapper, the image
+at 45% opacity, `blur(60px)`, and the scrim on top rasterized to a near-flat dark slab with
+no discernible cover art, for every demo slide (none has `keyArt`, so all reach step 2).
+The fix touches both halves - the image is now 65% opacity / `blur(40px)`, and the
+slide-branch scrim (not the empty/load-fail state's, which still sits over the sharp
+banner and needs its original strength) is softened to
+`from-gray-950/50 via-gray-950/20 to-gray-950/30`. Rasterizing the rendered composite
+across the demo catalog puts the worst case at 5.32:1 deck-text contrast and 6.25:1
+title contrast (WCAG AA needs 4.5:1 / 3:1), comfortably clear while the art reads as
+colour and form rather than a flat panel. The `keyArt` (sharp) branch is untouched.
 
 ## Images and LCP
 

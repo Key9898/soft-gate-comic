@@ -383,6 +383,93 @@ describe('hero backdrop', () => {
     expect(container.querySelector('[data-testid="hero-backdrop-banner"]')).toBeInTheDocument()
   })
 
+  // Pins the opacity/blur pairing that keeps the blurred cover wash visible as
+  // artwork (not a near-flat dark slab) while the deck and title text stay above
+  // WCAG AA contrast — see the comment above this class list in HeroBackdrop.tsx.
+  // A future edit that silently drops back toward the original opacity-45 +
+  // blur-[60px] should fail here rather than only be caught by eyeballing it.
+  it('renders a slide with only coverImage at the tuned blurred-wash opacity and blur', () => {
+    const backdropSlides = [
+      { ...slides[0], coverImage: '/webtoon-covers/alpha-cover.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const backdrop = container.querySelector('[data-testid="hero-backdrop"] img')
+    expect(backdrop).toBeInTheDocument()
+    expect(backdrop?.className).toMatch(/\bopacity-65\b/)
+    expect(backdrop?.className).toMatch(/\bblur-\[40px\]/)
+    expect(backdrop?.className).toMatch(/\bscale-125\b/)
+    expect(backdrop?.className).not.toMatch(/\bopacity-45\b/)
+    expect(backdrop?.className).not.toMatch(/\bblur-\[60px\]/)
+  })
+
+  // The keyArt (sharp) branch's own treatment is untouched by the visibility fix:
+  // no opacity/blur classes, still object-right.
+  it('renders a slide with keyArt sharp, with no opacity or blur classes', () => {
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const backdrop = container.querySelector('[data-testid="hero-backdrop"] img')
+    expect(backdrop?.className).toMatch(/\bobject-right\b/)
+    expect(backdrop?.className).not.toMatch(/\bopacity-/)
+    expect(backdrop?.className).not.toMatch(/\bblur-/)
+  })
+
+  // Pins the softened slide-branch scrim (halved from the pre-existing /70 /30 /45
+  // stack, which was tuned for the sharp, full-opacity banner and quadruple-darkened
+  // the blurred cover wash into a near-flat slab when stacked on top of it).
+  it('softens the slide-branch scrim so it no longer stacks with the backdrop dimming', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const scrim = container.querySelector(
+      '[data-testid="hero-pointer-target"] > div.bg-gradient-to-r'
+    )
+    expect(scrim).toBeInTheDocument()
+    expect(scrim?.className).toMatch(/\bfrom-gray-950\/50\b/)
+    expect(scrim?.className).toMatch(/\bvia-gray-950\/20\b/)
+    expect(scrim?.className).toMatch(/\bto-gray-950\/30\b/)
+  })
+
+  // The empty/load-fail state's scrim sits over the sharp, full-opacity banner and
+  // is untouched by this fix: it must keep its original, stronger stack.
+  it('keeps the empty-state scrim at its original strength over the banner', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={[]}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const scrim = container.querySelector('div.bg-gradient-to-r')
+    expect(scrim).toBeInTheDocument()
+    expect(scrim?.className).toMatch(/\bfrom-gray-950\/70\b/)
+    expect(scrim?.className).toMatch(/\bvia-gray-950\/30\b/)
+    expect(scrim?.className).toMatch(/\bto-gray-950\/45\b/)
+  })
+
   it('cuts the backdrop crossfade under reduced motion', () => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
