@@ -323,7 +323,11 @@ describe('page skeletons', () => {
     const { container, unmount } = renderPlain(<ReaderSkeleton />)
     expect(screen.getByTestId('reader-skeleton-header')).toBeInTheDocument()
     expect(screen.getByTestId('reader-skeleton-footer')).toBeInTheDocument()
-    expect(container.firstElementChild?.className).toMatch(/bg-gray-950/)
+    // Dark is the reader's default preference: the skeleton's own root scopes the
+    // immersive tokens (data-theme), and its page background uses the bg-canvas
+    // token rather than a literal bg-gray-950 class.
+    expect(container.firstElementChild).toHaveAttribute('data-theme', 'immersive')
+    expect(container.querySelector('.bg-canvas')).toBeInTheDocument()
     expect(container.querySelectorAll('img')).toHaveLength(0)
     expect(container.querySelectorAll('.book-media')).toHaveLength(0)
     unmount()
