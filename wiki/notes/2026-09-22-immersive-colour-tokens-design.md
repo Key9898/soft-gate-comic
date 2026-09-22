@@ -147,6 +147,41 @@ exceptions found in Task 5 review and enumerated here rather than silently shipp
   refactor — `text-ink` brings this one outlier in line with the rest of the Reader instead
   of freezing its inconsistency.
 
+## A delta the light-mode list above doesn't cover
+
+The pixel-identity trade above only enumerates the Reader's deltas because, when this was
+written, Webtoon Detail's hub hero had no counterpart — its `bg-gray-900` was assumed to
+carry over at the same value. It doesn't. `--color-canvas`'s immersive binding is
+`gray-950`, not `gray-900`, so converting the hero's section background from the literal
+`bg-gray-900` to `bg-canvas` (Task 3) makes the hero visibly darker than it was.
+
+This is the same call already made for the Reader's own canvas conversion (`bg-gray-950` /
+`bg-gray-50` — never `gray-900`), applied consistently to the second surface that uses the
+token: `canvas` has one immersive value, gray-950, and the hero adopts it rather than
+getting a special-cased gray-900 the token doesn't otherwise carry. The hero was never
+covered by the issue's pixel-identity guarantee in the first place — that guarantee is
+scoped to "light pages outside the Reader," and the hero is the always-dark half of a page
+that has no light hero state to stay identical to.
+
+## Status badge family: an intentional descope
+
+`WebtoonDetailPage.tsx`'s `statusConfig` (around lines 218–236) renders inside the hub
+hero and has four entries — `ongoing` (emerald), `completed` (sky), `hiatus` (amber), and
+`draft` (`bg-gray-400/20 text-gray-300`). The `draft` entry is a gray literal inside a
+surface this issue otherwise clears of them, so it's worth stating the decision rather
+than leaving it silently unconverted.
+
+**Descoped, left literal.** Three of the four status colours are brand accents with no
+entry in the twelve-token table — there is no `--color-status-*` role to convert _into_.
+Tokenising only `draft` would fragment the badge family: three sibling badges styled as
+literal Tailwind brand colours and a fourth styled through a semantic token, for a family
+that reads as one visual set. Introducing four new tokens for a single four-way badge is
+the speculative-generality this design otherwise avoids — nothing else in the portal needs
+an ongoing/completed/hiatus/draft palette. `draft`'s `bg-gray-400/20 text-gray-300` stays
+literal, matching its three siblings, and is excluded from the source sweep's hero
+boundary for the same reason (see the sweep's own scope note in
+`immersiveTokens.test.ts`).
+
 ## Two things that are not colour
 
 `darkMode ? 'hero' : 'page'` and `darkMode ? 'dark' : 'light'` pass _variant_ props to
