@@ -47,23 +47,20 @@ const ReaderEpisodeSheet = ({
   const ordered = [...episodes].sort((a, b) => a.episodeNumber - b.episodeNumber)
   const first = ordered[0]
   const last = ordered[ordered.length - 1]
-  const muted = darkMode ? 'text-gray-400' : 'text-gray-500'
-  const titleClass = darkMode ? 'text-gray-100' : 'text-gray-900'
-  const idleRow = darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-50'
+  const muted = 'text-ink-muted'
+  const titleClass = 'text-ink'
+  const idleRow = 'hover:bg-raised'
+  // Brand-accent selection state (primary ramp), not a canvas/ink/surface role in the
+  // token table — stays branched.
   const currentRow = darkMode
     ? 'bg-primary-600/15 text-primary-300'
     : 'bg-primary-50 text-primary-700'
-  const jumpBtn = darkMode
-    ? 'border-white/10 bg-white/5 hover:border-white/20'
-    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+  // Border/bg tokenise (edge + surface-nested); the hover-border accent has no token
+  // equivalent and stays branched.
+  const jumpBtn = `border-edge bg-surface-nested ${darkMode ? 'hover:border-white/20' : 'hover:border-gray-300'}`
 
   return (
-    <ReaderSheet
-      isOpen={isOpen}
-      onClose={onClose}
-      title={t('readerPage.episodeList')}
-      darkMode={darkMode}
-    >
+    <ReaderSheet isOpen={isOpen} onClose={onClose} title={t('readerPage.episodeList')}>
       {first && last ? (
         <div className="mb-4 flex gap-2">
           <button
