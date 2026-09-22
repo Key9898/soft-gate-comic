@@ -77,10 +77,10 @@ const ReaderCompleteCard = ({
   onConfirmReport,
 }: ReaderCompletePortalProps) => {
   const { t } = useTranslation()
-  const cardBg = darkMode ? 'bg-gray-900/60 border-white/5' : 'bg-white/80 border-gray-200'
-  const muted = darkMode ? 'text-gray-400' : 'text-gray-600'
-  const nested = darkMode ? 'border-white/5 bg-white/5' : 'border-gray-100 bg-gray-50'
-  const titleClass = darkMode ? 'text-gray-100' : 'text-gray-900'
+  const cardBg = 'bg-surface border-edge'
+  const muted = 'text-ink-muted'
+  const nested = 'border-edge-subtle bg-surface-nested'
+  const titleClass = 'text-ink'
 
   return (
     <div
@@ -94,12 +94,7 @@ const ReaderCompleteCard = ({
 
       <RatingControl webtoonId={webtoonId} darkMode={darkMode} />
 
-      <EpisodeReactions
-        webtoonId={webtoonId}
-        episodeNumber={episodeNumber}
-        darkMode={darkMode}
-        nested={nested}
-      />
+      <EpisodeReactions webtoonId={webtoonId} episodeNumber={episodeNumber} nested={nested} />
 
       {hasNext ? (
         <NextUpRow
@@ -146,12 +141,7 @@ const ReaderCompleteCard = ({
       ) : null}
 
       {!isAuthenticated ? (
-        <GuestNudge
-          darkMode={darkMode}
-          fromPath={fromPath}
-          onGuestRegister={onGuestRegister}
-          nested={nested}
-        />
+        <GuestNudge fromPath={fromPath} onGuestRegister={onGuestRegister} nested={nested} />
       ) : null}
 
       <div className="mt-6 flex w-full max-w-md flex-col items-center gap-2">
