@@ -8,6 +8,12 @@ i18n.changeLanguage('en')
 
 afterEach(() => {
   cleanup()
+  // A test that calls vi.useFakeTimers() and throws before its own
+  // vi.useRealTimers() would otherwise leak fake timers into every later test in
+  // the file - including async tests that depend on a real timeout (e.g. the
+  // backdrop crossfade's 400ms fade), which would then hang and misattribute the
+  // failure to the crossfade instead of the test that actually leaked the timers.
+  vi.useRealTimers()
 })
 
 class IntersectionObserverMock {
