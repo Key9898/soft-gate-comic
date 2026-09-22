@@ -323,7 +323,9 @@ describe('prefs HTTP', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Ep 4' })).toBeInTheDocument()
-    expect(document.querySelector('.bg-gray-950')).toBeTruthy()
+    // leftoverReader has darkMode: false; ignoring it means the reader falls back to
+    // the default (dark) preference, scoped via data-theme rather than a literal class.
+    expect(screen.getByTestId('reader-root')).toHaveAttribute('data-theme', 'immersive')
     expect(store.get(READER_PREFS_KEY)).toBe(JSON.stringify(leftoverReader))
   })
 
