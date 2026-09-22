@@ -72,9 +72,6 @@ describe('HeroSpotlight', () => {
     ).toBeInTheDocument()
     expect(screen.getByText("This week's spotlight")).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Alpha Trending' })).toBeInTheDocument()
-    const cover = screen.getByTestId('hero-book-cover-link')
-    expect(cover).not.toHaveAttribute('href')
-    expect(cover).not.toHaveAttribute('tabindex')
     expect(screen.getByRole('button', { name: /start reading/i }).closest('a')).toHaveAttribute(
       'href',
       '/webtoon/1'
@@ -83,7 +80,7 @@ describe('HeroSpotlight', () => {
   })
 
   it('still paints banner chrome and the site heading when slides are empty', () => {
-    render(
+    const { container } = render(
       <HeroSpotlight
         slides={[]}
         lang="en"
@@ -106,12 +103,12 @@ describe('HeroSpotlight', () => {
       '/creators'
     )
     expect(screen.queryByRole('button', { name: /start reading/i })).not.toBeInTheDocument()
-    expect(screen.queryByTestId('hero-book-cover-link')).not.toBeInTheDocument()
+    expect(container.querySelector('[data-testid="hero-backdrop-banner"]')).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: /featured webtoons/i })).not.toBeInTheDocument()
   })
 
   it('uses load-fail copy and omits Help/Creators when unavailable', () => {
-    render(
+    const { container } = render(
       <HeroSpotlight
         slides={[]}
         lang="en"
@@ -132,7 +129,7 @@ describe('HeroSpotlight', () => {
     expect(screen.queryByRole('button', { name: /help center/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /publish with us/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /start reading/i })).not.toBeInTheDocument()
-    expect(screen.queryByTestId('hero-book-cover-link')).not.toBeInTheDocument()
+    expect(container.querySelector('[data-testid="hero-backdrop-banner"]')).toBeInTheDocument()
   })
 
   it('jumps to a slide when a dot is clicked', () => {
@@ -260,8 +257,8 @@ describe('HeroSpotlight', () => {
     vi.useRealTimers()
   })
 
-  it('keeps HeroBook3D under a plain width wrapper (no Framer parent)', () => {
-    const { container } = render(
+  it('keeps the copy column positioned above the backdrop', () => {
+    render(
       <HeroSpotlight
         slides={slides}
         lang="en"
@@ -269,31 +266,6 @@ describe('HeroSpotlight', () => {
         toggleBookmark={toggleBookmark}
       />
     )
-    const scene = container.querySelector('.hero-book-scene')
-    expect(scene).toBeTruthy()
-    expect(scene?.className).not.toMatch(/\bhero-book-enter\b/)
-    const enterShell = scene?.parentElement
-    expect(enterShell?.className).toMatch(/\bhero-book-enter\b/)
-    expect(enterShell?.className).toMatch(/\bw-full\b/)
-    expect(enterShell?.querySelector(':scope > .hero-book-scene')).toBe(scene)
-    const parent = enterShell?.parentElement
-    expect(parent?.className).toMatch(/\bw-56\b/)
-    expect(parent?.className).toMatch(/\bsm:w-64\b/)
-    expect(parent?.className).toMatch(/\blg:w-72\b/)
-    expect(parent?.className).toMatch(/\bxl:w-80\b/)
-    expect(parent?.className).not.toMatch(/xl:w-96/)
-    expect(parent?.className).toMatch(/overflow-visible/)
-    expect(parent?.className).toMatch(/\brelative\b/)
-    expect(parent?.className).toMatch(/\bz-0\b/)
-    expect(parent?.className).toMatch(/\blg:mt-4\b/)
-    expect(parent?.className).not.toMatch(/\blg:mt-2\b/)
-    expect(parent?.className).not.toMatch(/translate-y-2/)
-    expect(parent?.className).not.toMatch(/\btranslate-x-/)
-    expect(parent?.querySelector(':scope > .hero-book-enter')).toBe(enterShell)
-    expect(parent?.querySelector(':scope > .hero-book-scene')).toBeNull()
-    expect(parent?.parentElement?.className).toMatch(/\bhero-spotlight-pair\b/)
-    expect(parent?.parentElement?.className).toMatch(/\blg:mt-12\b/)
-    expect(parent?.parentElement?.className).toMatch(/\blg:items-center\b/)
     const title = screen.getByText('Alpha Trending')
     expect(title.parentElement?.parentElement?.className).toMatch(/\bz-10\b/)
     expect(title.parentElement?.parentElement?.className).toMatch(/\brelative\b/)

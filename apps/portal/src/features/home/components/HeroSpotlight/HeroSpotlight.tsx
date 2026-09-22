@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Play, Pause, ChevronRight, Bookmark, Check } from 'lucide-react'
 import type { Webtoon } from '@softgate/shared'
 import Button from '../../../../components/Button'
-import HeroBook3D from '../../../../components/HeroBook3D'
 import HeroBackdrop from './HeroBackdrop'
 
 const AUTOPLAY_MS = 5000
@@ -237,20 +236,6 @@ const HeroSpotlight = ({
                 </button>
               </div>
             ) : null}
-          </div>
-
-          <div className="relative z-0 mx-auto block w-56 overflow-visible px-2 sm:w-64 lg:mx-0 lg:mt-4 lg:w-72 xl:w-80">
-            <HeroBook3D
-              key={current.id}
-              className="hero-book-enter"
-              coverImage={current.coverImage}
-              coverColor={current.coverColor}
-              title={current.title[lang]}
-              description={current.description[lang]}
-              href={`/webtoon/${current.id}`}
-              ctaLabel={t('home.startReading')}
-              coverTabbable={false}
-            />
           </div>
         </div>
       </div>
