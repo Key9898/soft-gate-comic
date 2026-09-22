@@ -76,10 +76,32 @@ no discernible cover art, for every demo slide (none has `keyArt`, so all reach 
 The fix touches both halves - the image is now 65% opacity / `blur(40px)`, and the
 slide-branch scrim (not the empty/load-fail state's, which still sits over the sharp
 banner and needs its original strength) is softened to
-`from-gray-950/50 via-gray-950/20 to-gray-950/30`. Rasterizing the rendered composite
-across the demo catalog puts the worst case at 5.32:1 deck-text contrast and 6.25:1
-title contrast (WCAG AA needs 4.5:1 / 3:1), comfortably clear while the art reads as
-colour and form rather than a flat panel. The `keyArt` (sharp) branch is untouched.
+`from-gray-950/50 via-gray-950/20 to-gray-950/30` at `lg+`. The `keyArt` (sharp) branch is
+untouched.
+
+## Fix: mobile scrim direction (post-launch correction)
+
+The Layout section above always specified a bottom scrim for mobile, but the slide-branch
+scrim shipped as a single left-to-right gradient at every breakpoint. Below `lg` the copy
+column is centred, so it sat over the weakest middle stop of a horizontal ramp - and the
+title/deck text sits in the upper half of the hero box even at that centred position
+(`justify-center` centres the whole copy+CTA+dots stack, not just the two-line heading).
+The fix adds a dedicated bottom-up gradient below `lg`
+(`from-gray-950/75 via-gray-950/55 to-gray-950/30`, strong enough across the span where the
+text actually sits, not just its lowest stop) and keeps the unchanged left-to-right
+gradient at `lg+`. Rasterizing the rendered composite across the demo catalog at 375x812
+puts the mobile worst case at 5.64:1 deck-text contrast and 6.00:1 title contrast (both
+Campus Life), comfortably clear of WCAG AA's 4.5:1 / 3:1.
+
+## Fix: blurred-wash image size (post-launch correction)
+
+The blurred `coverImage` branch used `sizes="100vw"`, which resolves to the cover variant
+ladder's 768w rung for nearly every visitor - real bytes spent on pixels that then pass
+through 65%-opacity `blur(40px)`, where the smaller rungs in `imageVariants.config.ts` are
+indistinguishable from the largest. It now uses a fixed, deliberately-understated
+`sizes="192px"` (see `HERO_BACKDROP_BLUR_SIZES` in `responsiveImage.ts`), which pins
+selection to the ladder's smallest rung at 1x and keeps it off the 768w top through 2x. The
+sharp `keyArt` branch keeps `sizes="100vw"`, since it genuinely wants full width.
 
 ## Images and LCP
 
