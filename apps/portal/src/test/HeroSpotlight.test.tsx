@@ -493,12 +493,40 @@ describe('hero backdrop', () => {
       />
     )
     const scrim = container.querySelector(
-      '[data-testid="hero-pointer-target"] > div.bg-gradient-to-r'
+      '[data-testid="hero-pointer-target"] > div.bg-gradient-to-t'
     )
     expect(scrim).toBeInTheDocument()
-    expect(scrim?.className).toMatch(/\bfrom-gray-950\/50\b/)
-    expect(scrim?.className).toMatch(/\bvia-gray-950\/20\b/)
-    expect(scrim?.className).toMatch(/\bto-gray-950\/30\b/)
+    const classes = scrim?.className.split(' ') ?? []
+    expect(classes).toContain('lg:bg-gradient-to-r')
+    expect(classes).toContain('lg:from-gray-950/50')
+    expect(classes).toContain('lg:via-gray-950/20')
+    expect(classes).toContain('lg:to-gray-950/30')
+  })
+
+  // Design spec (wiki/notes/2026-09-22-home-hero-full-bleed-design.md, Layout): "Mobile:
+  // bottom scrim, copy over it." Below lg the copy column is centred, so it sits over the
+  // weakest middle stop of the lg+ left-to-right ramp - this pins the dedicated bottom-up
+  // gradient instead, strong enough (per the rasterized worst case across the demo catalog:
+  // 5.64:1 deck, 6.00:1 title at 375x812, both clearing WCAG AA's 4.5:1 / 3:1) to carry the
+  // vertically-centred copy, which sits in the upper half of the hero box.
+  it('uses a bottom-up scrim below lg, carrying the vertically-centred mobile copy', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={slides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const scrim = container.querySelector(
+      '[data-testid="hero-pointer-target"] > div.bg-gradient-to-t'
+    )
+    expect(scrim).toBeInTheDocument()
+    const classes = scrim?.className.split(' ') ?? []
+    expect(classes).toContain('bg-gradient-to-t')
+    expect(classes).toContain('from-gray-950/75')
+    expect(classes).toContain('via-gray-950/55')
+    expect(classes).toContain('to-gray-950/30')
   })
 
   // The empty/load-fail state's scrim sits over the sharp, full-opacity banner and
