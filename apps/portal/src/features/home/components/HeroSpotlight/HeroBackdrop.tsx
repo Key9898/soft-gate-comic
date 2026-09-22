@@ -71,11 +71,12 @@ const HeroBackdropImage = ({ backdrop, priority }: HeroBackdropImageProps) => {
              opacity-65 + blur-[40px] replaces the original opacity-45 + blur-[60px]
              (wiki/notes/2026-09-22-home-hero-full-bleed-design.md's original values):
              stacked with the pre-existing HeroSpotlight scrim, those values rasterized
-             to a near-flat dark slab with no discernible cover art. Rasterizing the
-             rendered composite across the demo catalog put the worst-case deck-text
-             contrast at 5.32:1 and title contrast at 6.25:1 with this pairing (WCAG AA
-             needs 4.5:1 / 3:1) — see HeroSpotlight.tsx's scrim comment for the other
-             half of the fix. */
+             to a near-flat dark slab with no discernible cover art. The lg+ scrim
+             strength needed to clear WCAG AA on top of this opacity/blur pairing was
+             re-measured after an earlier pass under-counted it (see HeroSpotlight.tsx's
+             scrim comment and .superpowers/sdd/contrast-resolution-report.md) — worst
+             case across the demo catalog is 5.30:1 deck-text / 7.63:1 title (WCAG AA
+             needs 4.5:1 / 3:1). */
           blurred ? 'scale-125 object-center opacity-65 blur-[40px]' : 'object-right'
         }`}
       />

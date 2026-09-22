@@ -150,14 +150,30 @@ const HeroSpotlight = ({
             centres the whole copy+CTA+dots stack, not just the two-line heading), which a
             naive bottom-up gradient leaves in its weakest quarter too. Below lg this is a
             bottom-up gradient (from-gray-950/75 via-gray-950/55 to-gray-950/30) strong
-            enough across that whole span to hold contrast where the text actually sits; at
-            lg+ copy moves to the left column, so the unchanged left-to-right gradient
-            (from-gray-950/50 via-gray-950/20 to-gray-950/30) carries it instead. Rasterizing
-            the rendered composite across the demo catalog put the worst case at 375x812
-            (mobile) at 5.64:1 deck-text contrast and 6.00:1 title contrast (Campus Life), and
-            at lg+ (unchanged) 5.32:1 deck-text and 6.25:1 title (WCAG AA needs 4.5:1 / 3:1). */}
+            enough across that whole span to hold contrast where the text actually sits -
+            worst case across the demo catalog and mobile widths 320-390px is 4.79:1
+            deck-text / 6.12:1 title (WCAG AA needs 4.5:1 / 3:1), both on "Love in Seoul"
+            at 390x844 (re-measured against real glyph line boxes; see the lg+ note below
+            for why that matters - a prior bounding-box measurement claimed 5.64:1/6.00:1
+            for a different slide). At lg+ copy moves to the left column, carried by a
+            left-to-right gradient.
+
+            lg+ correction (issue #39 contrast re-measurement): the previously shipped
+            lg+ stops (from/via/to 50/20/30) were tuned against a measurement that scanned
+            each text element's full bounding box, including the blank span `min-h-2lh`
+            reserves on the deck `<p>` when its actual text is one line. Re-measuring
+            against only the pixels real glyphs paint - `Range.getClientRects()` on the
+            text node, not `getBoundingClientRect()` on the container - found a genuine
+            failure: "Love in Seoul"'s two-line deck wraps so its first line ends near the
+            gradient's lightest (50%) stop, over a warm, light patch of that slide's cover
+            art, measuring 3.77-4.40:1 across desktop widths 1024-1920px - under the 4.5:1
+            AA floor the old 5.32:1 claim said was cleared. The stops are now 60/40/40
+            (from-gray-950/60 via-gray-950/40 to-gray-950/40): worst case across the demo
+            catalog and that width range is 5.30:1 deck-text / 7.63:1 title (WCAG AA needs
+            4.5:1 / 3:1), both at 1512x900 on "Love in Seoul". See
+            .superpowers/sdd/contrast-resolution-report.md for the full methodology. */}
         <div
-          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-t from-gray-950/75 via-gray-950/55 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/50 lg:via-gray-950/20 lg:to-gray-950/30"
+          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-t from-gray-950/75 via-gray-950/55 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/60 lg:via-gray-950/40 lg:to-gray-950/40"
           aria-hidden="true"
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">

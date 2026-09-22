@@ -75,9 +75,9 @@ at 45% opacity, `blur(60px)`, and the scrim on top rasterized to a near-flat dar
 no discernible cover art, for every demo slide (none has `keyArt`, so all reach step 2).
 The fix touches both halves - the image is now 65% opacity / `blur(40px)`, and the
 slide-branch scrim (not the empty/load-fail state's, which still sits over the sharp
-banner and needs its original strength) is softened to
-`from-gray-950/50 via-gray-950/20 to-gray-950/30` at `lg+`. The `keyArt` (sharp) branch is
-untouched.
+banner and needs its original strength) is softened at `lg+` (see "Fix: lg+ scrim
+strength" below for the stops and the contrast re-measurement that corrected them). The
+`keyArt` (sharp) branch is untouched.
 
 ## Fix: mobile scrim direction (post-launch correction)
 
@@ -88,10 +88,30 @@ title/deck text sits in the upper half of the hero box even at that centred posi
 (`justify-center` centres the whole copy+CTA+dots stack, not just the two-line heading).
 The fix adds a dedicated bottom-up gradient below `lg`
 (`from-gray-950/75 via-gray-950/55 to-gray-950/30`, strong enough across the span where the
-text actually sits, not just its lowest stop) and keeps the unchanged left-to-right
-gradient at `lg+`. Rasterizing the rendered composite across the demo catalog at 375x812
-puts the mobile worst case at 5.64:1 deck-text contrast and 6.00:1 title contrast (both
-Campus Life), comfortably clear of WCAG AA's 4.5:1 / 3:1.
+text actually sits, not just its lowest stop) and keeps the (separately corrected, see
+below) left-to-right gradient at `lg+`. Measuring against the pixels each text element's glyphs actually paint (see "Fix: lg+
+scrim strength" below) across the demo catalog and mobile widths 320-390px puts the worst
+case at 4.79:1 deck-text contrast and 6.12:1 title contrast (both "Love in Seoul" at
+390x844), clear of WCAG AA's 4.5:1 / 3:1 with a narrower margin than the 5.64:1/6.00:1
+("Campus Life") figure this section originally reported, which came from a bounding-box
+scan of the same kind that missed the `lg+` failure below.
+
+## Fix: lg+ scrim strength (contrast re-measurement, post-launch correction)
+
+The `lg+` stops shipped as `from-gray-950/50 via-gray-950/20 to-gray-950/30` on the strength
+of a measurement that scanned each text element's full bounding box rather than the pixels
+its glyphs actually paint - on the deck `<p>`, which reserves two line-heights via
+`min-h-2lh` even when its text is one line, that let a blank, unpainted span stand in for
+real text coverage. Re-measuring against `Range.getClientRects()` on the text node (the
+actual rendered line box) surfaced a genuine failure the bounding-box scan missed: "Love in
+Seoul"'s deck wraps to two lines, and the first line's end sits near the gradient's
+lightest (50%) stop, over a warm, light patch of that slide's cover art - 3.77-4.40:1 deck
+contrast across desktop widths 1024-1920px, under the 4.5:1 AA floor the original 5.32:1
+figure claimed was cleared. The stops are now
+`from-gray-950/60 via-gray-950/40 to-gray-950/40`: worst case across the demo catalog and
+that width range is 5.30:1 deck-text / 7.63:1 title, both on "Love in Seoul" at 1512x900,
+comfortably clear of WCAG AA's 4.5:1 / 3:1. Full methodology in
+`.superpowers/sdd/contrast-resolution-report.md`.
 
 ## Fix: blurred-wash image size (post-launch correction)
 
