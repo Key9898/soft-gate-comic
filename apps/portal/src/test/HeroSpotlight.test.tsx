@@ -337,3 +337,58 @@ describe('HeroSpotlight', () => {
     expect(group?.parentElement?.className).toMatch(/\bmin-w-0\b/)
   })
 })
+
+describe('hero backdrop', () => {
+  const isBookmarked = vi.fn(() => false)
+  const toggleBookmark = vi.fn()
+
+  beforeEach(() => {
+    isBookmarked.mockClear()
+    toggleBookmark.mockClear()
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+  })
+
+  it('paints the first slide cover as the backdrop, eager and high priority', () => {
+    const backdropSlides = [
+      { ...slides[0], keyArt: '/webtoon-covers/alpha-key-art.jpg' },
+      ...slides.slice(1),
+    ]
+    const { container } = render(
+      <HeroSpotlight
+        slides={backdropSlides}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    const backdrop = container.querySelector('[data-testid="hero-backdrop"] img')
+    expect(backdrop).toBeInTheDocument()
+    expect(backdrop).toHaveAttribute('fetchpriority', 'high')
+    expect(backdrop).not.toHaveAttribute('loading', 'lazy')
+  })
+
+  it('keeps banner chrome when there are no slides', () => {
+    const { container } = render(
+      <HeroSpotlight
+        slides={[]}
+        lang="en"
+        isBookmarked={isBookmarked}
+        toggleBookmark={toggleBookmark}
+      />
+    )
+    expect(container.querySelector('[data-testid="hero-backdrop-banner"]')).toBeInTheDocument()
+  })
+})

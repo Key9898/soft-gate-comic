@@ -5,7 +5,7 @@ import { Play, Pause, ChevronRight, Bookmark, Check } from 'lucide-react'
 import type { Webtoon } from '@softgate/shared'
 import Button from '../../../../components/Button'
 import HeroBook3D from '../../../../components/HeroBook3D'
-import HeroBanner from './HeroBanner'
+import HeroBackdrop from './HeroBackdrop'
 
 const AUTOPLAY_MS = 5000
 
@@ -75,7 +75,7 @@ const HeroSpotlight = ({
   if (!current) {
     return (
       <section className="safe-top relative -mt-16 overflow-visible pt-16 text-white">
-        <HeroBanner />
+        <HeroBackdrop priority />
         <div
           className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
           aria-hidden="true"
@@ -122,7 +122,7 @@ const HeroSpotlight = ({
       onFocus={() => setHoverPaused(true)}
       onBlur={handleBlur}
     >
-      <HeroBanner />
+      <HeroBackdrop slide={current} priority={index === 0} />
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/70 via-gray-950/30 to-gray-950/45"
         aria-hidden="true"
