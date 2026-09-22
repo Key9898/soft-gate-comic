@@ -147,6 +147,38 @@ exceptions found in Task 5 review and enumerated here rather than silently shipp
   refactor — `text-ink` brings this one outlier in line with the rest of the Reader instead
   of freezing its inconsistency.
 
+## The comment composer's textarea fill: a one-off, not a token
+
+Task 5 review found a regression: `CompleteComments.tsx`'s textarea was
+`darkMode ? 'border-white/10 bg-white/5 text-gray-100' : 'border-gray-200 bg-white'` and
+became `border-edge bg-surface-nested text-ink`. Border and text map cleanly onto tokens —
+`border-edge` is `white/10`/`gray-200`, an exact match for both branches, and `text-ink` is
+`gray-100`/(unset, which resolves the same as the light-mode default). The background does
+not: `--color-surface-nested` is `gray-50` in light mode, not white, and the textarea's own
+container (`nested`, same `bg-surface-nested`) already paints that surface. Collapsing both
+onto the token left a light-mode reader with a comment field that has no fill distinction
+from the panel behind it — gray-50 on gray-50, separated only by a 1px border.
+
+**Resolution: keep the light branch literal at this one site**, not a thirteenth token.
+`CompleteComments` already receives `darkMode` — it forwards it to `CommentsTeaser` — so a
+ternary here does not reintroduce prop threading that was otherwise removed. The alternative
+(a `--color-input-fill` token: immersive `white/5`, light `white`) was rejected as
+speculative: this is the only site in the Reader where an input needs a fill distinct from
+`surface-nested`, and YAGNI applies — a role table entry for a role no second call site
+needs is the same mistake the status-badge descope (above) already avoided making. If a
+second input-fill site appears, promote this literal to a token then, against two real call
+sites instead of one imagined.
+
+```
+className={`border-edge text-ink w-full rounded-2xl border p-3 text-sm ${
+  darkMode ? 'bg-white/5' : 'bg-white'
+}`}
+```
+
+Verified in the running dev server: the textarea's computed `background-color` in light mode
+is `rgb(255, 255, 255)` (was `rgb(249, 250, 251)`, the same as its `bg-surface-nested`
+container, before this fix); the container stays `rgb(249, 250, 251)`.
+
 ## A delta the light-mode list above doesn't cover
 
 The pixel-identity trade above only enumerates the Reader's deltas because, when this was

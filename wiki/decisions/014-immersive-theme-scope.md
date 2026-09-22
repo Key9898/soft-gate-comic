@@ -32,10 +32,27 @@ Light values are the default binding. The attribute remaps them to immersive val
 
 ## Consequences
 
-- The `darkMode` prop stops being needed for class selection and survives only where it picks a component variant.
-- 37 ternaries collapse to single class names.
+- Most of the 37 ternaries collapse to single class names, and the `darkMode` prop stops
+  being needed for class selection at those sites. It does not disappear from class
+  selection everywhere: a handful of chrome sites have no token equivalent — translucent
+  chrome-bar fills, floating-nav opacity/ring, and hover-borders — and still branch on
+  `darkMode` directly, each documented inline at its call site. As shipped, that is
+  `ReaderPage.tsx:758-760`, `:849`, `:864`, `:1096-1098`; `ReaderSkeleton.tsx:33`, `:38`;
+  `ReaderSettingsSheet.tsx:34`; and `ReaderEpisodeSheet.tsx:55`, `:60`. Elsewhere the prop
+  survives only where it picks a component variant (e.g. `tone: darkMode ? 'hero' : 'page'`)
+  or has been dropped where a token now serves the role. See
+  [reader-chrome.md](../conventions/reader-chrome.md), which already described this
+  correctly.
 - Light pages outside the Reader are unchanged.
-- The Reader's light mode gains three deltas the design spec enumerates, all of which correct values that `index.css` documents as failing AA (gray-500 at 4.42:1, gray-400 at 2.85:1).
+- The Reader's light mode gains the light-mode deltas the design spec enumerates in "The
+  pixel-identity trade" — `text-gray-500` at three sites and `text-gray-400` at one site,
+  both moving to `text-gray-600` — which correct values `index.css` documents as failing AA
+  (gray-500 at 4.42:1, gray-400 at 2.85:1). The design spec originally enumerated three
+  delta groups in total (those two plus the immersive-side muted step from gray-300 to
+  gray-400); Task 5's review found two further immersive-side deltas — `border-white/5` to
+  `border-edge` at five chrome/card edges, and `text-white` to `text-ink` on
+  `ReaderSheet.tsx`'s panel text — bringing the enumerated total to five, not three. The
+  design spec's list, not this ADR, is the source of truth for the count.
 - A token name must not shadow a Tailwind default scale key. `--color-base` collides with the built-in `--text-base` font-size step: a `--color-X` theme variable drives the `text-X` colour utility, so both `--text-base` (font-size) and `--color-base` (colour) feed the same utility. With both declared, `text-base` silently compiles to `color: var(--color-base)` and drops `font-size` portal-wide. The token is named `--color-canvas` instead.
 
 ## Alternatives considered
