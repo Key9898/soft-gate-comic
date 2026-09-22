@@ -22,4 +22,19 @@ describe('GET /api/cookies', () => {
     expect(cookies?.rows.some((row) => row.storageKey === 'softgate_age_confirm_v1')).toBe(true)
     expect(cookies?.copy.analyticsCookiesDesc.en).toMatch(/None/)
   })
+
+  // The reader writes softgate_episode_reactions_v1 (portal lib/reader/reactions.ts)
+  // whenever a reader taps an end-of-episode emoji reaction. These stub rows are what
+  // /cookies renders whenever the Admin CMS holds no storage rows, so a missing row
+  // here under-discloses that key on a live deployment.
+  it('discloses the episode reaction storage key in the stub rows', async () => {
+    const app = createApp(testEnv())
+    const res = await app.request('/api/cookies')
+    const body: unknown = await res.json()
+    const cookies = unwrapApiData<Awaited<ReturnType<typeof persist.getCookies>>>(body)
+
+    expect(cookies?.rows.some((row) => row.storageKey === 'softgate_episode_reactions_v1')).toBe(
+      true
+    )
+  })
 })
