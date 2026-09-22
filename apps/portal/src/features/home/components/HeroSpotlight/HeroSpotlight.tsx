@@ -140,12 +140,24 @@ const HeroSpotlight = ({
             sharp, full-opacity banner. This one sits over a per-slide backdrop that is
             already dimmed by HeroBackdropImage's own opacity/blur, so the original
             /70 /30 /45 stack (tuned for the banner, before this backdrop existed)
-            quadruple-darkened the art into a near-flat slab. Rasterizing the rendered
-            composite across the demo catalog put the worst-case deck-text contrast at
-            5.32:1 and title contrast at 6.25:1 with this pairing (WCAG AA needs
-            4.5:1 / 3:1). See HeroBackdrop.tsx's image-class comment for the other half. */}
+            quadruple-darkened the art into a near-flat slab. See HeroBackdrop.tsx's
+            image-class comment for the other half.
+
+            Two breakpoint variants, per wiki/notes/2026-09-22-home-hero-full-bleed-design.md
+            (Layout): below lg the copy column is centred, so it sits over the *middle*
+            stop of a horizontal ramp - the weakest point of a left-to-right gradient, and
+            the title/deck text actually sits in the upper half of the hero box (justify-center
+            centres the whole copy+CTA+dots stack, not just the two-line heading), which a
+            naive bottom-up gradient leaves in its weakest quarter too. Below lg this is a
+            bottom-up gradient (from-gray-950/75 via-gray-950/55 to-gray-950/30) strong
+            enough across that whole span to hold contrast where the text actually sits; at
+            lg+ copy moves to the left column, so the unchanged left-to-right gradient
+            (from-gray-950/50 via-gray-950/20 to-gray-950/30) carries it instead. Rasterizing
+            the rendered composite across the demo catalog put the worst case at 375x812
+            (mobile) at 5.64:1 deck-text contrast and 6.00:1 title contrast (Campus Life), and
+            at lg+ (unchanged) 5.32:1 deck-text and 6.25:1 title (WCAG AA needs 4.5:1 / 3:1). */}
         <div
-          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-r from-gray-950/50 via-gray-950/20 to-gray-950/30"
+          className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-t from-gray-950/75 via-gray-950/55 to-gray-950/30 lg:bg-gradient-to-r lg:from-gray-950/50 lg:via-gray-950/20 lg:to-gray-950/30"
           aria-hidden="true"
         />
         <div className="hero-landscape-adjust relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-center px-4 py-10 sm:min-h-[26rem] sm:px-6 sm:py-12 lg:min-h-[32rem] lg:px-8 lg:py-14 xl:min-h-[36rem] xl:py-16">
