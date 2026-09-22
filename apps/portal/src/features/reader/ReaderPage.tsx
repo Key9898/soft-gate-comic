@@ -637,11 +637,11 @@ const ReaderPage = () => {
     consumeClickRef.current = false
   }
 
-  const bgClass = darkMode ? 'bg-gray-950' : 'bg-gray-50'
-  const textClass = darkMode ? 'text-gray-100' : 'text-gray-900'
+  const bgClass = 'bg-canvas'
+  const textClass = 'text-ink'
   const fontClass = fontSize === 'sm' ? 'text-sm' : fontSize === 'lg' ? 'text-lg' : 'text-base'
   const liked = Boolean(webtoonId && isLiked(webtoonId))
-  const chromeHover = darkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+  const chromeHover = 'hover:bg-raised'
   const scaled = pinchScale > 1
 
   const handleUnlock = async () => {
@@ -755,10 +755,10 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-top fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-top border-edge fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md transition-colors duration-300 ${
               darkMode
-                ? 'border-white/5 bg-gray-950/75 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
-                : 'border-gray-200 bg-white/75 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)]'
+                ? 'bg-gray-950/75 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
+                : 'bg-white/75 shadow-[0_8px_32px_0_rgba(31,38,135,0.08)]'
             }`}
           >
             <div className="relative mx-auto max-w-4xl px-4 py-3">
@@ -776,9 +776,7 @@ const ReaderPage = () => {
                     <h1 className="max-w-[160px] truncate text-sm font-bold sm:max-w-[300px] sm:text-base">
                       {currentEpisode.title[lang]}
                     </h1>
-                    <p
-                      className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} flex flex-wrap items-center gap-1.5`}
-                    >
+                    <p className="text-ink-muted flex flex-wrap items-center gap-1.5 text-xs">
                       <span className="font-semibold">{webtoon.title[lang]}</span>
                       <span>•</span>
                       <Link
@@ -848,7 +846,7 @@ const ReaderPage = () => {
         }}
         className={`fixed left-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasPrev ? '' : 'cursor-not-allowed opacity-30'
-        } ${darkMode ? 'bg-gray-950/80 text-gray-100 ring-1 ring-white/15' : 'bg-white/90 text-gray-800 ring-1 ring-gray-900/10'} shadow-md`}
+        } text-ink ring-1 ${darkMode ? 'bg-gray-950/80 ring-white/15' : 'bg-white/90 ring-gray-900/10'} shadow-md`}
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
@@ -863,7 +861,7 @@ const ReaderPage = () => {
         }}
         className={`fixed right-2 top-1/2 z-[45] hidden min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-2xl md:flex ${chromeHover} ${
           hasNext ? '' : 'cursor-not-allowed opacity-30'
-        } ${darkMode ? 'bg-gray-950/80 text-gray-100 ring-1 ring-white/15' : 'bg-white/90 text-gray-800 ring-1 ring-gray-900/10'} shadow-md`}
+        } text-ink ring-1 ${darkMode ? 'bg-gray-950/80 ring-white/15' : 'bg-white/90 ring-gray-900/10'} shadow-md`}
       >
         <ChevronRight className="h-5 w-5" />
       </button>
@@ -876,32 +874,22 @@ const ReaderPage = () => {
       >
         {locked ? (
           <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
-            <div
-              className={`shape-circle mb-6 flex h-24 w-24 items-center justify-center shadow-lg backdrop-blur ${
-                darkMode
-                  ? 'border border-white/10 bg-white/5'
-                  : 'border border-gray-200 bg-gray-100'
-              }`}
-            >
+            <div className="shape-circle border-edge bg-raised mb-6 flex h-24 w-24 items-center justify-center border shadow-lg backdrop-blur">
               <Lock className="text-accent-500 h-10 w-10" />
             </div>
             <h2 className="mb-2 text-2xl font-bold">{t('readerPage.premiumEpisode')}</h2>
-            <p className={`mb-4 max-w-xs text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className="text-ink-muted mb-4 max-w-xs text-sm">
               {t('readerPage.unlockFor', { coins: currentEpisode.coinPrice })}
             </p>
             {hasWaitSchedule(currentEpisode) && currentEpisode.freeAt ? (
-              <p
-                className={`mb-4 max-w-sm text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}
-              >
+              <p className="text-ink-muted mb-4 max-w-sm text-sm">
                 {t('readerPage.waitFreeWhen', {
                   when: formatWaitFreeAt(currentEpisode.freeAt),
                 })}
               </p>
             ) : null}
             {isAuthenticated ? (
-              <div
-                className={`mb-6 space-y-1 text-xs ${darkMode ? 'text-gray-400' : 'text-muted'}`}
-              >
+              <div className="text-ink-muted mb-6 space-y-1 text-xs">
                 <p>
                   {t('coinsPage.yourBalance')}: <span className="tabular-nums">{balance}</span>
                 </p>
@@ -913,16 +901,12 @@ const ReaderPage = () => {
             {unlockError ? (
               <div
                 role="alert"
-                className={`mb-4 w-full max-w-sm rounded-2xl border px-4 py-3 text-left ${
-                  darkMode ? 'border-red-500/40 bg-red-500/10' : 'border-red-200 bg-red-50'
-                }`}
+                className="border-danger-edge bg-danger-surface mb-4 w-full max-w-sm rounded-2xl border px-4 py-3 text-left"
               >
                 <p className="text-sm font-semibold text-red-500">{unlockError}</p>
                 {unlockShortfall > 0 ? (
                   <>
-                    <p
-                      className={`mt-1 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-strong'}`}
-                    >
+                    <p className="text-ink-secondary mt-1 text-sm">
                       {t('readerPage.shortfall', { n: unlockShortfall })}
                     </p>
                     <ButtonLink
@@ -944,7 +928,7 @@ const ReaderPage = () => {
             ) : null}
             {unlockConfirm && isAuthenticated ? (
               <div className="w-full max-w-sm">
-                <p className={`mb-3 text-sm ${darkMode ? 'text-gray-300' : 'text-muted-strong'}`}>
+                <p className="text-ink-secondary mb-3 text-sm">
                   {t('readerPage.confirmUnlockBody', {
                     n: currentEpisode.episodeNumber,
                     coins: currentEpisode.coinPrice,
@@ -1001,9 +985,7 @@ const ReaderPage = () => {
             {isPlaceholderStrip(currentEpisode, webtoon.coverImage) ? (
               <p
                 data-testid="reader-strip-demo"
-                className={`mx-auto mb-2 max-w-2xl px-4 text-center text-xs font-semibold ${
-                  darkMode ? 'text-gray-400' : 'text-muted'
-                }`}
+                className="text-ink-muted mx-auto mb-2 max-w-2xl px-4 text-center text-xs font-semibold"
               >
                 {t('readerPage.stripDemo')}
               </p>
@@ -1043,20 +1025,16 @@ const ReaderPage = () => {
                       width={size?.width}
                       height={size?.height}
                     />
-                    {midAdAfter === index ? (
-                      <ReaderAdSlot variant="mid" darkMode={darkMode} />
-                    ) : null}
+                    {midAdAfter === index ? <ReaderAdSlot variant="mid" /> : null}
                   </div>
                 )
               })}
-              <ReaderAdSlot variant="end" darkMode={darkMode} />
+              <ReaderAdSlot variant="end" />
             </div>
           </>
         ) : (
           <div className="flex min-h-[50vh] flex-col items-center justify-center px-6 text-center">
-            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              {t('readerPage.noImages')}
-            </p>
+            <p className="text-ink-muted text-sm">{t('readerPage.noImages')}</p>
           </div>
         )}
 
@@ -1112,10 +1090,10 @@ const ReaderPage = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={chromeSpring}
-            className={`safe-bottom fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
+            className={`safe-bottom border-edge fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-md transition-colors duration-300 ${
               darkMode
-                ? 'border-white/5 bg-gray-950/75 shadow-[0_-8px_32px_0_rgba(0,0,0,0.37)]'
-                : 'border-gray-200 bg-white/75 shadow-[0_-8px_32px_0_rgba(31,38,135,0.08)]'
+                ? 'bg-gray-950/75 shadow-[0_-8px_32px_0_rgba(0,0,0,0.37)]'
+                : 'bg-white/75 shadow-[0_-8px_32px_0_rgba(31,38,135,0.08)]'
             }`}
           >
             <div className="mx-auto max-w-4xl px-4 py-3">
