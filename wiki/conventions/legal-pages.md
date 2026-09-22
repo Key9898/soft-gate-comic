@@ -53,13 +53,13 @@ When `VITE_USE_MOCK_API=false`, `/privacy` and `/terms` fetch website `GET /api/
 
 ## Live Cookies (Impl 213)
 
-When `VITE_USE_MOCK_API=false`, `/cookies` fetches website `GET /api/cookies`. Unwrap `{ data }`. On fail or mock, keep `t('static.*')` + the hardcoded 16 storage rows — never a blank Cookie Policy. Live TOC heading labels come from copy keys; `#contact` stays `t('static.contactUs')`. Pass `lastUpdatedDate` from CMS `effectiveDate`. Empty CMS rows stay empty. See [portal-faq-cookies-read.md](portal-faq-cookies-read.md).
+When `VITE_USE_MOCK_API=false`, `/cookies` fetches website `GET /api/cookies`. Unwrap `{ data }`. On fail or mock, keep `t('static.*')` + the hardcoded 17 storage rows — never a blank Cookie Policy. Live TOC heading labels come from copy keys; `#contact` stays `t('static.contactUs')`. Pass `lastUpdatedDate` from CMS `effectiveDate`. Empty CMS rows stay empty. See [portal-faq-cookies-read.md](portal-faq-cookies-read.md).
 
 ## Required content (Impl 60, honesty 126)
 
 - **Terms** must keep the webtoon-specific sections: Eligibility & Age (13+), Your Comments (user-owned + display license), Coins & Virtual Items (no ownership / no real value / non-transferable / demo top-up simulated), anti-piracy item in Prohibited Uses, **Changes to These Terms** (`#changes` before governing law), guest vs signed-in in User Accounts. Governing law is Myanmar. Do not invent US arbitration, class waiver, or payment processors
 - **Privacy** includes Reading Activity (history, scroll, likes, **series ratings**) and Children's Privacy. Rights must link `/profile?tab=security` (signed-in delete) and explain Clear site data + guests have no account
-- **Cookies** Analytics/Marketing stay "None"; the storage `dl` grid must list every real localStorage category — update it when a new storage key ships. Mock/fail still uses the hardcoded 16 rows. Live persist (Impl 213) uses CMS rows (empty list stays empty). Do not invent a 17th key.
+- **Cookies** Analytics/Marketing stay "None"; the storage `dl` grid must list every real localStorage category — update it when a new storage key ships. Mock/fail still uses the hardcoded 17 rows. Live persist (Impl 213) uses CMS rows (empty list stays empty). Do not invent a row for a key that does not exist.
 
 | Category                | Key                                                                                           |
 | ----------------------- | --------------------------------------------------------------------------------------------- |
@@ -77,6 +77,7 @@ When `VITE_USE_MOCK_API=false`, `/cookies` fetches website `GET /api/cookies`. U
 | Legal readability       | `softgate.legalReadability`                                                                   |
 | Reader display          | `softgate_reader_prefs_v1`                                                                    |
 | Episode reports         | `softgate_episode_reports_v1` (`id:n` keys; Demo device flag, not a queue)                    |
+| Episode reactions       | `softgate_episode_reactions_v1` (per-episode emoji pick from the end-of-episode card)         |
 | 18+ age confirm         | `softgate_age_confirm_v1` (signed-in) + `softgate_age_confirm_session` (guest sessionStorage) |
 | Demo catalog            | `softgate-shared-data`                                                                        |
 

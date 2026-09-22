@@ -14,7 +14,7 @@ HTTP session cookies live in `apps/api/src/cookies.ts`. Cookie Policy CMS mapper
 
 ## Mock on (`VITE_USE_MOCK_API` is not `false`)
 
-Portal `/faq` keeps `faqCatalog` + `t('faq.*')`. Portal `/cookies` keeps `t('static.*')` + the hardcoded 16 storage rows. **No fetch.** Unset `VITE_USE_MOCK_API` stays mock. Help hub `FAQ_POPULAR_IDS` stays catalog i18n.
+Portal `/faq` keeps `faqCatalog` + `t('faq.*')`. Portal `/cookies` keeps `t('static.*')` + the hardcoded 17 storage rows. **No fetch.** Unset `VITE_USE_MOCK_API` stays mock. Help hub `FAQ_POPULAR_IDS` stays catalog i18n.
 
 ## Mock off (Impl 213)
 
@@ -23,9 +23,9 @@ Portal `/faq` keeps `faqCatalog` + `t('faq.*')`. Portal `/cookies` keeps `t('sta
 | HTTP result                         | `/faq`                                                                            | `/cookies`                                                                                       |
 | ----------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | 200 with copy                       | Live items (published only). Search/filter/vote stay. Empty list is honest empty. | Live copy, glance, rows, `lastUpdatedDate` from `effectiveDate`. TOC labels from live copy keys. |
-| Fail (network, non-OK, unwrap null) | Keep `faqCatalog` + `t('faq.*')`. Never a blank FAQ page.                         | Keep `t('static.*')` + 16 storage rows. Never a blank Cookie Policy.                             |
+| Fail (network, non-OK, unwrap null) | Keep `faqCatalog` + `t('faq.*')`. Never a blank FAQ page.                         | Keep `t('static.*')` + 17 storage rows. Never a blank Cookie Policy.                             |
 
-`#contact` on Cookies stays `t('static.contactUs')`. Shell related strip / mailto stay. Do not CMS analytics-on. Do not invent a 17th storage key.
+`#contact` on Cookies stays `t('static.contactUs')`. Shell related strip / mailto stay. Do not CMS analytics-on. Do not invent a storage key that does not exist.
 
 ## Stub persist
 

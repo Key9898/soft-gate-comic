@@ -200,6 +200,7 @@ const COOKIE_STORAGE_KEYS = [
   'readability',
   'reader',
   'episodeReports',
+  'reactions',
   'ageConfirm',
   'catalog',
 ] as const

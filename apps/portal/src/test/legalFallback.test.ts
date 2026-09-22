@@ -75,4 +75,13 @@ describe('fallbackCookies', () => {
     const ids = fallbackCookies(t).rows.map((row) => row.id)
     expect(new Set(ids).size).toBe(ids.length)
   })
+
+  // The reader writes softgate_episode_reactions_v1 (see lib/reader/reactions.ts)
+  // whenever a reader taps an end-of-episode emoji reaction. The Cookies page's
+  // "What We Store In Your Browser" table is a hardcoded list, so shipping a new
+  // storage key without a matching row here would silently under-disclose it.
+  it('lists a storage row for the episode reaction picks', () => {
+    const rows = fallbackCookies(t).rows
+    expect(rows.some((row) => row.storageKey === 'reactions')).toBe(true)
+  })
 })
