@@ -72,7 +72,7 @@ const HeroSpotlight = ({
     setHoverPaused(false)
   }
 
-  // Whole-hero pointer-only path to the hub (hero-spotlight-full-bleed-design.md,
+  // Whole-hero pointer-only path to the hub (wiki/notes/2026-09-22-home-hero-full-bleed-design.md,
   // Layout). A div, never a Link: it must not enter the tab order or the
   // screen-reader link list. Keyboard users reach the hub through Start Reading.
   // Any click that originates on an interactive control (Start Reading, Save,
