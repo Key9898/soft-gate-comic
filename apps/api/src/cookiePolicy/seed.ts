@@ -45,6 +45,7 @@ export const COOKIE_STORAGE_KEYS = [
   'softgate.legalReadability',
   'softgate_reader_prefs_v1',
   'softgate_episode_reports_v1',
+  'softgate_episode_reactions_v1',
   'softgate_age_confirm_v1',
   'softgate-shared-data',
 ] as const
@@ -306,6 +307,16 @@ export const DEFAULT_COOKIE_ROWS: CookieRowRecord[] = [
     sortOrder: 14,
   },
   {
+    id: 'reactions',
+    storageKey: 'softgate_episode_reactions_v1',
+    label: bi('Episode reactions', 'အပိုင်း တုံ့ပြန်မှုများ'),
+    description: bi(
+      'The emoji reaction you tap on the end-of-episode card. Demo only on this device — not sent to a server.',
+      'အပိုင်းအဆုံးကတ်ပေါ်တွင် သင်နှိပ်ထားသော emoji တုံ့ပြန်မှု။ ဤစက်ပေါ် Demo သာ — ဆာဗာသို့ မပို့ပါ။'
+    ),
+    sortOrder: 15,
+  },
+  {
     id: 'ageConfirm',
     storageKey: 'softgate_age_confirm_v1',
     label: bi('18+ age confirm', '၁၈ နှစ်နှင့်အထက် အတည်ပြုချက်'),
@@ -313,7 +324,7 @@ export const DEFAULT_COOKIE_ROWS: CookieRowRecord[] = [
       'Signed-in accounts store one 18+ self-confirm in local storage. Guests store the same confirm in session storage for this tab only. This is not ID verification.',
       'ဝင်ရောက်ထားသော အကောင့်များသည် ၁၈ နှစ်နှင့်အထက် ကိုယ်တိုင် အတည်ပြုချက်ကို local storage တွင် တစ်ကြိမ် သိမ်းသည်။ ဧည့်သည်များသည် ဤတက်ဘ်အတွက် session storage တွင်သာ သိမ်းသည်။ မှတ်ပုံတင် စစ်ဆေးခြင်း မဟုတ်ပါ။'
     ),
-    sortOrder: 15,
+    sortOrder: 16,
   },
   {
     id: 'catalog',
@@ -323,7 +334,7 @@ export const DEFAULT_COOKIE_ROWS: CookieRowRecord[] = [
       'A local copy of series and episodes used to run the portal. This is not your reader account.',
       'Portal လည်ပတ်ရန် ဤစက်ပေါ်ရှိ ဇာတ်လမ်းနှင့် အပိုင်းများ၏ ဒေသတွင်း မိတ္တူ။ ဤသည်မှာ သင့်ဖတ်ရှုသူ အကောင့် မဟုတ်ပါ။'
     ),
-    sortOrder: 16,
+    sortOrder: 17,
   },
 ]
 
