@@ -80,7 +80,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
 const TOKENS = [
-  'base',
+  'canvas',
   'surface',
   'surface-nested',
   'raised',
@@ -371,7 +371,7 @@ Extend `immersiveTokens.test.ts` with a source sweep asserting the converted fil
 
 - [ ] **Step 2: Measure the contrast claim**
 
-The design spec claims `--color-ink-muted` clears 4.5:1 on `--color-base` in both modes. Verify rather than assume: compute the ratio from the actual token values you shipped in Task 1 and report both numbers. If either misses, raise the muted value until it passes and say what you changed.
+The design spec claims `--color-ink-muted` clears 4.5:1 on `--color-canvas` in both modes. Verify rather than assume: compute the ratio from the actual token values you shipped in Task 1 and report both numbers. If either misses, raise the muted value until it passes and say what you changed.
 
 - [ ] **Step 3: Update the convention**
 
