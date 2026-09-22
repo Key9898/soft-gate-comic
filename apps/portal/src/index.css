@@ -53,6 +53,60 @@
   --color-sepia-50: rgb(252 248 242);
   --color-sepia-200: rgb(238 222 206);
   --color-sepia-900: rgb(67 52 34);
+
+  /* Immersive semantic tokens (issue #35). Light values here are the default binding;
+     [data-theme='immersive'] below re-binds all twelve for Webtoon Detail's hub hero and
+     the Reader's dark preference. Values are gray-50/gray-100/... read from this
+     project's actual Tailwind build output (oklch), converted to sRGB via a canvas
+     round-trip — not copied from memory or the design spec.
+     --color-base is declared separately below, not here — see that comment for why. */
+  --color-surface: rgb(255 255 255 / 0.8); /* cards and panels (white/80) */
+  --color-surface-nested: rgb(249 250 251); /* a panel inside a panel (gray-50) */
+  --color-raised: rgb(243 244 246); /* hover and pressed fills (gray-100) */
+  --color-track: rgb(229 231 235); /* progress and slider tracks (gray-200) */
+  --color-ink: rgb(16 24 40); /* titles and body (gray-900) */
+  --color-ink-secondary: rgb(54 65 83); /* supporting copy (gray-700) */
+  --color-ink-muted: rgb(74 85 101); /* meta, eyebrows, placeholders (gray-600) */
+  --color-edge: rgb(229 231 235); /* panel and control edges (gray-200) */
+  --color-edge-subtle: rgb(243 244 246); /* interior dividers (gray-100) */
+  --color-danger-surface: rgb(254 242 242); /* destructive confirm blocks (red-50) */
+  --color-danger-edge: rgb(255 201 201); /* the same blocks' edges (red-200) */
+}
+
+/* --color-base cannot live inside @theme like its eleven siblings above. Tailwind v4's
+   default font-size scale already defines --text-base (1rem, powering the text-base
+   utility used across ~20 files in this portal). --color-* theme variables also drive a
+   text-{key} colour utility, so once --color-base existed too, "text-base" became
+   ambiguous between the two namespaces — verified by building and inspecting the
+   compiled CSS: .text-base and .sm\:text-base both lost their font-size declaration
+   entirely and became `color: var(--color-base)`, a silent, portal-wide regression that
+   would have broken every existing text-base call site. The design's own token table
+   only calls for a bg-base utility for this token (never text-base or border-base), so
+   declaring the variable here and hand-writing just that one utility below satisfies the
+   design with none of the collision. */
+:root {
+  --color-base: rgb(249 250 251); /* page behind everything (gray-50) */
+}
+
+/* Immersive scope (issue #35, ADR 014). Detail's hub hero is always dark; the Reader's
+   dark is a user preference (`darkMode` in lib/reader/prefs.ts). Both set
+   data-theme="immersive" on their subtree root so the same twelve tokens drive both
+   cases from CSS instead of branching classes in markup. --color-muted and
+   --color-muted-strong are deliberately NOT re-bound here: they serve light pages this
+   issue does not touch (see wiki/notes/2026-09-22-immersive-colour-tokens-design.md). */
+[data-theme='immersive'] {
+  --color-base: rgb(3 7 18); /* page behind everything (gray-950) */
+  --color-surface: rgb(16 24 40 / 0.6); /* cards and panels (gray-900/60) */
+  --color-surface-nested: rgb(255 255 255 / 0.05); /* a panel inside a panel (white/5) */
+  --color-raised: rgb(255 255 255 / 0.1); /* hover and pressed fills (white/10) */
+  --color-track: rgb(54 65 83); /* progress and slider tracks (gray-700) */
+  --color-ink: rgb(243 244 246); /* titles and body (gray-100) */
+  --color-ink-secondary: rgb(209 213 220); /* supporting copy (gray-300) */
+  --color-ink-muted: rgb(153 161 175); /* meta, eyebrows, placeholders (gray-400) */
+  --color-edge: rgb(255 255 255 / 0.1); /* panel and control edges (white/10) */
+  --color-edge-subtle: rgb(255 255 255 / 0.05); /* interior dividers (white/5) */
+  --color-danger-surface: rgb(251 44 54 / 0.1); /* destructive confirm blocks (red-500/10) */
+  --color-danger-edge: rgb(251 44 54 / 0.4); /* the same blocks' edges (red-500/40) */
 }
 
 /* ============================================ */
@@ -648,6 +702,12 @@ html[lang='mm'] textarea {
 /* ============================================ */
 /* Utilities                                    */
 /* ============================================ */
+
+/* Hand-written, not @theme-generated: see the --color-base declaration above for why.
+   This is the only utility the design's token table calls for on --color-base. */
+@utility bg-base {
+  background-color: var(--color-base);
+}
 
 @utility text-balance {
   text-wrap: balance;
