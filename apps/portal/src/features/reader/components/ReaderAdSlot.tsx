@@ -2,15 +2,12 @@ import { useTranslation } from 'react-i18next'
 
 type ReaderAdSlotProps = {
   variant: 'mid' | 'end'
-  darkMode?: boolean
 }
 
-const ReaderAdSlot = ({ variant, darkMode = false }: ReaderAdSlotProps) => {
+const ReaderAdSlot = ({ variant }: ReaderAdSlotProps) => {
   const { t } = useTranslation()
   const box = variant === 'end' ? 'min-h-[280px] aspect-square max-h-[360px]' : 'min-h-[120px]'
-  const tone = darkMode
-    ? 'border-white/10 bg-white/5 text-gray-400'
-    : 'border-gray-200 bg-gray-100 text-gray-500'
+  const tone = 'border-edge bg-raised text-ink-muted'
 
   return (
     <aside
