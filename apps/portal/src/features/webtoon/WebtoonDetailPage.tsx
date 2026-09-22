@@ -288,10 +288,14 @@ const WebtoonDetailPage = () => {
         ]}
       />
       {/* ═══════ HERO SECTION ═══════ */}
-      <section data-testid="hub-hero" className="relative overflow-visible bg-gray-900">
+      <section
+        data-testid="hub-hero"
+        data-theme="immersive"
+        className="bg-canvas relative overflow-visible"
+      >
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <div className={`absolute inset-0 ${webtoon.coverColor} opacity-20 blur-3xl`} />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 via-gray-900/80 to-gray-900" />
+          <div className="from-canvas/50 via-canvas/80 to-canvas absolute inset-0 bg-gradient-to-b" />
         </div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
@@ -338,7 +342,7 @@ const WebtoonDetailPage = () => {
                 />
 
                 {/* Title */}
-                <h1 className="mb-3 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+                <h1 className="text-ink mb-3 text-2xl font-bold sm:text-3xl lg:text-4xl">
                   {webtoon.title[lang]}
                 </h1>
 
@@ -346,15 +350,15 @@ const WebtoonDetailPage = () => {
                 <div className="mb-4 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                   <Link
                     to={`/author/${webtoon.author.id}`}
-                    className="flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                    className="focus:ring-offset-canvas flex items-center gap-2 rounded-2xl px-1 transition hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
                     aria-label={`${t('webtoonDetail.viewAuthor')} ${webtoon.author.name[lang]}`}
                   >
                     <div className="shape-circle flex h-8 w-8 items-center justify-center bg-white/20">
-                      <span className="text-sm font-semibold text-white">
+                      <span className="text-ink text-sm font-semibold">
                         {webtoon.author.name[lang].charAt(0)}
                       </span>
                     </div>
-                    <span className="font-medium text-white">{webtoon.author.name[lang]}</span>
+                    <span className="text-ink font-medium">{webtoon.author.name[lang]}</span>
                   </Link>
                   <span className="hidden text-white/40 sm:inline">|</span>
                   <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
@@ -374,7 +378,7 @@ const WebtoonDetailPage = () => {
                         <Link
                           key={genre}
                           to={`/categories/${catalogGenre.slug}`}
-                          className={`${className} inline-flex min-h-11 items-center transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900`}
+                          className={`${className} focus:ring-offset-canvas inline-flex min-h-11 items-center transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2`}
                         >
                           {label}
                         </Link>
@@ -391,37 +395,37 @@ const WebtoonDetailPage = () => {
               {/* Stats Bar — glassmorphic mini-cards */}
               <div className="scrollbar-hide mb-6 flex flex-nowrap items-center justify-start gap-3 overflow-x-auto sm:flex-wrap sm:gap-4">
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
-                  <Eye className="h-4 w-4 text-white/60" />
+                  <Eye className="text-ink-muted h-4 w-4" />
                   <div>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-ink text-sm font-semibold">
                       {formatCount(webtoon.viewCount)}
                     </span>
-                    <span className="ml-1 text-xs text-white/50">{t('webtoonDetail.views')}</span>
+                    <span className="text-ink-muted ml-1 text-xs">{t('webtoonDetail.views')}</span>
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
-                  <Heart className="h-4 w-4 text-white/60" />
+                  <Heart className="text-ink-muted h-4 w-4" />
                   <div>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-ink text-sm font-semibold">
                       {formatCount(webtoon.likeCount)}
                     </span>
-                    <span className="ml-1 text-xs text-white/50">{t('webtoon.likes')}</span>
+                    <span className="text-ink-muted ml-1 text-xs">{t('webtoon.likes')}</span>
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
-                  <BookOpen className="h-4 w-4 text-white/60" />
+                  <BookOpen className="text-ink-muted h-4 w-4" />
                   <div>
-                    <span className="text-sm font-semibold text-white">{allEpisodes.length}</span>
-                    <span className="ml-1 text-xs text-white/50">{t('webtoon.episodes')}</span>
+                    <span className="text-ink text-sm font-semibold">{allEpisodes.length}</span>
+                    <span className="text-ink-muted ml-1 text-xs">{t('webtoon.episodes')}</span>
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white/10 px-4 py-2.5 backdrop-blur-sm">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <div>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-ink text-sm font-semibold">
                       {formatRating(webtoon.rating)}
                     </span>
-                    <span className="ml-1 text-xs text-white/50">{t('rating.community')}</span>
+                    <span className="text-ink-muted ml-1 text-xs">{t('rating.community')}</span>
                   </div>
                 </div>
               </div>
@@ -443,7 +447,7 @@ const WebtoonDetailPage = () => {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   to={primaryHref}
-                  className="rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                  className="focus:ring-offset-canvas rounded-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
                 >
                   <Button size="lg" leftIcon={<Play className="h-5 w-5" />}>
                     {primaryLabel}

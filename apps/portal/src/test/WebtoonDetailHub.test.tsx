@@ -189,6 +189,13 @@ describe('WebtoonDetailPage series hub', () => {
     expect(await screen.findByRole('heading', { name: 'Golden Age' })).toBeInTheDocument()
     expect(screen.queryByTestId('hub-next-drop')).not.toBeInTheDocument()
   })
+
+  it('scopes the hub hero to the immersive theme', async () => {
+    renderDetail()
+    const hero = await screen.findByTestId('hub-hero')
+    expect(hero).toHaveAttribute('data-theme', 'immersive')
+    expect(hero.className).not.toMatch(/\bbg-gray-900\b/)
+  })
 })
 
 describe('series hub comments', () => {
