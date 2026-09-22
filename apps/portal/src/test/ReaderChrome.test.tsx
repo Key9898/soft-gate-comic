@@ -10,7 +10,7 @@ import { LibraryProvider } from '../context/LibraryContext'
 import { WalletProvider } from '../context/WalletContext'
 import { EngagementProvider } from '../context/EngagementContext'
 import { addComment, episodeCommentKey } from '../lib/comments'
-import { READER_PREFS_KEY } from '../lib/reader'
+import { DEFAULT_READER_PREFS, READER_PREFS_KEY, type ReaderPrefs } from '../lib/reader'
 import ReaderPage from '../features/reader/ReaderPage'
 
 const store = new Map<string, string>()
@@ -32,6 +32,10 @@ function installStorage() {
       key: () => null,
     },
   })
+}
+
+function seedPrefs(overrides: Partial<ReaderPrefs> = {}) {
+  store.set(READER_PREFS_KEY, JSON.stringify({ ...DEFAULT_READER_PREFS, ...overrides }))
 }
 
 function renderReader(path: string) {
@@ -174,5 +178,17 @@ describe('Reader chrome', () => {
     expect(screen.getByText(/1 \/ \d+/)).toBeInTheDocument()
     expect(screen.getByTestId('reader-ad-end')).toBeInTheDocument()
     expect(screen.queryByTestId('reader-ad-mid')).not.toBeInTheDocument()
+  })
+
+  it('scopes the reader to the immersive theme when dark mode is on', async () => {
+    seedPrefs({ darkMode: true })
+    renderReader('/read/1/1')
+    expect(await screen.findByTestId('reader-root')).toHaveAttribute('data-theme', 'immersive')
+  })
+
+  it('drops the immersive scope in light mode', async () => {
+    seedPrefs({ darkMode: false })
+    renderReader('/read/1/1')
+    expect(await screen.findByTestId('reader-root')).not.toHaveAttribute('data-theme')
   })
 })
